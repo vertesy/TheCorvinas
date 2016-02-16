@@ -256,8 +256,6 @@ cv <- function(x) ( sd(x, na.rm=T)/mean(x, na.rm=T) ) # change this!
 
 fano <- function(x) ( var(x, na.rm=T)/mean(x, na.rm=T) )
 
-iround  <- function (x, digz = 3) {signif (x, digits=digz)}
-
 modus <- function(x) {
 	x= unlist(na.exclude(x))
 	ux <- unique(x)
@@ -385,17 +383,6 @@ shannon.entropy <- function(p) {
 # 	if (print==T) {print (paste(c(...), sep="",collapse="")) }
 # 	paste(c(...), sep="",collapse="")
 # }
-kollapse <- function(..., print =T) {
-	if (print==T) {print (paste0(c(...), collapse = "")) }
-	paste0(c(...), collapse = "")
-}
-
-any_print <- function(...) {
-	argument_list <- c(...)
-	print (
-		paste( argument_list, collapse=" ")
-	)
-} # any_print (1,2,"macska")
 
 # setup_logging file, path and modification date
 setup_logging <- function  (append=TRUE, ...) {
@@ -404,151 +391,21 @@ setup_logging <- function  (append=TRUE, ...) {
 	assign ("Log_PnF",Log_PnF, envir = .GlobalEnv)
 }
 
-# setup_logging file, path and modification date
-setup_logging2 <- function  (fname, append=T) {
-	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-	Log_PnF <- kollapse (path,'/',fname,'.log')
-	write (kollapse("                   Modified: ",date() ), Log_PnF , append=append)
-	assign ("Log_PnF",Log_PnF, envir = .GlobalEnv)
-}
+# # setup_logging file, path and modification date
+# setup_logging2 <- function  (fname, append=T) {
+# 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
+# 	Log_PnF <- kollapse (path,'/',fname,'.log')
+# 	write (kollapse("                   Modified: ",date() ), Log_PnF , append=append)
+# 	assign ("Log_PnF",Log_PnF, envir = .GlobalEnv)
+# }
 
-# setup_logging file, path and modification date
-setup_logging_markdown <- function  (fname, title="", append=T, png4Github = T) {
-	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-	Log_PnF <- kollapse (path,'/',fname,'.log.md')
-	if (nchar(title)) { write (paste("# ", title), Log_PnF , append=append)
-	} else { 			 write (paste("# ", fname,"Report"), Log_PnF , append=append) }
-	write (kollapse("        Modified: ",format(Sys.time(), "%d/%m/%Y | %H:%M | by: "), fname ), Log_PnF , append=T)
-	OutImg = kollapse(OutDir,"/",substr(fname, 1, nchar(fname)),"_",format(Sys.time(), "%Y_%m_%d-%Hh"), print=F)
-	if ( !exists (OutImg) ) {dir.create(OutImg); assign ("OutImg", OutImg, envir = .GlobalEnv)}
-	assign ("Log_PnF",Log_PnF, envir = .GlobalEnv)
-	assign ("png4Github",png4Github, envir = .GlobalEnv)
-}
-
-# This below does not make much sense - you need to set OutDir and Log_PnF, thats all ...
-continue_logging_markdown  <- function  (fname) {
-	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-	Log_PnF <- kollapse (path,'/',fname,'.log.md', print = F)
-	return (Log_PnF)
-	OutImg = kollapse(OutDir,"/",substr(fname, 1, (nchar(fname)-2)),format(Sys.time(), "%Y_%m_%d-%Hh"), print=F)
-	if ( !exists (OutImg) ) {dir.create(OutImg); assign ("OutImg", OutImg, envir = .GlobalEnv)}
-	return (OutImg)
-}
-
-
-MarkDown_ImgLink_formatter <-  function (...) {
-	FnP =kollapse(..., print=F)
-	splt = strsplit(FnP,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-	kollapse ('![', fn, ']', '(', FnP,')',  print=F)
-}
-
-MarkDown_Img_Logger_PDF_and_PNG <-  function (fname_wo_ext) {
-	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-	log_it(kollapse ('![]', '(', fname_wo_ext,'.pdf)',  print=F))
-	if (exists("png4Github") & png4Github ==T ) { 	dirnm = strsplit(OutDir, split = "/")[[1]];dirnm = dirnm[length(dirnm)]
-				log_it(kollapse ('![]', '(' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to png 4 GitHub use
-	} else { 	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))} 					# link to png 4 local use
-}
-
-
-MarkDown_Img_Logger_PDF_and_PNG_External <-  function (FullPathtoPDF) {
-	# MarkDown_Img_Logger_PDF_and_PNG_External is a function to put a png and a pdf link to .md log file.
-	print("Link to both pdf and png versions are created in the .md logfile.")
-	trunk = strsplit(FullPathtoPDF, "\\.pdf")[[1]]
-	splt = strsplit(trunk,"/"); fname_wo_ext = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-	log_it(kollapse ('![]', '(', trunk,'.pdf)',  print=F))
-	if (exists("png4Github") & png4Github ==T ) { 	dirnm = strsplit(OutDir, split = "/")[[1]]; dirnm = dirnm[length(dirnm)]
-	log_it(kollapse ('![]', '(' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))			# link to png 4 GitHub use
-	} else { 	log_it(kollapse ('![', fname_wo_ext, ']', '(', trunk,'.png)',  print=F))} 	# link to png 4 local use
-}
-
-
-MarkDown_Table_writer_DF_RowColNames <-  function (df, FnP=Log_PnF, percentify =FALSE, title_of_table = NA) {
-	if (is.na(title_of_table)) { t = substitute(df) } else {t = title_of_table} 			# Format title of table
-	title_of_table = paste("\n#### ", t)
-	write ( title_of_table, Log_PnF, append=T)
-	h =	paste(colnames(df), collapse = " \t| ") 			# Format header
-	h = paste ("\n| |", h, " |",collapse = "")
-	ncolz = dim(df)[2]+1; nrows = dim(df)[1]
-	rn =  rownames (df)
-	sep = kollapse(rep("| ---", ncolz)," |", print=F)
-	if (exists("Log_PnF") ) {		write ( h, Log_PnF, append=T); write ( sep, Log_PnF, append=T)
-		for (r in 1:nrows){
-			if (is.numeric(unlist(df[r,])))  { 	b = iround(df[r,]) 			# Round Nr-s
-			if(percentify) { b =percentage_formatter(b)} 		# make %
-			} else { b = df[r,]}
-			b = paste ( unlist(b), collapse = " \t| ") 						# Format table body
-			# This looked errorous: I needed to transpose it to make it work. Why not as a simple vector?
-			# b = paste ( as.data.frame(b), collapse = " \t| ") 						# Format table body
-			b = paste ("|", rn[r], "\t|", b, " |",collapse = "")
-			write ( b, Log_PnF, append=T)
-		} # for
-	}
-	else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
-}
-
-MarkDown_Table_writer_NamedVector <- function (NamedVector, FnP=Log_PnF, percentify =FALSE, title_of_table = NA) {
-	if (is.na(title_of_table)) { t = substitute(NamedVector) } else {t = title_of_table} 			# Format title of table
-	title_of_table = paste("\n#### ", t)
-	write ( title_of_table, Log_PnF, append=T)
-	if (!is.table(NamedVector)) {if (is.numeric(NamedVector)) {NamedVector = iround(NamedVector)}}
-	h =	paste(names(NamedVector), collapse = " \t| ") 			# Format header
-	h = paste ("\n| ", h, " |",collapse = "")
-	ncolz = l(NamedVector)
-	sep = kollapse(rep("| ---", ncolz)," |", print=F)
-	if (exists("Log_PnF") ) {
-		write ( h, Log_PnF, append=T)
-		write ( sep, Log_PnF, append=T)
-		if(percentify & is.numeric(NamedVector)) { NamedVector =percentage_formatter(NamedVector)} 		# make %
-		b = paste ( NamedVector, collapse = " \t| ") 			# Format table body
-		b = paste ("|", b, " |",collapse = "")
-		write ( b, Log_PnF, append=T)
-	} else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
-}
-
-log_settings_MarkDown <- function(...) {
-	call <- match.call();
-	namez = sapply(as.list(call[-1]), deparse)
-	value = c(...)
-	value = as.data.frame(value)
-	rownames (value) = namez
-	MarkDown_Table_writer_DF_RowColNames((value), title_of_table = "Settings")
-}
-
-
-log_N_print <- function  (...) { # log to markdown file and print to screen
-	argument_list <- c(...)
-	LogEntry = print ( 		paste( argument_list, collapse=" ")  	)
-	if (exists("Log_PnF") ) {		write ( kollapse ("\n", LogEntry, print=FALSE), Log_PnF, append=T) 	}
-	else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
-}
-llprint = log_N_print
-
-log_it <- function  (...) { # log to markdown file
-	argument_list <- c(...)
-	LogEntry = paste( argument_list, collapse=" ") 			# collapse by space
-	LogEntry = gsub('^ +| +$', "", LogEntry) 				# remove trailing spaces
-	if (!exists("Log_PnF") ) {print("Log path and filename is not defined in Log_PnF")}
-	write ( kollapse ("\n", LogEntry, print=F), Log_PnF, append=T)
-}
-llogit = log_it
-
-eval_parse_kollapse = dyn_var_caller <- function( ... ){
+eval_parse_kollapse <- dyn_var_caller <- function( ... ){
 	substitute(eval(parse(text=kollapse( ... , print=F))))
 }
-
-
 
 substrRight <- function(x, n){
 	substr(x, nchar(x)-n+1, nchar(x))
 }
-
-percentage_formatter <- function(x, digitz=3) {
-	a = paste (100*iround(x, digitz),"%", sep = " ")
-	a[a == "NaN %"] = NaN; 	a[a == "NA %"] = NA
-	return(a)
-}
-
 
 lm_equation_formatter <- function(lm) {
 	eq = (lm$coefficients);
@@ -596,14 +453,6 @@ what <- function(x, printme=0) {
 	if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
 	head (x)
 }
-
-create_set_OutDir <- function (...) {
-	OutDir = kollapse(..., print=F)
-	print (OutDir)
-	if ( !exists (OutDir) ) {dir.create(OutDir)}
-	assign ("OutDir", OutDir, envir = .GlobalEnv)
-}
-
 
 lookup <- function(needle, haystack, exact =TRUE, report = FALSE) {
 	ls_out = as.list( c(ln_needle = length(needle), ln_haystack = length(haystack), ln_hits = "",  hit_poz = "", hits = "") )
@@ -1207,4 +1056,11 @@ pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date()))
 # `[` <- function(...) { old(..., drop=FALSE) }
 
 
+
+symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
+	big.vec <- c(x, y, ...)
+	ls = list(x, y, ...); if ( l(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
+	duplicates <- big.vec[duplicated(big.vec)]
+	lapply(ls, function (x) setdiff (x, duplicates))
+}
 

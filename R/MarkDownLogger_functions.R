@@ -5,9 +5,9 @@
 # Use MOU or alternatives to view and edit your reports
 
 ## Auxiliary functions -------------------------------------------------------------------------------------------------
-kollapse <- function(...,print =T) { # parses (and prints) flexibly anything you pass on to it into a string
-	if (print==T) {print (paste(c(...), sep="",collapse="")) }
-	paste(c(...), sep="",collapse="")
+kollapse <- function(..., print =T) {
+	if (print==T) {print (paste0(c(...), collapse = "")) }
+	paste0(c(...), collapse = "")
 }
 
 any_print <- function(...) { # more flexible printing fun
@@ -17,7 +17,7 @@ any_print <- function(...) { # more flexible printing fun
 	)
 } # any_print (1,2,"macska")
 
-iround  <- function (x, digz = 3) {signif (x, digits=digz)}
+iround  <- function(x, digz = 3) {signif (x, digits=digz)}
 
 percentage_formatter <- function(x, digitz=3) {
 	a = paste (100*iround(x, digitz),"%", sep = " ")
@@ -26,7 +26,7 @@ percentage_formatter <- function(x, digitz=3) {
 }
 
 ## Setup Logging -------------------------------------------------------------------------------------------------
-create_set_OutDir <- function (...) {
+create_set_OutDir <- function(...) {
 	OutDir = kollapse(..., print=F)
 	print (OutDir)
 	if ( !exists (OutDir) ) {dir.create(OutDir)}
@@ -34,7 +34,7 @@ create_set_OutDir <- function (...) {
 }
 
 # setup_logging file, path and modification date
-setup_logging_markdown <- function  (fname, title="", append=T, png4Github = T) {
+setup_logging_markdown <- function(fname, title="", append=T, png4Github = T) {
 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
 	Log_PnF <- kollapse (path,'/',fname,'.log.md')
 	if (nchar(title)) { write (paste("# ", title), Log_PnF , append=append)
@@ -46,7 +46,7 @@ setup_logging_markdown <- function  (fname, title="", append=T, png4Github = T) 
 	assign ("png4Github",png4Github, envir = .GlobalEnv)
 }
 
-continue_logging_markdown  <- function  (fname) {
+continue_logging_markdown  <- function(fname) {
 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
 	Log_PnF <- kollapse (path,'/',fname,'.log.md', print = F)
 	return (Log_PnF)
@@ -66,14 +66,14 @@ log_settings_MarkDown <- function(...) { # log your parameter settings into a ta
 	MarkDown_Table_writer_DF_RowColNames((value), title_of_table = "Settings")
 }
 
-llprint <- function  (...) { # log to markdown file and print to screen
+llprint <- function(...) { # log to markdown file and print to screen
 	argument_list <- c(...)
 	LogEntry = print ( 		paste( argument_list, collapse=" ")  	)
 	if (exists("Log_PnF") ) {		write ( kollapse ("\n", LogEntry, print=F), Log_PnF, append=T) 	}
 	else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
 }
 
-llogit <- function  (...) { # log to markdown file, do not print
+llogit <- function(...) { # log to markdown file, do not print
 	argument_list <- c(...)
 	LogEntry = paste( argument_list, collapse=" ") 			# collapse by space
 	LogEntry = gsub('^ +| +$', "", LogEntry) 				# remove trailing spaces
@@ -81,25 +81,46 @@ llogit <- function  (...) { # log to markdown file, do not print
 	write ( kollapse ("\n", LogEntry, print=F), Log_PnF, append=T)
 }
 
-MarkDown_ImgLink_formatter <-  function (...) { # insert a link to a pdf image
+MarkDown_ImgLink_formatter <-  function(...) { # insert a link to a pdf image
 	FnP =kollapse(..., print=F)
 	splt = strsplit(FnP,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
 	kollapse ('![', fn, ']', '(', FnP,')',  print=F)
 }
 
-MarkDown_Img_Logger_PDF_and_PNG <-  function (fname_wo_ext) { # insert 2 links, one for PDF, one for PNG version of the same image (png files are needed for web or email sharing!!!)
+MarkDown_Img_Logger_PDF_and_PNG <-  function(fname_wo_ext) { # insert 2 links, one for PDF, one for PNG version of the same image (png files are needed for web or email sharing!!!)
 	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
 	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.pdf)',  print=F))
-	# log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))
+	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))	# link to a png file to use locally
 }
 
-MarkDown_Img_Logger_4GitHub <-  function (fname_wo_ext) { # insert 2 links, one for PDF, one for PNG version of the same image (png files are needed for web or email sharing!!!)
+# "Unused version:"
+# MarkDown_Img_Logger_PDF_and_PNG <-  function (fname_wo_ext) {
+# 	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
+# 	log_it(kollapse ('![]', '(', fname_wo_ext,'.pdf)',  print=F))
+# 	if (exists("png4Github") & png4Github ==T ) { 	dirnm = strsplit(OutDir, split = "/")[[1]];dirnm = dirnm[length(dirnm)]
+# 													log_it(kollapse ('![]', '(' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to a png file to use locally
+# 	} else { 	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))} 					# link to png 4 local use
+# }
+
+MarkDown_Img_Logger_4GitHub <-  function(fname_wo_ext) { # insert 2 links, one for PDF, one for PNG version of the same image (png files are needed for web or email sharing!!!)
 	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
 	log_it(kollapse ('![', fn, ']', '(Reports/',fn ,'.png)',  print=F))
 }
 
+# "Unused version:"
+# MarkDown_Img_Logger_PDF_and_PNG_GitHub <-  function (FullPathtoPDF) {
+# 	# MarkDown_Img_Logger_PDF_and_PNG_GitHub is a function to put a png and a pdf link to .md log file.
+# 	print("Link to both pdf and png versions are created in the .md logfile.")
+# 	trunk = strsplit(FullPathtoPDF, "\\.pdf")[[1]]
+# 	splt = strsplit(trunk,"/"); fname_wo_ext = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
+# 	log_it(kollapse ('![]', '(', trunk,'.pdf)',  print=F))
+# 	if (exists("png4Github") & png4Github ==T ) { 	dirnm = strsplit(OutDir, split = "/")[[1]]; dirnm = dirnm[length(dirnm)]
+# 													log_it(kollapse ('![]', '(Reports/' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to a png file that needs to be uploaded to GitHub-wiki under Reports/Folder-of-the-report/
+# 	} else { 	log_it(kollapse ('![', fname_wo_ext, ']', '(', trunk,'.png)',  print=F))} 	# link to png 4 local use
+# }
+
 ## Write out pretty tables to your markdown file ------------------------------------------------------------------------------------------------------------
-MarkDown_Table_writer_DF_RowColNames <-  function (df, FnP=Log_PnF, percentify =F, title_of_table = NA) {
+MarkDown_Table_writer_DF_RowColNames <-  function(df, FnP=Log_PnF, percentify =F, title_of_table = NA) {
 	if (is.na(title_of_table)) { t = substitute(df) } else {t = title_of_table} 			# Format title of table
 	title_of_table = paste("\n#### ", t)
 	write ( title_of_table, Log_PnF, append=T)
@@ -121,7 +142,32 @@ MarkDown_Table_writer_DF_RowColNames <-  function (df, FnP=Log_PnF, percentify =
 	else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
 }
 
-MarkDown_Table_writer_NamedVector <- function (NamedVector, FnP=Log_PnF, percentify =F, title_of_table = NA) {
+# MarkDown_Table_writer_DF_RowColNames <-  function (df, FnP=Log_PnF, percentify =FALSE, title_of_table = NA) {
+# 	if (is.na(title_of_table)) { t = substitute(df) } else {t = title_of_table} 			# Format title of table
+# 	title_of_table = paste("\n#### ", t)
+# 	write ( title_of_table, Log_PnF, append=T)
+# 	h =	paste(colnames(df), collapse = " \t| ") 			# Format header
+# 	h = paste ("\n| |", h, " |",collapse = "")
+# 	ncolz = dim(df)[2]+1; nrows = dim(df)[1]
+# 	rn =  rownames (df)
+# 	sep = kollapse(rep("| ---", ncolz)," |", print=F)
+# 	if (exists("Log_PnF") ) {		write ( h, Log_PnF, append=T); write ( sep, Log_PnF, append=T)
+# 		for (r in 1:nrows){
+# 			if (is.numeric(unlist(df[r,])))  { 	b = iround(df[r,]) 			# Round Nr-s
+# 			if(percentify) { b =percentage_formatter(b)} 		# make %
+# 			} else { b = df[r,]}
+# 			b = paste ( unlist(b), collapse = " \t| ") 						# Format table body
+# 			# This looked errorous: I needed to transpose it to make it work. Why not as a simple vector?
+# 			# b = paste ( as.data.frame(b), collapse = " \t| ") 						# Format table body
+# 			b = paste ("|", rn[r], "\t|", b, " |",collapse = "")
+# 			write ( b, Log_PnF, append=T)
+# 		} # for
+# 	}
+# 	else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
+# }
+
+
+MarkDown_Table_writer_NamedVector <- function(NamedVector, FnP=Log_PnF, percentify =F, title_of_table = NA) {
 	if (is.na(title_of_table)) { t = substitute(NamedVector) } else {t = title_of_table} 			# Format title of table
 	title_of_table = paste("\n#### ", t)
 	write ( title_of_table, Log_PnF, append=T)
@@ -139,6 +185,26 @@ MarkDown_Table_writer_NamedVector <- function (NamedVector, FnP=Log_PnF, percent
 		write ( b, Log_PnF, append=T)
 	} else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
 }
+
+# MarkDown_Table_writer_NamedVector <- function (NamedVector, FnP=Log_PnF, percentify =FALSE, title_of_table = NA) {
+# 	if (is.na(title_of_table)) { t = substitute(NamedVector) } else {t = title_of_table} 			# Format title of table
+# 	title_of_table = paste("\n#### ", t)
+# 	write ( title_of_table, Log_PnF, append=T)
+# 	if (!is.table(NamedVector)) {if (is.numeric(NamedVector)) {NamedVector = iround(NamedVector)}}
+# 	h =	paste(names(NamedVector), collapse = " \t| ") 			# Format header
+# 	h = paste ("\n| ", h, " |",collapse = "")
+# 	ncolz = l(NamedVector)
+# 	sep = kollapse(rep("| ---", ncolz)," |", print=F)
+# 	if (exists("Log_PnF") ) {
+# 		write ( h, Log_PnF, append=T)
+# 		write ( sep, Log_PnF, append=T)
+# 		if(percentify & is.numeric(NamedVector)) { NamedVector =percentage_formatter(NamedVector)} 		# make %
+# 		b = paste ( NamedVector, collapse = " \t| ") 			# Format table body
+# 		b = paste ("|", b, " |",collapse = "")
+# 		write ( b, Log_PnF, append=T)
+# 	} else {		print("NOT LOGGED: Log path and filename is not defined in Log_PnF")	} # if cannot print
+# }
+
 
 ## Generate and save plots into pdf and insert a diplay-link into your markdown file -------------------------------------------------------------------------------------------------
 wplot <-  function(variable, col ="gold1", ..., w=7, h=7,  plotname = substitute(variable), mdlink =F, log4GitHuB = F) {
