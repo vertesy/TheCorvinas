@@ -25,7 +25,10 @@ sortbyitsnames  <-  function(vec) {vec[order(names(vec) )]}
 
 stopif  <-  function(condition, message ="") { if(condition) {any_print (message); stop()} }
 
-# File handling [read & write] -------------------------------------------------------------------------------------------------
+### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
+source("/Users/abelvertesy/TheCorvinas/R/MarkDownLogger_functions.R")
+
+### File handling [read & write] -------------------------------------------------------------------------------------------------
 
 # old <- `[`
 'If the rownames are retained, the subselected column and row remains the original type of the object, eg df. hist () does not take df-s for instance'
@@ -524,21 +527,6 @@ wplot.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
 
-wplot <-  function(variable, col ="gold1", ..., w=7, h=7,  plotname = substitute(variable), mdlink =F) {
-	fname = kollapse (plotname, '.plot')
-	plot (variable, ..., main=plotname, col=col)
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-
-wplot_save_this <-  function(plotname = date(), col ="gold1", ..., w=7, h=7, mdlink =FALSE, ManualName = FALSE) {
-	if (plotname == plotnameLastPlot) { ManualName = T }
-	fname = kollapse (plotname, '.plot'); if (ManualName) {fname = plotname}
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) } # put a markdown image link if the log file exists
-}
-
 
 # plot with fitted line
 wplot2 <-  function(variable, extension =".pdf", plotname = substitute(variable), col=rgb(0,0,0,75,maxColorValue=100), w=7, h=7, pch='.') {
@@ -601,36 +589,6 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 }
 
 
-whist <-  function(variable, col ="gold1", w=7, h=7, plotname = substitute(variable), breaks = 20,
-				   main=kollapse("Histogram of ", substitute(variable)), xlabel =substitute(variable), mdlink =FALSE,
-				   hline=F, vline=F,lty =2, lwd =3, lcol =2, filtercol = 0,...) {
-	# name the file  by naming the variable! Cannot be used with dynamically called variables [e.g. call vectors within a loop]
-	# filtercol assumes  >= coloring!
-	xtra =  list (...)
-	if ( length (variable) > 0 ) {
-		fname = kollapse (plotname, '.hist')
-		if ( !is.numeric(variable)) {
-			variable = table (variable) ;
-			cexNsize = 0.7/abs (log10 (length(variable)) ); cexNsize = min (cexNsize, 1)
-			barplot (variable, ..., main=main, xlab=xlabel, col=col, las=2, cex.names = cexNsize,
-					 sub = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) ) )
-		} else {
-			histdata = hist(variable, breaks =breaks, plot = F)
-			if(filtercol == 1) { 		col = (histdata$breaks >=vline)+2 }
-			else if(filtercol == -1) { 	col = (histdata$breaks <vline)+2 }
-			hist (variable, ..., main = main, breaks = breaks, xlab=xlabel, col=col, las=2)
-		} # if is.numeric
-		if (hline) { abline (h = hline, lty =lty, lwd = lwd, col = lcol) }
-		if (vline & !l(xtra$xlim) ) {
-			PozOfvline = mean(histdata$mids[c(max(which(histdata$breaks<vline)), min(which(histdata$breaks>=vline)))])   # this is complicated, i know...
-			abline (v = PozOfvline, lty =lty, lwd = lwd, col = 1)
-		} else if (vline & l(xtra$xlim)) {	abline (v = vline, lty =lty, lwd = lwd, col = 1)}
-		dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	} else { any_print (variable," IS EMPTY") } # if non empty
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-
 whist_dfCol <-  function(df, colName, col ="gold", ..., w=7, h=7) {
 	# name the file  by naming the variable! Cannot be used with dynamically called variables [e.g. call vectors within a loop]
 	stopifnot(colName %in% colnames(df))
@@ -658,29 +616,6 @@ wbarplot.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
 
-wbarplot <-  function(variable, ..., col ="gold1", sub = F, plotname = substitute(variable), main =substitute(variable),
-					  w=7, h=7, incrBottMarginBy = 0, mdlink =F,
-					  hline=F, vline=F, filtercol=1,lty =1, lwd =2, lcol =2) {
-	# in ... you can pass on ANY plotting parameter exc SUB, MAIN!!!!
-	fname = kollapse (plotname, '.barplot')
-	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
-	cexNsize = .8/abs (log10 (length(variable)) ); cexNsize = min (cexNsize, 1)
-	if (sub==T) { 		subtitle = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) )
-	} else if (sub==F) { subtitle="" } else { subtitle=sub }
-	if (hline) {
-		if (filtercol == 1) { 			col = (variable>=hline)+2 }
-		else if (filtercol == -1) { 	col = (variable <hline)+2 }
-	}
-	x= barplot (variable, ..., main=main, sub = subtitle, col=col, las=2, cex.names = cexNsize	) # xaxt="n",
-	# text(cex=cexNsize, x=x-.25, y=min(variable)-0.15, labels = names(variable), xpd=TRUE, srt=45)
-	if (hline) { abline (h = hline, lty =lty, lwd = lwd, col = lcol) }
-	if (vline) { abline (v = vline, lty =lty, lwd = lwd, col = lcol) }
-	dev.copy2pdf (file= FnP_parser (fname, 'pdf'), width=w, height=h)
-	par("mar" = .ParMarDefault)
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-
 
 wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) {
 	stopifnot(colName %in% colnames(df))
@@ -695,17 +630,6 @@ wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) {
 }
 
 
-wboxplot <-  function(variable, ...,  col ="gold1", plotname = as.character (substitute(variable)), sub=FALSE,
-					  incrBottMarginBy = 0, w=7, h=7, mdlink =F) {
-	# in ... you can pass on ANY plotting parameter!!!!
-	fname = kollapse (plotname, '.boxplot')
-	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
-	boxplot (variable, ..., main=plotname, col=col, las=2)
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	par("mar" = .ParMarDefault)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
 
 wimage <-  function(variable,  xlab ="", ylab ="", plotname = substitute(variable), ..., w=7, h=7, mdlink =F) {
 	fname = kollapse (plotname, '.heatmap')
@@ -722,106 +646,6 @@ wimage <-  function(variable,  xlab ="", ylab ="", plotname = substitute(variabl
 	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
 }
 HeatMapCol_RedBlackBlue <- colorRampPalette(c("red", "black", "green"), bias=1)
-
-
-
-wpie <-  function(variable, ..., percentage =TRUE, plotname = substitute(variable), w=7, h=7, mdlink =F) {
-	# if (!is.vector(variable)) {any_print ("The input is not a vector, but coverted! Dim:", dim (variable)); cc = variable[,2]; names (cc) = variable[,1]; variable =cc}
-	fname = kollapse (plotname, '.pie')
-	subt = kollapse ("Total = ",sum(variable), print=F)
-	if (percentage) {
-		labs<- paste("(",names(variable),")", "\n", percentage_formatter(variable/sum(variable)), sep="")
-	} else {
-		labs<- paste("(",names(variable),")", "\n", variable, sep="")
-	}
-	pie (variable, ..., main=plotname, sub = subt, clockwise = T, labels = labs, col = rainbow(l(variable)))
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) } # put a markdown image link if the log file exists
-}
-
-
-wstripchart <-   function(list, ..., plotname = as.character (substitute(list)), sub=FALSE, border=1, BoxPlotWithMean =F,
-						  pch=23, pchlwd =1, pchcex=1.5, bg="chartreuse2", col ="black", metod = "jitter", jitter = 0.2, colorbyColumn=F,
-						  w=7, h=7, incrBottMarginBy = 0, mdlink =F) {
-	# in ... you can pass on ANY plotting parameter!!!!
-	# metod = "jitter" OR "stack"
-	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
-	cexNsize = 1/abs (log10 (length(list)) ); cexNsize = min (cexNsize, 1)
-	fname = kollapse (plotname, '.stripchart')
-	a =boxplot(list, plot=F)
-	if (colorbyColumn) { pchlwd =5; pchcex=.5	}
-	if (BoxPlotWithMean){		a$stats[3,] = unlist(lapply(list, mean)) }						# Replace mean with median
-	bxp(a, xlab ="", ..., main =plotname, border=border, outpch = NA, las=2, outline=T, cex.axis = cexNsize)
-	stripchart(list, vertical = TRUE, add = TRUE, method = metod, jitter =jitter
-			   , pch=pch, bg=bg, col=col, lwd =pchlwd, cex=pchcex)
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	par("mar" = .ParMarDefault)
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-
-# here you can define everything
-wstripchart_list <-   function(yalist, ..., plotname = as.character (substitute(yalist)), sub=FALSE, ylb = NULL, xlab =NULL, border=1, bxpcol =0,
-								pch=23, pchlwd =1, pchcex=1.5, bg="chartreuse2", coll ="black", metod = "jitter", jitter = 0.2,
-								w=7, h=7, incrBottMarginBy = 0, mdlink =F) {
-	# in ... you can pass on ANY plotting parameter!!!!
-	# metod = "jitter" OR "stack"
-	fname = kollapse (plotname, '.stripchart')
-	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
-	cexNsize = 1/abs (log10 (length(list)) ); cexNsize = min (cexNsize, 1)
-	boxplot (yalist, ..., main=plotname, border=border, outline=FALSE, las=2, col=bxpcol, cex.axis = cexNsize)
-	for (i in 1:length(yalist)) {
-		j=k=i
-		if (length(coll) < length(yalist)) {j=1}
-		if (length(bg) < length(yalist)) {k=1}
-		stripchart(na.omit(yalist[[i]]), at = i, add = T, vertical = T, method = metod, jitter =jitter, pch =pch, bg = bg[[k]], col=coll[[j]], lwd =pchlwd, cex=pchcex)
-	}
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	par("mar" = .ParMarDefault)
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-
-
-wvioplot_list <-   function(yalist, ..., xlb = names(yalist), ylb ="", coll = c(1:length(yalist)), incrBottMarginBy = 0,
-							w=7, h=7, plotname = as.character (substitute(yalist)), mdlink =F ) {
-	require(vioplot)
-	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
-	l_list = length(yalist)
-	if (length(coll) < l_list) { coll = rep (coll, l_list)}
-	fname = kollapse (plotname, '.vioplot')
-	plot(0,0, type="n", xlim= c(.5, (l_list +.5)), ylim=range (unlist(yalist)),  xaxt = 'n', xlab ="", ylab = ylb, main = plotname)
-	for (i in 1:l_list) { vioplot(na.omit(yalist[[i]]), ..., at = i, add = T, col = coll[i] ) }
-	axis(side=1,at=1:l_list,labels=xlb, las=2)
-
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	par("mar" = .ParMarDefault)
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-
-wviostripchart_list <-   function(yalist, ..., pch=23, viocoll = 0, vioborder =1, ylb ="", plotname = as.character (substitute(yalist)), sub=F,
-								  bg=0, coll ="black", metod = "jitter", jitter = 0.1,
-								  w=7, h=7, incrBottMarginBy = 0, mdlink =F) {
-	# in ... you can pass on ANY plotting parameter!!!!
-	# metod = "jitter" OR "stack"
-	fname = kollapse (plotname, '.VioStripchart')
-	require(vioplot)
-	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
-	l_list = length(yalist)
-	plot(0,0, type="n", xlim= c(.5, (l_list +.5)), ylim=range (unlist(yalist)),  xaxt = 'n', xlab ="", ylab = ylb, main = plotname)
-	for (i in 1:l_list) { vioplot(na.omit(yalist[[i]]), ..., at = i, add = T, col = viocoll[i], border =vioborder[i] ) }
-	for (i in 1:length(yalist)) {
-		j=k=i
-		if (length(coll) < length(yalist)) {j=1}
-		if (length(bg) < length(yalist)) {k=1}
-		stripchart(na.omit(yalist[[i]]), at = i, add = T, vertical = T, method = metod, jitter =jitter, pch =pch, bg = bg[[k]], col=coll[[j]])
-	}
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	par("mar" = .ParMarDefault)
-	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
 
 
 # Read and write plotting functions READ -------------------------------------
