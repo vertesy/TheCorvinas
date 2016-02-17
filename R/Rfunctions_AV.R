@@ -104,14 +104,6 @@ read.simple_char_list <-  function(...) {
 	return(read_in)
 }
 
-# read.simple.table <-  function(...) {
-# # header
-# 	pfn = kollapse (...) # merge path and filename
-# 	read_in = read.table( pfn ,stringsAsFactors=FALSE, sep="\t", header=T )
-# 	any_print ("New variable dim: ",dim(read_in))
-# 	return(read_in)
-# }
-
 read.simple.table <-  function(...,rownames=NULL, colnames=T) {
 	# default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1
 	pfn = kollapse (...) # merge path and filename
@@ -342,13 +334,13 @@ rescale <- function (vec, from=0, upto=100) {
 
 filter_survival_length <- function (length_new, length_old, prepend ="") {
 	pc = percentage_formatter(length_new/length_old)
-	log_N_print (prepend, pc, " of ",length_old," entries make through the filter")
+	llprint (prepend, pc, " of ",length_old," entries make through the filter")
 }
 
 filter_HP <- function (vector, threshold, prepend ="", survival=F) {
 	survivors = vector>threshold
 	pc = percentage_formatter(sum(survivors)/length(survivors))
-	if (file.exists(Log_PnF) ) {	log_N_print (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold)
+	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold)
 		} else { any_print  (pc, " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold, "NOT LOGGED") }
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
@@ -356,7 +348,7 @@ filter_HP <- function (vector, threshold, prepend ="", survival=F) {
 filter_LP <- function (vector, threshold, prepend ="", survival=F) {
 	survivors = vector<threshold
 	pc = percentage_formatter(sum(survivors)/length(survivors))
-	if (file.exists(Log_PnF) ) {	log_N_print (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold )
+	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold )
 		} else { any_print  (pc, " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold, "NOT LOGGED") }
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
@@ -367,7 +359,7 @@ filter_MidPass <- function (vector, HP_threshold, LP_threshold, prepend ="", sur
 	if (EdgePass) {survivors = ( vector <= HP_threshold | vector > LP_threshold); keyword = "outside"; relation = " >= x OR x > " }
 	pc = percentage_formatter(sum(survivors)/length(survivors))
 	Texxt = kollapse(pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall ", keyword, " the thresholds: ", HP_threshold, relation, LP_threshold, print = F)
-	if (file.exists(Log_PnF) ) {	log_N_print (prepend, Texxt)
+	if (file.exists(Log_PnF) ) {	llprint (prepend, Texxt)
 	} else { any_print  (Texxt, "NOT LOGGED") }
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
@@ -472,9 +464,9 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) {
 	if (l(Findings)) {	ls_out$'nonhits' = haystack[-Findings]
 	} else { 			ls_out$'nonhits' = haystack	}
 	if (report){
-		log_N_print (length(Findings), "/", ln_needle, '(', percentage_formatter(length(Findings)/ln_needle)
+		llprint (length(Findings), "/", ln_needle, '(', percentage_formatter(length(Findings)/ln_needle)
 					 , ") of", substitute(needle), "were found among", length(haystack), substitute(haystack), "." )
-		if (length(Findings)) { log_N_print( substitute(needle),"findings: ",paste ( haystack[Findings], sep= " " ) ) }
+		if (length(Findings)) { llprint( substitute(needle),"findings: ",paste ( haystack[Findings], sep= " " ) ) }
 	} else { any_print(length(Findings), "Hits:", haystack[Findings]) } # if (report)
 	return (ls_out)
 } # lookup fun # lookup (needle, haystack); needle = c('a', 'd', 'c', 'v') ; haystack = c('as', 'ff', 'c', 'v', 'x')
@@ -884,7 +876,7 @@ pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date()))
 symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
 	big.vec <- c(x, y, ...)
 	ls = list(x, y, ...); if ( l(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
+	names(ls) = paste ("Only in", as.character(match.call()[-1]))
 	duplicates <- big.vec[duplicated(big.vec)]
 	lapply(ls, function (x) setdiff (x, duplicates))
 }
-

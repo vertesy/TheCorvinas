@@ -90,22 +90,22 @@ MarkDown_ImgLink_formatter <-  function(...) { # insert a link to a pdf image
 # "Unused version:"
 # MarkDown_Img_Logger_PDF_and_PNG <-  function(fname_wo_ext) { # insert 2 links, one for PDF, one for PNG version of the same image (png files are needed for web or email sharing!!!)
 # 	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-# 	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.pdf)',  print=F))
-# 	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))	# link to a png file to use locally
+# 	llogit(kollapse ('![', fn, ']', '(', fname_wo_ext,'.pdf)',  print=F))
+# 	llogit(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))	# link to a png file to use locally
 # }
 
 MarkDown_Img_Logger_PDF_and_PNG <-  function (fname_wo_ext) {
 	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-	log_it(kollapse ('![]', '(', fname_wo_ext,'.pdf)',  print=F))
+	llogit(kollapse ('![]', '(', fname_wo_ext,'.pdf)',  print=F))
 	if (exists("png4Github") & png4Github ==T ) { 	dirnm = strsplit(OutDir, split = "/")[[1]];dirnm = dirnm[length(dirnm)]
-													log_it(kollapse ('![]', '(' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to a png file to use locally
-	} else { 	log_it(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))} 					# link to png 4 local use
+													llogit(kollapse ('![]', '(' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to a png file to use locally
+	} else { 	llogit(kollapse ('![', fn, ']', '(', fname_wo_ext,'.png)',  print=F))} 					# link to png 4 local use
 }
 
 # "Unused version:"
 # MarkDown_Img_Logger_4GitHub <-  function(fname_wo_ext) { # insert 2 links, one for PDF, one for PNG version of the same image (png files are needed for web or email sharing!!!)
 # 	splt = strsplit(fname_wo_ext,"/"); fn = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-# 	log_it(kollapse ('![', fn, ']', '(Reports/',fn ,'.png)',  print=F))
+# 	llogit(kollapse ('![', fn, ']', '(Reports/',fn ,'.png)',  print=F))
 # }
 
 # "Unused version:"
@@ -114,10 +114,10 @@ MarkDown_Img_Logger_PDF_and_PNG <-  function (fname_wo_ext) {
 # 	print("Link to both pdf and png versions are created in the .md logfile.")
 # 	trunk = strsplit(FullPathtoPDF, "\\.pdf")[[1]]
 # 	splt = strsplit(trunk,"/"); fname_wo_ext = splt[[1]][l(splt[[1]])] # Split and select the trailing file name
-# 	log_it(kollapse ('![]', '(', trunk,'.pdf)',  print=F))
+# 	llogit(kollapse ('![]', '(', trunk,'.pdf)',  print=F))
 # 	if (exists("png4Github") & png4Github ==T ) { 	dirnm = strsplit(OutDir, split = "/")[[1]]; dirnm = dirnm[length(dirnm)]
-# 													log_it(kollapse ('![]', '(Reports/' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to a png file that needs to be uploaded to GitHub-wiki under Reports/Folder-of-the-report/
-# 	} else { 	log_it(kollapse ('![', fname_wo_ext, ']', '(', trunk,'.png)',  print=F))} 	# link to png 4 local use
+# 													llogit(kollapse ('![]', '(Reports/' ,dirnm,'/', fname_wo_ext,'.png)',  print=F))	# link to a png file that needs to be uploaded to GitHub-wiki under Reports/Folder-of-the-report/
+# 	} else { 	llogit(kollapse ('![', fname_wo_ext, ']', '(', trunk,'.png)',  print=F))} 	# link to png 4 local use
 # }
 
 ## Write out pretty tables to your markdown file ------------------------------------------------------------------------------------------------------------
