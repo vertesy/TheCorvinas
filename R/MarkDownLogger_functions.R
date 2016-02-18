@@ -257,26 +257,30 @@ whist <-  function(variable, col ="gold1", w=7, h=7, plotname = substitute(varia
 
 wbarplot <-  function(variable, ..., col ="gold1", sub = F, plotname = substitute(variable), main =substitute(variable),
 					  w=7, h=7, incrBottMarginBy = 0, mdlink =F,
-					  hline=F, vline=F, filtercol=1,lty =1, lwd =2, lcol =2) {
-	# in ... you can pass on ANY plotting parameter exc SUB, MAIN!!!!
+					  hline=F, vline=F, filtercol=1,lty =1, lwd =2, lcol =2,
+					  errorbar = F, upper = 0, lower=upper, width=0.1, arrow_lwd =1 ) {
 	fname = kollapse (plotname, '.barplot')
 	.ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) 	# Tune the margin
 	cexNsize = .8/abs (log10 (length(variable)) ); cexNsize = min (cexNsize, 1)
+
 	if (sub==T) { 		subtitle = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) )
 	} else if (sub==F) { subtitle="" } else { subtitle=sub }
-	if (hline) {
-		if (filtercol == 1) { 			col = (variable>=hline)+2 }
-		else if (filtercol == -1) { 	col = (variable <hline)+2 }
-	}
+
+	if (hline & filtercol == 1 ) { col = (variable>=hline)+2 } # change color, if horizontal threshold is defined. (vertical threshold makes only sense in a histogram)
+	if (hline & filtercol == -1) { col = (variable <hline)+2 }
+
 	x= barplot (variable, ..., main=main, sub = subtitle, col=col, las=2, cex.names = cexNsize	) # xaxt="n",
-	# text(cex=cexNsize, x=x-.25, y=min(variable)-0.15, labels = names(variable), xpd=TRUE, srt=45)
+	# text(cex=cexNsize, x=x-.25, y=-1, labels = names(variable), xpd=TRUE, srt=45) # 45 degree labels
 	if (hline) { abline (h = hline, lty =lty, lwd = lwd, col = lcol) }
 	if (vline) { abline (v = vline, lty =lty, lwd = lwd, col = lcol) }
+	if ( errorbar) {  	arrows(x, variable+upper, x, y-lower, angle=90, code=3, length=width, lwd = arrow_lwd, ...) }
+
 	dev.copy2pdf (file= FnP_parser (fname, 'pdf'), width=w, height=h)
 	par("mar" = .ParMarDefault)
 	assign ("plotnameLastPlot", fname, envir = .GlobalEnv)
 	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
 }
+
 
 wboxplot <-  function(variable, ...,  col ="gold1", plotname = as.character (substitute(variable)), sub=FALSE,
 					  incrBottMarginBy = 0, w=7, h=7, mdlink =F) {

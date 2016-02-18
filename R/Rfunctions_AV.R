@@ -473,7 +473,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) {
 
 # Plotting and Graphics -----------------------------------------------------------------------------------------------------
 
-# HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
+HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- colorRampPalette(c("blue", "white", "red"), bias=1)
 # HeatMapCol_RedBlackGreen <- colorRampPalette(c("red", "black", "green"), bias=1)
 
@@ -498,9 +498,8 @@ val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){
 
 error.bar <- function(x, y, upper, lower=upper, length=0.1,...){
 	stopifnot (length(x) == length(y) & length(y) ==length(lower) & length(lower) == length(upper))
-	if (l(dim(y)) > 1 ) { # if a matrix
-				arrows(as.vector(x),as.vector(y+upper), as.vector(x), as.vector(y-lower), angle=90, code=3, length=length, ...)
-	} else if (l(dim(y)) == 1) { 	arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...) }
+	if (l(dim(y)) > 1 ) { 	arrows(as.vector(x),as.vector(y+upper), as.vector(x), as.vector(y-lower), angle=90, code=3, length=length, ...)   # if a matrix
+	} else { 				arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)	}
 }
 
 barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_bottom =.1 ,...){
