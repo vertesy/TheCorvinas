@@ -3,7 +3,8 @@
 # Based on: http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/
 ######################################################################################################
 # source("/Users/abelvertesy/TheCorvinas/R/R_Packages/Create_a_package.R")
-rm(list=ls(all = TRUE)); try(dev.off())
+rm(list=ls(all = TRUE));
+try(dev.off())
 
 # Functions ------------------------
 try (source ('/Users/abelvertesy/TheCorvinas/R/Rfunctions_AV.R'),silent= F)
@@ -63,11 +64,13 @@ require("Roxerator")
 help("descriptor_roxy")
 
 # Test if you can install from github ------------------------------------------------
-devtools::install_github("klutometis/roxygen")
+devtools::install_github(username ="vertesy" ,repo = "TheCorvinas", subdir = "R/R_Packages/Roxerator")
+require("Roxerator")
 
 # Clean up your playground ------------------------------------------------
 # installed.packages()
 # remove.packages("PackageX")
+# remove.packages("Roxerator")
 
 
 # DESCRIPTION <- list("Title" = "Markdown reports with easy figure generation ",
