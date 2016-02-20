@@ -26,7 +26,7 @@ sortbyitsnames  <-  function(vec) {vec[order(names(vec) )]}
 stopif  <-  function(condition, message ="") { if(condition) {any_print (message); stop()} }
 
 ### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/TheCorvinas/R/MarkDownLogger_functions.R")
+source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
 
 ### File handling [read & write] -------------------------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ Color_Check <- function (...) {
 
 
 Clipboard_Copy <- function (x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) {
-	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names)
+	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
 
 Clipboard_Paste <- function ( sep="\t", header=F) {
@@ -180,7 +180,7 @@ inline_list_char <- function(char_list) {
 
 # Math $ stats -------------------------------------------------------------------------------------------------
 
-which_names <- function (named_Vec) {return(names(which(named_Vec)))}
+which_names <- function (named_Vec) {return(names(which(as.logical.wNames(named_Vec))))}
 
 as.named.vector <- function (df_col, WhichDimNames = 1) {
 	# use RowNames: WhichDimNames = 1 , 2: use ColNames
@@ -864,6 +864,12 @@ as.list.df.by.col <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) {
 	return(outList)
 }
 
+list.wNames <- function(...){ # create a list with names from teh
+	l = list(...)
+	names(l) = as.character(match.call()[-1])
+	return(l)
+}
+
 # -----------------------------------------------------------------------------------------------------
 
 pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date()))
@@ -879,3 +885,5 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 	duplicates <- big.vec[duplicated(big.vec)]
 	lapply(ls, function (x) setdiff (x, duplicates))
 }
+
+
