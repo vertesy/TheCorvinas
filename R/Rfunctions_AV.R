@@ -54,19 +54,19 @@ Color_Check <- function (...) {
 }
 
 
-Clipboard_Copy <- function (x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) {
+toClipboard <- function (x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) {
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
 
-Clipboard_Paste <- function ( sep="\t", header=F) {
+fromClipboard <- function ( sep="\t", header=F) {
 	return (read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))
 }
 
-Clipboard_Paste_vec <- function ( sep="\t", header=F) {
+fromClipboard_as_vec <- function ( sep="\t", header=F) {
 	return (as.vector(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
-Clipboard_Paste_num_vec <- function ( sep="\t", header=F) {
+fromClipboard_as_num_vec <- function ( sep="\t", header=F) {
 	return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
