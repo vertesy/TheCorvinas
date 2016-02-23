@@ -1,7 +1,7 @@
 ######################################################################
 # A collection of custom R functions
 ######################################################################
-# source ('/Users/abelvertesy/TheCorvinas/R/Rfunctions_AV.R')
+# source ('/Users/abelvertesy/TheCorvinas/R/CodeAndRoll.R')
 ## If something is not found:
 # source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
 # source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
