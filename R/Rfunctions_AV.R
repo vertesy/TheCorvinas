@@ -5,6 +5,9 @@
 
 ######################################################################
 # source ('/Users/abelvertesy/TheCorvinas/R/Rfunctions_AV.R')
+# If something is not found:
+# source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
+# source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
 
 # CHAPTERS:
 ### quick help / interpretatio
@@ -15,6 +18,8 @@
 ### Plotting and Graphics
 ### RNA-seq specific
 
+
+
 # Setup   -------------------------------------------------------------------------------------------------
 debuggingState(on=FALSE)
 
@@ -22,24 +27,13 @@ debuggingState(on=FALSE)
 source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
 
 # quick help / interpretatio  -------------------------------------------------------------------------------------------------
-
-help.cast <-  function() any_print( 'acast (long_data, rows ~ columns, colum-of-observations, filter_column/subset)')
 l=length
 
-sortbyitsnames  <-  function(vec) {vec[order(names(vec) )]}
+sortbyitsnames  <-  function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
 
-stopif  <-  function(condition, message ="") { if(condition) {any_print (message); stop()} }
+stopif  <-  function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
 
-### File handling [read & write] -------------------------------------------------------------------------------------------------
-
-# old <- `[`
-'If the rownames are retained, the subselected column and row remains the original type of the object, eg df. hist () does not take df-s for instance'
-# `[` <- function(...) { old(..., drop=FALSE) }
-'Convenience in the original [ function, objects are simplified df[,col] -> vector.'
-# `[` <- old
-
-
-attach_w_rownames <- function (df_w_dimnames) {
+attach_w_rownames <- function (df_w_dimnames) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
 	if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
 		namez= rownames(df_w_dimnames)
 		any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
@@ -50,126 +44,30 @@ attach_w_rownames <- function (df_w_dimnames) {
 	} else { print ("ERROR: the DF does not have some of the dimnames!")}
 }
 
-Color_Check <- function (...) {
+Color_Check <- function (...) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
 	Numbers  = c(...)
 	barplot (rep(10,length(Numbers)), col =Numbers, xlab = paste (Numbers, collapse="") )
 }
 
+## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
-toClipboard <- function (x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) {
+#### Clipboard interaction -------------------------------------------------------------------------------------------------
+toClipboard <- function (x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) { # Copy an R-object to your clipboard on OS X.
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
 
-fromClipboard <- function ( sep="\t", header=F) {
+fromClipboard <- function ( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to an R data frame on OS X.
 	return (read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))
 }
 
-fromClipboard_as_vec <- function ( sep="\t", header=F) {
+fromClipboard.as_vec <- function ( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to an R vector on OS X.
 	return (as.vector(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
-fromClipboard_as_num_vec <- function ( sep="\t", header=F) {
+fromClipboard.as_num_vec <- function ( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
 	return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
-
-FnP_parser <-  function(fname, ext_wo_dot) {
-	# parses Filename & Path for output file
-	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-	if (hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
-	} else { 					FnP = kollapse (path,"/", fname) }
-}
-
-read.simple.vec <-  function(...) {
-	pfn = kollapse (...) # merge path and filename
-	read_in = as.vector(unlist(read.table( pfn ,stringsAsFactors=F )) )
-	any_print(length (read_in), "elements")
-	return(read_in);
-}
-
-read.simple <-  function(...) {
-	pfn = kollapse (...) # merge path and filename
-	read_in = unlist(read.table( pfn ,stringsAsFactors=F ) )
-	return(read_in)
-}
-
-read.simple2 <-  function(header=FALSE, ...) {
-	pfn = kollapse (...) # merge path and filename
-	read_in = unlist(read.table( pfn ,stringsAsFactors=FALSE, header=header ) )
-	return(read_in)
-}
-
-read.simple_char_list <-  function(...) {
-	pfn = kollapse (...) # merge path and filename
-	read_in = unlist(read.table( pfn ,stringsAsFactors=F ) )
-	any_print ("New variable head: ",what(read_in))
-	return(read_in)
-}
-
-read.simple.table <-  function(...,rownames=NULL, colnames=T) {
-	# default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1
-	pfn = kollapse (...) # merge path and filename
-	read_in = read.table( pfn ,stringsAsFactors=FALSE, sep="\t", row.names= rownames, header=colnames )
-	any_print ("New variable dim: ",dim(read_in))
-	return(read_in)
-}
-
-read.simple.tsv <-  function(...) {
-# for excel style data: rownames in col1, headers SHIFTED
-	pfn = kollapse (...)
-	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
-	# HEADER SHOULD start like \t colname1 \t ...
-	any_print ("New variable dim: ",dim(read_in))
-	return(read_in)
-}
-
-read.simple.tsv.named.vector <-  function(...) { # for excel style named vectors, names in col1, headers SHIFTED
-	pfn = kollapse (...)
-	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
-	# HEADER SHOULD start like \t colname1 \t ...
-	rn = row.names(read_in)
-	read_in =  as.vector(unlist(read_in));
-	names(read_in) = rn
-	any_print ("New vectors length is: ",length(read_in))
-	return(read_in)
-}
-
-write.simple  <- function(input_df, extension='tsv', ManualName ="", ...  ) {
-	# use: arg1 data, arg's... strings to be concatenated to yield the path and FILE NAME
-	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
-	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
-	any_print ("Length: ", length(input_df))
-} # fun
-
-write.simple.vec  <- function(input_vec, extension='vec', ManualName ="", ... ) {
-	# use: arg1 data, arg's... strings to be concatenated to yield the path and FILE NAME
-	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
-	write.table (input_vec, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE  )
-	any_print ("Length: ", length(input_vec))
-} # fun
-
-write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", ... ) {
-	# ROW & COL names, + blank 1st colname, fname is optional [var names is used instead]
-	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
-	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
-	any_print ("Dim: ", dim(input_df))
-} # fun
-
-# If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
-
-# write.simple.wRowNames = write.simple.tsv
-
-write.simple.append  <- function(input_df, extension='tsv', ManualName ="", ... ) {
-	# NO ROW names or else,  fname is optional [var names is used instead]
-	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
-	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
-	write.table (input_df, file = FnP, sep = "\t", row.names = F,col.names = F, quote=FALSE, append=T  )
-} # fun
-
-# InCodeDataFormat_num InCodeDataFormat_txt
 inline_vec.char <- function(char_vector) {	toClipboard(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
 inline_vec.num <- function(num_vector)  { toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
 inline_list_char <- function(char_list) {
@@ -184,7 +82,90 @@ inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easil
 inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to an R numeric vector, and copy back to the Clipboard.
 	toClipboard(print(paste("c( ", paste (fromClipboard_as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard") }
 
-# Math $ stats -------------------------------------------------------------------------------------------------
+
+#### Reading files in -------------------------------------------------------------------------------------------------
+FnP_parser <-  function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
+	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
+	if (hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
+	} else { 					FnP = kollapse (path,"/", fname) }
+}
+
+read.simple.vec <-  function(...) { # Read in a file containing a single column of values into a vector (read in new-line separated values).
+	pfn = kollapse (...) # merge path and filename
+	read_in = as.vector(unlist(read.table( pfn ,stringsAsFactors=F )) )
+	any_print(length (read_in), "elements")
+	return(read_in);
+}
+
+read.simple <-  function(...) { # Read in a file.
+	pfn = kollapse (...) # merge path and filename
+	read_in = unlist(read.table( pfn ,stringsAsFactors=F ) )
+	return(read_in)
+}
+
+read.simple_char_list <-  function(...) { # Read in a file.
+	pfn = kollapse (...) # merge path and filename
+	read_in = unlist(read.table( pfn ,stringsAsFactors=F ) )
+	any_print ("New variable head: ",what(read_in))
+	return(read_in)
+}
+
+read.simple.table <-  function(...,rownames=NULL, colnames=T) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
+	pfn = kollapse (...) # merge path and filename
+	read_in = read.table( pfn ,stringsAsFactors=FALSE, sep="\t", row.names= rownames, header=colnames )
+	any_print ("New variable dim: ",dim(read_in))
+	return(read_in)
+}
+
+read.simple.tsv <-  function(...) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+	pfn = kollapse (...)
+	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
+	any_print ("New variable dim: ",dim(read_in))
+	return(read_in)
+}
+
+read.simple.tsv.named.vector <-  function(...) { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+	pfn = kollapse (...)
+	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
+	rn = row.names(read_in)
+	read_in =  as.vector(unlist(read_in));
+	names(read_in) = rn
+	any_print ("New vectors length is: ",length(read_in))
+	return(read_in)
+}
+
+#### Writing files out -------------------------------------------------------------------------------------------------
+
+write.simple  <- function(input_df, extension='tsv', ManualName ="", ...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
+	any_print ("Length: ", length(input_df))
+} # fun
+
+write.simple.vec  <- function(input_vec, extension='vec', ManualName ="", ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
+	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	write.table (input_vec, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE  )
+	any_print ("Length: ", length(input_vec))
+} # fun
+
+write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", ... ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
+	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
+	any_print ("Dim: ", dim(input_df))
+} # fun
+
+# If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
+
+write.simple.append  <- function(input_df, extension='tsv', ManualName ="", ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
+	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	write.table (input_df, file = FnP, sep = "\t", row.names = F,col.names = F, quote=FALSE, append=T  )
+} # fun
+
+
+## Math $ stats -------------------------------------------------------------------------------------------------
 
 which_names <- function (named_Vec) {return(names(which(as.logical.wNames(named_Vec))))}
 
@@ -380,31 +361,11 @@ shannon.entropy <- function(p) {
 
 
 # Printing and Strings  -------------------------------------------------------------------------------------------------
-# kollapse <- function(...,print =T) {
-# 	if (print==T) {print (paste(c(...), sep="",collapse="")) }
-# 	paste(c(...), sep="",collapse="")
-# }
-
-# setup_logging file, path and modification date
-setup_logging <- function  (append=TRUE, ...) {
-	Log_PnF <- kollapse (...)
-	write (kollapse("                   Created: ",date() ), Log_PnF , append=append)
-	assign ("Log_PnF",Log_PnF, envir = .GlobalEnv)
-}
-
-# # setup_logging file, path and modification date
-# setup_logging2 <- function  (fname, append=T) {
-# 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-# 	Log_PnF <- kollapse (path,'/',fname,'.log')
-# 	write (kollapse("                   Modified: ",date() ), Log_PnF , append=append)
-# 	assign ("Log_PnF",Log_PnF, envir = .GlobalEnv)
-# }
-
-eval_parse_kollapse <- dyn_var_caller <- function( ... ){
+eval_parse_kollapse <- dyn_var_caller <- function( ... ){ # evaluate and parse
 	substitute(eval(parse(text=kollapse( ... , print=F))))
 }
 
-substrRight <- function(x, n){
+substrRight <- function(x, n){ # Take the right substring of a string
 	substr(x, nchar(x)-n+1, nchar(x))
 }
 
@@ -413,7 +374,7 @@ lm_equation_formatter <- function(lm) {
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
-na.omit.strip <- function (vec) {
+na.omit.strip <- function (vec) {  # Omit NA values from a vector and return a clean vector without any spam.
 	if (is.data.frame(vec)) {
 		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
 		vec = unlist(vec) }
@@ -422,7 +383,7 @@ na.omit.strip <- function (vec) {
 	return(clean)
 }
 
-inf.omit <- function (vec) {
+inf.omit <- function (vec) { # Omit infinite values from a vector.
 	if (is.data.frame(vec)) {
 		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
 		vec = unlist(vec) }
@@ -431,9 +392,7 @@ inf.omit <- function (vec) {
 	return(clean)
 }
 
-
-
-zero.omit <- function (vec) {
+zero.omit <- function (vec) { # Omit zero values from a vector.
 	v2= vec[vec!=0]
 	any_print("range: ", range(v2))
 	if ( !is.null(names(vec)) ) {names(v2) = names(vec)[vec!=0]}
@@ -442,12 +401,11 @@ zero.omit <- function (vec) {
 
 # Generic -------------------------------------------------------------------------------------------------
 
-most_frequent_elements <- function(thingy, topN=10) {
+most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
 	tail(sort(table(thingy, useNA = "ifany")), topN)
 }
 
-what <- function(x, printme=0) {
-	# it can print the first "printme" elements
+what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements
 	any_print (is (x),"; nr. of elements:", length (x))
 	if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
 	if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
@@ -455,7 +413,7 @@ what <- function(x, printme=0) {
 	head (x)
 }
 
-lookup <- function(needle, haystack, exact =TRUE, report = FALSE) {
+lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pattern matching for a set of values in another set of values. Returns a list with all kinds of results.
 	ls_out = as.list( c(ln_needle = length(needle), ln_haystack = length(haystack), ln_hits = "",  hit_poz = "", hits = "") )
 	Findings = numeric(0)
 	ln_needle = length(needle)
@@ -482,8 +440,10 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) {
 HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- colorRampPalette(c("blue", "white", "red"), bias=1)
 # HeatMapCol_RedBlackGreen <- colorRampPalette(c("red", "black", "green"), bias=1)
+HeatMapCol_RedBlackBlue <- colorRampPalette(c("red", "black", "green"), bias=1)
 
-val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){
+
+val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){ # Convert numeric values to a scaled color gradient. Source: https://stackoverflow.com/questions/8717669/heat-map-colors-corresponding-to-data-in-r
 	if(!missing(breaks)){
 		if(length(breaks) != (length(col)+1)){stop("must have one more break than colour")}
 	}
@@ -499,16 +459,15 @@ val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){
 	colorlevels <- col[((as.vector(z)-breaks[1])/(range(breaks)[2]-range(breaks)[1]))*(length(breaks)-1)+1] # assign colors to heights for each point
 	colorlevels
 }
-# https://stackoverflow.com/questions/8717669/heat-map-colors-corresponding-to-data-in-r
 
 
-error.bar <- function(x, y, upper, lower=upper, length=0.1,...){
+error.bar <- function(x, y, upper, lower=upper, length=0.1,...){ # Put error bars on top of your barplots. This functionality is now integrated into MarkdownReporter's wbarplot() function
 	stopifnot (length(x) == length(y) & length(y) ==length(lower) & length(lower) == length(upper))
 	if (l(dim(y)) > 1 ) { 	arrows(as.vector(x),as.vector(y+upper), as.vector(x), as.vector(y-lower), angle=90, code=3, length=length, ...)   # if a matrix
 	} else { 				arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)	}
 }
 
-barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_bottom =.1 ,...){
+barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_bottom =.1 ,...){ # Add extra labels to your barplots top or base.
 	stopifnot (length(x) == length(y))
 	if (bottom) { y = rep (relpos_bottom * max(y, na.rm=T), length(x))} # if put labels at the foot
 	if (l(dim(x)) > 1 ) { # if a matrix
@@ -516,67 +475,6 @@ barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_botto
 	} else if (l(dim(x)) == 1) { 	text( (x), (y), labels = (labels), ...) }
 }
 
-
-# plot to screen and save as .pdf
-wplot.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h=7 ) {
-	FnP = FnP_parser (plotname, 'plot.pdf')
-	plot (variable, ..., main=plotname)
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
-
-
-# plot with fitted line
-wplot2 <-  function(variable, extension =".pdf", plotname = substitute(variable), col=rgb(0,0,0,75,maxColorValue=100), w=7, h=7, pch='.') {
-	FnP = FnP_parser (plotname, 'plot.pdf')
-	regr=lm(variable[,2]~variable[,1])
-	subt=as.character(round(unlist(regr[1]), digits=2) )
-	plot (variable, col=col, main=plotname, sub=paste (subt, collapse="   "), pch = pch, cex=1)
-	abline(1,1, col=3, lty=1)
-	abline(regr, col =2)
-	suppressWarnings(rug(jitter(variable[,1]), side=1, col=rgb(100,100,100,50,maxColorValue=255)))
-	suppressWarnings(rug(jitter(variable[,2]), side=2, col=rgb(100,100,100,50,maxColorValue=255)))
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
-
-# plot with fitted line AND fixed axis
-wplot3_fixAx <-  function(variable, extension =".pdf", plotname = substitute(variable), col=rgb(0,0,0,75,maxColorValue=100), w=7, h=7, fixed_axes=numeric(0), pch='.') {
-	FnP = FnP_parser (plotname, 'plot.pdf')
-	regr=lm(variable[,2]~variable[,1])
-	subt=as.character(round(unlist(regr[1]), digits=2) )
-	if (length (fixed_axes))  {
-		plot (c(0,fixed_axes[1]), c(0,fixed_axes[2]), type="n", main=plotname,
-					sub=paste (subt, collapse="   "), xlab="REF depth", ylab="ALT depth")
-		points (variable, col=col, pch = pch, cex=1)
-	} else {
-		plot (variable, col=col, main=plotname, sub=paste (subt, collapse="   "), pch = pch, cex=1)
-	}
-	abline(1,1, col=3, lty=1)
-	abline(regr, col =2)
-	suppressWarnings(rug(jitter(variable[,1]), side=1, col=rgb(100,100,100,50,maxColorValue=255)))
-	suppressWarnings(rug(jitter(variable[,2]), side=2, col=rgb(100,100,100,50,maxColorValue=255)))
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
-
-
-# plot with fitted line AND fixed axis
-# Mat_DP[Filters_Nouvelle == 'ChildNotHet']
-wplot4_fixAx <-  function(variable, extension =".pdf", plotname = substitute(variable), col=rgb(0,0,0,75,maxColorValue=100), w=7, h=7, fixed_axes=numeric(0), pch='.') {
-	FnP = FnP_parser (plotname, 'plot.pdf')
-	regr=lm(variable[,2]~variable[,1])
-	subt=as.character(round(unlist(regr[1]), digits=2) )
-	if (length (fixed_axes))  {
-		plot (c(0,fixed_axes[1]), c(0,fixed_axes[2]), type="n", main=plotname,
-					sub=paste (subt, collapse="   "), xlab="PAT depth", ylab="MAT depth")
-		points (variable, col=col, pch = pch, cex=1)
-	} else {
-		plot (variable, col=col, main=plotname, sub=paste (subt, collapse="   "), pch = pch, cex=1)
-	}
-	abline(1,1, col=3, lty=1)
-	abline(regr, col =2)
-	suppressWarnings(rug(jitter(variable[,1]), side=1, col=rgb(100,100,100,50,maxColorValue=255)))
-	suppressWarnings(rug(jitter(variable[,2]), side=2, col=rgb(100,100,100,50,maxColorValue=255)))
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
 
 
 whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h=7) {
@@ -606,15 +504,7 @@ whist_dfCol <-  function(df, colName, col ="gold", ..., w=7, h=7) {
 }
 
 
-wbarplot.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h=7) {
-	# in ... you can pass on ANY plotting parameter!!!!
-	FnP = FnP_parser (plotname, 'barplot.pdf')
-	barplot (variable, ..., main=plotname, las=2)
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
-
-
-wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) {
+wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplot for a column of a dataframe
 	stopifnot(colName %in% colnames(df))
 	variable = unlist(df[,colName])
 	stopifnot(length (variable) >1 )
@@ -625,24 +515,6 @@ wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) {
 					 sub = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) ) )
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
-
-
-
-wimage <-  function(variable,  xlab ="", ylab ="", plotname = substitute(variable), ..., w=7, h=7, mdlink =F) {
-	fname = kollapse (plotname, '.heatmap')
-	dimMat= dim(variable)
-	image (x =1:dimMat[1], y =1:dimMat[2], z=variable,
-		   # col = HeatMapCol_BWR(10),
-		   col = HeatMapCol_RedBlackBlue(10),
-		   main=plotname, sub = kollapse ("Range of values: ", paste(signif(range(variable, na.rm=T),3), collapse = ", ") )
-		   , xlab=xlab, ylab=ylab , las=2
-		   , xaxp = c( range(1,dimMat[1] ), dimMat[1]-1)
-		   , yaxp = c( range(1,dimMat[2] ), dimMat[2]-1)
-	)
-	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
-	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
-}
-HeatMapCol_RedBlackBlue <- colorRampPalette(c("red", "black", "green"), bias=1)
 
 
 # Read and write plotting functions READ -------------------------------------
@@ -694,51 +566,18 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) {
 	dev.copy2pdf (file=kollapse(FnP,".barplot.pdf"), width=w, height=h )
 }
 
-# RNA-seq specific -----------------------------------------------------------------------------------------------------
+# For RNA-seq specific functions, call:
+# source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
-# Chop the chromosome ending!
-chop_chr_from_gene_name <- function  (name, splitcharacter = "__") { 	strsplit(name, splitcharacter)[[1]][1] }
-
-write.simple.append.vcf  <- function(input_df, extension='vcf', ManualName ="", ... ){
-	# use: arg1 data, arg's... strings to be concatenated to yield the path and FILE NAME
-	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
-	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE, append = T )
-} # fun
-
-fix_missing_entries <- function (complete_vec, partial_vec) {
-	# if there are some categories missing, by creating a table from a vector, you can add the missing categories
-	nr_cat = length (complete_vec)
-	fixed_vec=rep(NA, nr_cat); names (fixed_vec) = names (complete_vec)
-	for (n in names(complete_vec)) {
-			fixed_vec[n] = partial_vec[n]
-			partial_vec[n]
-			if ( is.na(partial_vec[n]) ) {fixed_vec[n] = 0 }
-	} # for
-	return (fixed_vec)
-}
-
-wbarplot_cellID <-  function(variable, col ="gold1", ...) {
-	# in ... you can pass on ANY plotting parameter exc SUB, MAIN!!!!
-	plotname = kollapse(substitute(variable),"-", trunk[i], print =F)
-	FnP = kollapse (OutDir,"/", plotname, "-", trunk[i], ".barplot.pdf", print=F)
-	cexNsize = 0.7/abs (log10 (length(variable)) ); cexNsize = min (cexNsize, 1)
-	barplot (variable, ..., main= plotname, col=col, las=2, cex.names = cexNsize,
-					 sub = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) ) )
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
 
 # -----------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------
-sort.mat <- function (df, colname_in_df = 1, decrease = F, na_last = T) {
-	# ALTERNATIVE: dd[with(dd, order(-z, b)), ]
-	# https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
+sort.mat <- function (df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
 	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
 }
 
-pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) {
-	## percentage of a certain value within a vec_or_table
+pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) { # Percentage of a certain value within a vector or table.
 	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
 	else { # if (is.vector(vec_or_table))
 		if (NA_omit){
@@ -749,8 +588,7 @@ pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) {
 	} # else: is vector
 } # fun
 
-table_fixed_categories  <- function (vector, categories_vec) {
-	# this function fills up the table with categories that might not occur in your vector, but are relevant.
+table_fixed_categories  <- function (vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
 	if ( !is.vector(vector)) {print (is(vector[]))}
 	table (factor(unlist(vector), levels = categories_vec))
 }
