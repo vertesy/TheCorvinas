@@ -123,8 +123,7 @@ read.simple.tsv <-  function(...) {
 	return(read_in)
 }
 
-read.simple.tsv.named.vector <-  function(...) {
-	# for excel style named vectors, names in col1, headers SHIFTED
+read.simple.tsv.named.vector <-  function(...) { # for excel style named vectors, names in col1, headers SHIFTED
 	pfn = kollapse (...)
 	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
 	# HEADER SHOULD start like \t colname1 \t ...
