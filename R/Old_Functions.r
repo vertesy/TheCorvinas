@@ -127,3 +127,52 @@ wimage <-  function(variable,  xlab ="", ylab ="", plotname = substitute(variabl
 	dev.copy2pdf (file=FnP_parser (fname, 'pdf'), width=w, height=h )
 	if (mdlink) { 	MarkDown_Img_Logger_PDF_and_PNG (fname_wo_ext = fname) }# put a markdown image link if the log file exists
 }
+
+simplify_categories <-   function(category_vec, replaceit , to ) { # Replace every instance of a value with another value provided
+	# could be extended to set of needles & set of replacements (with lenght check, 2>1 is also OK)
+	matches  = which(category_vec %in% replaceit); any_print(l(matches), "instances of", replaceit, "are replaced by", to)
+	category_vec[matches] =  to
+	return(category_vec)
+}
+
+
+as.numeric.convertString <- function (vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
+	numerified_vec = as.numeric(as.factor(vec))
+	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
+	return(numerified_vec)
+}
+
+# WO as.factor!
+as.numeric.wNames <- function (vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
+	numerified_vec = as.numeric((vec))
+	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
+	return(numerified_vec)
+}
+
+
+
+# df_col_to_vector_w_names <- function (OneColDF, WhichDimension ="col") {
+# 	if (WhichDimension == "col") {	n = rownames(OneColDF)} # get the rownames for that column of the DF
+# 	if (WhichDimension == "row") {	n = colnames(OneColDF)} # get colnames...
+# 	OneColDF = as.vector(unlist(OneColDF));	names(OneColDF) = n 				# add names
+# 	return (OneColDF)
+# 	assign (substitute(OneColDF), OneColDF, envir = .GlobalEnv)
+# }
+df_col_to_vector_w_names = as.named.vector
+
+stdError = sem
+
+
+shannon.entropy <- function(p) {
+	if (min(p) < 0 || sum(p) <= 0)
+		return(NA)
+	p.norm <- p[p>0]/sum(p)
+	-sum(log2(p.norm)*p.norm)
+}
+
+
+whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h=7) {
+	FnP = FnP_parser (plotname, 'hist.pdf')
+	hist (variable, ..., main=plotname)
+	dev.copy2pdf (file=FnP, width=w, height=h )
+}

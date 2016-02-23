@@ -31,3 +31,25 @@ wbarplot_cellID <-  function(variable, col ="gold1", ...) { # in ... you can pas
 					 sub = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) ) )
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
+
+
+
+# X-react project -----------------------------------------------------------------------------------------------------
+
+# For PNR plots
+calculate_MRR <- function (vector) {
+	# assume 0 = REF
+	return(percentage_formatter(sum(vector == 0)/sum(vector == 1)))
+}
+
+calculate_totBR <- function (vector) {
+	# assume 0 = REF
+	return(percentage_formatter(sum(vector > 0.02 & vector <0.98)/length(vector)))
+}
+
+ecdf_Abel <- function (distribution, test_values=F) {
+	DisLen = length(distribution)
+	PCtiles = numeric(DisLen)
+	for (i in 1:DisLen) { PCtiles[i] = sum(distribution < distribution[i]) / DisLen	}
+	return(PCtiles)
+}
