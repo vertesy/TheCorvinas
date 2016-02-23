@@ -1,13 +1,12 @@
 ######################################################################
-# Custom made functions for R
-# - in categories
-# - source it when processing the data
-
+# A collection of custom R functions
 ######################################################################
 # source ('/Users/abelvertesy/TheCorvinas/R/Rfunctions_AV.R')
-# If something is not found:
+## If something is not found:
 # source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
 # source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
+## For RNA-seq specific functions, call:
+# source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 # CHAPTERS:
 ### quick help / interpretatio
@@ -18,10 +17,9 @@
 ### Plotting and Graphics
 ### RNA-seq specific
 
-
-
 # Setup   -------------------------------------------------------------------------------------------------
 debuggingState(on=FALSE)
+# pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 
 ### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
 source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
@@ -155,7 +153,6 @@ write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", ... ) {
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
 	any_print ("Dim: ", dim(input_df))
 } # fun
-
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
 
 write.simple.append  <- function(input_df, extension='tsv', ManualName ="", ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
@@ -165,11 +162,9 @@ write.simple.append  <- function(input_df, extension='tsv', ManualName ="", ... 
 } # fun
 
 
-## Math $ stats -------------------------------------------------------------------------------------------------
+## Vector operations -------------------------------------------------------------------------------------------------
 
-which_names <- function (named_Vec) {return(names(which(as.logical.wNames(named_Vec))))}
-
-as.named.vector <- function (df_col, WhichDimNames = 1) {
+as.named.vector <- function (df_col, WhichDimNames = 1) { # Convert a dataframe column or row into a vector, keeping the corresponding dimension name.
 	# use RowNames: WhichDimNames = 1 , 2: use ColNames
 	# !!! might require drop=F in subsetting!!! eg: df_col[,3, drop=F]
 	namez = dimnames(df_col)[[WhichDimNames]]
@@ -179,130 +174,60 @@ as.named.vector <- function (df_col, WhichDimNames = 1) {
 	return (vecc)
 }
 
-as.numeric.convertString <- function (vec) {
+as.numeric.wNames <- function (vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
 	numerified_vec = as.numeric(as.factor(vec))
-	if (!is.null(names(cell_IDs))) {names (numerified_vec) = names (vec)}
-	return(numerified_vec)
-}
-
-as.numeric.wNames <- function (vec) {
-	numerified_vec = as.numeric(vec)
 	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
 	return(numerified_vec)
 }
 
-as.logical.wNames <- function (vec) {
+as.logical.wNames <- function (vec) { # Converts your input vector into a logical vector, and puts the original character values into the names of the new vector, unless it already has names.
 	numerified_vec = as.logical(vec)
 	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
 	return(numerified_vec)
 }
 
-as.character.wNames <- function (vec) {
+as.character.wNames <- function (vec) { # Converts your input vector into a character vector, and puts the original character values into the names of the new vector, unless it already has names.
 	char_vec = as.character(vec)
 	if (!is.null(names(vec))) {names (char_vec) = names (vec)}
 	return(char_vec)
 }
 
-# df_col_to_vector_w_names <- function (OneColDF, WhichDimension ="col") {
-# 	if (WhichDimension == "col") {	n = rownames(OneColDF)} # get the rownames for that column of the DF
-# 	if (WhichDimension == "row") {	n = colnames(OneColDF)} # get colnames...
-# 	OneColDF = as.vector(unlist(OneColDF));	names(OneColDF) = n 				# add names
-# 	return (OneColDF)
-# 	assign (substitute(OneColDF), OneColDF, envir = .GlobalEnv)
-# }
-df_col_to_vector_w_names = as.named.vector
+rescale <- function (vec, from=0, upto=100) { # linear transformation to a given range of values
+	vec = vec-min(vec, na.rm = T)
+	vec = vec*((upto-from)/max(vec, na.rm = T))
+	vec = vec+ from
+	return (vec)
+} # fun
+
+### Vector filtering  -------------------------------------------------------------------------------------------------
+
+which_names <- function (named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
+	return(names(which(as.logical.wNames(named_Vec)))) }
 
 
-idim  <- function (any_object) {
-	if (is.null(dim(any_object))) {print(l(any_object))}
-	else {	print(dim(any_object))	}
+na.omit.strip <- function (vec) {  # Omit NA values from a vector and return a clean vector without any spam.
+	if (is.data.frame(vec)) {
+		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
+		vec = unlist(vec) }
+	clean = na.omit(vec)
+	attributes(clean)$na.action <- NULL
+	return(clean)
 }
 
-
-idimnames  <- function (any_object) {
-	if (!is.null(dimnames(any_object))) 	{ print(dimnames(any_object)) }
-	else if (!is.null(colnames(any_object))) { any_print("colnames:", colnames(any_object))	}
-	else if (!is.null(rownames(any_object))) { any_print("rownames:", rownames(any_object))	}
-	else if (!is.null(names(any_object))) { any_print("names:", names(any_object))	}
+inf.omit <- function (vec) { # Omit infinite values from a vector.
+	if (is.data.frame(vec)) {
+		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
+		vec = unlist(vec) }
+	clean = vec[is.finite(vec)]
+	# attributes(clean)$na.action <- NULL
+	return(clean)
 }
 
-top_indices <- function(x, n = 3, top = T){
-	# for equal values, it maintains the original order
-	head( order(x, decreasing =top), n )
-}
-
-stdError <- function(x) sd(x)/sqrt(length(x))
-sem = stdError
-
-cv <- function(x) ( sd(x, na.rm=T)/mean(x, na.rm=T) ) # change this!
-
-fano <- function(x) ( var(x, na.rm=T)/mean(x, na.rm=T) )
-
-modus <- function(x) {
-	x= unlist(na.exclude(x))
-	ux <- unique(x)
-	tab <- tabulate(match(x, ux));
-	ux[tab == max(tab)]
-}
-
-gm_mean <- function(x, na.rm=TRUE){ 	exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
-
-# movingAve <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
-movingAve <- function(x, oneSide) { y = NULL
-	for (i in oneSide:l(x)) {
-		y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
-	}; 	return (y)
-}
-
-movingSEM <- function(x, oneSide) { y = NULL
-	for (i in oneSide:l(x)) {
-		y[i] = stdError( x[ (i-oneSide):(i+oneSide) ] )
-	}; 	return (y)
-}
-
-imovingSEM <- function(x, oneSide = 5) { y = NULL
-for (i in 1:l(x)) {
-	oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
-	# any_print(i, " : ", oneSideDynamic)
-	indexx = (i-oneSideDynamic):(i+oneSideDynamic);indexx
-	y[i] = stdError( x[ indexx ] )
-}; 	return (y)
-}
-
-remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) {
-  qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
-  H <- 1.5 * IQR(x, na.rm = na.rm)
-  y <- x
-  y[x < (qnt[1] - H)] <- NA
-  y[x > (qnt[2] + H)] <- NA
-  y
-}
-
-colSort <- function(data, ...) sapply(data, sort, ...)
-
-colMedians <- function(mat,na.rm=TRUE) return(apply(mat,2,median, na.rm=na.rm))
-rowMedians <- function(mat,na.rm=TRUE) return(apply(mat,1,median, na.rm=na.rm))
-
-colCV <- function(mat) return(apply(mat,2,cv ) )
-
-rowMin <- function(x) {
-	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")	# Construct a call pmin(x[,1],x[,2],...x[,NCOL(x)])
-	code = paste("pmin(",code,")"); 	return(eval(parse(text=code)))
-}
-
-rowMax <- function(x) {
-	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")
-	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
-}
-
-colMin <- function(x) {
-	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
-	code = paste("pmin(",code,")");	return(eval(parse(text=code)))
-}
-
-colMax <- function(x) {
-	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
-	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
+zero.omit <- function (vec) { # Omit zero values from a vector.
+	v2= vec[vec!=0]
+	any_print("range: ", range(v2))
+	if ( !is.null(names(vec)) ) {names(v2) = names(vec)[vec!=0]}
+	return(v2)
 }
 
 pc_TRUE <- function (logical_vector, percentify =T) {
@@ -311,12 +236,15 @@ pc_TRUE <- function (logical_vector, percentify =T) {
 	return(out)
 	}
 
-rescale <- function (vec, from=0, upto=100) {
-	# linear transformation to a given range of values
-	vec = vec-min(vec, na.rm = T)
-	vec = vec*((upto-from)/max(vec, na.rm = T))
-	vec = vec+ from
-	return (vec)
+pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) { # Percentage of a certain value within a vector or table.
+	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
+	else { # if (is.vector(vec_or_table))
+		if (NA_omit){
+			if (sum(is.na(vec_or_table))) { vec_or_table = na.omit(vec_or_table); any_print (sum(is.na(vec_or_table)), 'NA are omitted from the vec_or_table of:',length(vec_or_table))}
+			"Not wokring complelety : if NaN is stored as string, it does not detect it"
+			}
+		sum (vec_or_table==category) /  length (vec_or_table)
+	} # else: is vector
 } # fun
 
 filter_survival_length <- function (length_new, length_old, prepend ="") {
@@ -351,66 +279,184 @@ filter_MidPass <- function (vector, HP_threshold, LP_threshold, prepend ="", sur
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
 
-
-shannon.entropy <- function(p) {
-	if (min(p) < 0 || sum(p) <= 0)
-		return(NA)
-	p.norm <- p[p>0]/sum(p)
-	-sum(log2(p.norm)*p.norm)
+remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) {
+  qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y
 }
 
+simplify_categories <-   function(category_vec, replaceit , to ) { # Replace every entry that is found in "replaceit", by a single value provided by "to"
+	matches  = which(category_vec %in% replaceit); any_print(l(matches), "instances of", replaceit, "are replaced by", to)
+	category_vec[matches] =  to
+	return(category_vec)
+}
 
-# Printing and Strings  -------------------------------------------------------------------------------------------------
+## Matrix operations -------------------------------------------------------------------------------------------------
+
+colSort <- function(data, ...) sapply(data, sort, ...)
+
+colMedians <- function(mat,na.rm=TRUE) return(apply(mat,2,median, na.rm=na.rm))
+rowMedians <- function(mat,na.rm=TRUE) return(apply(mat,1,median, na.rm=na.rm))
+colCV <- function(mat) return(apply(mat,2,cv ) )
+
+rowMin <- function(x) {
+	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")	# Construct a call pmin(x[,1],x[,2],...x[,NCOL(x)])
+	code = paste("pmin(",code,")"); 	return(eval(parse(text=code)))
+}
+
+rowMax <- function(x) {
+	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")
+	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
+}
+
+colMin <- function(x) {
+	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
+	code = paste("pmin(",code,")");	return(eval(parse(text=code)))
+}
+
+colMax <- function(x) {
+	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
+	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
+}
+
+sort.mat <- function (df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
+	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
+	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
+}
+
+rowNameMatrix <- function (mat_w_dimnames) {  # Create a copy of your matrix, where every entry is replaced by the corresponding row name. Useful if you want to color by row name in a plot (where you have different number of NA-values in each row).
+	matrix(rep(rownames(mat_w_dimnames), ncol(mat_w_dimnames) ),nrow = nrow(mat_w_dimnames),ncol = ncol(mat_w_dimnames))
+}
+
+colNameMatrix <- function (mat_w_dimnames) { # Create a copy of your matrix, where every entry is replaced by the corresponding column name. Useful if you want to color by column name in a plot (where you have different number of NA-values in each column).
+	x = rep(colnames(mat_w_dimnames), nrow(mat_w_dimnames) )
+	t(matrix(x, nrow = ncol(mat_w_dimnames), ncol = nrow(mat_w_dimnames)))
+}
+
+matrix_from_vector  <- function (vector, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
+	matt = matrix(ccc,nrow = l(ccc),ncol = HowManyTimes)
+	if ( !IsItARow ) {matt = t(matt)}
+	return(matt)
+}
+
+## List operations -------------------------------------------------------------------------------------------------
+list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
+	l = list(...)
+	names(l) = as.character(match.call()[-1])
+	return(l)
+}
+
+as.list.df.by.row <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) { # Split a dataframe into a list by its columns. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
+	outList = as.list(as.data.frame(t( dtf ) ) )
+	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
+	if (zero.omit){ 	outList =  lapply(outList, zero.omit) }
+	if (omit.empty) { 	outList = outList[(lapply(outList, length))>0] }
+	print(str(outList,vec.len = 2))
+	return(outList)
+}
+
+as.list.df.by.col <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) { # oSplit a dataframe into a list by its rows. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
+	outList = as.list(dtf )
+	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
+	if (zero.omit){		outList =  lapply(outList, zero.omit)	}
+	if (omit.empty) { 	outList = outList[(lapply(outList, length))>0] }
+	print(str(outList,vec.len = 2))
+	return(outList)
+}
+
+reorder.list <- function (L, namesOrdered) { # reorder elements of lists in your custom order of names / indices.
+	Lout = list(NA)
+	for (x in 1:length(namesOrdered)) { Lout[[x]] = L[[namesOrdered[x] ]]  }
+	if(length(names(L))) { names(Lout) = namesOrdered }
+	return (Lout)
+}
+
+range.list <- function (L, namesOrdered) { # range of values in whole list
+	return(range(unlist(L), na.rm=T))
+}
+
+intermingle2lists  <- function (L1, L2) { # Combine 2 lists (of the same lenght) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
+	stopifnot(length(L1) == length(L2) )
+	Lout = list(NA)
+	for (x in 1:(2*length(L1)) ) {
+		print (x)
+		if (x  %% 2) {	Lout[[x]] = L1[[((x+1)/2)]]; names(Lout)[x] = names(L1)[((x+1)/2)]
+		} else { 		Lout[[x]] = L2[[(x)/2]]; names(Lout)[x] = names(L2)[(x)/2]			}
+	} # for
+	return(Lout)
+}
+
+as.listalike <-   function(vec, list_wannabe) { # convert a vector to a list with certain dimensions, taken from the list it wanna resemble
+	stopifnot(length(vec) == length(unlist(list_wannabe)))
+	list_return = list_wannabe
+	past =0
+	for (v in 1:length (list_wannabe)) {
+		lv = length (list_wannabe[[v]])
+		list_return[[v]] = vec[(past+1):(past+lv)]
+		past = past+lv
+	} # for
+	return(list_return)
+}
+
+## Set operations -------------------------------------------------------------------------------------------------
+
+symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
+	big.vec <- c(x, y, ...)
+	ls = list(x, y, ...); if ( l(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
+	names(ls) = paste ("Only in", as.character(match.call()[-1]))
+	duplicates <- big.vec[duplicated(big.vec)]
+	lapply(ls, function (x) setdiff (x, duplicates))
+}
+
+## Math $ stats -------------------------------------------------------------------------------------------------
+
+sem <- function(x) sd(x)/sqrt(length(x))
+
+cv <- function(x) ( sd(x, na.rm=T)/mean(x, na.rm=T) ) # change this!
+
+fano <- function(x) ( var(x, na.rm=T)/mean(x, na.rm=T) )
+
+modus <- function(x) {
+	x= unlist(na.exclude(x))
+	ux <- unique(x)
+	tab <- tabulate(match(x, ux));
+	ux[tab == max(tab)]
+}
+
+gm_mean <- function(x, na.rm=TRUE){ 	exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
+
+# movingAve <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
+movingAve <- function(x, oneSide) { y = NULL
+	for (i in oneSide:l(x)) {
+		y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
+	}; 	return (y)
+}
+
+movingSEM <- function(x, oneSide) { y = NULL
+	for (i in oneSide:l(x)) {
+		y[i] = sem( x[ (i-oneSide):(i+oneSide) ] )
+	}; 	return (y)
+}
+
+imovingSEM <- function(x, oneSide = 5) { y = NULL
+for (i in 1:l(x)) {
+	oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
+	# any_print(i, " : ", oneSideDynamic)
+	indexx = (i-oneSideDynamic):(i+oneSideDynamic);indexx
+	y[i] = sem( x[ indexx ] )
+}; 	return (y)
+}
+
+## String operations  -------------------------------------------------------------------------------------------------
 eval_parse_kollapse <- dyn_var_caller <- function( ... ){ # evaluate and parse
 	substitute(eval(parse(text=kollapse( ... , print=F))))
 }
 
 substrRight <- function(x, n){ # Take the right substring of a string
 	substr(x, nchar(x)-n+1, nchar(x))
-}
-
-lm_equation_formatter <- function(lm) {
-	eq = (lm$coefficients);
-	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
-}
-
-na.omit.strip <- function (vec) {  # Omit NA values from a vector and return a clean vector without any spam.
-	if (is.data.frame(vec)) {
-		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
-		vec = unlist(vec) }
-	clean = na.omit(vec)
-	attributes(clean)$na.action <- NULL
-	return(clean)
-}
-
-inf.omit <- function (vec) { # Omit infinite values from a vector.
-	if (is.data.frame(vec)) {
-		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
-		vec = unlist(vec) }
-	clean = vec[is.finite(vec)]
-	# attributes(clean)$na.action <- NULL
-	return(clean)
-}
-
-zero.omit <- function (vec) { # Omit zero values from a vector.
-	v2= vec[vec!=0]
-	any_print("range: ", range(v2))
-	if ( !is.null(names(vec)) ) {names(v2) = names(vec)[vec!=0]}
-	return(v2)
-}
-
-# Generic -------------------------------------------------------------------------------------------------
-
-most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
-	tail(sort(table(thingy, useNA = "ifany")), topN)
-}
-
-what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements
-	any_print (is (x),"; nr. of elements:", length (x))
-	if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
-	if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
-	if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
-	head (x)
 }
 
 lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pattern matching for a set of values in another set of values. Returns a list with all kinds of results.
@@ -435,13 +481,12 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 	return (ls_out)
 } # lookup fun # lookup (needle, haystack); needle = c('a', 'd', 'c', 'v') ; haystack = c('as', 'ff', 'c', 'v', 'x')
 
-# Plotting and Graphics -----------------------------------------------------------------------------------------------------
+
+## Plotting and Graphics -----------------------------------------------------------------------------------------------------
 
 HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- colorRampPalette(c("blue", "white", "red"), bias=1)
 # HeatMapCol_RedBlackGreen <- colorRampPalette(c("red", "black", "green"), bias=1)
-HeatMapCol_RedBlackBlue <- colorRampPalette(c("red", "black", "green"), bias=1)
-
 
 val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){ # Convert numeric values to a scaled color gradient. Source: https://stackoverflow.com/questions/8717669/heat-map-colors-corresponding-to-data-in-r
 	if(!missing(breaks)){
@@ -475,17 +520,13 @@ barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_botto
 	} else if (l(dim(x)) == 1) { 	text( (x), (y), labels = (labels), ...) }
 }
 
-
-
-whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h=7) {
-	FnP = FnP_parser (plotname, 'hist.pdf')
-	hist (variable, ..., main=plotname)
-	dev.copy2pdf (file=FnP, width=w, height=h )
+lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
+	eq = (lm$coefficients);
+	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
-
 whist_dfCol <-  function(df, colName, col ="gold", ..., w=7, h=7) {
-	# name the file  by naming the variable! Cannot be used with dynamically called variables [e.g. call vectors within a loop]
+	# You can name the file  by naming the variable! Cannot be used with dynamically called variables [e.g. call vectors within a loop]
 	stopifnot(colName %in% colnames(df))
 	variable = unlist(df[,colName])
 	stopifnot(length (variable) >1 )
@@ -516,8 +557,7 @@ wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplo
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
 
-
-# Read and write plotting functions READ -------------------------------------
+## Read and write plotting functions READ -------------------------------------
 # rw-funcitons cannot call the w-functions, there would be too much things lost: rw writes where the file comes from, w writes in Outdir & current dir
 
 rwplot <- function(FnP, ..., w=7, h=7) {
@@ -566,168 +606,48 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) {
 	dev.copy2pdf (file=kollapse(FnP,".barplot.pdf"), width=w, height=h )
 }
 
-# For RNA-seq specific functions, call:
-# source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
+## Generic -------------------------------------------------------------------------------------------------
 
-
-# -----------------------------------------------------------------------------------------------------
-# -----------------------------------------------------------------------------------------------------
-sort.mat <- function (df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
-	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
-	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
+most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
+	tail(sort(table(thingy, useNA = "ifany")), topN)
 }
 
-pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) { # Percentage of a certain value within a vector or table.
-	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
-	else { # if (is.vector(vec_or_table))
-		if (NA_omit){
-			if (sum(is.na(vec_or_table))) { vec_or_table = na.omit(vec_or_table); any_print (sum(is.na(vec_or_table)), 'NA are omitted from the vec_or_table of:',length(vec_or_table))}
-			"Not wokring complelety : if NaN is stored as string, it does not detect it"
-			}
-		sum (vec_or_table==category) /  length (vec_or_table)
-	} # else: is vector
-} # fun
+what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements
+	any_print (is (x),"; nr. of elements:", length (x))
+	if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
+	if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
+	if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
+	head (x)
+}
+
+idim  <- function (any_object) { # A dim() function that can handle if you pass on a vector: then, it gives the length.
+	if (is.null(dim(any_object))) {print(length(any_object))}
+	else {	print(dim(any_object))	}
+}
+
+idimnames  <- function (any_object) { # A dimnames() function that can handle if you pass on a vector: it gives back the names.
+	if (!is.null(dimnames(any_object))) 	{ print(dimnames(any_object)) }
+	else if (!is.null(colnames(any_object))) { any_print("colnames:", colnames(any_object))	}
+	else if (!is.null(rownames(any_object))) { any_print("rownames:", rownames(any_object))	}
+	else if (!is.null(names(any_object))) { any_print("names:", names(any_object))	}
+}
 
 table_fixed_categories  <- function (vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
 	if ( !is.vector(vector)) {print (is(vector[]))}
 	table (factor(unlist(vector), levels = categories_vec))
 }
 
-# X-react project -----------------------------------------------------------------------------------------------------
-
-# For PNR plots
-calculate_MRR <- function (vector) {
-	# assume 0 = REF
-	return(percentage_formatter(sum(vector == 0)/sum(vector == 1)))
-}
-
-calculate_totBR <- function (vector) {
-	# assume 0 = REF
-	return(percentage_formatter(sum(vector > 0.02 & vector <0.98)/length(vector)))
-}
-
-ecdf_Abel <- function (distribution, test_values=F) {
-	DisLen = length(distribution)
-	PCtiles = numeric(DisLen)
-	for (i in 1:DisLen) {
-		PCtiles[i] = sum(distribution < distribution[i]) / DisLen
-	}
-# 	hist(PCtiles, breaks=20)
-# 	hist(distribution, breaks=20)
-return(PCtiles)
-}
-
-
-vector_to_matrix_fillup  <- function (vector, HowManyTimes=3, IsItARow = T) {
-	matt = matrix(ccc,nrow = l(ccc),ncol = HowManyTimes)
-	if ( !IsItARow ) {matt = t(matt)}
-	return(matt)
-}
-matrix_from_vector = vector_to_matrix_fillup
-
-
-rowNameMatrix <- function (mat_w_dimnames) {
-	matrix(rep(rownames(mat_w_dimnames), ncol(mat_w_dimnames) ),nrow = nrow(mat_w_dimnames),ncol = ncol(mat_w_dimnames))
-}
-
-colNameMatrix <- function (mat_w_dimnames) {
-	x = rep(colnames(mat_w_dimnames), nrow(mat_w_dimnames) )
-	t(matrix(x, nrow = ncol(mat_w_dimnames), ncol = nrow(mat_w_dimnames)))
-}
-
-simplify_categories <-   function(category_vec, replaceit , to ) {
-	matches  = which(category_vec %in% replaceit); any_print(l(matches), "instances of", replaceit, "are replaced by", to)
-	category_vec[matches] =  to
-	return(category_vec)
-}
-
-percentile2value  <-  function(vector, percentile = 0.95, FirstValOverPercentile =T) {
-	index = percentile * l(vector)
+percentile2value  <-  function(distribution, percentile = 0.95, FirstValOverPercentile =T) { # Calculate what is the actual value of the n-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
+	index = percentile * l(distribution)
 	if (FirstValOverPercentile){ index = ceiling(index)
 	} else {index = floor(index) }
-	value = sort(vector)[index]
+	value = sort(distribution)[index]
 	return (value)
 }
 
-
-
-# LIST FUNCTIONS ------------------------------------------------------------------------------------------------------------------------------------
-as.listalike <-   function(vec, list_wannabe) {
-	# convert a vector to a list with certain dimensions, taken from the list it wanna resemble
-	stopifnot(length(vec) == length(unlist(list_wannabe)))
-	list_return = list_wannabe
-	past =0
-	for (v in 1:length (list_wannabe)) {
-		lv = length (list_wannabe[[v]])
-		list_return[[v]] = vec[(past+1):(past+lv)]
-		past = past+lv
-	} # for
-	list_return
-
-}
-
-reorder.list <- function (L, namesOrdered) {
-	Lout = list(NA)
-	for (x in 1:length(namesOrdered)) { Lout[[x]] = L[[namesOrdered[x] ]]  }
-	if(length(names(L))) { names(Lout) = namesOrdered }
-	return (Lout)
-}
-
-range.list <- function (L, namesOrdered) {
-	return(range(unlist(L), na.rm=T))
-}
-
-intermingle2lists  <- function (L1, L2) {
-	stopifnot(length(L1) == length(L2) )
-	Lout = list(NA)
-	for (x in 1:(2*length(L1)) ) {
-		print (x)
-		if (x  %% 2) {	Lout[[x]] = L1[[((x+1)/2)]]; names(Lout)[x] = names(L1)[((x+1)/2)]
-		} else { 		Lout[[x]] = L2[[(x)/2]]; names(Lout)[x] = names(L2)[(x)/2]			}
-	} # for
-	return(Lout)
-}
-
-as.list.df.by.row <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) {
-	# omit.empty for the listelments; na.omit and zero.omit are applied on elements inside each list elements
-	outList = as.list(as.data.frame(t( dtf ) ) )
-	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
-	if (zero.omit){ 	outList =  lapply(outList, zero.omit) }
-	if (omit.empty) { 	outList = outList[(lapply(outList, length))>0] }
-	print(str(outList,vec.len = 2))
-	return(outList)
-}
-
-as.list.df.by.col <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) {
-	# omit.empty for the listelments; na.omit and zero.omit are applied on elements inside each list elements
-	outList = as.list(dtf )
-	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
-	if (zero.omit){		outList =  lapply(outList, zero.omit)	}
-	if (omit.empty) { 	outList = outList[(lapply(outList, length))>0] }
-	print(str(outList,vec.len = 2))
-	return(outList)
-}
-
-list.wNames <- function(...){ # create a list with names from teh
-	l = list(...)
-	names(l) = as.character(match.call()[-1])
-	return(l)
+top_indices <- function(x, n = 3, top = T){ # Returns the position / index of the n highest values. For equal values, it maintains the original order
+	head( order(x, decreasing =top), n )
 }
 
 # -----------------------------------------------------------------------------------------------------
-
-pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date()))
-# old <- `[`
-# `[` <- function(...) { old(..., drop=FALSE) }
-
-
-
-symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
-	big.vec <- c(x, y, ...)
-	ls = list(x, y, ...); if ( l(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
-	names(ls) = paste ("Only in", as.character(match.call()[-1]))
-	duplicates <- big.vec[duplicated(big.vec)]
-	lapply(ls, function (x) setdiff (x, duplicates))
-}
-
-
+## New additions -----------------------------------------------------------------------------------------------------
