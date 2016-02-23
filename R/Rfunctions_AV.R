@@ -5,7 +5,6 @@
 
 ######################################################################
 # source ('/Users/abelvertesy/TheCorvinas/R/Rfunctions_AV.R')
-# cp .Rfunctions_Base.09.R /Users/abelvertesy/Dropbox_at_open/Dropbox/X_reactivation/scripts/Abel/Rfunctions_Base.10.R
 
 # CHAPTERS:
 ### quick help / interpretatio
@@ -16,6 +15,12 @@
 ### Plotting and Graphics
 ### RNA-seq specific
 
+# Setup   -------------------------------------------------------------------------------------------------
+debuggingState(on=FALSE)
+
+### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
+source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
+
 # quick help / interpretatio  -------------------------------------------------------------------------------------------------
 
 help.cast <-  function() any_print( 'acast (long_data, rows ~ columns, colum-of-observations, filter_column/subset)')
@@ -24,9 +29,6 @@ l=length
 sortbyitsnames  <-  function(vec) {vec[order(names(vec) )]}
 
 stopif  <-  function(condition, message ="") { if(condition) {any_print (message); stop()} }
-
-### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
 
 ### File handling [read & write] -------------------------------------------------------------------------------------------------
 
@@ -169,14 +171,19 @@ write.simple.append  <- function(input_df, extension='tsv', ManualName ="", ... 
 } # fun
 
 # InCodeDataFormat_num InCodeDataFormat_txt
-inline_vec_char <- function(char_vector) {	Clipboard_Copy(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
-inline_vec_num <- function(num_vector)  { Clipboard_Copy(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
+inline_vec.char <- function(char_vector) {	toClipboard(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
+inline_vec.num <- function(num_vector)  { toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
 inline_list_char <- function(char_list) {
 	print ("list(", quote = F)
 	for (l in 1: length(list)) {
 		print(paste("c( '", paste (char_list[[l]], collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)
 	};	print (")", quote = F)
 }
+
+inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to an R character vector, and copy back to the Clipboard.
+	toClipboard(print(paste("c( '", paste (fromClipboard_as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard") }
+inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to an R numeric vector, and copy back to the Clipboard.
+	toClipboard(print(paste("c( ", paste (fromClipboard_as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard") }
 
 # Math $ stats -------------------------------------------------------------------------------------------------
 
@@ -671,7 +678,7 @@ rwboxplot <- function(FnP, col ="gold1", ..., w=7, h=7) {
 rwhist <- function(FnP, col ="gold1", ..., w=7, h=7) {
 	# print ('file without header, and file path between ""')
 	variable=read.simple (FnP);
-	fname=gsub (".*/", "",FnP);  plotname = gsub ("\\..*", "",fname)
+	fname=gsub (".*/", "",FnP); trunk = gsub ("\\..*", "",fname)
 	if ( length (variable) > 0 ) {
 		if ( !is.numeric(variable)) { variable = table (variable) ; wbarplot (variable); print ("FILENAME IS: VARIABLE.BARPLOT.PDF") }
 		else { 	hist (variable, ..., plotname=trunk, col =col, las=2)
