@@ -4,7 +4,7 @@
 # source ('/Users/abelvertesy/TheCorvinas/R/CodeAndRoll.R')
 ## If something is not found:
 # source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
-# source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
+# source("/Users/abelvertesy/MarkdownReports/MarkDownLogg.R")
 ## For RNA-seq specific functions, call:
 # source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
@@ -22,7 +22,7 @@ debuggingState(on=FALSE)
 # pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 
 ### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
+source("/Users/abelvertesy/MarkdownReports/MarkDownLogg.R")
 
 # quick help / interpretatio  -------------------------------------------------------------------------------------------------
 l=length
@@ -54,11 +54,11 @@ toClipboard <- function(x, sep="\t", header=FALSE, row.names=FALSE, col.names =F
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
 
-fromClipboard <- function( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to an R data frame on OS X.
+fromClipboard <- function( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to a code-snipplet defining an R data frame on OS X.
 	return (read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))
 }
 
-fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to an R vector on OS X.
+fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to a code-snipplet defining an R vector on OS X.
 	return (as.vector(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
@@ -66,20 +66,28 @@ fromClipboard.as_num_vec <- function( sep="\t", header=F) { # Paste a list of st
 	return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
-inline_vec.char <- function(char_vector) {	toClipboard(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
-inline_vec.num <- function(num_vector)  { toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard") }
-inline_list_char <- function(char_list) {
+inline_vec.char <- function(char_vector) {	# Paste data into your code easily. Take a character vector, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
+	toClipboard(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
+}
+
+inline_vec.num <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
+	toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
+}
+
+inline_list_char <- function(char_list) {	# Paste data into your code easily. Take a list of character vectors, parse it to a code-snipplet defining an R list, and copy back to the Clipboard.
 	print ("list(", quote = F)
 	for (l in 1: length(list)) {
 		print(paste("c( '", paste (char_list[[l]], collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)
 	};	print (")", quote = F)
 }
 
-inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to an R character vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( '", paste (fromClipboard_as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard") }
-inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to an R numeric vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( ", paste (fromClipboard_as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard") }
+inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
+	toClipboard(print(paste("c( '", paste (fromClipboard_as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard")
+}
 
+inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to a code-snipplet defining an R numeric vector, and copy back to the Clipboard.
+	toClipboard(print(paste("c( ", paste (fromClipboard_as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard")
+}
 
 #### Reading files in -------------------------------------------------------------------------------------------------
 FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
@@ -235,7 +243,7 @@ zero.omit <- function(vec) { # Omit zero values from a vector.
 	return(v2)
 }
 
-pc_TRUE <- function(logical_vector, percentify =T) {
+pc_TRUE <- function(logical_vector, percentify =T) { # Percentage of true values in a logical vector, parsed as text (useful for reports.)
 	out = sum(logical_vector, na.rm=T) / length(logical_vector)
 	if (percentify) {out = percentage_formatter (out) }
 	return(out)
@@ -252,12 +260,12 @@ pc_in_total_of_match <- function(vec_or_table, category, NA_omit=T) { # Percenta
 	} # else: is vector
 } # fun
 
-filter_survival_length <- function(length_new, length_old, prepend ="") {
+filter_survival_length <- function(length_new, length_old, prepend ="") { # Parse a sentence reporting the % of filter survival.
 	pc = percentage_formatter(length_new/length_old)
 	llprint (prepend, pc, " of ",length_old," entries make through the filter")
 }
 
-filter_HP <- function(vector, threshold, prepend ="", survival=F) {
+filter_HP <- function(vector, threshold, prepend ="", survival=F) { # Filter values that fall between above high-pass-threshold (X >).
 	survivors = vector>threshold
 	pc = percentage_formatter(sum(survivors)/length(survivors))
 	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold)
@@ -265,7 +273,7 @@ filter_HP <- function(vector, threshold, prepend ="", survival=F) {
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
 
-filter_LP <- function(vector, threshold, prepend ="", survival=F) {
+filter_LP <- function(vector, threshold, prepend ="", survival=F) { # Filter values that fall below the low-pass threshold (X <).
 	survivors = vector<threshold
 	pc = percentage_formatter(sum(survivors)/length(survivors))
 	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold )
@@ -273,8 +281,7 @@ filter_LP <- function(vector, threshold, prepend ="", survival=F) {
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
 
-filter_MidPass <- function(vector, HP_threshold, LP_threshold, prepend ="", survival=FALSE, EdgePass = F) {
-	# LP <= x < HP
+filter_MidPass <- function(vector, HP_threshold, LP_threshold, prepend ="", survival=FALSE, EdgePass = F) { # Filter values that fall above high-pass-threshold !(X >=)! and below the low-pass threshold (X <).
 	survivors = ( vector >= HP_threshold & vector < LP_threshold); keyword = "between"; relation = " <= x < "
 	if (EdgePass) {survivors = ( vector <= HP_threshold | vector > LP_threshold); keyword = "outside"; relation = " >= x OR x > " }
 	pc = percentage_formatter(sum(survivors)/length(survivors))
@@ -284,13 +291,13 @@ filter_MidPass <- function(vector, HP_threshold, LP_threshold, prepend ="", surv
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
 
-remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) {
-  qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
-  H <- 1.5 * IQR(x, na.rm = na.rm)
-  y <- x
-  y[x < (qnt[1] - H)] <- NA
-  y[x > (qnt[2] + H)] <- NA
-  y
+remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remove values that fall outside the trailing N % of the distribution.
+	qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
+	H <- 1.5 * IQR(x, na.rm = na.rm)
+	y <- x
+	y[x < (qnt[1] - H)] <- NA
+	y[x > (qnt[2] + H)] <- NA
+	y
 }
 
 simplify_categories <-  function(category_vec, replaceit , to ) { # Replace every entry that is found in "replaceit", by a single value provided by "to"
@@ -300,29 +307,34 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 }
 
 ## Matrix operations -------------------------------------------------------------------------------------------------
+colSort <- function(data, ...) { # Sort each column of a numeric matrix / data frame.
+	sapply(data, sort, ...) }
 
-colSort <- function(data, ...) sapply(data, sort, ...)
+colMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each column of a numeric matrix / data frame.
+	return(apply(mat,2,median, na.rm=na.rm)) }
 
-colMedians <- function(mat,na.rm=TRUE) return(apply(mat,2,median, na.rm=na.rm))
-rowMedians <- function(mat,na.rm=TRUE) return(apply(mat,1,median, na.rm=na.rm))
-colCV <- function(mat) return(apply(mat,2,cv ) )
+rowMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each row of a numeric matrix / data frame.
+	return(apply(mat,1,median, na.rm=na.rm)) }
 
-rowMin <- function(x) {
+colCV <- function(mat) { # Calculates the CV of each column of a numeric matrix / data frame.
+	return(apply(mat,2,cv ) ) }
+
+rowMin <- function(x) { # Calculates the minimum of each row of a numeric matrix / data frame.
 	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")	# Construct a call pmin(x[,1],x[,2],...x[,NCOL(x)])
 	code = paste("pmin(",code,")"); 	return(eval(parse(text=code)))
 }
 
-rowMax <- function(x) {
+rowMax <- function(x) { # Calculates the maximum of each row of a numeric matrix / data frame.
 	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")
 	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
 }
 
-colMin <- function(x) {
+colMin <- function(x) { # Calculates the minimum of each column of a numeric matrix / data frame.
 	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
 	code = paste("pmin(",code,")");	return(eval(parse(text=code)))
 }
 
-colMax <- function(x) {
+colMax <- function(x) { # Calculates the maximum of each column of a numeric matrix / data frame.
 	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
 	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
 }
@@ -418,36 +430,40 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 
 ## Math $ stats -------------------------------------------------------------------------------------------------
 
-sem <- function(x) sd(x)/sqrt(length(x))
+sem <- function(x) {  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s)
+	sd(x)/sqrt(length(x))}
 
-cv <- function(x) ( sd(x, na.rm=T)/mean(x, na.rm=T) ) # change this!
+cv <- function(x) { # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s)
+	sd( x, na.rm=T)/mean(x, na.rm=T) }
 
-fano <- function(x) ( var(x, na.rm=T)/mean(x, na.rm=T) )
+fano <- function(x) { # Calculates the fano factor on a numeric vector (it excludes NA-s)
+	var(x, na.rm=T)/mean(x, na.rm=T) }
 
-modus <- function(x) {
+modus <- function(x) { # Calculates the modus of a numeric vector (it excludes NA-s)
 	x= unlist(na.exclude(x))
 	ux <- unique(x)
 	tab <- tabulate(match(x, ux));
 	ux[tab == max(tab)]
 }
 
-gm_mean <- function(x, na.rm=TRUE){ 	exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
+gm_mean <- function(x, na.rm=TRUE){ # Calculates the geometric mean of a numeric vector (it excludes NA-s)
+	exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
 
-movingAve <- function(x, oneSide) { # Moving / rolling average.
+movingAve <- function(x, oneSide) { # Calculates the moving / rolling average of a numeric vector.
 	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
-movingSEM <- function(x, oneSide) {
+movingSEM <- function(x, oneSide) { # Calculates the moving / rolling standard deviation of the mean (SEM) on a numeric vector.
 	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = sem( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
-imovingSEM <- function(x, oneSide = 5) {
+imovingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard deviation of the mean (SEM). It calculates it to the edge of the vector with incrementally smaller window-size.
 	y = NULL
 	for (i in 1:l(x)) {
 		oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
@@ -485,7 +501,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 		if (length(Findings)) { llprint( substitute(needle),"findings: ",paste ( haystack[Findings], sep= " " ) ) }
 	} else { any_print(length(Findings), "Hits:", haystack[Findings]) } # if (report)
 	return (ls_out)
-} # lookup fun # lookup (needle, haystack); needle = c('a', 'd', 'c', 'v') ; haystack = c('as', 'ff', 'c', 'v', 'x')
+}
 
 
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
@@ -511,7 +527,6 @@ val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){ # Convert numeri
 	colorlevels
 }
 
-
 error.bar <- function(x, y, upper, lower=upper, length=0.1,...){ # Put error bars on top of your barplots. This functionality is now integrated into MarkdownReporter's wbarplot() function
 	stopifnot (length(x) == length(y) & length(y) ==length(lower) & length(lower) == length(upper))
 	if (l(dim(y)) > 1 ) { 	arrows(as.vector(x),as.vector(y+upper), as.vector(x), as.vector(y-lower), angle=90, code=3, length=length, ...)   # if a matrix
@@ -531,8 +546,7 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
-whist_dfCol <- function(df, colName, col ="gold", ..., w=7, h=7) {
-	# You can name the file  by naming the variable! Cannot be used with dynamically called variables [e.g. call vectors within a loop]
+whist_dfCol <- function(df, colName, col ="gold", ..., w=7, h=7) { 	# Use this version of whist() if you iterate over columns  or rows of a data frame. You can name the file by naming the variable. Cannot be used with dynamically called variables [e.g. call vectors within a loop]
 	stopifnot(colName %in% colnames(df))
 	variable = unlist(df[,colName])
 	stopifnot(length (variable) >1 )
@@ -545,11 +559,10 @@ whist_dfCol <- function(df, colName, col ="gold", ..., w=7, h=7) {
 	} else {
 		zz=hist (variable, ..., plot=F)
 		hist (variable, ..., main=plotname, col=col, las=2,
-					sub = paste ("mean:", iround(mean(zz$counts)),  "median:", iround(median(zz$counts)) ) )
+				sub = paste ("mean:", iround(mean(zz$counts)),  "median:", iround(median(zz$counts)) ) )
 	} # if is.numeric
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
-
 
 wbarplot_dfCol <- function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplot for a column of a dataframe
 	stopifnot(colName %in% colnames(df))
@@ -566,7 +579,7 @@ wbarplot_dfCol <- function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplot
 ## Read and write plotting functions READ -------------------------------------
 # rw-funcitons cannot call the w-functions, there would be too much things lost: rw writes where the file comes from, w writes in Outdir & current dir
 
-rwplot <- function(FnP, ..., w=7, h=7) {
+rwplot <- function(FnP, ..., w=7, h=7) { # read in a table, plot it and save it.
 	print ('file without header, and file path between ""')
 	variable=read.simple  (FnP);
 	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
@@ -574,7 +587,7 @@ rwplot <- function(FnP, ..., w=7, h=7) {
 	dev.copy2pdf (file=kollapse(FnP,".plot.pdf"), width=w, height=h )
 }
 
-rwscatterplot <- function(FnP, ..., w=7, h=7) {
+rwscatterplot <- function(FnP, ..., w=7, h=7) { # read in a table, plot it as scatter plot and save it.
 	print ('file without header, and file path between ""')
 	variable=read.simple.table  (FnP);
 	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
@@ -584,7 +597,7 @@ rwscatterplot <- function(FnP, ..., w=7, h=7) {
 	dev.copy2pdf (file=kollapse(FnP,".scatter.pdf"), width=w, height=h )
 }
 
-rwboxplot <- function(FnP, col ="gold1", ..., w=7, h=7) {
+rwboxplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a table, plot it and save it.
 	print ('inputfile is a dataframe, with header')
 	variable=read.simple.table (FnP);
 	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
@@ -592,8 +605,8 @@ rwboxplot <- function(FnP, col ="gold1", ..., w=7, h=7) {
 	dev.copy2pdf (file=kollapse(FnP,".boxplot.pdf"), width=w, height=h )
 }
 
-rwhist <- function(FnP, col ="gold1", ..., w=7, h=7) {
-	# print ('file without header, and file path between ""')
+rwhist <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a table, plot it and save it. File should be without header, and file path should be given between ""-s.
+	print ('file without header, and file path between ""')
 	variable=read.simple (FnP);
 	fname=gsub (".*/", "",FnP); trunk = gsub ("\\..*", "",fname)
 	if ( length (variable) > 0 ) {
@@ -604,7 +617,7 @@ rwhist <- function(FnP, col ="gold1", ..., w=7, h=7) {
 	} # if non empty
 }
 
-rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) {
+rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, plot it and save it. File should be without header, and file path should be given between ""-s.
 	print ('file without header, and file path between ""')
 	variable=read.simple (FnP);
 	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
