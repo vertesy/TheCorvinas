@@ -27,11 +27,11 @@ source("/Users/abelvertesy/MarkDownLogs/MarkDownLogg.R")
 # quick help / interpretatio  -------------------------------------------------------------------------------------------------
 l=length
 
-sortbyitsnames  <-  function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
+sortbyitsnames <- function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
 
-stopif  <-  function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
+stopif <- function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
 
-attach_w_rownames <- function (df_w_dimnames) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
+attach_w_rownames <- function(df_w_dimnames) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
 	if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
 		namez= rownames(df_w_dimnames)
 		any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
@@ -42,7 +42,7 @@ attach_w_rownames <- function (df_w_dimnames) { # Take a data frame (of e.g. met
 	} else { print ("ERROR: the DF does not have some of the dimnames!")}
 }
 
-Color_Check <- function (...) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+Color_Check <- function(...) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
 	Numbers  = c(...)
 	barplot (rep(10,length(Numbers)), col =Numbers, xlab = paste (Numbers, collapse="") )
 }
@@ -50,19 +50,19 @@ Color_Check <- function (...) { # Display the colors encoded by the numbers / co
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
 #### Clipboard interaction -------------------------------------------------------------------------------------------------
-toClipboard <- function (x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) { # Copy an R-object to your clipboard on OS X.
+toClipboard <- function(x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) { # Copy an R-object to your clipboard on OS X.
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
 
-fromClipboard <- function ( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to an R data frame on OS X.
+fromClipboard <- function( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to an R data frame on OS X.
 	return (read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))
 }
 
-fromClipboard.as_vec <- function ( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to an R vector on OS X.
+fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to an R vector on OS X.
 	return (as.vector(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
-fromClipboard.as_num_vec <- function ( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
+fromClipboard.as_num_vec <- function( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
 	return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
@@ -82,49 +82,49 @@ inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily
 
 
 #### Reading files in -------------------------------------------------------------------------------------------------
-FnP_parser <-  function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
+FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
 	if (hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
 	} else { 					FnP = kollapse (path,"/", fname) }
 }
 
-read.simple.vec <-  function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
+read.simple.vec <- function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
 	pfn = kollapse (...) # merge path and filename
-	read_in = as.vector(unlist(read.table( pfn ,stringsAsFactors=F, sep = "\n" )) )
+	read_in = as.vector(unlist(read.table( pfn , stringsAsFactors=F, sep = "\n" )) )
 	any_print(length (read_in), "elements")
 	return(read_in);
 }
 
-read.simple <-  function(...) { # It is essentially read.table() with file/path parsing.
+read.simple <- function(...) { # It is essentially read.table() with file/path parsing.
 	pfn = kollapse (...) # merge path and filename
-	read_in = read.table( pfn ,stringsAsFactors=F)
+	read_in = read.table( pfn , stringsAsFactors=F)
 	return(read_in)
 }
 
-read.simple_char_list <-  function(...) { # Read in a file.
+read.simple_char_list <- function(...) { # Read in a file.
 	pfn = kollapse (...) # merge path and filename
-	read_in = unlist(read.table( pfn ,stringsAsFactors=F ) )
+	read_in = unlist(read.table( pfn , stringsAsFactors=F ) )
 	any_print ("New variable head: ",what(read_in))
 	return(read_in)
 }
 
-read.simple.table <-  function(...,rownames=NULL, colnames=T) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
+read.simple.table <- function(..., rownames="NULL", colnames=T ) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
-	read_in = read.table( pfn ,stringsAsFactors=FALSE, sep="\t", row.names= rownames, header=colnames )
+	read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", row.names= rownames, header=colnames )
+	any_print ("New variable dim: ", dim(read_in))
+	return(read_in)
+}
+
+read.simple.tsv <- function(...) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+	pfn = kollapse (...) # merge path and filename
+	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
 	any_print ("New variable dim: ",dim(read_in))
 	return(read_in)
 }
 
-read.simple.tsv <-  function(...) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
-	pfn = kollapse (...)
-	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
-	any_print ("New variable dim: ",dim(read_in))
-	return(read_in)
-}
-
-read.simple.tsv.named.vector <-  function(...) { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
-	pfn = kollapse (...)
-	read_in = read.delim( pfn ,stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
+read.simple.tsv.named.vector <- function(...) { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+	pfn = kollapse (...) # merge path and filename
+	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
 	rn = row.names(read_in)
 	read_in =  as.vector(unlist(read_in));
 	names(read_in) = rn
@@ -134,14 +134,14 @@ read.simple.tsv.named.vector <-  function(...) { # Read in a file with excel sty
 
 #### Writing files out -------------------------------------------------------------------------------------------------
 
-write.simple  <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
 	any_print ("Length: ", length(input_df))
 } # fun
 
-write.simple.vec  <- function(input_vec, extension='vec', ManualName ="", o = F, ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.vec <- function(input_vec, extension='vec', ManualName ="", o = F, ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_vec, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE  )
@@ -149,7 +149,7 @@ write.simple.vec  <- function(input_vec, extension='vec', ManualName ="", o = F,
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 
-write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
@@ -158,7 +158,7 @@ write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", o = F, 
 } # fun
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
 
-write.simple.append  <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F,col.names = F, quote=FALSE, append=T  )
@@ -168,9 +168,10 @@ write.simple.append  <- function(input_df, extension='tsv', ManualName ="", o = 
 
 ## Vector operations -------------------------------------------------------------------------------------------------
 
-as.named.vector <- function (df_col, WhichDimNames = 1) { # Convert a dataframe column or row into a vector, keeping the corresponding dimension name.
+as.named.vector <- function(df_col, WhichDimNames = 1) { # Convert a dataframe column or row into a vector, keeping the corresponding dimension name.
 	# use RowNames: WhichDimNames = 1 , 2: use ColNames
 	# !!! might require drop=F in subsetting!!! eg: df_col[,3, drop=F]
+	# df_col[which(unlist(lapply(df_col, is.null)))] = "NULL" # replace NULLs - they would fall out of vectors - DOES not work yet
 	namez = dimnames(df_col)[[WhichDimNames]]
 	if (is.list(df_col) & !is.data.frame(df_col)) {namez = names(df_col)}
 	vecc = as.vector(unlist (df_col))
@@ -178,25 +179,25 @@ as.named.vector <- function (df_col, WhichDimNames = 1) { # Convert a dataframe 
 	return (vecc)
 }
 
-as.numeric.wNames <- function (vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
+as.numeric.wNames <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
 	numerified_vec = as.numeric(as.factor(vec))
 	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
 	return(numerified_vec)
 }
 
-as.logical.wNames <- function (vec) { # Converts your input vector into a logical vector, and puts the original character values into the names of the new vector, unless it already has names.
+as.logical.wNames <- function(vec) { # Converts your input vector into a logical vector, and puts the original character values into the names of the new vector, unless it already has names.
 	numerified_vec = as.logical(vec)
 	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
 	return(numerified_vec)
 }
 
-as.character.wNames <- function (vec) { # Converts your input vector into a character vector, and puts the original character values into the names of the new vector, unless it already has names.
+as.character.wNames <- function(vec) { # Converts your input vector into a character vector, and puts the original character values into the names of the new vector, unless it already has names.
 	char_vec = as.character(vec)
 	if (!is.null(names(vec))) {names (char_vec) = names (vec)}
 	return(char_vec)
 }
 
-rescale <- function (vec, from=0, upto=100) { # linear transformation to a given range of values
+rescale <- function(vec, from=0, upto=100) { # linear transformation to a given range of values
 	vec = vec-min(vec, na.rm = T)
 	vec = vec*((upto-from)/max(vec, na.rm = T))
 	vec = vec+ from
@@ -205,11 +206,11 @@ rescale <- function (vec, from=0, upto=100) { # linear transformation to a given
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
-which_names <- function (named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
+which_names <- function(named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
 	return(names(which(as.logical.wNames(named_Vec)))) }
 
 
-na.omit.strip <- function (vec) {  # Omit NA values from a vector and return a clean vector without any spam.
+na.omit.strip <- function(vec) {  # Omit NA values from a vector and return a clean vector without any spam.
 	if (is.data.frame(vec)) {
 		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
 		vec = unlist(vec) }
@@ -218,7 +219,7 @@ na.omit.strip <- function (vec) {  # Omit NA values from a vector and return a c
 	return(clean)
 }
 
-inf.omit <- function (vec) { # Omit infinite values from a vector.
+inf.omit <- function(vec) { # Omit infinite values from a vector.
 	if (is.data.frame(vec)) {
 		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
 		vec = unlist(vec) }
@@ -227,20 +228,20 @@ inf.omit <- function (vec) { # Omit infinite values from a vector.
 	return(clean)
 }
 
-zero.omit <- function (vec) { # Omit zero values from a vector.
+zero.omit <- function(vec) { # Omit zero values from a vector.
 	v2= vec[vec!=0]
 	any_print("range: ", range(v2))
 	if ( !is.null(names(vec)) ) {names(v2) = names(vec)[vec!=0]}
 	return(v2)
 }
 
-pc_TRUE <- function (logical_vector, percentify =T) {
+pc_TRUE <- function(logical_vector, percentify =T) {
 	out = sum(logical_vector, na.rm=T) / length(logical_vector)
 	if (percentify) {out = percentage_formatter (out) }
 	return(out)
 	}
 
-pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) { # Percentage of a certain value within a vector or table.
+pc_in_total_of_match <- function(vec_or_table, category, NA_omit=T) { # Percentage of a certain value within a vector or table.
 	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
 	else { # if (is.vector(vec_or_table))
 		if (NA_omit){
@@ -251,12 +252,12 @@ pc_in_total_of_match <- function (vec_or_table, category, NA_omit=T) { # Percent
 	} # else: is vector
 } # fun
 
-filter_survival_length <- function (length_new, length_old, prepend ="") {
+filter_survival_length <- function(length_new, length_old, prepend ="") {
 	pc = percentage_formatter(length_new/length_old)
 	llprint (prepend, pc, " of ",length_old," entries make through the filter")
 }
 
-filter_HP <- function (vector, threshold, prepend ="", survival=F) {
+filter_HP <- function(vector, threshold, prepend ="", survival=F) {
 	survivors = vector>threshold
 	pc = percentage_formatter(sum(survivors)/length(survivors))
 	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold)
@@ -264,7 +265,7 @@ filter_HP <- function (vector, threshold, prepend ="", survival=F) {
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
 
-filter_LP <- function (vector, threshold, prepend ="", survival=F) {
+filter_LP <- function(vector, threshold, prepend ="", survival=F) {
 	survivors = vector<threshold
 	pc = percentage_formatter(sum(survivors)/length(survivors))
 	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold )
@@ -272,7 +273,7 @@ filter_LP <- function (vector, threshold, prepend ="", survival=F) {
 	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
 }
 
-filter_MidPass <- function (vector, HP_threshold, LP_threshold, prepend ="", survival=FALSE, EdgePass = F) {
+filter_MidPass <- function(vector, HP_threshold, LP_threshold, prepend ="", survival=FALSE, EdgePass = F) {
 	# LP <= x < HP
 	survivors = ( vector >= HP_threshold & vector < LP_threshold); keyword = "between"; relation = " <= x < "
 	if (EdgePass) {survivors = ( vector <= HP_threshold | vector > LP_threshold); keyword = "outside"; relation = " >= x OR x > " }
@@ -292,7 +293,7 @@ remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) {
   y
 }
 
-simplify_categories <-   function(category_vec, replaceit , to ) { # Replace every entry that is found in "replaceit", by a single value provided by "to"
+simplify_categories <-  function(category_vec, replaceit , to ) { # Replace every entry that is found in "replaceit", by a single value provided by "to"
 	matches  = which(category_vec %in% replaceit); any_print(l(matches), "instances of", replaceit, "are replaced by", to)
 	category_vec[matches] =  to
 	return(category_vec)
@@ -326,21 +327,21 @@ colMax <- function(x) {
 	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
 }
 
-sort.mat <- function (df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
+sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
 	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
 }
 
-rowNameMatrix <- function (mat_w_dimnames) {  # Create a copy of your matrix, where every entry is replaced by the corresponding row name. Useful if you want to color by row name in a plot (where you have different number of NA-values in each row).
+rowNameMatrix <- function(mat_w_dimnames) {  # Create a copy of your matrix, where every entry is replaced by the corresponding row name. Useful if you want to color by row name in a plot (where you have different number of NA-values in each row).
 	matrix(rep(rownames(mat_w_dimnames), ncol(mat_w_dimnames) ),nrow = nrow(mat_w_dimnames),ncol = ncol(mat_w_dimnames))
 }
 
-colNameMatrix <- function (mat_w_dimnames) { # Create a copy of your matrix, where every entry is replaced by the corresponding column name. Useful if you want to color by column name in a plot (where you have different number of NA-values in each column).
+colNameMatrix <- function(mat_w_dimnames) { # Create a copy of your matrix, where every entry is replaced by the corresponding column name. Useful if you want to color by column name in a plot (where you have different number of NA-values in each column).
 	x = rep(colnames(mat_w_dimnames), nrow(mat_w_dimnames) )
 	t(matrix(x, nrow = ncol(mat_w_dimnames), ncol = nrow(mat_w_dimnames)))
 }
 
-matrix_from_vector  <- function (vector, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
+matrix_from_vector <- function(vector, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
 	matt = matrix(ccc,nrow = l(ccc),ncol = HowManyTimes)
 	if ( !IsItARow ) {matt = t(matt)}
 	return(matt)
@@ -353,7 +354,7 @@ list.wNames <- function(...){ # create a list with names from ALL variables you 
 	return(l)
 }
 
-as.list.df.by.row <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) { # Split a dataframe into a list by its columns. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
+as.list.df.by.row <- function(dtf, na.omit =T, zero.omit =F, omit.empty = F) { # Split a dataframe into a list by its columns. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
 	outList = as.list(as.data.frame(t( dtf ) ) )
 	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
 	if (zero.omit){ 	outList =  lapply(outList, zero.omit) }
@@ -362,7 +363,7 @@ as.list.df.by.row <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) { 
 	return(outList)
 }
 
-as.list.df.by.col <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) { # oSplit a dataframe into a list by its rows. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
+as.list.df.by.col <- function(dtf, na.omit =T, zero.omit =F, omit.empty = F) { # oSplit a dataframe into a list by its rows. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
 	outList = as.list(dtf )
 	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
 	if (zero.omit){		outList =  lapply(outList, zero.omit)	}
@@ -371,18 +372,18 @@ as.list.df.by.col <- function (dtf, na.omit =T, zero.omit =F, omit.empty = F) { 
 	return(outList)
 }
 
-reorder.list <- function (L, namesOrdered) { # reorder elements of lists in your custom order of names / indices.
+reorder.list <- function(L, namesOrdered) { # reorder elements of lists in your custom order of names / indices.
 	Lout = list(NA)
 	for (x in 1:length(namesOrdered)) { Lout[[x]] = L[[namesOrdered[x] ]]  }
 	if(length(names(L))) { names(Lout) = namesOrdered }
 	return (Lout)
 }
 
-range.list <- function (L, namesOrdered) { # range of values in whole list
+range.list <- function(L, namesOrdered) { # range of values in whole list
 	return(range(unlist(L), na.rm=T))
 }
 
-intermingle2lists  <- function (L1, L2) { # Combine 2 lists (of the same lenght) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
+intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same lenght) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
 	stopifnot(length(L1) == length(L2) )
 	Lout = list(NA)
 	for (x in 1:(2*length(L1)) ) {
@@ -393,7 +394,7 @@ intermingle2lists  <- function (L1, L2) { # Combine 2 lists (of the same lenght)
 	return(Lout)
 }
 
-as.listalike <-   function(vec, list_wannabe) { # convert a vector to a list with certain dimensions, taken from the list it wanna resemble
+as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with certain dimensions, taken from the list it wanna resemble
 	stopifnot(length(vec) == length(unlist(list_wannabe)))
 	list_return = list_wannabe
 	past =0
@@ -412,7 +413,7 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 	ls = list(x, y, ...); if ( l(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
 	names(ls) = paste ("Only in", as.character(match.call()[-1]))
 	duplicates <- big.vec[duplicated(big.vec)]
-	lapply(ls, function (x) setdiff (x, duplicates))
+	lapply(ls, function(x) setdiff (x, duplicates))
 }
 
 ## Math $ stats -------------------------------------------------------------------------------------------------
@@ -432,30 +433,31 @@ modus <- function(x) {
 
 gm_mean <- function(x, na.rm=TRUE){ 	exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
 
-# movingAve <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
-movingAve <- function(x, oneSide) { y = NULL
+movingAve <- function(x, oneSide) { # Moving / rolling average.
+	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
-movingSEM <- function(x, oneSide) { y = NULL
+movingSEM <- function(x, oneSide) {
+	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = sem( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
-imovingSEM <- function(x, oneSide = 5) { y = NULL
-for (i in 1:l(x)) {
-	oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
-	# any_print(i, " : ", oneSideDynamic)
-	indexx = (i-oneSideDynamic):(i+oneSideDynamic);indexx
-	y[i] = sem( x[ indexx ] )
-}; 	return (y)
+imovingSEM <- function(x, oneSide = 5) {
+	y = NULL
+	for (i in 1:l(x)) {
+		oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
+		indexx = (i-oneSideDynamic):(i+oneSideDynamic);indexx
+		y[i] = sem( x[ indexx ] )
+	}; 	return (y)
 }
 
 ## String operations  -------------------------------------------------------------------------------------------------
-eval_parse_kollapse <- dyn_var_caller <- function( ... ){ # evaluate and parse
+eval_parse_kollapse <- function( ... ){ # evaluate and parse (dyn_var_caller)
 	substitute(eval(parse(text=kollapse( ... , print=F))))
 }
 
@@ -529,7 +531,7 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
-whist_dfCol <-  function(df, colName, col ="gold", ..., w=7, h=7) {
+whist_dfCol <- function(df, colName, col ="gold", ..., w=7, h=7) {
 	# You can name the file  by naming the variable! Cannot be used with dynamically called variables [e.g. call vectors within a loop]
 	stopifnot(colName %in% colnames(df))
 	variable = unlist(df[,colName])
@@ -549,7 +551,7 @@ whist_dfCol <-  function(df, colName, col ="gold", ..., w=7, h=7) {
 }
 
 
-wbarplot_dfCol <-  function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplot for a column of a dataframe
+wbarplot_dfCol <- function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplot for a column of a dataframe
 	stopifnot(colName %in% colnames(df))
 	variable = unlist(df[,colName])
 	stopifnot(length (variable) >1 )
@@ -624,24 +626,24 @@ what <- function(x, printme=0) { # A better version of is(). It can print the fi
 	head (x)
 }
 
-idim  <- function (any_object) { # A dim() function that can handle if you pass on a vector: then, it gives the length.
+idim <- function(any_object) { # A dim() function that can handle if you pass on a vector: then, it gives the length.
 	if (is.null(dim(any_object))) {print(length(any_object))}
 	else {	print(dim(any_object))	}
 }
 
-idimnames  <- function (any_object) { # A dimnames() function that can handle if you pass on a vector: it gives back the names.
+idimnames <- function(any_object) { # A dimnames() function that can handle if you pass on a vector: it gives back the names.
 	if (!is.null(dimnames(any_object))) 	{ print(dimnames(any_object)) }
 	else if (!is.null(colnames(any_object))) { any_print("colnames:", colnames(any_object))	}
 	else if (!is.null(rownames(any_object))) { any_print("rownames:", rownames(any_object))	}
 	else if (!is.null(names(any_object))) { any_print("names:", names(any_object))	}
 }
 
-table_fixed_categories  <- function (vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
+table_fixed_categories <- function(vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
 	if ( !is.vector(vector)) {print (is(vector[]))}
 	table (factor(unlist(vector), levels = categories_vec))
 }
 
-percentile2value  <-  function(distribution, percentile = 0.95, FirstValOverPercentile =T) { # Calculate what is the actual value of the n-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
+percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercentile =T) { # Calculate what is the actual value of the n-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
 	index = percentile * l(distribution)
 	if (FirstValOverPercentile){ index = ceiling(index)
 	} else {index = floor(index) }
