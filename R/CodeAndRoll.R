@@ -88,16 +88,16 @@ FnP_parser <-  function(fname, ext_wo_dot) { # Parses the full path from the fil
 	} else { 					FnP = kollapse (path,"/", fname) }
 }
 
-read.simple.vec <-  function(...) { # Read in a file containing a single column of values into a vector (read in new-line separated values).
+read.simple.vec <-  function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
 	pfn = kollapse (...) # merge path and filename
-	read_in = as.vector(unlist(read.table( pfn ,stringsAsFactors=F )) )
+	read_in = as.vector(unlist(read.table( pfn ,stringsAsFactors=F, sep = "\n" )) )
 	any_print(length (read_in), "elements")
 	return(read_in);
 }
 
-read.simple <-  function(...) { # Read in a file.
+read.simple <-  function(...) { # It is essentially read.table() with file/path parsing.
 	pfn = kollapse (...) # merge path and filename
-	read_in = unlist(read.table( pfn ,stringsAsFactors=F ) )
+	read_in = read.table( pfn ,stringsAsFactors=F)
 	return(read_in)
 }
 
@@ -134,31 +134,35 @@ read.simple.tsv.named.vector <-  function(...) { # Read in a file with excel sty
 
 #### Writing files out -------------------------------------------------------------------------------------------------
 
-write.simple  <- function(input_df, extension='tsv', ManualName ="", ...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple  <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
+	if (o) { system(paste0("open ", FnP), wait = F) }
 	any_print ("Length: ", length(input_df))
 } # fun
 
-write.simple.vec  <- function(input_vec, extension='vec', ManualName ="", ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.vec  <- function(input_vec, extension='vec', ManualName ="", o = F, ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_vec, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE  )
 	any_print ("Length: ", length(input_vec))
+	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 
-write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", ... ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.tsv  <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
 	any_print ("Dim: ", dim(input_df))
+	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
 
-write.simple.append  <- function(input_df, extension='tsv', ManualName ="", ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.append  <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F,col.names = F, quote=FALSE, append=T  )
+	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 
 
