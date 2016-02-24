@@ -22,7 +22,7 @@ debuggingState(on=FALSE)
 # pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 
 ### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/MarkdownReports/MarkDownLogg.R")
+source("/Users/abelvertesy/MarkdownReports/MarkdownReports.R")
 
 # quick help / interpretatio  -------------------------------------------------------------------------------------------------
 l=length
@@ -82,11 +82,11 @@ inline_list_char <- function(char_list) {	# Paste data into your code easily. Ta
 }
 
 inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( '", paste (fromClipboard_as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard")
+	toClipboard(print(paste("c( '", paste (fromClipboard.as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard")
 }
 
 inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to a code-snipplet defining an R numeric vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( ", paste (fromClipboard_as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard")
+	toClipboard(print(paste("c( ", paste (fromClipboard.as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard")
 }
 
 #### Reading files in -------------------------------------------------------------------------------------------------
