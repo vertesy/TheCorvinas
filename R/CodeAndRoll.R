@@ -9,7 +9,7 @@
 # source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 # CHAPTERS:
-### quick help / interpretatio
+### quick help / interpretation
 ### File handling [read & write]
 ### Math $ stats
 ### Printing and Strings
@@ -24,7 +24,7 @@ debuggingState(on=FALSE)
 ### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
 source("/Users/abelvertesy/MarkdownReports/MarkdownReports.R")
 
-# quick help / interpretatio  -------------------------------------------------------------------------------------------------
+# quick help / interpretation  -------------------------------------------------------------------------------------------------
 l=length
 
 sortbyitsnames <- function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
@@ -54,11 +54,11 @@ toClipboard <- function(x, sep="\t", header=FALSE, row.names=FALSE, col.names =F
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
 
-fromClipboard <- function( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to a code-snipplet defining an R data frame on OS X.
+fromClipboard <- function( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to a code-snippet defining an R data frame on OS X.
 	return (read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))
 }
 
-fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to a code-snipplet defining an R vector on OS X.
+fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to a code-snippet defining an R vector on OS X.
 	return (as.vector(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
@@ -66,26 +66,26 @@ fromClipboard.as_num_vec <- function( sep="\t", header=F) { # Paste a list of st
 	return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
 }
 
-inline_vec.char <- function(char_vector) {	# Paste data into your code easily. Take a character vector, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
+inline_vec.char <- function(char_vector) {	# Paste data into your code easily. Take a character vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
 	toClipboard(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
 }
 
-inline_vec.num <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
+inline_vec.num <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
 	toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
 }
 
-inline_list_char <- function(char_list) {	# Paste data into your code easily. Take a list of character vectors, parse it to a code-snipplet defining an R list, and copy back to the Clipboard.
+inline_list_char <- function(char_list) {	# Paste data into your code easily. Take a list of character vectors, parse it to a code-snippet defining an R list, and copy back to the Clipboard.
 	print ("list(", quote = F)
 	for (l in 1: length(list)) {
 		print(paste("c( '", paste (char_list[[l]], collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)
 	};	print (")", quote = F)
 }
 
-inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to a code-snipplet defining an R character vector, and copy back to the Clipboard.
+inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
 	toClipboard(print(paste("c( '", paste (fromClipboard.as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard")
 }
 
-inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to a code-snipplet defining an R numeric vector, and copy back to the Clipboard.
+inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to a code-snippet defining an R numeric vector, and copy back to the Clipboard.
 	toClipboard(print(paste("c( ", paste (fromClipboard.as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard")
 }
 
@@ -395,7 +395,7 @@ range.list <- function(L, namesOrdered) { # range of values in whole list
 	return(range(unlist(L), na.rm=T))
 }
 
-intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same lenght) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
+intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same length) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
 	stopifnot(length(L1) == length(L2) )
 	Lout = list(NA)
 	for (x in 1:(2*length(L1)) ) {
@@ -512,7 +512,7 @@ HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 
 val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){ # Convert numeric values to a scaled color gradient. Source: https://stackoverflow.com/questions/8717669/heat-map-colors-corresponding-to-data-in-r
 	if(!missing(breaks)){
-		if(length(breaks) != (length(col)+1)){stop("must have one more break than colour")}
+		if(length(breaks) != (length(col)+1)){stop("must have one more break than color")}
 	}
 	if(missing(breaks) & !missing(zlim)){
 		breaks <- seq(zlim[1], zlim[2], length.out=(length(col)+1))
@@ -527,13 +527,13 @@ val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){ # Convert numeri
 	colorlevels
 }
 
-error.bar <- function(x, y, upper, lower=upper, length=0.1,...){ # Put error bars on top of your barplots. This functionality is now integrated into MarkdownReporter's wbarplot() function
+error.bar <- function(x, y, upper, lower=upper, length=0.1,...){ # Put error bars on top of your bar plots. This functionality is now integrated into MarkdownReporter's wbarplot() function
 	stopifnot (length(x) == length(y) & length(y) ==length(lower) & length(lower) == length(upper))
 	if (l(dim(y)) > 1 ) { 	arrows(as.vector(x),as.vector(y+upper), as.vector(x), as.vector(y-lower), angle=90, code=3, length=length, ...)   # if a matrix
 	} else { 				arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)	}
 }
 
-barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_bottom =.1 ,...){ # Add extra labels to your barplots top or base.
+barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_bottom =.1 ,...){ # Add extra labels to your bar plots top or base.
 	stopifnot (length(x) == length(y))
 	if (bottom) { y = rep (relpos_bottom * max(y, na.rm=T), length(x))} # if put labels at the foot
 	if (l(dim(x)) > 1 ) { # if a matrix
@@ -631,7 +631,7 @@ most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent e
 	tail(sort(table(thingy, useNA = "ifany")), topN)
 }
 
-what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements
+what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements.
 	any_print (is (x),"; nr. of elements:", length (x))
 	if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
 	if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
@@ -656,7 +656,7 @@ table_fixed_categories <- function(vector, categories_vec) { # generate a table(
 	table (factor(unlist(vector), levels = categories_vec))
 }
 
-percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercentile =T) { # Calculate what is the actual value of the n-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
+percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercentile =T) { # Calculate what is the actual value of the N-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
 	index = percentile * l(distribution)
 	if (FirstValOverPercentile){ index = ceiling(index)
 	} else {index = floor(index) }
