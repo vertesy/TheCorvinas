@@ -510,70 +510,9 @@ HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- colorRampPalette(c("blue", "white", "red"), bias=1)
 # HeatMapCol_RedBlackGreen <- colorRampPalette(c("red", "black", "green"), bias=1)
 
-val2col<-function(z, zlim, col = rev(heat.colors(12)), breaks){ # Convert numeric values to a scaled color gradient. Source: https://stackoverflow.com/questions/8717669/heat-map-colors-corresponding-to-data-in-r
-	if(!missing(breaks)){
-		if(length(breaks) != (length(col)+1)){stop("must have one more break than color")}
-	}
-	if(missing(breaks) & !missing(zlim)){
-		breaks <- seq(zlim[1], zlim[2], length.out=(length(col)+1))
-	}
-	if(missing(breaks) & missing(zlim)){
-		zlim <- range(z, na.rm=TRUE)
-		zlim[2] <- zlim[2]+c(zlim[2]-zlim[1])*(1E-3)#adds a bit to the range in both directions
-		zlim[1] <- zlim[1]-c(zlim[2]-zlim[1])*(1E-3)
-		breaks <- seq(zlim[1], zlim[2], length.out=(length(col)+1))
-	}
-	colorlevels <- col[((as.vector(z)-breaks[1])/(range(breaks)[2]-range(breaks)[1]))*(length(breaks)-1)+1] # assign colors to heights for each point
-	colorlevels
-}
-
-error.bar <- function(x, y, upper, lower=upper, length=0.1,...){ # Put error bars on top of your bar plots. This functionality is now integrated into MarkdownReporter's wbarplot() function
-	stopifnot (length(x) == length(y) & length(y) ==length(lower) & length(lower) == length(upper))
-	if (l(dim(y)) > 1 ) { 	arrows(as.vector(x),as.vector(y+upper), as.vector(x), as.vector(y-lower), angle=90, code=3, length=length, ...)   # if a matrix
-	} else { 				arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)	}
-}
-
-barplot.label <- function(x, y, labels, bottom = F, relpos_top =.9, relpos_bottom =.1 ,...){ # Add extra labels to your bar plots top or base.
-	stopifnot (length(x) == length(y))
-	if (bottom) { y = rep (relpos_bottom * max(y, na.rm=T), length(x))} # if put labels at the foot
-	if (l(dim(x)) > 1 ) { # if a matrix
-		text(as.vector(x),as.vector(y * relpos_top), labels = as.vector(labels), ...)
-	} else if (l(dim(x)) == 1) { 	text( (x), (y), labels = (labels), ...) }
-}
-
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
 	eq = (lm$coefficients);
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
-}
-
-whist_dfCol <- function(df, colName, col ="gold", ..., w=7, h=7) { 	# Use this version of whist() if you iterate over columns  or rows of a data frame. You can name the file by naming the variable. Cannot be used with dynamically called variables [e.g. call vectors within a loop]
-	stopifnot(colName %in% colnames(df))
-	variable = unlist(df[,colName])
-	stopifnot(length (variable) >1 )
-	plotname =  paste(substitute(df),'__', colName, sep="")
-	FnP = FnP_parser (plotname, 'hist.pdf')
-	if ( !is.numeric(variable)) { variable = table (variable) ;
-							cexNsize = 0.7/abs (log10 (length(variable)) ); cexNsize = min (cexNsize, 1)
-							barplot (variable, ..., main=plotname, col=col, las=2, cex.names = cexNsize,
-							 sub = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) ) )
-	} else {
-		zz=hist (variable, ..., plot=F)
-		hist (variable, ..., main=plotname, col=col, las=2,
-				sub = paste ("mean:", iround(mean(zz$counts)),  "median:", iround(median(zz$counts)) ) )
-	} # if is.numeric
-	dev.copy2pdf (file=FnP, width=w, height=h )
-}
-
-wbarplot_dfCol <- function(df,colName, col ="gold1", w=7, h=7, ...) { # wbarplot for a column of a dataframe
-	stopifnot(colName %in% colnames(df))
-	variable = unlist(df[,colName])
-	stopifnot(length (variable) >1 )
-	plotname =  paste(substitute(df),'__', colName, sep="")
-	FnP = FnP_parser (plotname, 'barplot.pdf')
-	cexNsize = 0.7/abs (log10 (length(variable)) ); cexNsize = min (cexNsize, 1)
-	barplot (variable, ..., main=plotname, col=col, las=2, cex.names = cexNsize,
-					 sub = paste ("mean:", iround(mean(variable, na.rm=T)),  "CV:", percentage_formatter(cv(variable)) ) )
-	dev.copy2pdf (file=FnP, width=w, height=h )
 }
 
 ## Read and write plotting functions READ -------------------------------------
