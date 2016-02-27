@@ -8,48 +8,37 @@
 ## For RNA-seq specific functions, call:
 # source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
-# CHAPTERS:
-### quick help / interpretation
-### File handling [read & write]
-### Math $ stats
-### Printing and Strings
-### Generic
-### Plotting and Graphics
-### RNA-seq specific
+### CHAPTERS:
+# -  Setup
+# 	- Load the MarkdownReports Library
+# -  File handling, export, import [read & write]
+# 	- Clipboard interaction
+# 	- Reading files in
+# 	- Writing files out
+# -  Vector operations
+# 	- Vector filtering
+# -  Matrix operations
+# -  List operations
+# -  Set operations
+# -  Math $ stats
+# -  String operations
+# -  Plotting and Graphics
+# -  Read and write plotting functions READ
+# -  Generic
+# -  New additions
 
-# Setup   -------------------------------------------------------------------------------------------------
+
+## Setup   -------------------------------------------------------------------------------------------------
 debuggingState(on=FALSE)
+l=length
 # pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 
-### MarkDownLogg.R Library-------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/MarkdownReports/MarkdownReports.R")
-
-# quick help / interpretation  -------------------------------------------------------------------------------------------------
-l=length
-
-sortbyitsnames <- function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
-
-stopif <- function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
-
-attach_w_rownames <- function(df_w_dimnames) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
-	if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
-		namez= rownames(df_w_dimnames)
-		any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
-		attach (df_w_dimnames)
-		for (n in colnames(df_w_dimnames)) {
-			x=get(n); names(x) = namez
-			assign (n,x,envir =.GlobalEnv) } # for
-	} else { print ("ERROR: the DF does not have some of the dimnames!")}
-}
-
-Color_Check <- function(...) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
-	Numbers  = c(...)
-	barplot (rep(10,length(Numbers)), col =Numbers, xlab = paste (Numbers, collapse="") )
-}
+### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
+source("/Users/abelvertesy/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
-#### Clipboard interaction -------------------------------------------------------------------------------------------------
+### Clipboard interaction -------------------------------------------------------------------------------------------------
 toClipboard <- function(x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) { # Copy an R-object to your clipboard on OS X.
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
@@ -89,7 +78,7 @@ inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily
 	toClipboard(print(paste("c( ", paste (fromClipboard.as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard")
 }
 
-#### Reading files in -------------------------------------------------------------------------------------------------
+### Reading files in -------------------------------------------------------------------------------------------------
 FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
 	if (hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
@@ -140,7 +129,7 @@ read.simple.tsv.named.vector <- function(...) { # Read in a file with excel styl
 	return(read_in)
 }
 
-#### Writing files out -------------------------------------------------------------------------------------------------
+### Writing files out -------------------------------------------------------------------------------------------------
 
 write.simple <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
@@ -211,6 +200,8 @@ rescale <- function(vec, from=0, upto=100) { # linear transformation to a given 
 	vec = vec+ from
 	return (vec)
 } # fun
+
+sortbyitsnames <- function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
@@ -566,6 +557,8 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, pl
 
 ## Generic -------------------------------------------------------------------------------------------------
 
+stopif <- function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
+
 most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
 	tail(sort(table(thingy, useNA = "ifany")), topN)
 }
@@ -607,5 +600,20 @@ top_indices <- function(x, n = 3, top = T){ # Returns the position / index of th
 	head( order(x, decreasing =top), n )
 }
 
-# -----------------------------------------------------------------------------------------------------
+attach_w_rownames <- function(df_w_dimnames) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
+	if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
+		namez= rownames(df_w_dimnames)
+		any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
+		attach (df_w_dimnames)
+		for (n in colnames(df_w_dimnames)) {
+			x=get(n); names(x) = namez
+			assign (n,x,envir =.GlobalEnv) } # for
+	} else { print ("ERROR: the DF does not have some of the dimnames!")}
+}
+
+Color_Check <- function(...) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+	Numbers  = c(...)
+	barplot (rep(10,length(Numbers)), col =Numbers, xlab = paste (Numbers, collapse="") )
+}
+
 ## New additions -----------------------------------------------------------------------------------------------------
