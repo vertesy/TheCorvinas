@@ -345,7 +345,7 @@ colNameMatrix <- function(mat_w_dimnames) { # Create a copy of your matrix, wher
 }
 
 matrix_from_vector <- function(vector, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
-	matt = matrix(ccc,nrow = l(ccc),ncol = HowManyTimes)
+	matt = matrix(vector,nrow = l(vector),ncol = HowManyTimes)
 	if ( !IsItARow ) {matt = t(matt)}
 	return(matt)
 }
