@@ -497,7 +497,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
 
-HeatMapCol_BGR <- colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
+HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- colorRampPalette(c("blue", "white", "red"), bias=1)
 # HeatMapCol_RedBlackGreen <- colorRampPalette(c("red", "black", "green"), bias=1)
 
