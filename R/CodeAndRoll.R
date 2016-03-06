@@ -256,32 +256,6 @@ filter_survival_length <- function(length_new, length_old, prepend ="") { # Pars
 	llprint (prepend, pc, " of ",length_old," entries make through the filter")
 }
 
-filter_HP <- function(vector, threshold, prepend ="", survival=F) { # Filter values that fall between above high-pass-threshold (X >).
-	survivors = vector>threshold
-	pc = percentage_formatter(sum(survivors)/length(survivors))
-	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold)
-		} else { any_print  (pc, " of ",length(vector)," entries in ", substitute (vector)," fall above a threshold value of: ", threshold, "NOT LOGGED") }
-	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
-}
-
-filter_LP <- function(vector, threshold, prepend ="", survival=F) { # Filter values that fall below the low-pass threshold (X <).
-	survivors = vector<threshold
-	pc = percentage_formatter(sum(survivors)/length(survivors))
-	if (file.exists(Log_PnF) ) {	llprint (prepend, pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold )
-		} else { any_print  (pc, " of ",length(vector)," entries in ", substitute (vector)," fall below a threshold value of: ", threshold, "NOT LOGGED") }
-	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
-}
-
-filter_MidPass <- function(vector, HP_threshold, LP_threshold, prepend ="", survival=FALSE, EdgePass = F) { # Filter values that fall above high-pass-threshold !(X >=)! and below the low-pass threshold (X <).
-	survivors = ( vector >= HP_threshold & vector < LP_threshold); keyword = "between"; relation = " <= x < "
-	if (EdgePass) {survivors = ( vector <= HP_threshold | vector > LP_threshold); keyword = "outside"; relation = " >= x OR x > " }
-	pc = percentage_formatter(sum(survivors)/length(survivors))
-	Texxt = kollapse(pc, " or ", sum(survivors), " of ",length(vector)," entries in ", substitute (vector)," fall ", keyword, " the thresholds: ", HP_threshold, relation, LP_threshold, print = F)
-	if (file.exists(Log_PnF) ) {	llprint (prepend, Texxt)
-	} else { any_print  (Texxt, "NOT LOGGED") }
-	if (survival) {return (sum(survivors)/length(survivors))} else if (!survival) { return (survivors) }
-}
-
 remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remove values that fall outside the trailing N % of the distribution.
 	qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
 	H <- 1.5 * IQR(x, na.rm = na.rm)
