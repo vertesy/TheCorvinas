@@ -132,6 +132,7 @@ read.simple.tsv.named.vector <- function(...) { # Read in a file with excel styl
 ### Writing files out -------------------------------------------------------------------------------------------------
 
 write.simple <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
@@ -364,7 +365,6 @@ intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same length) s
 	stopifnot(length(L1) == length(L2) )
 	Lout = list(NA)
 	for (x in 1:(2*length(L1)) ) {
-		print (x)
 		if (x  %% 2) {	Lout[[x]] = L1[[((x+1)/2)]]; names(Lout)[x] = names(L1)[((x+1)/2)]
 		} else { 		Lout[[x]] = L2[[(x)/2]]; names(Lout)[x] = names(L2)[(x)/2]			}
 	} # for
@@ -585,9 +585,12 @@ attach_w_rownames <- function(df_w_dimnames) { # Take a data frame (of e.g. meta
 	} else { print ("ERROR: the DF does not have some of the dimnames!")}
 }
 
-Color_Check <- function(...) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+Color_Check <- function(..., incrBottMarginBy=0 ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+	if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
 	Numbers  = c(...)
-	barplot (rep(10,length(Numbers)), col =Numbers, xlab = paste (Numbers, collapse="") )
+	if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
+	barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
+	if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
 }
 
 ## New additions -----------------------------------------------------------------------------------------------------
