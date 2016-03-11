@@ -105,9 +105,9 @@ read.simple_char_list <- function(...) { # Read in a file.
 	return(read_in)
 }
 
-read.simple.table <- function(..., rownames="NULL", colnames=T ) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
+read.simple.table <- function(..., colnames=T ) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
-	read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", row.names= rownames, header=colnames )
+	read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
 	any_print ("New variable dim: ", dim(read_in))
 	return(read_in)
 }
