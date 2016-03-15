@@ -34,7 +34,7 @@ l=length
 # pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
+source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
