@@ -1,0 +1,194 @@
+---
+title: "Object Oriented Programming in R"
+author: "Abel"
+date: "18 Mar 2016"
+output: html_document
+---
+
+# Introduction to object oriented programming in R, with special emphasis on the ExpressionSet class
+Hector Corrada Bravo
+based on slides developed by
+Jim Bullard, Kasper Hansen and Margaret Taub
+
+## Object Oriented Programming in R
+
+```{r}
+rm(list=ls(all.names = TRUE)); try(dev.off())
+xx <- rnorm(1000)
+class(xx)
+plot(xx)
+yy <- ecdf(xx)
+class(yy)
+plot(yy)
+plot
+plot.ecdf
+plot.default
+methods("plot")
+getS3method("plot", "histogram")
+```
+
+What plot does, depends on the class of the x argument. It is a method. plot.ecdf is the ecdf method for plot.
+
+
+## Constructing a new S3 Class
+```{r}
+jim <- list(height = 2.54 * 12 * 6/100, weight = 180/2.2, name = "James")
+class(jim) <- "person2"
+class(jim)
+```
+We have now made an object of class person. We now define a print method.
+
+```{r}
+print(jim)
+print.person2 <- function(x, ...) {
+	cat("name:", x$name, "\n")
+	cat("height:", x$height, "meter s", "\n")
+	cat("weight:", x$weight, "kilograms", "\n")
+	}
+print(jim)
+```
+
+Note the method/class has the "dot" naming convention of method.class.
+
+## S3 classes are not robust
+
+```{r}
+fit <- lm(rnorm(100) ~ 1)
+class(fit)
+print(fit)
+class(fit) <- "something"
+# print(fit)
+class(fit) <- "person2"
+# print(fit)
+```
+
+In case print does not have a method for the class, it dispatches to the default method, print.default.
+S3 does not have the concept of type checking { there is no way to formally define a class and ensure that the object conform to the definition.
+
+
+## S3 classes and the help system
+
+S3 classes are traditionally documented in the help page for the function that creates them. Example: lm.
+Methods have a generic help page (often not very informative), sometimes with more specific help under ?method.class. Example:
+plot.lm.
+
+
+## Inheritance in S3
+
+In S3, inheritance is achieved by the class attribute being a vector. A canonical example is
+```{r}
+fit <- glm(rpois(100, lambda = 1) ~
+	1, family = "poisson")
+class(fit)
+methods("residuals")
+methods("model.matrix")
+```
+
+If no method for the first is found, the second class is checked.
+
+
+## Useful S3 Method Functions
+
+- methods("print") and methods(class = "lm")
+- getS3method("print","person") : Gets the appropriate method associated with a class, useful to see how a method is implemented.
+	- Try: getS3method("residuals", "lm").
+
+```{r}
+methods("print")[1:10]
+methods(class = "lm")
+getS3method("residuals", "lm")
+```
+
+I Sometimes, methods are non-visible, because they are hidden in a namespace. Use getS3method or getAnywhere to get around this.
+
+```{r}
+# residuals.HoltWinters
+# getS3method("residuals.HoltWinters")
+getAnywhere("residuals.HoltWinters")
+```
+
+## Replacement Methods
+
+I As we have already seen R has a somewhat strange type of function that allows us to modify objects in place.
+I It is uncommon to define new replacement functions, however they are used quite frequently in day to day programming of R.
+I Two examples are: names and colnames. Type \colnames" into the R  window and hit \tab", notice the function \colnames<-"?
+
+```{r}
+a <- matrix(1:16, nrow = 4, ncol = 4)
+colnames(a) <- paste("V", 1:4, sep = ".")
+colnames(a)
+point <- list(x = 1, y = 2)
+x.val <- function(x, value) { 		x$x <- value	}
+"x.val<-" <- function(x, value) {	x$x <- value; return(x)	}
+
+
+x.val(point,1)
+# The 2nd argumetn does not do anything
+print(point)
+x.val(point) <- 10
+print(point)
+```
+
+What does the first print statement print? What about the second?
+
+
+## S4 classes, why?
+
+- Although S3 classes can be quite useful and powerful and fast they do not facilitate the type of modularization and type safety that a true object oriented system intends.
+- S4 classes are more a traditional object oriented system with type checking, multiple-dispatch, and inheritance.
+- S4 is implemented in the methods package in base R.
+- For thorough information on S4, read Chambers (1998)  \Programming with data" (also known as the green book) (first chapter available at http://www.omegahat.org/RSMethods/Intro.pdf) or Chambers (2008) \Software for Data Analysis: Programming with R".
+- There are also several good, short, tutorials on the net.
+
+## Defining an S4 class
+
+```{r}
+myRep <- representation(height = "numeric",	weight = "numeric", name = "character")
+setClass("personS4", representation = myRep)
+getClass("personS4")
+jimS4 <- new("personS4")
+jimS4
+jimS4 <- new("personS4", height = 2.54 *12 * 6/100, weight = 180/2.2,	name = "James")
+jimS4
+jimS4@name
+validObject(jimS4)
+# jimS4@height <- "2"
+jimS4@height <- 2
+
+```
+
+## Notes on the S4 class example
+
+- It is rare for users to define their own S4 classes.
+- The use of new to instantiate a new member of the class is not
+always needed, often there are explicit constructor functions (see
+later).
+- The use of @ to access the class slots is heavily discouraged, instead
+use accessor functions (see later).
+
+## Defining the print method
+
+For completion, we define the print method for personS4. For S4 classes, it is not print, but rather show.
+
+```{r}
+setMethod("show", signature("personS4"),
+	function(object) {
+	cat("name:", object@name,"\n")
+	cat("height:", object@height, "meters", "\n")
+	cat("weight:", object@weight, "kilograms", "\n")
+	})
+jimS4 # equivalent to / shorthand of show (jimS4)
+getMethod("show", signature("personS4"))
+```
+
+## S4 Generics
+
+In order to make a new generic we need to call the function setGeneric.
+
+```{r}
+setGeneric("BMI", function(object) standardGeneric("BMI"))
+setMethod("BMI", "personS4", function(object) {
+	object@weight/object@height^2
+	})
+BMI(jimS4)
+```
