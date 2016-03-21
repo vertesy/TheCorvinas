@@ -43,3 +43,13 @@ mean.foo(x)
 | yourFunction.yourClass <- function(x, ...) 	| setMethod (x, "method") 	| Define the method belonging to a certain class of objects. |
 | function (yourFunction) { UseMethod("yourFunction") } 	| setGeneric( yourFunction, standardGeneric("yourFunction") ) 	| Define a generic function |
 | UseMethod("yourFunction") 	| standardGeneric("yourFunction") 	| Dispatching a method (inside a generic function). |
+
+
+
+## Drawbacks
+
+1. Less transparent:
+	- In this case you don't know that `filterdata` is writing to `sc@fdata` not overwriting `sc` itself.
+
+`sc <- filterdata(sc, mintotal=3000, minexpr=5, minnumber=1, maxexpr=500, downsample=FALSE, dsn=1, rseed=17000)`
+2. 
