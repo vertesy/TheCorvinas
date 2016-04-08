@@ -10,6 +10,27 @@
 # `[` <- old
 
 
+
+normalize_per_column <- function (m, factor) { # Normalize each column by its by a corresponding value. It is solely t(t(matrix)/factor) with a couple of error checks.
+	any_print("Range of normalization factors:" , range(factor))
+	stopifnot(dim(m)[2] == l(factor))
+	stopifnot(any(is.finite(factor)))
+	if( any(factor == 0) ) { print("Your normalization factor contains 0-s: NA-s will be produced.")}
+	t(t(m)/factor)
+}
+
+
+secondDerivative_discrete <- function (x) { # Approximate the "discrete 2nd derivative" or "Finite difference" by central differences. Source: https://stackoverflow.com/questions/4471993/compute-the-elbow-for-a-curve-automatically-and-mathematically?lq=1
+	secondDerivative = rep(NA,l(x))
+	for(i in 2:l(x-1)){
+		secondDerivative[i] = x[i+1] + x[i-1] - 2 * x[i]
+	}
+	return(secondDerivative)
+}
+
+
+
+
 read.simple2 <-  function(header=FALSE, ...) {
 	pfn = kollapse (...) # merge path and filename
 	read_in = unlist(read.table( pfn ,stringsAsFactors=FALSE, header=header ) )

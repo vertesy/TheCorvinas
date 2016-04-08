@@ -1,7 +1,7 @@
 ######################################################################
 # A collection of custom R functions
 ######################################################################
-# source ('/Users/abelvertesy/TheCorvinas/R/CodeAndRoll.R')
+# source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/CodeAndRoll.R')
 ## If something is not found:
 # source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
 # source("/Users/abelvertesy/MarkdownReports/MarkDownLogg.R")
@@ -35,6 +35,7 @@ l=length
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
+"Depends: gtools"
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
@@ -202,7 +203,9 @@ rescale <- function(vec, from=0, upto=100) { # linear transformation to a given 
 	return (vec)
 } # fun
 
-sortbyitsnames <- function(vec) {vec[order(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
+sortbyitsnames <- function(vec) {vec[gtools::mixedsort(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
+
+
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
