@@ -610,4 +610,11 @@ panel.cor <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ..
 	text(0.5, 0.5, txt, cex = cex.cor * r)
 }
 
-help(cor)
+replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
+	# if (l(names(vec))) { nm = names(vec) }
+	names(vec) =  vec
+	vec[oldvalues] = newvalues
+	# if (l(names(vec))) { names(vec) = nm }
+	return(vec)
+}
+
