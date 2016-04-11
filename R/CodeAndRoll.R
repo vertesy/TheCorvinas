@@ -29,9 +29,27 @@
 
 
 ## Setup   -------------------------------------------------------------------------------------------------
+# pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
 l=length
-# pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
+oo <- function () {toClipboard(OutDir); print("OutDir is copied to the Clipbiard")}
+
+pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, title = paste0(basename(fname), " by ", scriptname)) { # Print (multiple) plots to an (A4) pdf.
+	assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
+	fname = kollapse(OutDir,"/" , pname, ".pdf")
+	pdf(fname,width=w, height=h, title = title)
+	par(mfrow = c(rows, cols))
+	any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
+}
+
+pdfA4plot_off <- function () {
+	if (exists("mfrow_default")) {
+		x = mfrow_default
+	} else { x =  c(1,1)}
+	par(mfrow = x)
+	try(dev.off()) # close pdf
+	oo();
+}
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
