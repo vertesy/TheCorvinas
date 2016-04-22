@@ -52,7 +52,8 @@ pdfA4plot_off <- function () {
 }
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
-source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
+# source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
+require("MarkdownReports")
 "Depends: gtools"
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
@@ -221,8 +222,21 @@ rescale <- function(vec, from=0, upto=100) { # linear transformation to a given 
 	return (vec)
 } # fun
 
-sortbyitsnames <- function(vec) {vec[gtools::mixedsort(names(vec) )]} # Sort a vector by the alphanumeric order of its names (instead of its values).
 
+
+# sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric order of its names (instead of its values).
+# 	print("THIS FUCNTION MAKES MISTAKES WITH DUPLICATE NAMES")
+# 	if (is.vector(vec_or_list) & !is.list(vec_or_list)) {  vec[gtools::mixedsort(names(vec_or_list) )]
+# 	} else if (is.list(vec_or_list)) {	reorder.list(L = (vec_or_list), namesOrdered = gtools::mixedsort(names(vec_or_list))) }
+# 	}
+
+
+sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric order of its names (instead of its values).
+	xx = names(vec_or_list)
+	names(xx) = 1:l(vec_or_list)
+	order = as.numeric(names(gtools::mixedsort(xx)))
+	vec_or_list[order]
+}
 
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------

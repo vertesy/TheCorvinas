@@ -12,7 +12,7 @@
 
 
 normalize_per_column <- function (m, factor) { # Normalize each column by its by a corresponding value. It is solely t(t(matrix)/factor) with a couple of error checks.
-	any_print("Range of normalization factors:" , range(factor))
+	any_print("Range of normalization factors:" , range(iround(factor)))
 	stopifnot(dim(m)[2] == l(factor))
 	stopifnot(any(is.finite(factor)))
 	if( any(factor == 0) ) { print("Your normalization factor contains 0-s: NA-s will be produced.")}
