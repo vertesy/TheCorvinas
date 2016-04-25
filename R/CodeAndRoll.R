@@ -643,10 +643,15 @@ panel.cor <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ..
 }
 
 replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
-	# if (l(names(vec))) { nm = names(vec) }
-	names(vec) =  vec
-	vec[oldvalues] = newvalues
-	# if (l(names(vec))) { names(vec) = nm }
-	return(vec)
+  Nr = l(oldvalues)
+  if (Nr > l(newvalues) ) {
+    if (l(newvalues) == 1) {
+      newvalues =  rep(newvalues, l(oldvalues))
+    } else if (l(newvalues) > 1) { any_print("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
+  }
+  for (i in 1:Nr) {
+    oldval = oldvalues[i]
+    vec[vec==oldval] = newvalues[i]
+  }
+  return(vec)
 }
-
