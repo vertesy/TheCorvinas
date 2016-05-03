@@ -2,7 +2,7 @@
 
 This script is a wrapper over Dominic's wrapper around `BWA, samtools` and a transcript-count table generator.
 
-MapAndGo is essentially generates an executable file that is list of bash commands, with specification ready so that it can be submitted to the queue on UMC's HPC.
+`MapAndGo.py` generates an executable file that is list of bash commands, with specification ready to be submitted to the new queue on UMC's HPC.
 
 ## What it does
 
