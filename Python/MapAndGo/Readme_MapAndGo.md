@@ -71,7 +71,8 @@ It creates a bash file (.sh) with 4 commands that are executed after each other.
 ## Final outputs of the mapping
 
 `coutc.csv`	Raw read counts  
-`coutb.csv` UMI-corrected read counts ()  `coutt.csv` Estimated original transcript counts, based on how many .
+`coutb.csv` UMI-corrected read counts (range 1-256 for an UMI of 4bp)
+`coutt.csv` Estimated original transcript counts, based on the fact that you are randomly sampling a small fraction of the original pool of molecues.
 
 Use `coutt` for downstream analysis.
 `coutc / coutb` = oversequenceing
