@@ -1,11 +1,11 @@
 #!/usr/bin/python
-# ## Usage
-# - Put the raw sequence data in a folder, put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/MapAndGo.py`
-# - The files should contain the minimum name of *_L00*_R*_001.fastq (that is Illumina NextSeq's default output: R for read 1 or 2, L for one of the 4 lanes)
-# - Test it by running in bash: `python path/to/MapAndGo.py -help`
-# - Run it with your data: python `path/to/MapAndGo.py MapAndGo.py -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=x.y@hubrecht.eu`
-# - Original author: Thom de Hoog, van Oudenaarden group, 02-03-2015
-# - Modified and maintained by Abel Vertesy, van Oudenaarden group, 28-04-2016
+### This script automates the mapping procedure
+### Put the raw sequence data in a folder, with this script
+### The files should contain the minimum name of *_L00*_R*_001.fastq
+### Run it with -> python MapAndGo.py
+### For usage run -> python MapAndGo.py -help
+### Original author: Thom de Hoog, van Oudenaarden group, 02-03-2015
+### Modified and maintained by Abel Vertesy, van Oudenaarden group, 28-04-2016
 
 import glob
 import sys
@@ -16,7 +16,7 @@ default_bar = "/hpc/hub_oudenaarden/data/cel-seq_barcodes.csv"
 default_bash_out = os.getcwd()
 default_cat_out = os.getcwd()
 default_counts_out = os.getcwd()
-default_email = "<none>"
+default_email = "a.vertesy@hubrecht.eu"
 default_map_out = os.getcwd()
 default_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
@@ -77,7 +77,7 @@ line12 ="\n\n-zip= \n\n\tThis determines if the used .fastq files should be zipp
 line13 ="\n\n-help \n\n\tShows help!"
 line14 ="\n\nSummary of the defaults: \n\n\t"
 # line15 ="\n\nExample: make_bash.py -qsub=no -qtype=medium -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=t.hoog@hubrecht.eu"
-line15 ="\n\nExample: MapAndGo.py -qsub=no -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=x.y@hubrecht.eu"
+line15 ="\n\nExample: MapAndGo.py -qsub=no -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=t.hoog@hubrecht.eu"
 line16 ="\n\nImportant: Be careful to check the bash files!\n"
 # help_text = line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14 + line15 + line16
 help_text = line1 + line2 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14 + line15 + line16
