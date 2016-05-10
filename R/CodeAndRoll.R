@@ -655,3 +655,13 @@ replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of valu
   }
   return(vec)
 }
+'chartr("a-cX", "D-Fw", x) does the same as above !!!'
+
+
+capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first letter of a word
+  cap <- function(s) paste(toupper(substring(s, 1, 1)),
+                           {s <- substring(s, 2); if(strict) tolower(s) else s},
+                           sep = "", collapse = " " )
+  sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
+}
+
