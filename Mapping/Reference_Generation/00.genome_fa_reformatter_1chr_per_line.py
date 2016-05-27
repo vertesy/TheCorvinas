@@ -9,7 +9,7 @@
 import os
 
 # Setup ------------------------------------------------------
-print "\n 03.genome_fa_reformatter_1chr_per_line.py", 1111
+print "\n Genome_fa_reformatter_1chr_per_line.py", 1111
 InputDir = "/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/genomes/"
 inGenomeName = "hg38.fa"
 
