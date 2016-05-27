@@ -22,8 +22,9 @@ default_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_
 default_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_zebrafish = "/hpc/hub_oudenaarden/gene_models/zebrafish_gene_models/Danio_rerio_Zv9_ens74_extended3_genes_ERCC92.fa"
 default_qsub = "no"
-default_mem = "10"
+default_mem = "5"
 default_time = "24:00:00"
+default_core = "8"
 # default_qtype = "long"
 default_unzip = "no"
 default_zip = "no"
@@ -255,6 +256,11 @@ if "-time" in argv_imput:
 else:
 	params["-time"] = "#$ -l h_rt=" + default_time
 
+# Set parameter for threads
+if "-cores" in argv_imput:
+	params["-cores"] = argv_imput["-cores"]
+else:
+	params["-cores"] = default_core
 
 #Set parameter for unzip
 if "-unzip" in argv_imput:
@@ -277,7 +283,7 @@ else:
 
 #Head of the bash files
 # head_bash = "#! /bin/bash \n#$ -q " + params["-qtype"] + "\n#$ -cwd \n#$ -V " + params["-email"] +" \n#$ -m beas \n#$ -pe threaded " + params["-cores"]
-head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas"
+head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"]
 
 #Get unique files in dir
 if params["-unzip"] == "yes":
@@ -336,7 +342,7 @@ print "Output directory for the bash files: 	" + params['-bash_out'] + "/"
 print "Output directory for the mapping files: " + params['-map_out'] + "/"
 print "Output directory for the counts files: 	" + params['-counts_out'] + "/"
 # print "The used queue is: 			" + params['-qtype']
-# print "The number of used cores: 		" + params['-cores']
+print "The number of used cores: 		" + params['-cores']
 print "Submission to queue: 			" + params['-qsub']
 print "Memory requested: 			" + params['-mem']
 print "Time requested: 			" + params['-time']
@@ -368,7 +374,7 @@ for i in range(0,len(files)):
 	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
 	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
 	# map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
-	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=8" + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
+	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
 	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.csv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.csv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.csv"
 
 	if params['-zip'] == "yes":
