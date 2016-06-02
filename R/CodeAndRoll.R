@@ -72,7 +72,15 @@ fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of number
 }
 
 fromClipboard.as_num_vec <- function( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
-	return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
+  return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
+}
+
+fromClipboard.as_named_vec <- function( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
+  tbl = read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F)
+  vecc = tbl[ ,2]
+  names(vecc) = tbl[ ,1]
+  print("Names should eb in column 1, data in column 2, no header row.")
+  return (vecc)
 }
 
 inline_vec.char <- function(char_vector) {	# Paste data into your code easily. Take a character vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
@@ -81,6 +89,11 @@ inline_vec.char <- function(char_vector) {	# Paste data into your code easily. T
 
 inline_vec.num <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
 	toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
+}
+
+inline_named_vec <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
+  toClipboard(    print(paste("c( ", paste (names(num_vector),"=", num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)    )
+  print(" Copied to Clipboard")
 }
 
 inline_list_char <- function(char_list) {	# Paste data into your code easily. Take a list of character vectors, parse it to a code-snippet defining an R list, and copy back to the Clipboard.
