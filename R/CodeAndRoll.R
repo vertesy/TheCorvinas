@@ -678,3 +678,21 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
   sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
 }
 
+
+
+colsplit <- function(df, f) { # split a data frame by a factor corresponding to columns.
+  ListOfDFs = NULL
+  levelz = unique(f)
+  for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
+  return(ListOfDFs)
+}
+
+value2name_flip <- function(named_vector) { # Flip the values and the names of a vector with names
+  if (! is.null(names(named_vector))) {
+    newvec = names(named_vector)
+    names(newvec) = named_vector
+  } else {llprint("Vector without names!", head(named_vector))}
+  if (any(duplicated(named_vector))) {llprint("New names contain duplicated elements",head(named_vector[which(duplicated(named_vector))]))  }
+  if (any(duplicated(newvec))) {llprint("Old names contained duplicated elements",head(newvec[which(duplicated(newvec))]))  }
+  return(newvec)
+}
