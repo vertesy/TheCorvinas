@@ -92,7 +92,7 @@ inline_vec.num <- function(num_vector) {	# Paste data into your code easily. Tak
 }
 
 inline_named_vec <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
-  toClipboard(    print(paste("c( ", paste (names(num_vector),"=", num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)    )
+  toClipboard(    print(paste("c( ", paste (paste0('"', names(num_vector),'"'),"=", num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)    )
   print(" Copied to Clipboard")
 }
 
@@ -655,18 +655,19 @@ panel.cor <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ..
 	text(0.5, 0.5, txt, cex = cex.cor * r)
 }
 
-replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
+translate = replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
   Nr = l(oldvalues)
   if (Nr > l(newvalues) ) {
     if (l(newvalues) == 1) {
       newvalues =  rep(newvalues, l(oldvalues))
     } else if (l(newvalues) > 1) { any_print("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
   }
+  tmp = vec
   for (i in 1:Nr) {
     oldval = oldvalues[i]
-    vec[vec==oldval] = newvalues[i]
+    tmp[vec==oldval] = newvalues[i]
   }
-  return(vec)
+  return(tmp)
 }
 'chartr("a-cX", "D-Fw", x) does the same as above !!!'
 
