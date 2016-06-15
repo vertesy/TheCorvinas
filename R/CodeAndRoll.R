@@ -390,6 +390,7 @@ colsplit <- function(df, f) { # split a data frame by a factor corresponding to 
   for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
   return(ListOfDFs)
 }
+splitByCol = colsplit
 
 ## List operations -------------------------------------------------------------------------------------------------
 list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
