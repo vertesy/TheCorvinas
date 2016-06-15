@@ -235,7 +235,15 @@ rescale <- function(vec, from=0, upto=100) { # linear transformation to a given 
 	return (vec)
 } # fun
 
-
+value2name_flip <- function(named_vector) { # Flip the values and the names of a vector with names
+  if (! is.null(names(named_vector))) {
+    newvec = names(named_vector)
+    names(newvec) = named_vector
+  } else {llprint("Vector without names!", head(named_vector))}
+  if (any(duplicated(named_vector))) {llprint("New names contain duplicated elements",head(named_vector[which(duplicated(named_vector))]))  }
+  if (any(duplicated(newvec))) {llprint("Old names contained duplicated elements",head(newvec[which(duplicated(newvec))]))  }
+  return(newvec)
+}
 
 # sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric order of its names (instead of its values).
 # 	print("THIS FUCNTION MAKES MISTAKES WITH DUPLICATE NAMES")
@@ -250,7 +258,6 @@ sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric or
 	order = as.numeric(names(gtools::mixedsort(xx)))
 	vec_or_list[order]
 }
-
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
@@ -373,6 +380,17 @@ matrix_from_vector <- function(vector, HowManyTimes=3, IsItARow = T) { # Create 
 	return(matt)
 }
 
+matrix_from_dimnames  <- function (rownames, colnames, fill = NA) { # Set up an empty matrix from two vectors that will define row- and column-names.
+  mm = matrix(data = fill, nrow = length(rownames), ncol = length(colnames), dimnames = list(rownames, colnames))
+}
+
+colsplit <- function(df, f) { # split a data frame by a factor corresponding to columns.
+  ListOfDFs = NULL
+  levelz = unique(f)
+  for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
+  return(ListOfDFs)
+}
+
 ## List operations -------------------------------------------------------------------------------------------------
 list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
 	l = list(...)
@@ -429,6 +447,26 @@ as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with
 		past = past+lv
 	} # for
 	return(list_return)
+}
+
+list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Convert a list to a full dataframe, summarizing the presence or absence of elements
+  if( is.null(names(yalist)) ) {names(yalist) = 1:length(yalist)}
+  
+  rown = unique(unlist(yalist))
+  coln =  names(yalist)
+  mm = matrix_from_dimnames(rown, coln, fill = matrixfill)
+  entries_list = lapply(yalist, names)
+  
+  for (i in 1:length(yalist)) {
+    print(i)
+    le = unlist(yalist[i])
+    names(le) = unlist(entries_list[i])
+    
+    list_index = which( le  %in% rown)
+    m_index = which( rown %in% le)
+    mm[ m_index,i] = names(le[list_index])
+  }
+  return(mm)  
 }
 
 ## Set operations -------------------------------------------------------------------------------------------------
@@ -516,6 +554,28 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 	return (ls_out)
 }
 
+translate = replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
+  Nr = l(oldvalues)
+  if (Nr > l(newvalues) ) {
+    if (l(newvalues) == 1) {
+      newvalues =  rep(newvalues, l(oldvalues))
+    } else if (l(newvalues) > 1) { any_print("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
+  }
+  tmp = vec
+  for (i in 1:Nr) {
+    oldval = oldvalues[i]
+    tmp[vec==oldval] = newvalues[i]
+  }
+  return(tmp)
+}
+'chartr("a-cX", "D-Fw", x) does the same as above in theory, but it did not seem very robust regarding your input...'
+
+capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first letter of a word
+  cap <- function(s) paste(toupper(substring(s, 1, 1)),
+                           {s <- substring(s, 2); if(strict) tolower(s) else s},
+                           sep = "", collapse = " " )
+  sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
+}
 
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
 
@@ -655,45 +715,12 @@ panel.cor <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ..
 	text(0.5, 0.5, txt, cex = cex.cor * r)
 }
 
-translate = replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
-  Nr = l(oldvalues)
-  if (Nr > l(newvalues) ) {
-    if (l(newvalues) == 1) {
-      newvalues =  rep(newvalues, l(oldvalues))
-    } else if (l(newvalues) > 1) { any_print("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
-  }
-  tmp = vec
-  for (i in 1:Nr) {
-    oldval = oldvalues[i]
-    tmp[vec==oldval] = newvalues[i]
-  }
-  return(tmp)
-}
-'chartr("a-cX", "D-Fw", x) does the same as above !!!'
-
-
-capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first letter of a word
-  cap <- function(s) paste(toupper(substring(s, 1, 1)),
-                           {s <- substring(s, 2); if(strict) tolower(s) else s},
-                           sep = "", collapse = " " )
-  sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
-}
 
 
 
-colsplit <- function(df, f) { # split a data frame by a factor corresponding to columns.
-  ListOfDFs = NULL
-  levelz = unique(f)
-  for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
-  return(ListOfDFs)
-}
 
-value2name_flip <- function(named_vector) { # Flip the values and the names of a vector with names
-  if (! is.null(names(named_vector))) {
-    newvec = names(named_vector)
-    names(newvec) = named_vector
-  } else {llprint("Vector without names!", head(named_vector))}
-  if (any(duplicated(named_vector))) {llprint("New names contain duplicated elements",head(named_vector[which(duplicated(named_vector))]))  }
-  if (any(duplicated(newvec))) {llprint("Old names contained duplicated elements",head(newvec[which(duplicated(newvec))]))  }
-  return(newvec)
-}
+
+
+
+
+
