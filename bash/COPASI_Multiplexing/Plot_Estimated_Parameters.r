@@ -30,12 +30,12 @@ panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {
 
 
 # Setup ------------------------
-OutDir = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/"
+OutDir = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q7/"
 setup_MarkdownReports(OutDir = OutDir, scriptname = "Plot_Estimated_Parameters.r", append = F)
 
 # Read in the files ------------------------
-# infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/FitResults.tsv"
-infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/FitResults_best.tsv"
+infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q7/FitResults_Q7_best.tsv"
+# infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/FitResults_best.tsv"
 
 Estimates = read.simple.tsv(infile)
 NrParams = ncol(Estimates)
@@ -62,10 +62,14 @@ pdfA4plot_off()
 # Correlation plots ------------------------------------------------------------------------------------------------------------
 
 par("pch" =18)
+par("col" =rgb(0,0,0,.3))
+ccc=(val2col(-Estimates$ObjValue))
+  
 cormethod = "spearman"
 pname ="Pairwise_correlation_of_parameters"
 pairs(Estimates, lower.panel=panel.smooth, upper.panel=panel.cor, main = pname) # , pch =".", cex.labels = .5
 wplot_save_this(plotname = pname, w=15, h=15, mdlink = T)
+help(pairs)
 
 cormethod = "pearson"
 pname ="Pairwise_correlation_of_parameters_log10_pearson"
@@ -76,4 +80,26 @@ cormethod = "spearman"
 pname ="Pairwise_correlation_of_parameters_log10_spearman"
 pairs(x = log10(Estimates), lower.panel=panel.smooth, upper.panel=panel.cor, main = pname) # , cex.labels = .5
 wplot_save_this(plotname = pname, w=15, h=15, mdlink = T)
+
+par("col" ="black")
+
+# Color by goodness of fit (smallest objective vales are red) ------------------------------------------------------
+
+cormethod = "spearman"
+pname ="Pairwise_correlation_of_parameters_RedHot"
+pairs(Estimates, col=ccc, lower.panel=panel.smooth, main = pname) # , pch =".", cex.labels = .5
+wplot_save_this(plotname = pname, w=15, h=15, mdlink = T)
+help(pairs)
+
+cormethod = "pearson"
+pname ="Pairwise_correlation_of_parameters_log10_pearson_RedHot"
+pairs(x = log10(Estimates), col=ccc, lower.panel=panel.smooth, main = pname) # , cex.labels = .5
+wplot_save_this(plotname = pname, w=15, h=15, mdlink = T)
+
+cormethod = "spearman"
+pname ="Pairwise_correlation_of_parameters_log10_spearman_RedHot"
+pairs(x = log10(Estimates), col=ccc, lower.panel=panel.smooth, main = pname) # , cex.labels = .5
+wplot_save_this(plotname = pname, w=15, h=15, mdlink = T)
+
+
 
