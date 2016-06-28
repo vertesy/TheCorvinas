@@ -17,9 +17,15 @@ grc_Zebra = c("http://www.ensembl.org/Mouse/Search/Results?q=", ";site=ensembl;f
 
 
 uniprot_mouse = c('http://www.uniprot.org/uniprot/?query=organism%3A"Mus+musculus+[10090]"+',"&sort=score")
-# I left out (Mouse) aprt because it messes up with markdown, it still works.
+# I left out (Mouse) part because it messes up with markdown, it still works.
 uniprot_human = c('http://www.uniprot.org/uniprot/?query=organism%3A"Homo+sapiens+%28Human%29+[9606]"+',"&sort=score")
 
+
+STRING = "http://string-db.org/newstring_cgi/show_network_section.pl?identifier="
+
+# HELP: http://string-db.org/help/faq/#how-do-i-link-to-string
+STRING_mouse_suffix = "&species=10090"
+STRING_human_suffix = "&species=9606"
 
 # Functions ------------------------
 link_HGNC <- function (vector_of_gene_symbols, writeOut = T) { # Parse HGNC links to your list of gene symbols
@@ -93,6 +99,17 @@ link_uniprot_human <- function (vector_of_gene_symbols, writeOut = T) { # Parse 
   links = paste0( uniprot_human[1], vector_of_gene_symbols, uniprot_human[2] )
   if (writeOut) {
     bash_commands = paste0("open ", links)
+    write.simple.append("", ManualName = "/Users/abelvertesy/bin/run.sh")
+    write.simple.append(bash_commands, ManualName = "/Users/abelvertesy/bin/run.sh")
+  } else { return(links) }
+}
+
+
+link_String <- function (vector_of_gene_symbols, organism="mouse", writeOut = T) { # Parse STRING protein interaction database links to your list of gene symbols. "organism" can be mouse, human or NA
+  suffix = if (is.na(organism)) { "" } else if (organism== "mouse") { STRING_mouse_suffix } else if (organism== "human") { STRING_human_suffix }
+    links = paste0( STRING, vector_of_gene_symbols, suffix )
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = "/Users/abelvertesy/bin/run.sh")
     write.simple.append(bash_commands, ManualName = "/Users/abelvertesy/bin/run.sh")
   } else { return(links) }
