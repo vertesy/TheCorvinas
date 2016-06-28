@@ -30,11 +30,11 @@ panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {
 
 
 # Setup ------------------------
-OutDir = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q7/"
+OutDir = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/q10/"
 setup_MarkdownReports(OutDir = OutDir, scriptname = "Plot_Estimated_Parameters.r", append = F)
 
 # Read in the files ------------------------
-infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q7/FitResults_Q7_best.tsv"
+infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/q10/FitResults_q10_BestFits.tsv"
 # infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/FitResults_best.tsv"
 
 Estimates = read.simple.tsv(infile)
@@ -45,16 +45,15 @@ Params = colnames(Estimates)
 pdfA4plot_on(pname = "ParameterHistograms")
 for (p in Params) {
   print(p)
-  hist(Estimates[,p], main = p, breaks =NrFits, col="seagreen")
+  hist(Estimates[,p], main = p, breaks =NrFits/2, col="seagreen")
   # whist_dfCol(Estimates, colName = p, breaks =50)
 }
 pdfA4plot_off()
 
-
 pdfA4plot_on(pname = "ParameterHistograms_log10")
 for (p in Params) {
   print(p)
-  hist(log10(Estimates[,p]), main = p, breaks =NrFits, col="seagreen")
+  hist(log10(Estimates[,p]), main = p, breaks =NrFits/2, col="seagreen")
   # whist_dfCol(Estimates, colName = p, breaks =50)
 }
 pdfA4plot_off()
