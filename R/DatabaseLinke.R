@@ -7,7 +7,7 @@
 
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "/Users/abelvertesy/bin/run.sh"
-
+# ALT USAGE link_fromToClilpboard = toClipboard(link_uniprot_mice(fromClipboard.as_vec(), writeOut = F))
 
 # Static part of Query links ------------------------
 HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search="
@@ -27,6 +27,7 @@ uniprot_human = c('http://www.uniprot.org/uniprot/?query=organism%3A"Homo+sapien
 STRING = "http://string-db.org/newstring_cgi/show_network_section.pl?identifier="
 STRING_mouse_suffix = "&species=10090"
 STRING_human_suffix = "&species=9606"
+
 
 # HGNC links ------------------------------------------------------------------------------------------------
 link_HGNC <- function (vector_of_gene_symbols, writeOut = T) { # Parse HGNC links to your list of gene symbols
