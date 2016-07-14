@@ -9,10 +9,8 @@
 # source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 ### CHAPTERS:
-# -  Setup
-# 	- Load the MarkdownReports Library
 # -  File handling, export, import [read & write]
-# 	- Clipboard interaction
+# 	- Clipboard interaction (OS X)
 # 	- Reading files in
 # 	- Writing files out
 # -  Vector operations
@@ -25,6 +23,7 @@
 # -  Plotting and Graphics
 # -  Read and write plotting functions READ
 # -  Generic
+# -  Plots
 # -  New additions
 
 
@@ -34,22 +33,6 @@ debuggingState(on=FALSE)
 l=length
 oo <- function () {toClipboard(OutDir); print("OutDir is copied to the Clipbiard")}
 
-pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, title = paste0(basename(fname), " by ", scriptname)) { # Print (multiple) plots to an (A4) pdf.
-	assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
-	fname = kollapse(OutDir,"/" , pname, ".pdf")
-	pdf(fname,width=w, height=h, title = title)
-	par(mfrow = c(rows, cols))
-	any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
-}
-
-pdfA4plot_off <- function () {
-	if (exists("mfrow_default")) {
-		x = mfrow_default
-	} else { x =  c(1,1)}
-	par(mfrow = x)
-	try(dev.off()) # close pdf
-	oo();
-}
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
@@ -638,7 +621,28 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, pl
 	dev.copy2pdf (file=kollapse(FnP,".barplot.pdf"), width=w, height=h )
 }
 
+## Plots -------------------------------------------------------------------------------------------------
+
+
+pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, title = paste0(basename(fname), " by ", scriptname)) { # Print (multiple) plots to an (A4) pdf.
+  assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
+  fname = kollapse(OutDir,"/" , pname, ".pdf")
+  pdf(fname,width=w, height=h, title = title)
+  par(mfrow = c(rows, cols))
+  any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
+}
+
+pdfA4plot_off <- function () {
+  if (exists("mfrow_default")) {
+    x = mfrow_default
+  } else { x =  c(1,1)}
+  par(mfrow = x)
+  try(dev.off()) # close pdf
+  oo();
+}
+
 ## Generic -------------------------------------------------------------------------------------------------
+
 
 stopif <- function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
 
