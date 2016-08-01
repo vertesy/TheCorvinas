@@ -564,8 +564,8 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
 
 HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
-# HeatMapCol_BWR <- colorRampPalette(c("blue", "white", "red"), bias=1)
-HeatMapCol_RedBlackGreen <- colorRampPalette(c("red", "black", "green"), bias=1)
+# HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias=1)
+HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green"), bias=1)
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
 	eq = (lm$coefficients);
