@@ -167,7 +167,8 @@ write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, .
 	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
-	any_print ("Dim: ", dim(input_df))
+	printme = if(l(dim(input_df))) paste0("Dim: ", dim(input_df) ) else paste0("Length (of your vector): ", l(input_df) )
+	any_print (printme)
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
