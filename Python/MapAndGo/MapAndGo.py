@@ -17,6 +17,7 @@ default_bash_out = os.getcwd()+'/bash_files'
 default_cat_out = os.getcwd()+'/cat_files'
 default_counts_out = os.getcwd()+'/count_files'
 default_map_out = os.getcwd()+'/map_files'
+default_logfiles_out = os.getcwd()+'/logs_and_errors'
 default_email = "<none>"
 default_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
@@ -37,17 +38,6 @@ do_break = False
 files = []
 options = ["yes","no"]
 params = {}
-
-
-#Check if defaults folders exists
-if not os.path.isdir(default_bash_out):
-		os.mkdir(default_bash_out)
-if not os.path.isdir(default_cat_out):
-		os.mkdir(default_cat_out)
-if not os.path.isdir(default_counts_out):
-		os.mkdir(default_counts_out)
-if not os.path.isdir(default_map_out):
-		os.mkdir(default_map_out)
 
 #Check if required default input is valid
 if not default_qsub.lower() in options:
@@ -107,7 +97,6 @@ else:
 	else:
 		params["-bar"] =  default_bar
 
-
 #Process parameter for bash_out
 if "-bash_out" in argv_imput:
 	bash_out = argv_imput["-bash_out"]
@@ -150,16 +139,6 @@ else:
 		default_counts_out = default_counts_out[0:(len(default_counts_out)-1)]
 	params["-counts_out"] = default_counts_out
 
-
-#Process parameter for email
-if "-email" in argv_imput:
-	params["-email"] = "\n#$ -M " + argv_imput["-email"]
-	params["-email_fb"] = argv_imput["-email"]
-else:
-	params["-email"] = "\n#$ -M " + default_email
-	params["-email_fb"] = default_email
-
-
 #Process parameter for map_out
 if "-map_out" in argv_imput:
 	map_out = argv_imput["-map_out"]
@@ -174,8 +153,21 @@ else:
 		default_map_out = default_map_out[0:(len(default_map_out)-1)]
 	params["-map_out"] = default_map_out
 
+if "-logs_out" in argv_imput:
+	logs_out = argv_imput["-logs_out"]
+	if logs_out[(len(logs_out)-1)] == "/":
+		argv_imput["-logs_out"] = logs_out[0:(len(logs_out)-1)]
 
-#Set parameter for refseq file
+	params["-logs_out"] = os.getcwd() + "/" +  argv_imput["-logs_out"]
+	if not os.path.isdir(argv_imput["-logs_out"]):
+		os.mkdir(params["-logs_out"])
+
+else:
+	if default_logfiles_out[(len(default_logfiles_out)-1)] == "/":
+		default_logfiles_out = default_logfiles_out[0:(len(default_logfiles_out)-1)]
+	params["-logs_out"] = default_logfiles_out
+
+#Set parameter for refseq file ------------------------------------------------------------------------------------------------------------
 if "-ref" in argv_imput:
 	if argv_imput["-ref"] == "human":
 		if os.path.isfile(default_refseq_human):
@@ -208,16 +200,6 @@ else:
 		sys.exit("\nThe default refseq file is not found! Check if the file exist and if the right path is given!\n")
 	else:
 		params["-ref"] =  default_refseq_mouse
-
-
-#Set parameter for qsub
-if "-qsub" in argv_imput:
-	if argv_imput["-qsub"].lower() in options:
-		params["-qsub"] = argv_imput["-qsub"].lower()
-	else:
-		sys.exit("\nOnly \"yes\" and \"no\" are supported for -qsub\n")
-else:
-	params["-qsub"] = default_qsub
 
 #Set parameter for mem
 if "-mem" in argv_imput:
@@ -257,8 +239,17 @@ if "-zip" in argv_imput:
 else:
 	params["-zip"] = default_zip
 
+#Process parameter for email
+if "-email" in argv_imput:
+	params["-email"] = "\n#$ -M " + argv_imput["-email"]
+	params["-email_fb"] = argv_imput["-email"]
+else:
+	params["-email"] = "\n#$ -M " + default_email
+	params["-email_fb"] = default_email
 
-#Head of the bash files
+
+
+# Head of the bash files
 head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"]
 
 #Get unique files in dir
@@ -348,8 +339,7 @@ for i in range(0,len(files)):
 
 	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
 	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
-	# map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
-	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
+	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".commands.txt 2> " + files[i] + ".logs_and_errors.txt"
 	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.tsv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.tsv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.tsv"
 
 	if params['-zip'] == "yes":
