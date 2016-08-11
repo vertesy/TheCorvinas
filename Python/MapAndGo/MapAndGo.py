@@ -104,7 +104,7 @@ if "-bash_out" in argv_imput:
 		argv_imput["-bash_out"] = bash_out[0:(len(bash_out)-1)]
 
 	params["-bash_out"] = os.getcwd() + "/" + argv_imput["-bash_out"]
-	if not os.path.isdir(argv_imput["-counts_out"]):
+	if not os.path.isdir(argv_imput["-bash_out"]):
 		os.mkdir(params["-bash_out"])
 else:
 	if default_bash_out[(len(default_bash_out)-1)] == "/":
