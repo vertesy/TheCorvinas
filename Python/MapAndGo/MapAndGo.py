@@ -102,10 +102,8 @@ if "-bash_out" in argv_imput:
 	bash_out = argv_imput["-bash_out"]
 	if bash_out[(len(bash_out)-1)] == "/":
 		argv_imput["-bash_out"] = bash_out[0:(len(bash_out)-1)]
-
 	params["-bash_out"] = os.getcwd() + "/" + argv_imput["-bash_out"]
-	if not os.path.isdir(argv_imput["-bash_out"]):
-		os.mkdir(params["-bash_out"])
+
 else:
 	if default_bash_out[(len(default_bash_out)-1)] == "/":
 		default_bash_out = default_bash_out[0:(len(default_bash_out)-1)]
@@ -116,10 +114,8 @@ if "-cat_out" in argv_imput:
 		cat_out = argv_imput["-cat_out"]
 		if cat_out[(len(cat_out)-1)] == "/":
 				argv_imput["-cat_out"] = cat_out[0:(len(cat_out)-1)]
-
 		params["-cat_out"] = os.getcwd() + "/" + argv_imput["-cat_out"]
-		if not os.path.isdir(argv_imput["-cat_out"]):
-				os.mkdir(params["-cat_out"])
+
 else:
 		if default_cat_out[(len(default_cat_out)-1)] == "/":
 				default_cat_out = default_cat_out[0:(len(default_cat_out)-1)]
@@ -130,10 +126,8 @@ if "-counts_out" in argv_imput:
 	counts_out = argv_imput["-counts_out"]
 	if counts_out[(len(counts_out)-1)] == "/":
 		argv_imput["-counts_out"] = counts_out[0:(len(counts_out)-1)]
-
 	params["-counts_out"] = os.getcwd() + "/" + argv_imput["-counts_out"]
-	if not os.path.isdir(argv_imput["-counts_out"]):
-		os.mkdir(params["-counts_out"])
+
 else:
 	if default_counts_out[(len(default_counts_out)-1)] == "/":
 		default_counts_out = default_counts_out[0:(len(default_counts_out)-1)]
@@ -144,10 +138,8 @@ if "-map_out" in argv_imput:
 	map_out = argv_imput["-map_out"]
 	if map_out[(len(map_out)-1)] == "/":
 		argv_imput["-map_out"] = map_out[0:(len(map_out)-1)]
-
 	params["-map_out"] = os.getcwd() + "/" +  argv_imput["-map_out"]
-	if not os.path.isdir(argv_imput["-map_out"]):
-		os.mkdir(params["-map_out"])
+
 else:
 	if default_map_out[(len(default_map_out)-1)] == "/":
 		default_map_out = default_map_out[0:(len(default_map_out)-1)]
@@ -157,15 +149,24 @@ if "-logs_out" in argv_imput:
 	logs_out = argv_imput["-logs_out"]
 	if logs_out[(len(logs_out)-1)] == "/":
 		argv_imput["-logs_out"] = logs_out[0:(len(logs_out)-1)]
-
 	params["-logs_out"] = os.getcwd() + "/" +  argv_imput["-logs_out"]
-	if not os.path.isdir(argv_imput["-logs_out"]):
-		os.mkdir(params["-logs_out"])
 
 else:
 	if default_logfiles_out[(len(default_logfiles_out)-1)] == "/":
 		default_logfiles_out = default_logfiles_out[0:(len(default_logfiles_out)-1)]
 	params["-logs_out"] = default_logfiles_out
+
+#Check if defaults folders exists
+if not os.path.isdir(params["-bash_out"]):
+		os.mkdir(params["-bash_out"])
+if not os.path.isdir(params["-cat_out"]):
+		os.mkdir(params["-cat_out"])
+if not os.path.isdir(params["-counts_out"]):
+		os.mkdir(params["-counts_out"])
+if not os.path.isdir(params["-map_out"]):
+		os.mkdir(params["-map_out"])
+if not os.path.isdir(params["-logs_out"]):
+		os.mkdir(params["-logs_out"])
 
 #Set parameter for refseq file ------------------------------------------------------------------------------------------------------------
 if "-ref" in argv_imput:
@@ -247,9 +248,7 @@ else:
 	params["-email"] = "\n#$ -M " + default_email
 	params["-email_fb"] = default_email
 
-
-
-# Head of the bash files
+# Head of the bash files ------------------------------------------------------------------------------------------------------------------------------------------------
 head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"]
 
 #Get unique files in dir
