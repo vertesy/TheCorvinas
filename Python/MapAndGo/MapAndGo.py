@@ -25,17 +25,14 @@ default_qsub = "no"
 default_mem = "5"
 default_time = "24:00:00"
 default_core = "8"
-# default_qtype = "long"
 default_unzip = "no"
 default_zip = "no"
 
 
 #Define necessary variables
 argv_imput = {}
-# argv_valid = ["-bar","-bash_out","-counts_out","-cat_out","-email","-help","-map_out","-ref","-qsub","-qtype","-unzip","-zip"]
 argv_valid = ["-bar","-bash_out","-counts_out","-cat_out","-email","-help","-map_out","-ref","-qsub","-unzip","-zip", "-mem", "-time"]
 bash_file_name = []
-# cores = {"veryshort":"12","short":"9","medium":"7","long":"4","verylong":"1"}
 do_break = False
 files = []
 options = ["yes","no"]
@@ -55,8 +52,6 @@ if not os.path.isdir(default_map_out):
 #Check if required default input is valid
 if not default_qsub.lower() in options:
 		sys.exit("\nThe default for the argument -qsub= is not supported!\n")
-# if not default_qtype.lower() in cores:
-	# sys.exit("\nThe default for the argument -qtype= is not supported!\n")
 if not default_unzip.lower() in options:
 		sys.exit("\nThe default for the argument -unzip= is not supported!\n")
 if not default_zip.lower() in options:
@@ -65,7 +60,6 @@ if not default_zip.lower() in options:
 #Make help file
 line1 ="\nThe script automates the mapping procedure by making bash files containing the cat, do_mapping_strand.pl and extract_counts_rb.pl commands. \nIt works with .fastq files in the current working directory that have the minimal name of *_L00*_R*_*.fastq, \nand can submit them to the desired queue on the HPC. The following options are available for use:"
 line2 ="\n\n-qsub= \n\n\tThis determines if the generated bash file will be submitted on the queue. 	\n\tOptions: \"yes,\"no\". Default: \"no\"."
-# line3 ="\n\n-qtype= \n\n\tThis determines the type of queue type of queue to be used. \n\tOptions: \"veryshort\" (12 cores), \"short\" (9 cores), \"medium\" (7 cores), \n\t\t \"long\" (4 cores) and \"verylong\" (1 core). \n\tDefault: \"long\" (4 cores). \n"
 line4 ="\n\n-ref= \n\n\tThis specifies the refseq file to be used for the do_mappings_strand.pl command. \n\tOptions: [refseq path] or, \n\t\t \"human\" which uses: " + default_refseq_human + ", \n\t\t \"mouse\" which uses: " + default_refseq_mouse + ", \n\t\t \"zebrafish\" which uses: " + default_refseq_zebrafish + " \n\tDefault: \"mouse\"."
 line5 ="\n\n-bar= \n\n\tThis specifies the barcode file to be used for the extract_counts_rb.pl command. \n\tOptions: [barcode path]. Default: " + default_bar + "."
 line6 ="\n\n-cat_out= \n\n\tThis specifies the output folder for the cat command and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory."
@@ -77,10 +71,8 @@ line11 =" \n\n-unzip= \n\n\tThis determines if .fastq files to use are zipped an
 line12 ="\n\n-zip= \n\n\tThis determines if the used .fastq files should be zipped after mapping. Options: \"yes\",\"no\". Default: \"no\"."
 line13 ="\n\n-help \n\n\tShows help!"
 line14 ="\n\nSummary of the defaults: \n\n\t"
-# line15 ="\n\nExample: make_bash.py -qsub=no -qtype=medium -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=t.hoog@hubrecht.eu"
 line15 ="\n\nExample: MapAndGo.py -qsub=no -ref=human -bar=cel-seq_barcodes.csv -email=x.y@hubrecht.eu"
 line16 ="\n\nImportant: Be careful to check the bash files!\n"
-# help_text = line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14 + line15 + line16
 help_text = line1 + line2 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14 + line15 + line16
 
 
@@ -170,9 +162,7 @@ else:
 
 #Process parameter for map_out
 if "-map_out" in argv_imput:
-
 	map_out = argv_imput["-map_out"]
-
 	if map_out[(len(map_out)-1)] == "/":
 		argv_imput["-map_out"] = map_out[0:(len(map_out)-1)]
 
@@ -229,19 +219,6 @@ if "-qsub" in argv_imput:
 else:
 	params["-qsub"] = default_qsub
 
-
-# #Set parameter for qtype
-# if "-qtype" in argv_imput:
-# 	if argv_imput["-qtype"].lower() in cores:
-# 		params["-qtype"] = argv_imput["-qtype"]
-# 		params["-cores"] = cores[argv_imput["-qtype"]]
-# 	else:
-# 		sys.exit("\nOnly \"veryshort\", \"short\", \"medium\", \"long\" and \"verylong\" are supported for -qtype\n")
-# else:
-# 	params["-qtype"] = default_qtype
-# 	params["-cores"] = cores[default_qtype]
-
-
 #Set parameter for mem
 if "-mem" in argv_imput:
 	params["-mem"] = argv_imput["-mem"].lower()
@@ -282,7 +259,6 @@ else:
 
 
 #Head of the bash files
-# head_bash = "#! /bin/bash \n#$ -q " + params["-qtype"] + "\n#$ -cwd \n#$ -V " + params["-email"] +" \n#$ -m beas \n#$ -pe threaded " + params["-cores"]
 head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"]
 
 #Get unique files in dir
@@ -341,7 +317,6 @@ print "Output directory for the cat files:	" + params['-cat_out'] + "/"
 print "Output directory for the bash files: 	" + params['-bash_out'] + "/"
 print "Output directory for the mapping files: " + params['-map_out'] + "/"
 print "Output directory for the counts files: 	" + params['-counts_out'] + "/"
-# print "The used queue is: 			" + params['-qtype']
 print "The number of used cores: 		" + params['-cores']
 print "Submission to queue: 			" + params['-qsub']
 print "Memory requested: 			" + params['-mem']
