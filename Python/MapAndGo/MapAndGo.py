@@ -13,11 +13,11 @@ import os
 
 #Default parameters
 default_bar = "/hpc/hub_oudenaarden/data/cel-seq_barcodes.csv"
-default_bash_out = os.getcwd()
-default_cat_out = os.getcwd()
-default_counts_out = os.getcwd()
+default_bash_out = os.getcwd()+'/bash_files'
+default_cat_out = os.getcwd()+'/cat_files'
+default_counts_out = os.getcwd()+'/count_files'
+default_map_out = os.getcwd()+'/map_files'
 default_email = "<none>"
-default_map_out = os.getcwd()
 default_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_zebrafish = "/hpc/hub_oudenaarden/gene_models/zebrafish_gene_models/Danio_rerio_Zv9_ens74_extended3_genes_ERCC92.fa"
@@ -78,7 +78,7 @@ line12 ="\n\n-zip= \n\n\tThis determines if the used .fastq files should be zipp
 line13 ="\n\n-help \n\n\tShows help!"
 line14 ="\n\nSummary of the defaults: \n\n\t"
 # line15 ="\n\nExample: make_bash.py -qsub=no -qtype=medium -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=t.hoog@hubrecht.eu"
-line15 ="\n\nExample: MapAndGo.py -qsub=no -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=x.y@hubrecht.eu"
+line15 ="\n\nExample: MapAndGo.py -qsub=no -ref=human -bar=cel-seq_barcodes.csv -email=x.y@hubrecht.eu"
 line16 ="\n\nImportant: Be careful to check the bash files!\n"
 # help_text = line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14 + line15 + line16
 help_text = line1 + line2 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14 + line15 + line16
