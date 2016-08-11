@@ -375,7 +375,7 @@ for i in range(0,len(files)):
 	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
 	# map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
 	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".log1 2> " + files[i] + ".log2"
-	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.csv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.csv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.csv"
+	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.tsv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.tsv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.tsv"
 
 	if params['-zip'] == "yes":
 		zip = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
