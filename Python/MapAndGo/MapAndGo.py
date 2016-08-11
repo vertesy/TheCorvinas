@@ -5,7 +5,7 @@
 # - Test it by running in bash: `python path/to/MapAndGo.py -help`
 # - Run it with your data: python `path/to/MapAndGo.py MapAndGo.py -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=x.y@hubrecht.eu`
 # - Original author: Thom de Hoog, van Oudenaarden group, 02-03-2015
-# - Modified and maintained by Abel Vertesy, van Oudenaarden group, 28-04-2016
+# - Modified and maintained by Abel Vertesy, van Oudenaarden group, 12-08-2016
 
 import glob
 import sys
@@ -29,10 +29,9 @@ default_core = "8"
 default_unzip = "no"
 default_zip = "no"
 
-
 #Define necessary variables
 argv_imput = {}
-argv_valid = ["-bar","-bash_out","-counts_out","-cat_out","-email","-help","-map_out","-ref","-qsub","-unzip","-zip", "-mem", "-time"]
+argv_valid = ["-help", "-email", "-bar", "-ref", "-mem", "-time", "-qsub", "-unzip", "-zip", "-bash_out", "-counts_out", "-cat_out", "-map_out", "-logs_out"]
 bash_file_name = []
 do_break = False
 files = []
@@ -272,8 +271,8 @@ for i in range(0, len(dir)):
 files = list(set(files))
 
 #Check if all files exist
-rs = ["1","2"]
-ls = ["1","2","3","4"]
+rs = ["1","2"] 				# We do paired end sequencing
+ls = ["1","2","3","4"] 		# There are four lanes in a Illumina NextSeq run
 missing_files = ""
 
 for i in range(0, len(files)):
@@ -327,7 +326,7 @@ for i in range(0,len(files)):
 
 	bash_file_name.append(file_name)
 
-#Make commands
+#Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
 	bash_file = open(bash_file_name[i], "w")
 
@@ -352,7 +351,7 @@ for i in range(0,len(files)):
 	bash_file.write(bash_text)
 	bash_file.close()
 
-#Submit to queue
+#Submit to queue ------------------------------------------------------------------------------------------------------------------------
 if params['-qsub'] == 'yes':
 	for i in range(0, len(files)):
 		command = "qsub " + bash_file_name[i]
