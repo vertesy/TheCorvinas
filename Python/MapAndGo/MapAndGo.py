@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # ## Usage
 # - Put the raw sequence data in a folder, put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/MapAndGo.py`
-# - The files should contain the minimum name of *_L00*_R*_001.fastq (that is Illumina NextSeq's default output: R for read 1 or 2, L for one of the 4 lanes)
+# - The files should contain the minimum name of *__L00*_R*_001.fastq (that is Illumina NextSeq's default output: R for read 1 or 2, L for one of the 4 lanes)
 # - Test it by running in bash: `python path/to/MapAndGo.py -help`
 # - Run it with your data: python `path/to/MapAndGo.py MapAndGo.py -ref=human -bar=cel-seq_barcodes.csv -email=x.y@hubrecht.eu`
 # - Original author: Thom de Hoog, van Oudenaarden group, 02-03-2015
@@ -51,7 +51,7 @@ if not default_zip.lower() in options:
 		sys.exit("\nThe default for the argument -zip= is not supported!\n")
 
 #Make help file
-line1 ="\nThe script automates the mapping procedure by making bash files containing the cat, do_mapping_strand.pl and extract_counts_rb.pl commands. \nIt works with .fastq files in the current working directory that have the minimal name of *L00*_R*_*.fastq, \nand can submit them to the desired queue on the HPC. The following options are available for use:"
+line1 ="\nThe script automates the mapping procedure by making bash files containing the cat, do_mapping_strand.pl and extract_counts_rb.pl commands. \nIt works with .fastq files in the current working directory that have the minimal name of *_L00*_R*_*.fastq, \nand can submit them to the desired queue on the HPC. The following options are available for use:"
 line2 ="\n\n-qsub= \n\n\tThis determines if the generated bash file will be submitted on the queue. 	\n\tOptions: \"yes,\"no\". Default: \"no\"."
 line4 ="\n\n-ref= \n\n\tThis specifies the refseq file to be used for the do_mappings_strand.pl command. \n\tOptions: [refseq path] or, \n\t\t \"human\" which uses: " + default_refseq_human + ", \n\t\t \"mouse\" which uses: " + default_refseq_mouse + ", \n\t\t \"zebrafish\" which uses: " + default_refseq_zebrafish + " \n\tAlso C elegans and briggsae default gene models are present under these names. Default: \"mouse\"."
 line5 ="\n\n-bar= \n\n\tThis specifies the barcode file to be used for the extract_counts_rb.pl command. \n\tOptions: [barcode path]. Default: " + default_bar + "."
@@ -279,13 +279,13 @@ else:
 		gz = ""
 
 #Get unique files in dir
-dir = glob.glob("*L00*_R*_*.fastq"+gz)
+dir = glob.glob("*_L00*_R*_*.fastq"+gz)
 
 if len(dir) == 0:
-	sys.exit("\nThere are no files in the current working directory with the minimal name of *L00*_R*_*.fastq\n")
+	sys.exit("\nThere are no files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
 
 for i in range(0, len(dir)):
-	name = dir[i].split("L00")
+	name = dir[i].split("_L00")
 
 	if(len(name) == 2):
 		files.append(name[0])
@@ -300,7 +300,7 @@ missing_files = ""
 for i in range(0, len(files)):
 	for r in rs:
 		for l in ls:
-			path = files[i] + "L00" + l  +"_R" + r + "_001.fastq"+gz
+			path = files[i] + "_L00" + l  +"_R" + r + "_001.fastq"+gz
 			if not os.path.exists(os.getcwd()+"/"+path):
 				if missing_files == "":
 					missing_files = path + " does not exist!"
@@ -354,12 +354,12 @@ for i in range(0,len(files)):
 	bash_file = open(bash_file_name[i], "w")
 
 	if params["-unzip"] == "yes":
-		unzip = "gunzip " + os.getcwd() + "/" + files[i] + "L00*_R*_*.fastq.gz" + "\n \n"
+		unzip = "gunzip " + os.getcwd() + "/" + files[i] + "_L00*_R*_*.fastq.gz" + "\n \n"
 	else:
 		unzip = ""
 
-	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
-	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
+	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
+	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
 	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".commands.txt 2> " + files[i] + ".logs_and_errors.txt"
 	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.tsv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.tsv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.tsv"
 
