@@ -3,9 +3,9 @@
 # - Put the raw sequence data in a folder, put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/MapAndGo.py`
 # - The files should contain the minimum name of *_L00*_R*_001.fastq (that is Illumina NextSeq's default output: R for read 1 or 2, L for one of the 4 lanes)
 # - Test it by running in bash: `python path/to/MapAndGo.py -help`
-# - Run it with your data: python `path/to/MapAndGo.py MapAndGo.py -ref=human -bar=cel-seq_barcodes.csv -bash_out=bash_files -cat_out=cat_files  -map_out=map_files -counts_out=count_files -email=x.y@hubrecht.eu`
+# - Run it with your data: python `path/to/MapAndGo.py MapAndGo.py -ref=human -bar=cel-seq_barcodes.csv -email=x.y@hubrecht.eu`
 # - Original author: Thom de Hoog, van Oudenaarden group, 02-03-2015
-# - Modified and maintained by Abel Vertesy, van Oudenaarden group, 12-08-2016
+# - Modified and maintained by Abel Vertesy, van Oudenaarden group, 16-08-2016
 
 import glob
 import sys
@@ -22,6 +22,8 @@ default_email = "<none>"
 default_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_zebrafish = "/hpc/hub_oudenaarden/gene_models/zebrafish_gene_models/Danio_rerio_Zv9_ens74_extended3_genes_ERCC92.fa"
+default_refseq_celegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate_1003_genes_sorted_oriented_ERCC92.fa"
+default_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_transcriptome_ERCC92.fa"
 default_qsub = "no"
 default_mem = "5"
 default_time = "24:00:00"
@@ -49,7 +51,7 @@ if not default_zip.lower() in options:
 #Make help file
 line1 ="\nThe script automates the mapping procedure by making bash files containing the cat, do_mapping_strand.pl and extract_counts_rb.pl commands. \nIt works with .fastq files in the current working directory that have the minimal name of *_L00*_R*_*.fastq, \nand can submit them to the desired queue on the HPC. The following options are available for use:"
 line2 ="\n\n-qsub= \n\n\tThis determines if the generated bash file will be submitted on the queue. 	\n\tOptions: \"yes,\"no\". Default: \"no\"."
-line4 ="\n\n-ref= \n\n\tThis specifies the refseq file to be used for the do_mappings_strand.pl command. \n\tOptions: [refseq path] or, \n\t\t \"human\" which uses: " + default_refseq_human + ", \n\t\t \"mouse\" which uses: " + default_refseq_mouse + ", \n\t\t \"zebrafish\" which uses: " + default_refseq_zebrafish + " \n\tDefault: \"mouse\"."
+line4 ="\n\n-ref= \n\n\tThis specifies the refseq file to be used for the do_mappings_strand.pl command. \n\tOptions: [refseq path] or, \n\t\t \"human\" which uses: " + default_refseq_human + ", \n\t\t \"mouse\" which uses: " + default_refseq_mouse + ", \n\t\t \"zebrafish\" which uses: " + default_refseq_zebrafish + " \n\tAlso C elegans and briggsae default gene models are present under these names. Default: \"mouse\"."
 line5 ="\n\n-bar= \n\n\tThis specifies the barcode file to be used for the extract_counts_rb.pl command. \n\tOptions: [barcode path]. Default: " + default_bar + "."
 line6 ="\n\n-cat_out= \n\n\tThis specifies the output folder for the cat command and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory."
 line7 ="\n\n-bash_out= \n\n\tThis specifies the output folder for the bash files and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory."
@@ -172,23 +174,32 @@ if "-ref" in argv_imput:
 	if argv_imput["-ref"] == "human":
 		if os.path.isfile(default_refseq_human):
 			params["-ref"] = default_refseq_human
-
 		else:
 			sys.exit("\nThe default human refseq file is not found! Check if the file exist and if the right path is given!\n")
 
 	elif argv_imput["-ref"] == "mouse":
 		if os.path.isfile(default_refseq_mouse):
 			params["-ref"] = default_refseq_mouse
-
 		else:
 			sys.exit("\nThe default mouse refseq file is not found! Check if the file exist and if the right path is given!\n")
 
 	elif argv_imput["-ref"] == "zebrafish":
 		if os.path.isfile(default_refseq_zebrafish):
 			params["-ref"] = default_refseq_zebrafish
-
 		else:
 			sys.exit("\nThe default zebrafish refseq file is not found! Check if the file exist and if the right path is given!\n")
+
+	elif argv_imput["-ref"] == "elegans":
+		if os.path.isfile(default_refseq_elegans):
+			params["-ref"] = default_refseq_elegans
+		else:
+			sys.exit("\nThe default C. elegans refseq file is not found! Check if the file exist and if the right path is given!\n")
+
+	elif argv_imput["-ref"] == "briggsae":
+		if os.path.isfile(default_refseq_briggsae):
+			params["-ref"] = default_refseq_briggsae
+		else:
+			sys.exit("\nThe default C. briggsae refseq file is not found! Check if the file exist and if the right path is given!\n")
 
 	else:
 		if os.path.isfile(argv_imput["-ref"]):
