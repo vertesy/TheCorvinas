@@ -379,3 +379,4 @@ if params['-qsub'] == 'yes':
 	for i in range(0, len(files)):
 		command = "qsub " + bash_file_name[i]
 		os.system(command)
+		os.system("qstat")
