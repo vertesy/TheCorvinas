@@ -12,23 +12,25 @@ import sys
 import os
 
 #Default parameters
+default_email = "<none>"
 default_bar = "/hpc/hub_oudenaarden/data/cel-seq_barcodes.csv"
 default_bash_out = os.getcwd()+'/bash_files'
 default_cat_out = os.getcwd()+'/cat_files'
 default_counts_out = os.getcwd()+'/count_files'
 default_map_out = os.getcwd()+'/map_files'
 default_logfiles_out = os.getcwd()+'/logs_and_errors'
-default_email = "<none>"
+
 default_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 default_refseq_zebrafish = "/hpc/hub_oudenaarden/gene_models/zebrafish_gene_models/Danio_rerio_Zv9_ens74_extended3_genes_ERCC92.fa"
-default_refseq_celegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate_1003_genes_sorted_oriented_ERCC92.fa"
+default_refseq_elegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate_1003_genes_sorted_oriented_ERCC92.fa"
 default_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_transcriptome_ERCC92.fa"
+
 default_qsub = "no"
 default_mem = "5"
 default_time = "24:00:00"
 default_core = "8"
-default_unzip = "no"
+default_unzip = "yes"
 default_zip = "no"
 
 #Define necessary variables
@@ -49,7 +51,7 @@ if not default_zip.lower() in options:
 		sys.exit("\nThe default for the argument -zip= is not supported!\n")
 
 #Make help file
-line1 ="\nThe script automates the mapping procedure by making bash files containing the cat, do_mapping_strand.pl and extract_counts_rb.pl commands. \nIt works with .fastq files in the current working directory that have the minimal name of *_L00*_R*_*.fastq, \nand can submit them to the desired queue on the HPC. The following options are available for use:"
+line1 ="\nThe script automates the mapping procedure by making bash files containing the cat, do_mapping_strand.pl and extract_counts_rb.pl commands. \nIt works with .fastq files in the current working directory that have the minimal name of *L00*_R*_*.fastq, \nand can submit them to the desired queue on the HPC. The following options are available for use:"
 line2 ="\n\n-qsub= \n\n\tThis determines if the generated bash file will be submitted on the queue. 	\n\tOptions: \"yes,\"no\". Default: \"no\"."
 line4 ="\n\n-ref= \n\n\tThis specifies the refseq file to be used for the do_mappings_strand.pl command. \n\tOptions: [refseq path] or, \n\t\t \"human\" which uses: " + default_refseq_human + ", \n\t\t \"mouse\" which uses: " + default_refseq_mouse + ", \n\t\t \"zebrafish\" which uses: " + default_refseq_zebrafish + " \n\tAlso C elegans and briggsae default gene models are present under these names. Default: \"mouse\"."
 line5 ="\n\n-bar= \n\n\tThis specifies the barcode file to be used for the extract_counts_rb.pl command. \n\tOptions: [barcode path]. Default: " + default_bar + "."
@@ -258,6 +260,15 @@ else:
 	params["-email"] = "\n#$ -M " + default_email
 	params["-email_fb"] = default_email
 
+#Set parameter for qsub
+if "-qsub" in argv_imput:
+	if argv_imput["-qsub"].lower() in options:
+		params["-qsub"] = argv_imput["-qsub"].lower()
+	else:
+		sys.exit("\nOnly \"yes\" and \"no\" are supported for -qsub\n")
+else:
+	params["-qsub"] = default_qsub
+
 # Head of the bash files ------------------------------------------------------------------------------------------------------------------------------------------------
 head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"]
 
@@ -268,13 +279,13 @@ else:
 		gz = ""
 
 #Get unique files in dir
-dir = glob.glob("*_L00*_R*_*.fastq"+gz)
+dir = glob.glob("*L00*_R*_*.fastq"+gz)
 
 if len(dir) == 0:
-	sys.exit("\nThere are no files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
+	sys.exit("\nThere are no files in the current working directory with the minimal name of *L00*_R*_*.fastq\n")
 
 for i in range(0, len(dir)):
-	name = dir[i].split("_L00")
+	name = dir[i].split("L00")
 
 	if(len(name) == 2):
 		files.append(name[0])
@@ -289,7 +300,7 @@ missing_files = ""
 for i in range(0, len(files)):
 	for r in rs:
 		for l in ls:
-			path = files[i] + "_L00" + l  +"_R" + r + "_001.fastq"+gz
+			path = files[i] + "L00" + l  +"_R" + r + "_001.fastq"+gz
 			if not os.path.exists(os.getcwd()+"/"+path):
 				if missing_files == "":
 					missing_files = path + " does not exist!"
@@ -310,13 +321,14 @@ for i in range(0, len(files)):
 print "\n.fastq files recognised: 		" + str(len(dir))
 print ".fastq files with unique index: 	" + str(len(files))
 print "Unzip and use *.fastq.gz files:		" + params['-unzip']
-print "Names of files of used:				 " + used_files
+print "Names of files of used:			 " + used_files
 print "Used RefSeq file: 			" + params['-ref']
 print "Used barcode file: 			" + params['-bar']
-print "Output directory for the cat files:	" + params['-cat_out'] + "/"
-print "Output directory for the bash files: 	" + params['-bash_out'] + "/"
-print "Output directory for the mapping files: " + params['-map_out'] + "/"
-print "Output directory for the counts files: 	" + params['-counts_out'] + "/"
+print "Output directory for the concatenated .fastq files:	" + params['-cat_out'] + "/"
+print "Output directory for bash files that are submitted: 	" + params['-bash_out'] + "/"
+print "Output directory for sam files: " + params['-map_out'] + "/"
+print "Output directory for count tables: 	" + params['-counts_out'] + "/"
+print "Output directory for log and error files: 	" + params['-logs_out'] + "/"
 print "The number of used cores: 		" + params['-cores']
 print "Submission to queue: 			" + params['-qsub']
 print "Memory requested: 			" + params['-mem']
@@ -342,12 +354,12 @@ for i in range(0,len(files)):
 	bash_file = open(bash_file_name[i], "w")
 
 	if params["-unzip"] == "yes":
-		unzip = "gunzip " + os.getcwd() + "/" + files[i] + "_L00*_R*_*.fastq.gz" + "\n \n"
+		unzip = "gunzip " + os.getcwd() + "/" + files[i] + "L00*_R*_*.fastq.gz" + "\n \n"
 	else:
 		unzip = ""
 
-	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
-	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
+	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
+	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
 	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".commands.txt 2> " + files[i] + ".logs_and_errors.txt"
 	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.tsv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.tsv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.tsv"
 
