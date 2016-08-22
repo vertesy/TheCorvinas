@@ -3,7 +3,7 @@
 ######################################################################
 # source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/DatabaseLinke.R')
 
-
+# vector_of_gene_symbols = c("Ldhc", "Dazl")
 
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "/Users/abelvertesy/bin/run.sh"
@@ -28,6 +28,8 @@ STRING = "http://string-db.org/newstring_cgi/show_network_section.pl?identifier=
 STRING_mouse_suffix = "&species=10090"
 STRING_human_suffix = "&species=9606"
 
+
+PUBMED_search_prefix = "https://www.ncbi.nlm.nih.gov/pubmed/?term="
 
 # HGNC links ------------------------------------------------------------------------------------------------
 link_HGNC <- function (vector_of_gene_symbols, writeOut = T) { # Parse HGNC links to your list of gene symbols
@@ -117,3 +119,17 @@ link_String <- function (vector_of_gene_symbols, organism="mouse", writeOut = T)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
   } else { return(links) }
 }
+
+
+# PUBMED links ------------------------------------------------------------------------
+
+link_pubmed <- function (vector_of_gene_symbols, additional_terms = "", writeOut = T) { # Parse PUBMED database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( PUBMED_search_prefix, vector_of_gene_symbols, additional_terms )
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else { return(links) }
+}
+
+
