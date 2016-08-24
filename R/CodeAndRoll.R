@@ -219,9 +219,10 @@ rescale <- function(vec, from=0, upto=100) { # linear transformation to a given 
 	return (vec)
 } # fun
 
-value2name_flip <- function(named_vector) { # Flip the values and the names of a vector with names
+flip_value2name <- function(named_vector, NumericNames =F) { # Flip the values and the names of a vector with names
   if (! is.null(names(named_vector))) {
     newvec = names(named_vector)
+    if (NumericNames) {  newvec = as.numeric(names(named_vector))     }
     names(newvec) = named_vector
   } else {llprint("Vector without names!", head(named_vector))}
   if (any(duplicated(named_vector))) {llprint("New names contain duplicated elements",head(named_vector[which(duplicated(named_vector))]))  }
@@ -229,6 +230,7 @@ value2name_flip <- function(named_vector) { # Flip the values and the names of a
   return(newvec)
 }
 
+value2name_flip = flip_value2name
 # sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric order of its names (instead of its values).
 # 	print("THIS FUCNTION MAKES MISTAKES WITH DUPLICATE NAMES")
 # 	if (is.vector(vec_or_list) & !is.list(vec_or_list)) {  vec[gtools::mixedsort(names(vec_or_list) )]
@@ -422,6 +424,16 @@ intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same length) s
 	return(Lout)
 }
 
+intermingle2vec <- function(V1, V2) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
+  stopifnot(length(V1) == length(V2) )
+  LEN = length(c(V1, V2))
+  
+  Vout = rep(NA, LEN)
+  Vout[seq(1,LEN, by=2)] = V1
+  Vout[seq(2, LEN, by=2)] = V2
+  return(Vout)
+}
+
 as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with certain dimensions, taken from the list it wanna resemble
 	stopifnot(length(vec) == length(unlist(list_wannabe)))
 	list_return = list_wannabe
@@ -466,24 +478,29 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 
 ## Math $ stats -------------------------------------------------------------------------------------------------
 
-sem <- function(x) {  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s)
+sem <- function(x) {  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s by default)
 	sd(x)/sqrt(length(x))}
 
-cv <- function(x) { # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s)
+cv <- function(x) { # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s by default)
 	sd( x, na.rm=T)/mean(x, na.rm=T) }
 
-fano <- function(x) { # Calculates the fano factor on a numeric vector (it excludes NA-s)
+fano <- function(x) { # Calculates the fano factor on a numeric vector (it excludes NA-s by default)
 	var(x, na.rm=T)/mean(x, na.rm=T) }
 
-modus <- function(x) { # Calculates the modus of a numeric vector (it excludes NA-s)
+modus <- function(x) { # Calculates the modus of a numeric vector (it excludes NA-s by default)
 	x= unlist(na.exclude(x))
 	ux <- unique(x)
 	tab <- tabulate(match(x, ux));
 	ux[tab == max(tab)]
 }
 
-gm_mean <- function(x, na.rm=TRUE){ # Calculates the geometric mean of a numeric vector (it excludes NA-s)
-	exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
+gm_mean <- function(x, na.rm=TRUE){ # Calculates the geometric mean of a numeric vector (it excludes NA-s by default)
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
+
+mean_of_log <- function(x, k=2, na.rm=TRUE){ # Calculates the mean of the log_k of a numeric vector (it excludes NA-s by default)
+  negs = sum(x<0);  zeros = sum(x==0)
+  if (negs | zeros) { any_print("The input vector has", negs, "negative values and", zeros, "zeros." )  }
+  mean(log(x, base = k), na.rm = na.rm) }
 
 movingAve <- function(x, oneSide) { # Calculates the moving / rolling average of a numeric vector.
 	y = NULL
