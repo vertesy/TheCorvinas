@@ -4,6 +4,16 @@
 [Get DatabaseLinke.R](https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR)
 
 
+### Install
+
+1.) Download and source
+https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R
+2.) Source from the web
+source(https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/DatabaseLinke.R)
+Read: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR.md
+
+
+
 
 ## Components
 
@@ -13,13 +23,20 @@
 
 ## Usage
 
-Each function work like this:
+You can use the functions in 3 ways:
 
-`link_String(YourGeneSymbols)`
 
-And it will write the links `BashScriptLocation` in an executable format, so once you run the script, it opens all the links in your default browser (on OS X).
+`link_String("Mecom")`
 
-In your bash script, you find:
+Open the link in your web browser.
+
+`link_String("Mecom", writeOut = T)`
+
+Writes the link in (an executable) bash script run.sh (if you have too many links).
+
+It will actually write the links to `BashScriptLocation` in an executable format, so once you run the script, it opens all the links in your default browser (on OS X).
+
+Using `link_String("Mecom", writeOut = T)`, in your bash script, you will find:
 
 ```
 open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Tuba3a&species=10090'
@@ -27,11 +44,9 @@ open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwi
 ```
 
 
-If you specify `writeOut=FALSE`, it will return the list of links in the terminal
+`link_String("Mecom", writeOut = F, Open=F)`
 
-`link_String(YourGeneSymbols, writeOut=FALSE)`
-
-You get:
+Writes the link to the screen. You get:
 
 ```
 http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Tuba3a&species=10090
