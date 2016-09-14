@@ -746,3 +746,13 @@ panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) { 
   text(.8, .8, Signif, cex=cex, col=2) 
 }
 
+
+any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
+  y=sum(duplicated(vec))
+  if(summarize & y){
+    x = table(vec); x= x[x>1]-1;
+    print("The following elements have >1 extra copies:")
+    print(x) # table formatting requires a separate entry
+  }
+  return(y)
+}
