@@ -378,6 +378,12 @@ colsplit <- function(df, f) { # split a data frame by a factor corresponding to 
 }
 splitByCol = colsplit
 
+
+median_normalize <- function(mat) { # normalize each column to the median of the columns
+  cs = colSums(mat, na.rm = T)
+  norm_mat = (t(t(mat) / cs)) * median(cs)
+}
+
 ## List operations -------------------------------------------------------------------------------------------------
 list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
 	l = list(...)
