@@ -21,12 +21,13 @@ grc37 = c("http://grch37.ensembl.org/Human/Search/Results?q=", ";site=ensembl;fa
 grc38 = c("http://www.ensembl.org/Human/Search/Results?q=", ";site=ensembl;facet_feature_type=Gene;facet_species=Human")
 
 grc_mm38 = c("http://www.ensembl.org/Mouse/Search/Results?q=", ";site=ensembl;facet_feature_type=;facet_species=Mouse")
-grc_Zebra = c("http://www.ensembl.org/Mouse/Search/Results?q=", ";site=ensembl;facet_feature_type=;facet_species=Zebrafish")
+grc_Zebra = c("http://www.ensembl.org/Search/Results?q=", ";site=ensembl;facet_feature_type=;facet_species=Zebrafish")
 
 
 uniprot_mouse = c('http://www.uniprot.org/uniprot/?query=organism%3A"Mus+musculus+[10090]"+',"&sort=score")
 # I left out (Mouse) part because it messes up with markdown, it still works.
 uniprot_human = c('http://www.uniprot.org/uniprot/?query=organism%3A"Homo+sapiens+%28Human%29+[9606]"+',"&sort=score")
+uniprot_zebra = c('http://www.uniprot.org/uniprot/?query=organism%3A"Danio+rerio+(Zebrafish)+(Brachydanio+rerio)+[7955]"+',"&sort=score")
 
 
 # HELP: http://string-db.org/help/faq/#how-do-i-link-to-string. Find Species ID by: http://www.ncbi.nlm.nih.gov/taxonomy
@@ -52,7 +53,7 @@ link_HGNC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { #
 # ENSEMBL Links --------------------------------------------------------------------------------------------------------------------------------
 
 link_ensembl_zebra <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse the latest ensembl (GRC38) links to your list of gene symbols
-  links = paste0(grc_mm38[1], vector_of_gene_symbols, grc_Zebra[2])
+  links = paste0(grc_Zebra[1], vector_of_gene_symbols, grc_Zebra[2])
   if (writeOut) {
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
@@ -98,7 +99,7 @@ link_ensembl.grc37 <- function (vector_of_gene_symbols, writeOut = T, Open=!writ
 
 ## UNIPROT Links --------------------------------------------------------------------------------------------------------------------------------
 
-link_uniprot_mice <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse the latest UNIPROT links to your list of gene symbols
+link_uniprot_mice <- function (vector_of_gene_symbols, writeOut = F, Open=!writeOut) { # Parse the latest UNIPROT links to your list of gene symbols
   links = paste0(uniprot_mouse[1], vector_of_gene_symbols, uniprot_mouse[2] )
   if (writeOut) {
     bash_commands = paste0("open ", links)
@@ -107,8 +108,17 @@ link_uniprot_mice <- function (vector_of_gene_symbols, writeOut = T, Open=!write
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
 
-link_uniprot_human <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse the latest UNIPROT links to your list of gene symbols
+link_uniprot_human <- function (vector_of_gene_symbols, writeOut = F, Open=!writeOut) { # Parse the latest UNIPROT links to your list of gene symbols
   links = paste0( uniprot_human[1], vector_of_gene_symbols, uniprot_human[2] )
+  if (writeOut) {
+    bash_commands = paste0("open ", links)
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+link_uniprot_zebrafish <- function (vector_of_gene_symbols, writeOut = F, Open=!writeOut) { # Parse the latest UNIPROT links to your list of gene symbols
+  links = paste0( uniprot_zebra[1], vector_of_gene_symbols, uniprot_zebra[2] )
   if (writeOut) {
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
