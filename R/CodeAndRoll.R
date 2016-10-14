@@ -323,28 +323,15 @@ colMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each column 
 rowMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each row of a numeric matrix / data frame.
 	return(apply(mat,1,median, na.rm=na.rm)) }
 
-colCV <- function(mat) { # Calculates the CV of each column of a numeric matrix / data frame.
-	return(apply(mat,2,cv ) ) }
+colCV <- function(mat) return(apply(mat,2,cv ) ) # Calculates the CV of each column of a numeric matrix / data frame.
 
-rowMin <- function(x) { # Calculates the minimum of each row of a numeric matrix / data frame.
-	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")	# Construct a call pmin(x[,1],x[,2],...x[,NCOL(x)])
-	code = paste("pmin(",code,")"); 	return(eval(parse(text=code)))
-}
+rowMin <- function(x) apply(x, 1, min) # Calculates the minimum of each row of a numeric matrix / data frame.
 
-rowMax <- function(x) { # Calculates the maximum of each row of a numeric matrix / data frame.
-	code = paste("x[,",1:(NCOL(x)),"]",sep="",collapse=",")
-	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
-}
+rowMax <- function(x) apply(x, 1, max) # Calculates the maximum of each row of a numeric matrix / data frame.
+	
+colMin <- function(x) apply(x, 2, min) # Calculates the minimum of each column of a numeric matrix / data frame.
 
-colMin <- function(x) { # Calculates the minimum of each column of a numeric matrix / data frame.
-	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
-	code = paste("pmin(",code,")");	return(eval(parse(text=code)))
-}
-
-colMax <- function(x) { # Calculates the maximum of each column of a numeric matrix / data frame.
-	code = paste("x[",1:(NCOL(x)),",]",sep="",collapse=",")
-	code = paste("pmax(",code,")");	return(eval(parse(text=code)))
-}
+colMax <- function(X) apply(x, 2, max) # Calculates the maximum of each column of a numeric matrix / data frame.
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
@@ -471,6 +458,20 @@ list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Conv
   }
   return(mm)  
 }
+
+
+
+list_to_fullDF <- function(ll){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
+  entrytypes = unique(names(unlist(ll)))
+  mat =matrix(0, ncol = l(ll), nrow = l(entrytypes))
+  colnames(mat) = 1:l(ll);   rownames(mat) = sort(entrytypes)
+  for (i in 1:l(ll)) {
+    entries = ll[[i]]
+    mat[names(entries) ,i] = entries
+  }
+  mat
+}
+
 
 ## Set operations -------------------------------------------------------------------------------------------------
 
