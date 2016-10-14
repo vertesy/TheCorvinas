@@ -15,6 +15,7 @@ BashScriptLocation = "/Users/abelvertesy/bin/run.sh"
 
 # Static part of Query links ------------------------
 HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search="
+wikipedia = "http://en.wikipedia.org/w/index.php?search="
 
 ensembl_multispecies = c("http://www.ensembl.org/Multi/Search/Results?q=",";site=ensembl")
 grc37 = c("http://grch37.ensembl.org/Human/Search/Results?q=", ";site=ensembl;facet_feature_type=Gene;facet_species=Human")
@@ -157,6 +158,17 @@ link_pubmed <- function (vector_of_gene_symbols, additional_terms = "", writeOut
 
 link_wormbase <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
   links = paste0( wormbase_search_prefix, vector_of_gene_symbols)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+# wormbase links ------------------------------------------------------------------------
+
+link_wikipedia <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( wikipedia, vector_of_gene_symbols)
   if (writeOut) {
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
