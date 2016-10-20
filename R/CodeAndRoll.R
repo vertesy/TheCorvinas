@@ -649,12 +649,14 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, pl
 ## Plots -------------------------------------------------------------------------------------------------
 
 
-pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, title = paste0(basename(fname), " by ", scriptname)) { # Print (multiple) plots to an (A4) pdf.
+pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, mdlink = FALSE,
+                          title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) { # Print (multiple) plots to an (A4) pdf.
   assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
   fname = kollapse(OutDir,"/" , pname, ".pdf")
   pdf(fname,width=w, height=h, title = title)
   par(mfrow = c(rows, cols))
   any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
+  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = plotname) }
 }
 
 pdfA4plot_off <- function () {
