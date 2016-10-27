@@ -12,17 +12,17 @@ import sys
 import os
 
 # Default parameters
-def_email = "<none>"
+# def_email = "<none>"
+def_email = "a.vertesy@hubrecht.eu"
 def_CelSeqPrimerVersion = "1"
 def_MaxHammingDist = "1"
 def_ScriptsFolder = "/hpc/hub_oudenaarden/MapAndGo2/"
 def_BWA_Folder = "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/"
 def_bar = "/home/hub_oudenaarden/avertesy/var/"
-def_bash_out = '/bash_files'
-def_cat_out = '/cat_files'
-def_counts_out = '/count_files'
-def_map_out = '/map_files'
-def_logfiles_out = '/logs_and_errors'
+def_bash_out = 'bash_files'
+def_counts_out = 'count_files'
+def_map_out = 'map_files'
+def_logfiles_out = 'logs_and_errors'
 
 def_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 def_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
@@ -31,15 +31,15 @@ def_refseq_elegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate
 def_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_transcriptome_ERCC92.fa"
 
 def_qsub = "no"
-def_mem = "5"
-def_time = "12:00:00"
-def_core = "4"
+def_mem = "4"
+def_time = "06:00:00"
+def_core = "1"
 def_unzip = "yes"
 def_zip = "no"
 
 # Define necessary variables
 argv_imput = {}
-argv_valid = ["-help", "-email", "-qsub", "-bar", "-ref", "-mem", "-time", "-CelSeqPrimerVersion", "-MaxHammingDist", "-ScriptsFolder", "-BWA_Folder", "-unzip", "-zip", "-bash_out", "-counts_out", "-cat_out", "-map_out", "-logs_out"]
+argv_valid = ["-help", "-email", "-qsub", "-bar", "-ref", "-mem", "-time", "-CelSeqPrimerVersion", "-MaxHammingDist", "-ScriptsFolder", "-BWA_Folder", "-unzip", "-zip", "-bash_out", "-counts_out", "-map_out", "-logs_out"] # , "-cat_out"
 bash_file_name = []
 do_break = False
 files = []
@@ -68,7 +68,7 @@ help_text = ( "\nThe script automates the mapping procedure by making bash files
 "\n\n-mem= \n\n\t Memory to reserve \n\tOptions: [GB, integer]. Default: 5" +
 "\n\n-time= \n\n\t Max estimated running time. If it runs longer, HPC kills the job \n\tOptions: [hours, HH:MM:SS]. Default: 12:00:00" +
 "\n\n-core= \n\n\t Number of cores reserved. The more cores you reserve the longer your job will wait to start, but then the faster it runs. \n\tOptions: [integer]. Default: 4" +
-"\n\n-cat_out= \n\n\tThis specifies the output folder for the cat command and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory." +
+# "\n\n-cat_out= \n\n\tThis specifies the output folder for the cat command and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory." +
 "\n\n-bash_out= \n\n\tThis specifies the output folder for the bash files and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory." +
 "\n\n-map_out= \n\n\tThis specifies the output folder for the do_mapping.pl command and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory." +
 "\n\n-counts_out= \n\n\tThis specifies the output folder for the extract_counts.pl command and makes the directory if it did not exist yet.\n\tOptions: [folder name]. Default: current working directory." +
@@ -76,7 +76,7 @@ help_text = ( "\nThe script automates the mapping procedure by making bash files
 "\n\n-unzip= \n\n\tThis determines if .fastq files to use are zipped and need to be unzipped. Options: \"yes\",\"no\". Default: \"no\"." +
 "\n\n-zip= \n\n\tThis determines if the used .fastq files should be zipped after mapping. Options: \"yes\",\"no\". Default: \"no\"." +
 "\n\nThe Defaults: \n\n\t" +
-"\n\nExample: MapAndGo.py -email = <NONE> -CelSeqPrimerVersion = 1 -MaxHammingDist = 1 -bash_out = '/bash_files' -cat_out = '/cat_files' -counts_out = '/count_files' -map_out = '/map_files' -logfiles_out = '/logs_and_errors' -qsub = no  -mem = 5  -time = 12:00:00  -core = 4  -unzip = yes  -zip = no  " +
+"\n\nExample: MapAndGo.py -email = <NONE> -CelSeqPrimerVersion = 1 -MaxHammingDist = 1 -bash_out = 'bash_files' -counts_out = 'count_files' -map_out = 'map_files' -logfiles_out = 'logs_and_errors' -qsub = no  -mem = 5  -time = 12:00:00  -core = 4  -unzip = yes  -zip = no  " +
 "\n\nImportant: Be careful to check the bash files!\n" )
 
 # Readout the command line arguments ----
@@ -135,30 +135,19 @@ else:
 if "-bash_out" in argv_imput:
 	bash_out = argv_imput["-bash_out"]
 	if bash_out[(len(bash_out)-1)] == "/":
-		argv_imput["-bash_out"] = bash_out[0:(len(bash_out)-1)]
-	params["-bash_out"] = os.getcwd() + "/" + argv_imput["-bash_out"]
+		bash_out = bash_out[0:(len(bash_out)-1)]
+	params["-bash_out"] = os.getcwd() + "/" + bash_out
 else:
 	if def_bash_out[(len(def_bash_out)-1)] == "/":
 		def_bash_out = def_bash_out[0:(len(def_bash_out)-1)]
 	params["-bash_out"] = os.getcwd() + "/" + def_bash_out
 
-#Process parameter for cat_out
-if "-cat_out" in argv_imput:
-		cat_out = argv_imput["-cat_out"]
-		if cat_out[(len(cat_out)-1)] == "/":
-				argv_imput["-cat_out"] = cat_out[0:(len(cat_out)-1)]
-		params["-cat_out"] = os.getcwd() + "/" + argv_imput["-cat_out"]
-else:
-		if def_cat_out[(len(def_cat_out)-1)] == "/":
-				def_cat_out = def_cat_out[0:(len(def_cat_out)-1)]
-		params["-cat_out"] = os.getcwd() + "/" + def_cat_out
-
 #Process parameter for counts_out
 if "-counts_out" in argv_imput:
 	counts_out = argv_imput["-counts_out"]
 	if counts_out[(len(counts_out)-1)] == "/":
-		argv_imput["-counts_out"] = counts_out[0:(len(counts_out)-1)]
-	params["-counts_out"] = os.getcwd() + "/" + argv_imput["-counts_out"]
+		counts_out = counts_out[0:(len(counts_out)-1)]
+	params["-counts_out"] = os.getcwd() + "/" + counts_out
 else:
 	if def_counts_out[(len(def_counts_out)-1)] == "/":
 		def_counts_out = def_counts_out[0:(len(def_counts_out)-1)]
@@ -168,8 +157,8 @@ else:
 if "-map_out" in argv_imput:
 	map_out = argv_imput["-map_out"]
 	if map_out[(len(map_out)-1)] == "/":
-		argv_imput["-map_out"] = map_out[0:(len(map_out)-1)]
-	params["-map_out"] = os.getcwd() + "/" + argv_imput["-map_out"]
+		map_out = map_out[0:(len(map_out)-1)]
+	params["-map_out"] = os.getcwd() + "/" + map_out
 else:
 	if def_map_out[(len(def_map_out)-1)] == "/":
 		def_map_out = def_map_out[0:(len(def_map_out)-1)]
@@ -179,8 +168,8 @@ else:
 if "-logs_out" in argv_imput:
 	logs_out = argv_imput["-logs_out"]
 	if logs_out[(len(logs_out)-1)] == "/":
-		argv_imput["-logs_out"] = logs_out[0:(len(logs_out)-1)]
-	params["-logs_out"] = os.getcwd() + "/" + argv_imput["-logs_out"]
+		logs_out = logs_out[0:(len(logs_out)-1)]
+	params["-logs_out"] = os.getcwd() + "/" + logs_out
 else:
 	if def_logfiles_out[(len(def_logfiles_out)-1)] == "/":
 		def_logfiles_out = def_logfiles_out[0:(len(def_logfiles_out)-1)]
@@ -190,8 +179,6 @@ else:
 if not os.path.isdir(params["-bash_out"]):
 		print params["-bash_out"]
 		os.mkdir(params["-bash_out"])
-if not os.path.isdir(params["-cat_out"]):
-		os.mkdir(params["-cat_out"])
 if not os.path.isdir(params["-counts_out"]):
 		os.mkdir(params["-counts_out"])
 if not os.path.isdir(params["-map_out"]):
@@ -241,17 +228,19 @@ else:
 
 #Set parameter for mem
 if "-mem" in argv_imput:
-	params["-mem"] = argv_imput["-mem"].lower()
+	RequestedRAM = argv_imput["-mem"].lower()
 	# sys.exit("\nMem has to be a whole number denoting the gigabytes requested: 10 \n")
 else:
-	params["-mem"] = "#$ -l h_vmem=" + def_mem + "G"
+	RequestedRAM = def_mem
+params["-mem"] = "#$ -l h_vmem=" + RequestedRAM + "G"
 
 #Set parameter for time
 if "-time" in argv_imput:
-	params["-time"] = argv_imput["-time"].lower()
+	runtime = argv_imput["-time"].lower()
 	# sys.exit("\nTime has to be in this format: 12:00:00\n")
 else:
-	params["-time"] = "#$ -l h_rt=" + def_time
+	runtime = def_time
+params["-time"] = "#$ -l h_rt=" + runtime
 
 # Set parameter for threads
 if "-cores" in argv_imput:
@@ -279,11 +268,10 @@ else:
 
 #Process parameter for email
 if "-email" in argv_imput:
-	params["-email"] = "\n#$ -M " + argv_imput["-email"]
-	params["-email_fb"] = argv_imput["-email"]
+	emailAddress = argv_imput["-email"]
 else:
-	params["-email"] = "\n#$ -M " + def_email
-	params["-email_fb"] = def_email
+	emailAddress = def_email
+params["-email"] = "\n#$ -M " + emailAddress
 
 #Set parameter for qsub
 if "-qsub" in argv_imput:
@@ -343,23 +331,23 @@ for i in range(0, len(files)):
 				used_files = used_files + "\n\t\t\t\t\t" + files[i]
 
 #Output variables
-print "\n.fastq files recognised: 		" + str(len(dir))
-print ".fastq files with unique index: 	" + str(len(files))
-print "Unzip and use *.fastq.gz files:		" + params['-unzip']
-print "Names of files of used:			 " + used_files
-print "Used RefSeq file: 			" + params['-ref']
-print "Used barcode file: 			" + params['-bar']
-print "Output directory for the concatenated .fastq files:	" + params['-cat_out'] + "/"
-print "Output directory for bash files that are submitted: 	" + params['-bash_out'] + "/"
-print "Output directory for sam files: " + params['-map_out'] + "/"
-print "Output directory for count tables: 	" + params['-counts_out'] + "/"
-print "Output directory for log and error files: 	" + params['-logs_out'] + "/"
-print "The number of used cores: 		" + params['-cores']
-print "Submission to queue: 			" + params['-qsub']
-print "Memory requested: 			" + params['-mem']
-print "Time requested: 			" + params['-time']
-print "Email: 					" + params['-email_fb']
-print "zip .fastq files afterwards:		" + params['-zip']
+print "\n.fastq files recognised: 			" + str(len(dir))
+print ".fastq files with unique index: 		" + str(len(files))
+print "Unzip and use *.fastq.gz files:			" + params['-unzip']
+print "Names of files of used:				" + used_files
+print "Used RefSeq file: 				" + params['-ref']
+print "Used barcode file: 				" + params['-bar']
+# print "Output dir for the concatenated .fastq files:	" + params['-cat_out'] + "/"
+print "Output dir for bash files to be submitted: 	" + params['-bash_out'] + "/"
+print "Output dir for sam files: 			" + params['-map_out'] + "/"
+print "Output dir for count tables: 			" + params['-counts_out'] + "/"
+print "Output dir for log & error files: 		" + params['-logs_out'] + "/"
+print "The number of used cores: 			" + params['-cores']
+print "Submission to queue: 				" + params['-qsub']
+print "Memory requested: 				" + RequestedRAM
+print "Time requested: 				" + runtime
+print "Email: 						" + emailAddress
+print "zip .fastq files afterwards:			" + params['-zip']
 
 #Make unique filenames
 for i in range(0,len(files)):
@@ -377,34 +365,35 @@ print "\nImportant: Make sure to check the bash files: ", bash_file_name, "\n"
 
 # Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
-	NameRoot = params["-cat_out"] + "/" + files[i]
-	FastQ1 = NameRoot + "_R1_cat.fastq"
-	FastQ2 = NameRoot + "_R2_cat.fastq"
-	FastQ1_cbc = files[i] + "_cbc"
-	FastQ1_sam = FastQ1_cbc + ".sam"
+	NameRoot = os.getcwd() + files[i]
+	ConcatRoot = params["-map_out"] + "/" + files[i]
+	FastQ1_cat = ConcatRoot + "_R1_cat.fastq"
+	FastQ2_cat = ConcatRoot + "_R2_cat.fastq"
+	FastQ1_cbc = ConcatRoot + "_R2_cbc.fastq"
+	FastQ1_sam = ConcatRoot + "_R2.sam"
 
 	bash_file = open(bash_file_name[i], "w")
 
 	if params["-unzip"] == "yes":
-		unzip = "gunzip " + os.getcwd() + "/" + files[i] + "_L00*_R*_*.fastq.gz" + "\n \n"
+		unzip = "gunzip " + NameRoot + "_L00*_R*_*.fastq.gz" + "\n \n"
 	else:
 		unzip = ""
 
-	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + FastQ1
-	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + FastQ2
+	cat_r1 = "cat " + NameRoot + "_L00*_R1* > " + FastQ1_cat
+	cat_r2 = "cat " + NameRoot + "_L00*_R2* > " + FastQ2_cat
 
-	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1 + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"]
+	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"]
 	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + FastQ1_cbc + " > " + FastQ1_sam
 	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"]
 
 	if params['-zip'] == "yes":
-		zip = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
-		if params['-cat_out'] != os.getcwd():
-			zip = zip + "\n \ngzip " + params['-cat_out'] + "/" + files[i] + "*.fastq"
+		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
+		if params['-map_out'] != os.getcwd():
+			ZipUp = ZipUp + "\n \ngzip " + params['-map_out'] + files[i] + "*.fastq"
 	else:
-		zip = ""
+		ZipUp = ""
 
-	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + MakeSingleEnd + "\n \n" + mapping + "\n \n" + extract + zip
+	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + MakeSingleEnd + "\n \n" + mapping + "\n \n" + extract + ZipUp
 	bash_file.write(bash_text)
 	bash_file.close()
 
