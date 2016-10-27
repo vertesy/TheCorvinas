@@ -135,4 +135,4 @@ print "The number of output reads\t", NrReadsOut
 print "The number of incorrect cell barcodes\t", badCBCs
 print "The number of UMIs with an N\t", badUMIs
 print "\nRun:\n"
-print "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/bwa mem -t 8", ref, fqr + '_cbc.fastq', " > ", fqr, ".sam"
+print "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/bwa mem -t 8", "ref", fqr + '_cbc.fastq', " > ", fqr, ".sam"
