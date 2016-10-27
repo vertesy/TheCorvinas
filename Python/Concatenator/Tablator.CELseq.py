@@ -11,7 +11,8 @@
 import sys, os
 import numpy as np
 
-sys.path.append('/home/hub_oudenaarden/avertesy/var/')
+def_bar = "/home/hub_oudenaarden/avertesy/var/"
+sys.path.append(def_bar)
 from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
 from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
 
@@ -106,7 +107,6 @@ with open(InputSamFile) as f:
 				sys.exit()
 			# cell = q[9][1:] # REPLACE THIS LINE
 			cell = q[9]
-			# print cell
 
 			try:
 				umicnt[gene][cell].append(umi)
@@ -136,7 +136,7 @@ for gene in sorted(umicnt):
 		x = 1.0 * len(set(umicnt[gene][cell]))
 		if x > 0 and x < K:
 			t.append( np.log(1.-x/K)/np.log(1.-1./K) )
-		elif x >= K:
+		elif x == K:
 			t.append( np.log(1.-(K-1e-3)/K)/np.log(1.-1./K) )
 		elif x > K:
 			print gene,

@@ -15,7 +15,8 @@
 import sys, os
 from itertools import izip # to iterate over two files in parallel
 
-sys.path.append('/home/hub_oudenaarden/avertesy/var/')
+def_bar = "/home/hub_oudenaarden/avertesy/var/"
+sys.path.append(def_bar)
 from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
 from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
 
