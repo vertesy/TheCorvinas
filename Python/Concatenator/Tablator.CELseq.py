@@ -8,6 +8,7 @@
 # - Modified  by Abel Vertesy, van Oudenaarden group, 25-10-2016
 # ## Loaction: /home/hub_oudenaarden/avertesy/bin/Mapping/Tablator.CELseq.py
 
+print "Tablator.CELseq.py Started"
 import sys, os
 import numpy as np
 
@@ -80,7 +81,7 @@ elif protocol == '2': #### CEL Seq 2 parmeters ####
 K = 4**umilen
 
 # Count -------------------------------------------------------
-print "Counting"
+print "...Counting"
 
 readscnt = {}
 umicnt = {}
@@ -118,7 +119,7 @@ with open(InputSamFile) as f:
 				readscnt[gene][cell] = 1
 
 # Writing out count tables -------------------------------------------------------
-print "Writing out count tables"
+print "...Writing out count tables"
 
 fc = open(InputSamFile + '.ReadCounts.tsv', 'w+')
 fb = open(InputSamFile + '.BarcodeCounts.tsv', 'w+')
@@ -129,15 +130,15 @@ print >> fb, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
 print >> ft, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
 
 for gene in sorted(umicnt):
-	print >> fc, ' '.join( [gene, ' '.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
-	print >> fb, gene, ' '.join( str(len(set(umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) )
+	print >> fc, ' '.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
+	print >> fb, gene, '\t'.join( str(len(set(umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) )
 	t = []
 	for cell in sorted(bc2sample.values()):
 		x = 1.0 * len(set(umicnt[gene][cell]))
 		if x > 0 and x < K:
-			t.append( np.log(1.-x/K)/np.log(1.-1./K) )
+			t.append( round(np.log(1.-x/K)/np.log(1.-1./K), 3) )
 		elif x == K:
-			t.append( np.log(1.-(K-1e-3)/K)/np.log(1.-1./K) )
+			t.append( round(np.log(1.-(K-1e-3)/K)/np.log(1.-1./K), 3) )
 		elif x > K:
 			print gene,
 			print umicnt[gene][cell]
@@ -150,3 +151,5 @@ for gene in sorted(umicnt):
 fc.close()
 fb.close()
 ft.close()
+
+print "CountingTablator.CELseq.py Finished"
