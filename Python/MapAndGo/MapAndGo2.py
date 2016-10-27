@@ -31,9 +31,9 @@ def_refseq_elegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate
 def_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_transcriptome_ERCC92.fa"
 
 def_qsub = "no"
-def_mem = "4"
+def_mem = "5"
 def_time = "06:00:00"
-def_core = "2"
+def_core = "8"
 def_unzip = "yes"
 def_zip = "no"
 
@@ -183,8 +183,8 @@ if not os.path.isdir(params["-counts_out"]):
 		os.mkdir(params["-counts_out"])
 if not os.path.isdir(params["-map_out"]):
 		os.mkdir(params["-map_out"])
-if not os.path.isdir(params["-logs_out"]):
-		os.mkdir(params["-logs_out"])
+# if not os.path.isdir(params["-logs_out"]):
+# 		os.mkdir(params["-logs_out"])
 
 #Set parameter for refseq file ------------------------------------------------------------------------------------------------------------
 if "-ref" in argv_imput:
@@ -283,22 +283,25 @@ else:
 	params["-qsub"] = def_qsub
 
 # Head of the bash files ------------------------------------------------------------------------------------------------------------------------------------------------
-head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"]
+head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas \n#$ -pe threaded "  + params["-cores"] + "\n\n"
 
-#Get unique files in dir
+# Get unique files in dir
 if params["-unzip"] == "yes":
-		gz = ".gz"
+	gz=".gz"
+	Files = glob.glob("*_L00*_R*_*.fastq.gz")
+	if len(Files) == 0:
+		print "\nThere are no *_L00*_R*_*.fastq.gz files in the current working directory with the minimal name of *_L00*_R*_*.fastq\nTrying to find unzipped files.\nparams['-unzip'] is set to NO."
+		params["-unzip"] = "no"
 else:
-		gz = ""
+	gz=""
 
-#Get unique files in dir
-dir = glob.glob("*_L00*_R*_*.fastq"+gz)
+# Try unzipped files
+Files = glob.glob("*_L00*_R*_*.fastq")
+if len(Files) == 0:
+	sys.exit("\nThere are no *_L00*_R*_*.fastq files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
 
-if len(dir) == 0:
-	sys.exit("\nThere are no files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
-
-for i in range(0, len(dir)):
-	name = dir[i].split("_L00")
+for i in range(0, len(Files)):
+	name = Files[i].split("_L00")
 
 	if(len(name) == 2):
 		files.append(name[0])
@@ -331,7 +334,7 @@ for i in range(0, len(files)):
 				used_files = used_files + "\n\t\t\t\t\t" + files[i]
 
 #Output variables
-print "\n.fastq files recognised: 			" + str(len(dir))
+print "\n.fastq files recognised: 			" + str(len(Files))
 print ".fastq files with unique index: 		" + str(len(files))
 print "Unzip and use *.fastq.gz files:			" + params['-unzip']
 print "Names of files of used:				" + used_files
@@ -373,18 +376,18 @@ for i in range(0,len(files)):
 	FastQ1_sam = ConcatRoot + "_R2.sam"
 
 	bash_file = open(bash_file_name[i], "w")
-
 	if params["-unzip"] == "yes":
-		unzip = "gunzip " + NameRoot + "_L00*_R*_*.fastq.gz" + "\n \n"
+		unzip = "gunzip " + NameRoot + "_L00*_R*_*.fastq.gz" + "\n\n"
 	else:
+		print "... not unzipping, see first line!\n"
 		unzip = ""
 
-	cat_r1 = "cat " + NameRoot + "_L00*_R1* > " + FastQ1_cat
-	cat_r2 = "cat " + NameRoot + "_L00*_R2* > " + FastQ2_cat
+	cat_r1 = "cat " + NameRoot + "_L00*_R1* > " + FastQ1_cat + "\n\n"
+	cat_r2 = "cat " + NameRoot + "_L00*_R2* > " + FastQ2_cat + "\n\n"
 
-	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"]
-	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam
-	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"]
+	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"] + "\n\n"
+	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam + "\n\n"
+	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"] + "\n\n"
 
 	if params['-zip'] == "yes":
 		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
@@ -393,7 +396,8 @@ for i in range(0,len(files)):
 	else:
 		ZipUp = ""
 
-	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + MakeSingleEnd + "\n \n" + mapping + "\n \n" + extract + ZipUp
+	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp
+	# bash_text = head_bash + MakeSingleEnd + mapping +extract + ZipUp
 	bash_file.write(bash_text)
 	bash_file.close()
 
