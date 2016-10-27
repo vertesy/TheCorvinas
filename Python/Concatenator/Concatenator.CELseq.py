@@ -3,15 +3,16 @@
 # - Put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/Concatenator.CELseq.py`
 # - Requires homefolder/var/CELSeq1_96BC.py, homefolder/var/CELSeq2_384BC.py to be in place
 # - Put read1 and read2 fastq files (concatenated by lane) in a folder
-# - Provide 3 arguments: (1) A common name-root for paired end fastq files; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes.
+# - Provide 3 arguments: (1) the full path to R1 fastq file; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes.
 # - The files minimum name is referred as root.
-# - Allowing 1 mismatch in CBCs will yield 3% more mappability (P. Lijnzaad)
+# - Allowing 1 mismatch in CBCs will yield 3%+ more mappability
 # ## Usage
 # - Test it by running in bash: `python path/to/Concatenator.CELseq.py`
 # - Run it with your data: python `python path/to/Concatenator.CELseq.py path/to/FastqFiles 1` # Put 1 or 2 if you used CELseq2 primers
 # - Original author: Anna Alemany, van Oudenaarden group, 25-10-2016
 # - Modified  by Abel Vertesy, van Oudenaarden group, 27-10-2016
 
+print "Concatenator.CELseq.py Started, eyy!"
 import sys, os
 from itertools import izip # to iterate over two files in parallel
 
@@ -45,11 +46,11 @@ def findClosestBarcode(string, BarcodeList, MaxHammingDist):
 # Check command line inputs -------------------------------------------------------
 
 try:
-    fqr= sys.argv[1]
+    fq1= sys.argv[1]
     protocol = sys.argv[2]
     MaximumHammingDist = int(sys.argv[3])
 except:
-    print "Provide 3 arguments: (1) A common name-root for paired end fastq files; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes."
+    print "Provide 3 arguments: (1) the full path to R1 fastq file; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes."
     sys.exit()
 
 if protocol not in ['1', '2']:
@@ -69,16 +70,21 @@ if (not MaximumHammingDist < int(bclen)):
 	sys.exit()
 
 # Find fastq files. It assumes you concatenated the lanes by MapAndGo.py, thus have the name "*_cat.fastq"
-fq1 = fqr + '_R1_cat.fastq'
-fq2 = fqr + '_R2_cat.fastq'
+fqr = fq1.split("R1_cat.fastq")[0]
+fq2 = fqr + 'R2_cat.fastq'
 
-if not os.path.isfile(fq1) or not os.path.isfile(fq2):
-    print 'fastq files not found'
-    sys.exit()
+if not os.path.isfile(fq1):
+	print fq1
+	print '...Fastq1 files not found'
+	sys.exit()
+if not os.path.isfile(fq2):
+	print fq2
+	print '...Fastq2 files not found'
+	sys.exit()
 
 # Run -------------------------------------------------------
 
-fout = open(fqr + '_cbc.fastq', 'w+')
+fout = open(fqr + 'R2_cbc.fastq', 'w+')
 NrReadsIn = NrReadsOut = badCBCs = badUMIs = 0
 with open(fq1) as f1, open(fq2) as f2:
     for l1, l2 in izip(f1, f2):
@@ -128,12 +134,13 @@ with open(fq1) as f1, open(fq2) as f2:
             NrReadsOut += 1
 
             # Write out read1.fastq with barcode in the name
-            # print >> fout, '\n'.join([':'.join([q, CBCseq, UMIseq]), s2, p2, q2])
             print >> fout, '\n'.join([':'.join([q, CBCseq, UMIseq, CBC_ID]), s2, p2, q2]) # write out with cell index number appended
 
-print "The number of input reads\t", NrReadsIn
-print "The number of output reads\t", NrReadsOut
-print "The number of incorrect cell barcodes\t", badCBCs
-print "The number of UMIs with an N\t", badUMIs
-print "\nRun:\n"
-print "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/bwa mem -t 8", "ref", fqr + '_cbc.fastq', " > ", fqr, ".sam"
+print "		The number of input reads\t", NrReadsIn
+print "		The number of output reads\t", NrReadsOut
+print "		\t", round(100*NrReadsOut/NrReadsIn), '"%" of the reads have a valid CBC and UMI.'
+print "		The number of incorrect cell barcodes\t", badCBCs
+print "		The number of UMIs with an N\t", badUMIs
+
+
+print "Concatenator.CELseq.py Finsihed"
