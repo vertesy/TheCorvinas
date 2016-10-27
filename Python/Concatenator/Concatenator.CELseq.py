@@ -1,14 +1,16 @@
 #!/usr/bin/python
-# ## Usage
+# ## Input
 # - Put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/Concatenator.CELseq.py`
 # - Requires homefolder/var/CELSeq1_96BC.py, homefolder/var/CELSeq2_384BC.py to be in place
 # - Put read1 and read2 fastq files (concatenated by lane) in a folder
+# - Provide 3 arguments: (1) A common name-root for paired end fastq files; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes.
 # - The files minimum name is referred as root.
+# - Allowing 1 mismatch in CBCs will yield 3% more mappability (P. Lijnzaad)
+# ## Usage
 # - Test it by running in bash: `python path/to/Concatenator.CELseq.py`
 # - Run it with your data: python `python path/to/Concatenator.CELseq.py path/to/FastqFiles 1` # Put 1 or 2 if you used CELseq2 primers
 # - Original author: Anna Alemany, van Oudenaarden group, 25-10-2016
-# - Modified  by Abel Vertesy, van Oudenaarden group, 25-10-2016
-# - To be improved: allowing 1 mismatch in CBCs will yield 3% more mappability (P. Lijnzaad)
+# - Modified  by Abel Vertesy, van Oudenaarden group, 27-10-2016
 
 import sys, os
 from itertools import izip # to iterate over two files in parallel
@@ -17,15 +19,41 @@ sys.path.append('/home/hub_oudenaarden/avertesy/var/')
 from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
 from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
 
+# Function and object definitions -------------------------------------------------------
+
+
+#### Indetify the single closest barcode within MaxHammingDist away####
+def findClosestBarcode(bc, BarcodeList, MaxHammingDist):
+    cell = 'None'
+    if (bc not in BarcodeList): # overwrite BC it if you do not find it
+    	bc = "NoCBCAssigned"
+    if MaxHammingDist > 0: # if NOT in the set of barcodes, and you allow >0 Hamming distance
+        k = []
+        for seq in BarcodeList:  # check for all defined BC-s
+            hd = 0
+            for i in range(len(seq)): # check for all bases 1-by-1, and add 1 to hamming distance
+                if seq[i] != bc[i]:
+                    hd += 1
+                if hd > MaxHammingDist: # Stop matching against this BC if MaxHammingDist is exceeded
+                    break
+            if hd <= MaxHammingDist:
+                k.append(seq)
+        if len(k) == 1:
+            bc = k[0]  # overwrite it again if you did not find a direct match, but there is a single "hd <= MaxHammingDist" match.
+    return bc
+
+# Check command line inputs -------------------------------------------------------
+
 try:
     fqr= sys.argv[1]
     protocol = sys.argv[2]
+    MaxHammingDist = sys.argv[3]
 except:
-    print "Give root to fastq files and 1 or 2 according to celseq protocol"
+    print "Provide 3 arguments: (1) A common name-root for paired end fastq files; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes."
     sys.exit()
 
 if protocol not in ['1', '2']:
-    print "Only cellseq 1 or 2 accepted so far. Please change input"
+    print "Either 1 or 2 is accepted for cellseq 1 or 2 as the 2nd argument."
     sys.exit()
 
 if protocol == '1':
@@ -35,8 +63,11 @@ elif protocol == '2':
     bclen = 8
     umilen = 6
 
-# find fastq files. It assumes you concatenated
+if not MaxHammingDist < bclen:
+    print "MaxHammingDist (in the 2nd argument) has to be an integer number smaller than the lenght of the cell barcode."
+    sys.exit()
 
+# Find fastq files. It assumes you concatenated the lanes by MapAndGo.py, thus have the name "*_cat.fastq"
 fq1 = fqr + '_R1_cat.fastq'
 fq2 = fqr + '_R2_cat.fastq'
 
@@ -44,8 +75,9 @@ if not os.path.isfile(fq1) or not os.path.isfile(fq2):
     print 'fastq files not found'
     sys.exit()
 
-fout = open(fqr + '_cbc.fastq', 'w+')
+# Run -------------------------------------------------------
 
+fout = open(fqr + '_cbc.fastq', 'w+')
 NrReadsIn = NrReadsOut = badCBCs = badUMIs = 0
 with open(fq1) as f1, open(fq2) as f2:
     for l1, l2 in izip(f1, f2):
@@ -63,22 +95,23 @@ with open(fq1) as f1, open(fq2) as f2:
             s1, s2 = f1.next(), f2.next()           # read next line
             s1, s2 = s1.rstrip(), s2.rstrip()       # remove \n and spaces
             bcseq = s1[:bclen+umilen]
-            if protocol == "1":
-                # for celseq 1 (R1: celbc + umi + polyA)
-                CBCseq = bcseq[:bclen]
-                if CBCseq not in bccelseq1:        # is valid? Discard read if not.
+
+            if protocol == "1":					# for celseq 1 (R1: celbc + umi + polyA)
+                CBCseq = bcseq[:bclen]			# if bclen =4 it takes bcseq[0,1,2,3]
+                UMIseq = bcseq[bclen:]
+                findClosestBarcode(CBCseq, bccelseq1, MaxHammingDist):        # is valid? Return closest CBC or "NoCBCAssigned"
+                if CBCseq == "NoCBCAssigned":
                     badCBCs += 1
                     continue
                 CBC_ID = bccelseq1[CBCseq]
-                UMIseq = bcseq[bclen:]
-            elif protocol == "2":
-                # for celseq 2 (R1: umi + celbc + polyA)
+            elif protocol == "2":                # for celseq 2 (R1: umi + celbc + polyA)
                 CBCseq = bcseq[umilen:]
-                if CBCseq not in bccelseq2:        # is valid?  Discard read if not.
+                UMIseq = bcseq[:umilen]
+                findClosestBarcode(CBCseq, bccelseq2, MaxHammingDist):        # is valid? Return closest CBC or "NoCBCAssigned"
+                if CBCseq == "NoCBCAssigned":
                     badCBCs += 1
                     continue
                 CBC_ID = bccelseq2[CBCseq]
-                UMIseq = bcseq[:umilen]
             if "N" in UMIseq:                      # is the UMI determined? Discard read if not.
             	badUMIs += 1
                 continue
