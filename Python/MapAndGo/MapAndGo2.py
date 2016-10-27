@@ -33,7 +33,7 @@ def_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_tran
 def_qsub = "no"
 def_mem = "4"
 def_time = "06:00:00"
-def_core = "1"
+def_core = "2"
 def_unzip = "yes"
 def_zip = "no"
 
@@ -365,7 +365,7 @@ print "\nImportant: Make sure to check the bash files: ", bash_file_name, "\n"
 
 # Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
-	NameRoot = os.getcwd() + files[i]
+	NameRoot = os.getcwd() +  "/" + files[i]
 	ConcatRoot = params["-map_out"] + "/" + files[i]
 	FastQ1_cat = ConcatRoot + "_R1_cat.fastq"
 	FastQ2_cat = ConcatRoot + "_R2_cat.fastq"
@@ -383,13 +383,13 @@ for i in range(0,len(files)):
 	cat_r2 = "cat " + NameRoot + "_L00*_R2* > " + FastQ2_cat
 
 	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"]
-	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + FastQ1_cbc + " > " + FastQ1_sam
+	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam
 	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"]
 
 	if params['-zip'] == "yes":
 		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
 		if params['-map_out'] != os.getcwd():
-			ZipUp = ZipUp + "\n \ngzip " + params['-map_out'] + files[i] + "*.fastq"
+			ZipUp = ZipUp + "\n \ngzip " + params['-map_out'] + "/" + files[i] + "*.fastq"
 	else:
 		ZipUp = ""
 
