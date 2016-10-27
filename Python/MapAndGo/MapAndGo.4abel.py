@@ -250,11 +250,11 @@ else:
 
 #Set parameter for time
 if "-time" in argv_imput:
-	params["-time"] = argv_imput["-time"].lower()
+	time = argv_imput["-time"].lower()
 	# sys.exit("\nTime has to be in this format: 12:00:00\n")
 else:
-	params["-time"] = "#$ -l h_rt=" + default_time
-
+	time = default_time
+params["-time_fb"] = "#$ -l h_rt=" + time
 
 #Set parameter for unzip
 if "-unzip" in argv_imput:
@@ -277,7 +277,7 @@ else:
 
 #Head of the bash files
 # head_bash = "#! /bin/bash \n#$ -q " + params["-qtype"] + "\n#$ -cwd \n#$ -V " + params["-email"] +" \n#$ -m beas \n#$ -pe threaded " + params["-cores"]
-head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + params["-time"] +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas"
+head_bash = "#! /bin/bash" + "\n#$ -cwd \n#$ -V \n" + time +"\n" + params["-mem"] + params["-email"] +" \n#$ -m beas"
 
 #Get unique files in dir
 if params["-unzip"] == "yes":
