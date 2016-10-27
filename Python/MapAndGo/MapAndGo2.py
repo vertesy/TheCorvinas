@@ -4,7 +4,7 @@
 ### The files should contain the minimum name of *_L00*_R*_001.fastq
 ### Run it with -> python MapAndGo.py
 ### For usage run -> python MapAndGo.py -help
-# - Authors: Thom de Hoog and Abel Vertesy van Oudenaarden group, 02-03-2015
+# - Authors: Abel Vertesy and Thom de Hoog van Oudenaarden group, 02-03-2015
 # - Maintained by Abel Vertesy, van Oudenaarden group, 16-10-2016
 
 import glob
@@ -37,7 +37,7 @@ def_core = "4"
 def_unzip = "yes"
 def_zip = "no"
 
-#Define necessary variables
+# Define necessary variables
 argv_imput = {}
 argv_valid = ["-help", "-email", "-qsub", "-bar", "-ref", "-mem", "-time", "-CelSeqPrimerVersion", "-MaxHammingDist", "-ScriptsFolder", "-BWA_Folder", "-unzip", "-zip", "-bash_out", "-counts_out", "-cat_out", "-map_out", "-logs_out"]
 bash_file_name = []
@@ -46,7 +46,7 @@ files = []
 options = ["yes","no"]
 params = {}
 
-#Check if required default input is valid
+# Check if required default input is valid
 if not def_qsub.lower() in options:
 		sys.exit("\nThe default for the argument -qsub= is not supported!\n")
 if not def_unzip.lower() in options:
@@ -98,9 +98,26 @@ if do_break:
 	sys.exit(break_message + "\nFor help type: MapAndGo.py -help\n")
 
 # Currently fixed (ignores what you put in)
-params["-MaxHammingDist"] = def_MaxHammingDist
 params["-ScriptsFolder"] = def_ScriptsFolder
 params["-BWA_Folder"] = def_BWA_Folder
+
+# Process parameter for CelSeqPrimerVersion
+if "-CelSeqPrimerVersion" in argv_imput:
+	if argv_imput["-CelSeqPrimerVersion"] in ["1","2"]
+		params["-CelSeqPrimerVersion"] = argv_imput["-CelSeqPrimerVersion"]
+	else:
+		print "-CelSeqPrimerVersion should be either 1 or 2."
+else:
+	params["-CelSeqPrimerVersion"] =  def_CelSeqPrimerVersion
+
+# Process parameter for MaxHammingDist
+if "-MaxHammingDist" in argv_imput:
+	if int(argv_imput["-MaxHammingDist"]) <= 4
+		params["-MaxHammingDist"] = argv_imput["-MaxHammingDist"]
+	else:
+		print "-MaxHammingDist should be either a a number 1-4."
+else:
+	params["-MaxHammingDist"] =  def_MaxHammingDist
 
 # Process parameter for barcode file
 if "-bar" in argv_imput:
@@ -112,7 +129,7 @@ else:
 	if not os.path.isfile(def_bar):
 		sys.exit("\nThe default barcodes file does not exist!\n")
 	else:
-params["-bar"] =  def_bar
+		params["-bar"] =  def_bar
 
 #Process parameter for bash_out
 if "-bash_out" in argv_imput:
@@ -360,7 +377,7 @@ for i in range(0,len(files)):
 
 	bash_file_name.append(file_name)
 
-#Make commands ------------------------------------------------------------------------------------------------------------------------
+# Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
 	bash_file = open(bash_file_name[i], "w")
 
@@ -369,10 +386,14 @@ for i in range(0,len(files)):
 	else:
 		unzip = ""
 
+FastQ1_sam = FastQ1_cbc".sam"
+
 	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
 	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
-	map = "do_mappings_strand.pl -r=" + params['-ref'] + " -f1=" + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq -f2=" + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq -out="+ files[i] + " -outdir=" + params['-map_out'] + " -t=" + params['-cores'] + " -uniq=1 -i=0 -cel=1 -fstr=1 -bar=" + params['-bar'] + " -rb > " + files[i] + ".commands.txt 2> " + files[i] + ".logs_and_errors.txt"
-	extract = "extract_counts_rb.pl -in=" + params['-map_out'] + "/" + files[i] + ".cout.csv -outc=" + params['-counts_out'] + "/" + files[i] + ".coutc.tsv -outb=" + params['-counts_out'] + "/" + files[i] + ".coutb.tsv -outt=" + params['-counts_out'] + "/" + files[i] + ".coutt.tsv"
+
+	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py" + FastQ1 + params["-CelSeqPrimerVersion"] + params["-MaxHammingDist"]
+	mapping = params["-BWA_Folder"] + "bwa mem -t" + params['-cores'] + FastQ1_cbc + " > " + FastQ1_sam
+	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py" FastQ1_sam + params["-CelSeqPrimerVersion"]
 
 	if params['-zip'] == "yes":
 		zip = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
@@ -381,11 +402,11 @@ for i in range(0,len(files)):
 	else:
 		zip = ""
 
-	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + map + "\n \n" + extract + zip
+	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + MakeSingleEnd + mapping + "\n \n" + extract + zip
 	bash_file.write(bash_text)
 	bash_file.close()
 
-#Submit to queue ------------------------------------------------------------------------------------------------------------------------
+# Submit to queue ------------------------------------------------------------------------------------------------------------------------
 if params['-qsub'] == 'yes':
 	for i in range(0, len(files)):
 		command = "qsub " + bash_file_name[i]
