@@ -13,16 +13,16 @@ import os
 
 # Default parameters
 def_email = "<none>"
-def_CelSeqPrimerVersion = 1
-def_MaxHammingDist = 1
+def_CelSeqPrimerVersion = "1"
+def_MaxHammingDist = "1"
 def_ScriptsFolder = "/hpc/hub_oudenaarden/MapAndGo2/"
 def_BWA_Folder = "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/"
 def_bar = "/home/hub_oudenaarden/avertesy/var/"
-def_bash_out = os.getcwd()+'/bash_files'
-def_cat_out = os.getcwd()+'/cat_files'
-def_counts_out = os.getcwd()+'/count_files'
-def_map_out = os.getcwd()+'/map_files'
-def_logfiles_out = os.getcwd()+'/logs_and_errors'
+def_bash_out = '/bash_files'
+def_cat_out = '/cat_files'
+def_counts_out = '/count_files'
+def_map_out = '/map_files'
+def_logfiles_out = '/logs_and_errors'
 
 def_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
 def_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
@@ -76,7 +76,7 @@ help_text = ( "\nThe script automates the mapping procedure by making bash files
 "\n\n-unzip= \n\n\tThis determines if .fastq files to use are zipped and need to be unzipped. Options: \"yes\",\"no\". Default: \"no\"." +
 "\n\n-zip= \n\n\tThis determines if the used .fastq files should be zipped after mapping. Options: \"yes\",\"no\". Default: \"no\"." +
 "\n\nThe Defaults: \n\n\t" +
-"\n\nExample: MapAndGo.py -email = <NONE> -CelSeqPrimerVersion = 1 -MaxHammingDist = 1 -bash_out = os.getcwd()+'/bash_files' -cat_out = os.getcwd()+'/cat_files' -counts_out = os.getcwd()+'/count_files' -map_out = os.getcwd()+'/map_files' -logfiles_out = os.getcwd()+'/logs_and_errors' -qsub = no  -mem = 5  -time = 12:00:00  -core = 4  -unzip = yes  -zip = no  " +
+"\n\nExample: MapAndGo.py -email = <NONE> -CelSeqPrimerVersion = 1 -MaxHammingDist = 1 -bash_out = '/bash_files' -cat_out = '/cat_files' -counts_out = '/count_files' -map_out = '/map_files' -logfiles_out = '/logs_and_errors' -qsub = no  -mem = 5  -time = 12:00:00  -core = 4  -unzip = yes  -zip = no  " +
 "\n\nImportant: Be careful to check the bash files!\n" )
 
 # Readout the command line arguments ----
@@ -103,7 +103,7 @@ params["-BWA_Folder"] = def_BWA_Folder
 
 # Process parameter for CelSeqPrimerVersion
 if "-CelSeqPrimerVersion" in argv_imput:
-	if argv_imput["-CelSeqPrimerVersion"] in ["1","2"]
+	if argv_imput["-CelSeqPrimerVersion"] in ["1","2"]:
 		params["-CelSeqPrimerVersion"] = argv_imput["-CelSeqPrimerVersion"]
 	else:
 		print "-CelSeqPrimerVersion should be either 1 or 2."
@@ -112,7 +112,7 @@ else:
 
 # Process parameter for MaxHammingDist
 if "-MaxHammingDist" in argv_imput:
-	if int(argv_imput["-MaxHammingDist"]) <= 4
+	if (int(argv_imput["-MaxHammingDist"]) <= 4):
 		params["-MaxHammingDist"] = argv_imput["-MaxHammingDist"]
 	else:
 		print "-MaxHammingDist should be either a a number 1-4."
@@ -126,7 +126,7 @@ if "-bar" in argv_imput:
 	else:
 		sys.exit("\nThe barcode file does not exist!\n")
 else:
-	if not os.path.isfile(def_bar):
+	if not os.path.isdir(def_bar):
 		sys.exit("\nThe default barcodes file does not exist!\n")
 	else:
 		params["-bar"] =  def_bar
@@ -137,11 +137,10 @@ if "-bash_out" in argv_imput:
 	if bash_out[(len(bash_out)-1)] == "/":
 		argv_imput["-bash_out"] = bash_out[0:(len(bash_out)-1)]
 	params["-bash_out"] = os.getcwd() + "/" + argv_imput["-bash_out"]
-
 else:
 	if def_bash_out[(len(def_bash_out)-1)] == "/":
 		def_bash_out = def_bash_out[0:(len(def_bash_out)-1)]
-	params["-bash_out"] = def_bash_out
+	params["-bash_out"] = os.getcwd() + "/" + def_bash_out
 
 #Process parameter for cat_out
 if "-cat_out" in argv_imput:
@@ -149,11 +148,10 @@ if "-cat_out" in argv_imput:
 		if cat_out[(len(cat_out)-1)] == "/":
 				argv_imput["-cat_out"] = cat_out[0:(len(cat_out)-1)]
 		params["-cat_out"] = os.getcwd() + "/" + argv_imput["-cat_out"]
-
 else:
 		if def_cat_out[(len(def_cat_out)-1)] == "/":
 				def_cat_out = def_cat_out[0:(len(def_cat_out)-1)]
-		params["-cat_out"] = def_cat_out
+		params["-cat_out"] = os.getcwd() + "/" + def_cat_out
 
 #Process parameter for counts_out
 if "-counts_out" in argv_imput:
@@ -161,37 +159,36 @@ if "-counts_out" in argv_imput:
 	if counts_out[(len(counts_out)-1)] == "/":
 		argv_imput["-counts_out"] = counts_out[0:(len(counts_out)-1)]
 	params["-counts_out"] = os.getcwd() + "/" + argv_imput["-counts_out"]
-
 else:
 	if def_counts_out[(len(def_counts_out)-1)] == "/":
 		def_counts_out = def_counts_out[0:(len(def_counts_out)-1)]
-	params["-counts_out"] = def_counts_out
+	params["-counts_out"] = os.getcwd() + "/" + def_counts_out
 
 #Process parameter for map_out
 if "-map_out" in argv_imput:
 	map_out = argv_imput["-map_out"]
 	if map_out[(len(map_out)-1)] == "/":
 		argv_imput["-map_out"] = map_out[0:(len(map_out)-1)]
-	params["-map_out"] = os.getcwd() + "/" +  argv_imput["-map_out"]
-
+	params["-map_out"] = os.getcwd() + "/" + argv_imput["-map_out"]
 else:
 	if def_map_out[(len(def_map_out)-1)] == "/":
 		def_map_out = def_map_out[0:(len(def_map_out)-1)]
-	params["-map_out"] = def_map_out
+	params["-map_out"] = os.getcwd() + "/" + def_map_out
 
+#Process parameter for logs_out
 if "-logs_out" in argv_imput:
 	logs_out = argv_imput["-logs_out"]
 	if logs_out[(len(logs_out)-1)] == "/":
 		argv_imput["-logs_out"] = logs_out[0:(len(logs_out)-1)]
-	params["-logs_out"] = os.getcwd() + "/" +  argv_imput["-logs_out"]
-
+	params["-logs_out"] = os.getcwd() + "/" + argv_imput["-logs_out"]
 else:
 	if def_logfiles_out[(len(def_logfiles_out)-1)] == "/":
 		def_logfiles_out = def_logfiles_out[0:(len(def_logfiles_out)-1)]
-	params["-logs_out"] = def_logfiles_out
+	params["-logs_out"] = os.getcwd() + "/" + def_logfiles_out
 
 #Check if defaults folders exists
 if not os.path.isdir(params["-bash_out"]):
+		print params["-bash_out"]
 		os.mkdir(params["-bash_out"])
 if not os.path.isdir(params["-cat_out"]):
 		os.mkdir(params["-cat_out"])
@@ -343,7 +340,7 @@ for i in range(0, len(files)):
 		if used_files == "":
 				used_files = files[i]
 		else:
-				used_files = used_files +  "\n\t\t\t\t\t" + files[i]
+				used_files = used_files + "\n\t\t\t\t\t" + files[i]
 
 #Output variables
 print "\n.fastq files recognised: 		" + str(len(dir))
@@ -363,7 +360,6 @@ print "Memory requested: 			" + params['-mem']
 print "Time requested: 			" + params['-time']
 print "Email: 					" + params['-email_fb']
 print "zip .fastq files afterwards:		" + params['-zip']
-print "\nImportant: Make sure to check the bash files!\n"
 
 #Make unique filenames
 for i in range(0,len(files)):
@@ -377,8 +373,16 @@ for i in range(0,len(files)):
 
 	bash_file_name.append(file_name)
 
+print "\nImportant: Make sure to check the bash files: ", bash_file_name, "\n"
+
 # Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
+	NameRoot = params["-cat_out"] + "/" + files[i]
+	FastQ1 = NameRoot + "_R1_cat.fastq"
+	FastQ2 = NameRoot + "_R2_cat.fastq"
+	FastQ1_cbc = files[i] + "_cbc"
+	FastQ1_sam = FastQ1_cbc + ".sam"
+
 	bash_file = open(bash_file_name[i], "w")
 
 	if params["-unzip"] == "yes":
@@ -386,14 +390,12 @@ for i in range(0,len(files)):
 	else:
 		unzip = ""
 
-FastQ1_sam = FastQ1_cbc".sam"
+	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + FastQ1
+	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + FastQ2
 
-	cat_r1 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R1* > " + params["-cat_out"] + "/" + files[i] + "_R1_cat.fastq"
-	cat_r2 = "cat " + os.getcwd() + "/" + files[i] + "_L00*_R2* > " + params["-cat_out"] + "/" + files[i] + "_R2_cat.fastq"
-
-	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py" + FastQ1 + params["-CelSeqPrimerVersion"] + params["-MaxHammingDist"]
-	mapping = params["-BWA_Folder"] + "bwa mem -t" + params['-cores'] + FastQ1_cbc + " > " + FastQ1_sam
-	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py" FastQ1_sam + params["-CelSeqPrimerVersion"]
+	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1 + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"]
+	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + FastQ1_cbc + " > " + FastQ1_sam
+	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"]
 
 	if params['-zip'] == "yes":
 		zip = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
@@ -402,7 +404,7 @@ FastQ1_sam = FastQ1_cbc".sam"
 	else:
 		zip = ""
 
-	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + MakeSingleEnd + mapping + "\n \n" + extract + zip
+	bash_text = head_bash + "\n \n" + unzip + cat_r1 + "\n \n" + cat_r2 + "\n \n" + MakeSingleEnd + "\n \n" + mapping + "\n \n" + extract + zip
 	bash_file.write(bash_text)
 	bash_file.close()
 
