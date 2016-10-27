@@ -23,23 +23,23 @@ from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
 
 
 #### Indetify the single closest barcode within MaxHammingDist away####
-def findClosestBarcode(bc, BarcodeList, MaxHammingDist):
-    if (bc not in BarcodeList): # overwrite BC it if you do not find it
-    	bc = "NoCBCAssigned"
-    if MaxHammingDist > 0: # if NOT in the set of barcodes, and you allow >0 Hamming distance
+def findClosestBarcode(string, BarcodeList, MaxHammingDist):
+    if (string not in BarcodeList) and (MaxHammingDist > 0): # if NOT in the set of barcodes, and you allow >0 Hamming distance
         k = []
-        for seq in BarcodeList:  # check for all defined BC-s
+        for DefinedCBC in BarcodeList:  # check for all defined BC-s
             hd = 0
-            for i in range(len(seq)): # check for all bases 1-by-1, and add 1 to hamming distance
-                if seq[i] != bc[i]:
+            for i in range(len(DefinedCBC)): # check for all bases 1-by-1, and add 1 to hamming distance
+                if DefinedCBC[i] != string[i]:
                     hd += 1
                 if hd > MaxHammingDist: # Stop matching against this BC if MaxHammingDist is exceeded
                     break
             if hd <= MaxHammingDist:
-                k.append(seq)
+                k.append(DefinedCBC)
         if len(k) == 1:
-            bc = k[0]  # overwrite it again if you did not find a direct match, but there is a single "hd <= MaxHammingDist" match.
-    return bc
+            string = k[0]  # overwrite it again if you did not find a direct match, but there is a single "hd <= MaxHammingDist" match.
+    if (string not in BarcodeList): # overwrite BC it if you do not find it
+        string = "NoCBCAssigned"
+    return string
 
 # Check command line inputs -------------------------------------------------------
 
@@ -99,7 +99,7 @@ with open(fq1) as f1, open(fq2) as f2:
             if protocol == "1":					# for celseq 1 (R1: celbc + umi + polyA)
                 CBCseq = bcseq[:bclen]			# if bclen =4 it takes bcseq[0,1,2,3]
                 UMIseq = bcseq[bclen:]
-                findClosestBarcode(CBCseq, bccelseq1, MaximumHammingDist)        # is valid? Return closest CBC or "NoCBCAssigned"
+                CBCseq = findClosestBarcode(CBCseq, bccelseq1, MaximumHammingDist)        # is valid? Return closest CBC or "NoCBCAssigned"
                 if CBCseq == "NoCBCAssigned":
                     badCBCs += 1
                     continue
@@ -107,7 +107,7 @@ with open(fq1) as f1, open(fq2) as f2:
             elif protocol == "2":                # for celseq 2 (R1: umi + celbc + polyA)
                 CBCseq = bcseq[umilen:]
                 UMIseq = bcseq[:umilen]
-                findClosestBarcode(CBCseq, bccelseq2, MaximumHammingDist)        # is valid? Return closest CBC or "NoCBCAssigned"
+                CBCseq = findClosestBarcode(CBCseq, bccelseq2, MaximumHammingDist)        # is valid? Return closest CBC or "NoCBCAssigned"
                 if CBCseq == "NoCBCAssigned":
                     badCBCs += 1
                     continue
