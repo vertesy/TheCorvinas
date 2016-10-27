@@ -24,7 +24,6 @@ from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
 
 #### Indetify the single closest barcode within MaxHammingDist away####
 def findClosestBarcode(bc, BarcodeList, MaxHammingDist):
-    cell = 'None'
     if (bc not in BarcodeList): # overwrite BC it if you do not find it
     	bc = "NoCBCAssigned"
     if MaxHammingDist > 0: # if NOT in the set of barcodes, and you allow >0 Hamming distance
@@ -47,7 +46,7 @@ def findClosestBarcode(bc, BarcodeList, MaxHammingDist):
 try:
     fqr= sys.argv[1]
     protocol = sys.argv[2]
-    MaxHammingDist = sys.argv[3]
+    MaximumHammingDist = int(sys.argv[3])
 except:
     print "Provide 3 arguments: (1) A common name-root for paired end fastq files; (2) 1 or 2 according to celseq protocol; (3) Hamming distance (integer) for matching cell barcodes."
     sys.exit()
@@ -63,9 +62,10 @@ elif protocol == '2':
     bclen = 8
     umilen = 6
 
-if not MaxHammingDist < bclen:
-    print "MaxHammingDist (in the 2nd argument) has to be an integer number smaller than the lenght of the cell barcode."
-    sys.exit()
+if (not MaximumHammingDist < int(bclen)):
+	print "MaximumHammingDist:", MaximumHammingDist, "bclen", bclen
+	print "MaximumHammingDist (in the 3rd argument) has to be an integer number smaller than the lenght of the cell barcode."
+	sys.exit()
 
 # Find fastq files. It assumes you concatenated the lanes by MapAndGo.py, thus have the name "*_cat.fastq"
 fq1 = fqr + '_R1_cat.fastq'
@@ -99,7 +99,7 @@ with open(fq1) as f1, open(fq2) as f2:
             if protocol == "1":					# for celseq 1 (R1: celbc + umi + polyA)
                 CBCseq = bcseq[:bclen]			# if bclen =4 it takes bcseq[0,1,2,3]
                 UMIseq = bcseq[bclen:]
-                findClosestBarcode(CBCseq, bccelseq1, MaxHammingDist):        # is valid? Return closest CBC or "NoCBCAssigned"
+                findClosestBarcode(CBCseq, bccelseq1, MaximumHammingDist)        # is valid? Return closest CBC or "NoCBCAssigned"
                 if CBCseq == "NoCBCAssigned":
                     badCBCs += 1
                     continue
@@ -107,7 +107,7 @@ with open(fq1) as f1, open(fq2) as f2:
             elif protocol == "2":                # for celseq 2 (R1: umi + celbc + polyA)
                 CBCseq = bcseq[umilen:]
                 UMIseq = bcseq[:umilen]
-                findClosestBarcode(CBCseq, bccelseq2, MaxHammingDist):        # is valid? Return closest CBC or "NoCBCAssigned"
+                findClosestBarcode(CBCseq, bccelseq2, MaximumHammingDist)        # is valid? Return closest CBC or "NoCBCAssigned"
                 if CBCseq == "NoCBCAssigned":
                     badCBCs += 1
                     continue
