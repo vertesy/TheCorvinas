@@ -2,11 +2,11 @@
 # ## Usage
 # - Put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/script`
 # - Provide 2 arguments separated by a whitespace: InputSamFile, CelSeq protocol [1,2]
-# - Test it by running in bash: `python path/to/Tablator.py`
-# - Run it with your data: python `python path/to/Tablator.py path/to/InputSam 1` # Put 1 (or 2 if you used CELseq2 primers)
+# - Test it by running in bash: `python path/to/Tablator.CELseq.py`
+# - Run it with your data: python `python path/to/Tablator.CELseq.py path/to/InputSam 1` # Put 1 (or 2 if you used CELseq2 primers)
 # - Original author: Anna Alemany, van Oudenaarden group, 25-10-2016
 # - Modified  by Abel Vertesy, van Oudenaarden group, 25-10-2016
-# ## Loaction: /home/hub_oudenaarden/avertesy/bin/Mapping/Tablator.py
+# ## Loaction: /home/hub_oudenaarden/avertesy/bin/Mapping/Tablator.CELseq.py
 
 import sys, os
 import numpy as np
