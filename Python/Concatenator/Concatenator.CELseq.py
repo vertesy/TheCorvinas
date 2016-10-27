@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # ## Usage
-# - Put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/Concatenator.CELseq,py`
+# - Put this script to folder where you store your scripts (e.g.: user/bin), and make it executable `chmod +X path/to/Concatenator.CELseq.py`
 # - Requires homefolder/var/CELSeq1_96BC.py, homefolder/var/CELSeq2_384BC.py to be in place
 # - Put read1 and read2 fastq files (concatenated by lane) in a folder
 # - The files minimum name is referred as root.
@@ -101,3 +101,5 @@ print "The number of input reads\t", NrReadsIn
 print "The number of output reads\t", NrReadsOut
 print "The number of incorrect cell barcodes\t", badCBCs
 print "The number of UMIs with an N\t", badUMIs
+print "\nRun:\n"
+print "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/bwa mem -t 8", ref, fqr + '_cbc.fastq', " > ", fqr, ".sam"
