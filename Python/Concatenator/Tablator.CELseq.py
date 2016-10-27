@@ -10,15 +10,10 @@
 
 import sys, os
 import numpy as np
-# import env
-UniqReads = 1 # 1 If you want to count uniquely mapped reads only
 
 sys.path.append('/home/hub_oudenaarden/avertesy/var/')
 from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
 from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
-
-print 122
-# REPLACE THIS LINE 127
 
 # Function and object definitions -------------------------------------------------------
 
@@ -141,7 +136,7 @@ for gene in sorted(umicnt):
 		x = 1.0 * len(set(umicnt[gene][cell]))
 		if x > 0 and x < K:
 			t.append( np.log(1.-x/K)/np.log(1.-1./K) )
-		elif x == K:
+		elif x >= K:
 			t.append( np.log(1.-(K-1e-3)/K)/np.log(1.-1./K) )
 		elif x > K:
 			print gene,
