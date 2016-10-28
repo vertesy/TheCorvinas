@@ -136,9 +136,9 @@ for gene in sorted(umicnt):
 	for cell in sorted(bc2sample.values()):
 		x = 1.0 * len(set(umicnt[gene][cell]))
 		if x > 0 and x < K:
-			t.append( round(np.log(1.-x/K)/np.log(1.-1./K), 3) )
+			t.append( round(np.log(1.-x/K)/np.log(1.-1./K), 2) )
 		elif x == K:
-			t.append( round(np.log(1.-(K-1e-3)/K)/np.log(1.-1./K), 3) )
+			t.append( round(np.log(1.-(K-1e-3)/K)/np.log(1.-1./K), 2) )
 		elif x > K:
 			print gene,
 			print umicnt[gene][cell]
