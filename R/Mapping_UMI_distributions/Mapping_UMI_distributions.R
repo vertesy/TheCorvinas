@@ -29,6 +29,6 @@ UMI_correlations_fold_above_random = cbind( "Mapped_Reads" = UMI_enrichment_Mapp
 wplot(UMI_correlations_fold_above_random)
 
 fc_UMIwithAtLeast3GsandMaybe1T = (sum(UMI_distr_in_mapped_reads[c('GGGG', 'GGGT', 'TGGG', 'GGTG', 'GTGG'),]) / AllMapped_Reads)
-
+"9.71 %"
 percentage_formatter(fc_UMIwithAtLeast3GsandMaybe1T -(5*1/256))
 
