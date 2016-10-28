@@ -24,8 +24,8 @@ def_counts_out = 'count_files'
 def_map_out = 'map_files'
 def_logfiles_out = 'logs_and_errors'
 
-def_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
-def_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked.fa"
+def_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_mito/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked_Mito.fa"
+def_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_eGFP_mito/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked_eGFP_Mito.fa"
 def_refseq_zebrafish = "/hpc/hub_oudenaarden/gene_models/zebrafish_gene_models/Danio_rerio_Zv9_ens74_extended3_genes_ERCC92.fa"
 def_refseq_elegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate_1003_genes_sorted_oriented_ERCC92.fa"
 def_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_transcriptome_ERCC92.fa"
@@ -35,7 +35,7 @@ def_mem = "5"
 def_time = "06:00:00"
 def_core = "8"
 def_unzip = "yes"
-def_zip = "no"
+def_zip = "yes"
 
 # Define necessary variables
 argv_imput = {}
@@ -177,7 +177,6 @@ else:
 
 #Check if defaults folders exists
 if not os.path.isdir(params["-bash_out"]):
-		print params["-bash_out"]
 		os.mkdir(params["-bash_out"])
 if not os.path.isdir(params["-counts_out"]):
 		os.mkdir(params["-counts_out"])
@@ -292,13 +291,15 @@ if params["-unzip"] == "yes":
 	if len(Files) == 0:
 		print "\nThere are no *_L00*_R*_*.fastq.gz files in the current working directory with the minimal name of *_L00*_R*_*.fastq\nTrying to find unzipped files.\nparams['-unzip'] is set to NO."
 		params["-unzip"] = "no"
+		Files = glob.glob("*_R*_*.fastq")
+		if len(Files) == 0:
+			sys.exit("\nThere are no *_R*_*.fastq files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
+# Try unzipped files
 else:
 	gz=""
-
-# Try unzipped files
-Files = glob.glob("*_L00*_R*_*.fastq")
-if len(Files) == 0:
-	sys.exit("\nThere are no *_L00*_R*_*.fastq files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
+	Files = glob.glob("*_R*_*.fastq")
+	if len(Files) == 0:
+		sys.exit("\nThere are no *_R*_*.fastq files in the current working directory with the minimal name of *_L00*_R*_*.fastq\n")
 
 for i in range(0, len(Files)):
 	name = Files[i].split("_L00")
@@ -364,7 +365,7 @@ for i in range(0,len(files)):
 
 	bash_file_name.append(file_name)
 
-print "\nImportant: Make sure to check the bash files: ", bash_file_name, "\n"
+print "\nImportant: Make sure to check the bash files:\n\t\t\t\t", bash_file_name[0], "\n"
 
 # Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
@@ -388,6 +389,7 @@ for i in range(0,len(files)):
 	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"] + "\n\n"
 	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam + "\n\n"
 	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"] + "\n\n"
+	DownloadResults = "rsync -avzP UMC: " + params["-counts_out"] + " " + "~/Downloads\n\n"
 
 	if params['-zip'] == "yes":
 		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
@@ -396,8 +398,8 @@ for i in range(0,len(files)):
 	else:
 		ZipUp = ""
 
-	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp
-	# bash_text = head_bash + MakeSingleEnd + mapping +extract + ZipUp
+	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + '# '+ DownloadResults
+	# bash_text = head_bash + MakeSingleEnd + mapping +extract + ZipUp + DownloadResults
 	bash_file.write(bash_text)
 	bash_file.close()
 
