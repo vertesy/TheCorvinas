@@ -765,3 +765,12 @@ any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
   }
   return(y)
 }
+
+
+merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rownames
+  merged =  merge(x ,y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
+  rownames(merged) = merged$Row.names
+  merged = merged[ ,-1] # remove row names
+  merged[is.na(merged)] <- 0  
+  return(merged)
+}
