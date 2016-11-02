@@ -12,7 +12,8 @@ print "Tablator.CELseq.py Started"
 import sys, os
 import numpy as np
 
-def_bar = "/home/hub_oudenaarden/avertesy/var/"
+# def_bar = "/home/hub_oudenaarden/avertesy/var/"
+def_bar = "/hpc/hub_oudenaarden/MapAndGo2/var/"
 sys.path.append(def_bar)
 from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
 from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
@@ -130,7 +131,7 @@ print >> fb, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
 print >> ft, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
 
 for gene in sorted(umicnt):
-	print >> fc, ' '.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
+	print >> fc, '\t'.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
 	print >> fb, gene, '\t'.join( str(len(set(umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) )
 	t = []
 	for cell in sorted(bc2sample.values()):

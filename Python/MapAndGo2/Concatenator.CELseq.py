@@ -10,13 +10,15 @@
 # - Test it by running in bash: `python path/to/Concatenator.CELseq.py`
 # - Run it with your data: python `python path/to/Concatenator.CELseq.py path/to/FastqFiles 1` # Put 1 or 2 if you used CELseq2 primers
 # - Original author: Anna Alemany, van Oudenaarden group, 25-10-2016
-# - Modified  by Abel Vertesy, van Oudenaarden group, 27-10-2016
+# - Modified by Abel Vertesy, van Oudenaarden group, 27-10-2016
 
 print "Concatenator.CELseq.py Started, eyy!"
 import sys, os
 from itertools import izip # to iterate over two files in parallel
 
-def_bar = "/home/hub_oudenaarden/avertesy/var/"
+# def_bar = "/home/hub_oudenaarden/avertesy/var/"
+def_bar = "/hpc/hub_oudenaarden/MapAndGo2/var/"
+
 sys.path.append(def_bar)
 from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
 from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
