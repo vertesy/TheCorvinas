@@ -120,16 +120,16 @@ else:
 	params["-MaxHammingDist"] =  def_MaxHammingDist
 
 # Process parameter for barcode file
-if "-bar" in argv_imput:
-	if  os.path.isfile(argv_imput["-bar"]):
-		params["-bar"] = argv_imput["-bar"]
-	else:
-		sys.exit("\nThe barcode file does not exist!\n")
-else:
-	if not os.path.isdir(def_bar):
-		sys.exit("\nThe default barcodes file does not exist!\n")
-	else:
-		params["-bar"] =  def_bar
+# if "-bar" in argv_imput:
+# 	if  os.path.isfile(argv_imput["-bar"]):
+# 		params["-bar"] = argv_imput["-bar"]
+# 	else:
+# 		sys.exit("\nThe barcode file does not exist!\n")
+# else:
+# 	if not os.path.isdir(def_bar):
+# 		sys.exit("\nThe default barcodes file does not exist!\n")
+# 	else:
+# 		params["-bar"] =  def_bar
 
 #Process parameter for bash_out
 if "-bash_out" in argv_imput:
@@ -340,7 +340,7 @@ print ".fastq files with unique index: 		" + str(len(files))
 print "Unzip and use *.fastq.gz files:			" + params['-unzip']
 print "Names of files of used:				" + used_files
 print "Used RefSeq file: 				" + params['-ref']
-print "Used barcode file: 				" + params['-bar']
+# print "Used barcode file: 				" + params['-bar']
 # print "Output dir for the concatenated .fastq files:	" + params['-cat_out'] + "/"
 print "Output dir for bash files to be submitted: 	" + params['-bash_out'] + "/"
 print "Output dir for sam files: 			" + params['-map_out'] + "/"
@@ -365,7 +365,7 @@ for i in range(0,len(files)):
 
 	bash_file_name.append(file_name)
 
-print "\nImportant: Make sure to check the bash files:\n\t\t\t\t", bash_file_name[0], "\n"
+print "\nImportant: Make sure to check the bash files:\n\t\t\t\t", bash_file_name, "\n"
 
 # Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
@@ -389,7 +389,7 @@ for i in range(0,len(files)):
 	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"] + "\n\n"
 	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam + "\n\n"
 	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"] + "\n\n"
-	DownloadResults = "rsync -avzP UMC: " + params["-counts_out"] + " " + "~/Downloads\n\n"
+	DownloadResults = "rsync -avzP UMC: " + params["-counts_out"] + " " + "~/Downloads\n"
 
 	if params['-zip'] == "yes":
 		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
@@ -398,7 +398,7 @@ for i in range(0,len(files)):
 	else:
 		ZipUp = ""
 
-	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + '# '+ DownloadResults
+	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + '\n\n# '+ DownloadResults
 	# bash_text = head_bash + MakeSingleEnd + mapping +extract + ZipUp + DownloadResults
 	bash_file.write(bash_text)
 	bash_file.close()
