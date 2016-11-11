@@ -136,13 +136,15 @@ with open(fq1) as f1, open(fq2) as f2:
             NrReadsOut += 1
 
             # Write out read1.fastq with barcode in the name
-            print >> fout, '\n'.join([':'.join([q, CBCseq, UMIseq, CBC_ID]), s2, p2, q2]) # write out with cell index number appended
 
-print "		The number of input reads\t", NrReadsIn
-print "		The number of output reads\t", NrReadsOut
-print "		\t", round(100*NrReadsOut/NrReadsIn), '"%" of the reads have a valid CBC and UMI.'
-print "		The number of incorrect cell barcodes\t", badCBCs
-print "		The number of UMIs with an N\t", badUMIs
+            print >> fout, '\n'.join([':'.join([q, CBCseq, UMIseq, str(CBC_ID)]), s2, p2, q2]) # write out with cell index number appended
+
+freads = open(fqr + '.sout', 'w+')
+print >> freads, "		The number of input reads\t", NrReadsIn
+print >> freads, "		The number of output reads\t", NrReadsOut
+print >> freads, "		\t", round(100*NrReadsOut/NrReadsIn), '"%" of the reads have a valid CBC and UMI.'
+print >> freads, "		The number of incorrect cell barcodes\t", badCBCs
+print >> freads, "		The number of UMIs with an N\t", badUMIs
 
 
 print "Concatenator.CELseq.py Finsihed"
