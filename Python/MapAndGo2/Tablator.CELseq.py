@@ -15,8 +15,8 @@ import numpy as np
 # def_bar = "/home/hub_oudenaarden/avertesy/var/"
 def_bar = "/hpc/hub_oudenaarden/MapAndGo2/var/"
 sys.path.append(def_bar)
-from CELSeq1_96BC import bc2sample as bccelseq1     # cell barcodes for CELseq 1
-from CELSeq2_384BC import bc2sample as bccelseq2   # cell barcodes for CELseq 2
+from CELSeq1_96BC import bc2sample as bccelseq1		 # cell barcodes for CELseq 1
+from CELSeq2_384BC import bc2sample as bccelseq2 	 # cell barcodes for CELseq 2
 
 # Function and object definitions -------------------------------------------------------
 
@@ -27,7 +27,7 @@ class samSingleRead(object):
 		self.flag = read[1]
 		self.rname = read[2]
 		self.pos = read[3]
-		self.mapq = read[4]
+		self.mapq = int(read[4])
 		self.cigar = read[5]
 		self.rnext = read[6]
 		self.pnext = read[7]
@@ -37,7 +37,13 @@ class samSingleRead(object):
 		self.opt = {}
 		if len(read) > 11:
 			for i in range(11,len(read)):
-				self.opt[read[i][:2]] = read[i][3:]
+				l = read[i].rsplit(':')
+				if l[1] == 'i':
+					self.opt[l[0]] = int(l[2])
+				elif l[1] == 'f':
+					self.opt[l[0]] = float(l[2])
+				else:
+					self.opt[l[0]] = l[2]
 		return
 
 	def isMapped(self):
@@ -45,7 +51,7 @@ class samSingleRead(object):
 		return k[-3] == '0'
 
 	def isUniquelyMapped(self): # defined for bwa MEM but
-		return self.mapq >= 20	# If the mapping quality of a read alignment is Q, the probability that the alignment is wrong can be calculated with: probability = 10 ** -(Q/10)
+		return self.mapq >= 20 and 'XA' not in self.opt	and 'SA' not in self.opt # If the mapping quality of a read alignment is Q, the probability that the alignment is wrong can be calculated with: probability = 10 ** -(Q/10)
 
 	def isReverseStrand(self):
 		k = bin(int(self.flag))[2:].zfill(12)
@@ -77,7 +83,7 @@ if protocol == '1': #### CEL Seq 1 parmeters ####
 elif protocol == '2': #### CEL Seq 2 parmeters ####
 	bclen = 8
 	umilen = 6
-	bc2sample = bccelseq1
+	bc2sample = bccelseq2
 
 K = 4**umilen
 
@@ -107,8 +113,8 @@ with open(InputSamFile) as f:
 			if not len(umi) == umilen:
 				print 'len(umi) != umilen'
 				sys.exit()
-			# cell = q[9][1:] # REPLACE THIS LINE
 			cell = q[9]
+			# cell = int(q[9]) # not a number any more
 
 			try:
 				umicnt[gene][cell].append(umi)
@@ -122,9 +128,9 @@ with open(InputSamFile) as f:
 # Writing out count tables -------------------------------------------------------
 print "...Writing out count tables"
 
-fc = open(InputSamFile + '.ReadCounts.tsv', 'w+')
-fb = open(InputSamFile + '.BarcodeCounts.tsv', 'w+')
-ft = open(InputSamFile + '.TranscriptCounts.tsv', 'w+')
+fc = open(InputSamFile[:-4] + '.ReadCounts.tsv', 'w+')
+fb = open(InputSamFile[:-4] + '.BarcodeCounts.tsv', 'w+')
+ft = open(InputSamFile[:-4] + '.TranscriptCounts.tsv', 'w+')
 
 print >> fc, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
 print >> fb, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
@@ -132,7 +138,7 @@ print >> ft, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
 
 for gene in sorted(umicnt):
 	print >> fc, '\t'.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
-	print >> fb, gene, '\t'.join( str(len(set(umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) )
+	print >> fb, gene, '\t', '\t'.join( str(len(set(	 umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) )
 	t = []
 	for cell in sorted(bc2sample.values()):
 		x = 1.0 * len(set(umicnt[gene][cell]))
@@ -147,7 +153,7 @@ for gene in sorted(umicnt):
 			print len(set(umicnt[gene][cell]))
 		else:
 			t.append(0)
-	print >> ft, gene, '\t'.join(str(ti) for ti in t)
+	print >> ft, '\t', gene, '\t'.join(str(ti) for ti in t)
 
 fc.close()
 fb.close()
