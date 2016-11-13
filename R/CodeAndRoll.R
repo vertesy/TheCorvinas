@@ -774,3 +774,11 @@ merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rowna
   merged[is.na(merged)] <- 0  
   return(merged)
 }
+
+
+numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x),abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
+  z = x:y
+  if(zeropadding){ z =stringr::str_pad(z, pad = 0, width = pad_length)   }
+  return(z)
+}
+# toClipboard(numerate(1, 122))
