@@ -137,9 +137,9 @@ fc = open(InputSamFile[:-4] + '.ReadCounts.tsv', 'w+')
 fb = open(InputSamFile[:-4] + '.BarcodeCounts.tsv', 'w+')
 ft = open(InputSamFile[:-4] + '.TranscriptCounts.tsv', 'w+')
 
-print >> fc, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
-print >> fb, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
-print >> ft, 'GENEID', '\t'.join( str(c) for c in sorted(bc2sample.values()))
+print >> fc, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
+print >> fb, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
+print >> ft, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
 
 for gene in sorted(umicnt):
 	print >> fc, '\t'.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
@@ -158,7 +158,7 @@ for gene in sorted(umicnt):
 			print len(set(umicnt[gene][cell]))
 		else:
 			t.append(0)
-	print >> ft, '\t', gene, '\t'.join(str(ti) for ti in t)
+	print >> ft, gene, '\t', '\t'.join(str(ti) for ti in t)
 
 fc.close()
 fb.close()
