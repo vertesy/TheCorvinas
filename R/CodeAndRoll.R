@@ -328,7 +328,7 @@ colCV <- function(mat) return(apply(mat,2,cv ) ) # Calculates the CV of each col
 rowMin <- function(x) apply(x, 1, min) # Calculates the minimum of each row of a numeric matrix / data frame.
 
 rowMax <- function(x) apply(x, 1, max) # Calculates the maximum of each row of a numeric matrix / data frame.
-	
+
 colMin <- function(x) apply(x, 2, min) # Calculates the minimum of each column of a numeric matrix / data frame.
 
 colMax <- function(X) apply(x, 2, max) # Calculates the maximum of each column of a numeric matrix / data frame.
@@ -420,7 +420,7 @@ intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same length) s
 intermingle2vec <- function(V1, V2) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
   stopifnot(length(V1) == length(V2) )
   LEN = length(c(V1, V2))
-  
+
   Vout = rep(NA, LEN)
   Vout[seq(1,LEN, by=2)] = V1
   Vout[seq(2, LEN, by=2)] = V2
@@ -441,22 +441,22 @@ as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with
 
 list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Convert a list to a full dataframe, summarizing the presence or absence of elements
   if( is.null(names(yalist)) ) {names(yalist) = 1:length(yalist)}
-  
+
   rown = unique(unlist(yalist))
   coln =  names(yalist)
   mm = matrix_from_dimnames(rown, coln, fill = matrixfill)
   entries_list = lapply(yalist, names)
-  
+
   for (i in 1:length(yalist)) {
     print(i)
     le = unlist(yalist[i])
     names(le) = unlist(entries_list[i])
-    
+
     list_index = which( le  %in% rown)
     m_index = which( rown %in% le)
     mm[ m_index,i] = names(le[list_index])
   }
-  return(mm)  
+  return(mm)
 }
 
 
@@ -738,21 +738,21 @@ Color_Check <- function(..., incrBottMarginBy=0 ) { # Display the colors encoded
 
 cormethod = "spearman"
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-  usr <- par("usr"); on.exit(par(usr)) 
-  par(usr = c(0, 1, 0, 1)) 
-  r <- abs(cor(x, y, method = method)) 
-  txt <- format(c(r, 0.123456789), digits=digits)[1] 
-  txt <- paste(prefix, txt, sep="") 
-  if(missing(cex.cor)) cex <- 0.8/strwidth(txt) 
-  
-  test <- cor.test(x,y) 
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y, method = method))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
+
+  test <- cor.test(x,y)
   # borrowed from printCoefmat
-  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE, 
+  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                   symbols = c("***", "**", "*", ".", " ")) 
-  
-  text(0.5, 0.5, txt, cex = cex * r) 
-  text(.8, .8, Signif, cex=cex, col=2) 
+                   symbols = c("***", "**", "*", ".", " "))
+
+  text(0.5, 0.5, txt, cex = cex * r)
+  text(.8, .8, Signif, cex=cex, col=2)
 }
 
 
@@ -771,10 +771,9 @@ merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rowna
   merged =  merge(x ,y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
   rownames(merged) = merged$Row.names
   merged = merged[ ,-1] # remove row names
-  merged[is.na(merged)] <- 0  
+  merged[is.na(merged)] <- 0
   return(merged)
 }
-
 
 numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x),abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
   z = x:y
@@ -782,3 +781,17 @@ numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(
   return(z)
 }
 # toClipboard(numerate(1, 122))
+
+
+plot_filtering_RaceID <- function(sc, minexpr=p$minexpr, minnumber = p$minnumber) {
+  GeneExpression = log10(rowSums(sc@expdata)+1)
+  GeneOccurences = rowSums(sc@expdata>0)
+  GeneOccurence_above_MinEx = rowSums(sc@expdata > minexpr)
+  index = GeneOccurence_above_MinEx >= minnumber
+
+  coll = (index)+2
+  sub = kollapse(pc_TRUE(index)," or ", sum(index), " genes have ", minexpr, "+ reads in ", minnumber, "+ cells.")
+  plot(jitter(GeneOccurences, amount = .5) ~ GeneExpression , pch=".", main ="GeneFiltering", col = coll, sub = sub, xlab = "log10(Transcript Count+1)", ylab = "Expressed in so many cells" )
+}
+
+
