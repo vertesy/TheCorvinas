@@ -472,6 +472,16 @@ list_to_fullDF <- function(ll){ # convert a list to a full numeric data matrix. 
   mat
 }
 
+splitbyitsnames <- function(namedVec){ # split a list by its names 
+stopif(is.null(names(namedVec)), message = "NO NAMES")
+split(namedVec, f = names(namedVec)) 
+}
+
+splititsnames_byValues <- function(namedVec){ # split a list by its names 
+  stopif(is.null(names(namedVec)), message = "NO NAMES")
+  split(names(namedVec), f = namedVec) 
+}
+
 
 ## Set operations -------------------------------------------------------------------------------------------------
 
@@ -794,4 +804,9 @@ plot_filtering_RaceID <- function(sc, minexpr=p$minexpr, minnumber = p$minnumber
   plot(jitter(GeneOccurences, amount = .5) ~ GeneExpression , pch=".", main ="GeneFiltering", col = coll, sub = sub, xlab = "log10(Transcript Count+1)", ylab = "Expressed in so many cells" )
 }
 
+
+
+clhist <-function(breakz=20) { # A histogram from data pasted from clipboard
+  whist(fromClipboard.as_num_vec(),breaks = breakz, savefile = F)
+}
 
