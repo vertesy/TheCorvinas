@@ -26,22 +26,24 @@
 # -  Plots
 # -  New additions
 
-
 ## Setup   -------------------------------------------------------------------------------------------------
 # pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
-l=length
-oo <- function () {toClipboard(OutDir); print("OutDir is copied to the Clipbiard")}
-
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 require("MarkdownReports")
 "Depends: gtools"
 
+# Alisases ----------------
+try.dev.off <- try(dev.off(), silent = T)
+l=length
+
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
 ### Clipboard interaction -------------------------------------------------------------------------------------------------
+oo <- function () {toClipboard(OutDir); print("OutDir is copied to the Clipbiard")}
+
 toClipboard <- function(x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) { # Copy an R-object to your clipboard on OS X.
 	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
 }
@@ -495,8 +497,8 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 
 ## Math $ stats -------------------------------------------------------------------------------------------------
 
-sem <- function(x) {  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s by default)
-	sd(x)/sqrt(length(x))}
+sem <- function(x, na.rm=T) {  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s by default)
+	sd(unlist(x), na.rm = na.rm)/sqrt(length(na.omit.strip(as.numeric(x))))}
 
 cv <- function(x) { # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s by default)
 	sd( x, na.rm=T)/mean(x, na.rm=T) }
@@ -805,8 +807,15 @@ plot_filtering_RaceID <- function(sc, minexpr=p$minexpr, minnumber = p$minnumber
 }
 
 
-
-clhist <-function(breakz=20) { # A histogram from data pasted from clipboard
+clhist <-function(..., breaks = 20, col = "gold1", xlb = "-") { # Draw a histogram from data pasted from clipboard. Works on OS X only.
   whist(fromClipboard.as_num_vec(),breaks = breakz, savefile = F)
+}
+
+clpie <-function(..., percentage = TRUE, both_pc_and_value = F, plotname = "Distribution" ) { #  Draw a pie chart from data pasted from clipboard.  Works on OS X only.
+  wpie(fromClipboard.as_num_vec(), percentage = percentage, savefile = F)
+}
+
+clbarplot <-function( ..., col = "gold1", sub = F) { #  Draw a barplot from data pasted from clipboard.  Works on OS X only.
+  wbarplot(fromClipboard.as_num_vec(), percentage = percentage, savefile = F)
 }
 
