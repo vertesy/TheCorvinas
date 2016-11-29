@@ -36,7 +36,13 @@ require("MarkdownReports")
 "Depends: gtools"
 
 # Alisases ----------------
-try.dev.off <- try(dev.off(), silent = T)
+try.dev.off <- function () { try(dev.off(), silent = T) }
+topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decreasing = T), n=n) }
+bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
+colSums.barplot <- function (df, col="seagreen2") { barplot(colSums(df), col=col) }
+
+
+
 l=length
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
@@ -474,14 +480,14 @@ list_to_fullDF <- function(ll){ # convert a list to a full numeric data matrix. 
   mat
 }
 
-splitbyitsnames <- function(namedVec){ # split a list by its names 
+splitbyitsnames <- function(namedVec){ # split a list by its names
 stopif(is.null(names(namedVec)), message = "NO NAMES")
-split(namedVec, f = names(namedVec)) 
+split(namedVec, f = names(namedVec))
 }
 
-splititsnames_byValues <- function(namedVec){ # split a list by its names 
+splititsnames_byValues <- function(namedVec){ # split a list by its names
   stopif(is.null(names(namedVec)), message = "NO NAMES")
-  split(names(namedVec), f = namedVec) 
+  split(names(namedVec), f = namedVec)
 }
 
 
@@ -668,7 +674,7 @@ pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, co
   pdf(fname,width=w, height=h, title = title)
   par(mfrow = c(rows, cols))
   any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
-  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = plotname) }
+  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
 }
 
 pdfA4plot_off <- function () {
