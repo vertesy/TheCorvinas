@@ -41,8 +41,6 @@ topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decre
 bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
 colSums.barplot <- function (df, col="seagreen2") { barplot(colSums(df), col=col) }
 
-
-
 l=length
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
@@ -322,7 +320,7 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 }
 
 ## Matrix operations -------------------------------------------------------------------------------------------------
-colSort <- function(data, ...) { # Sort each column of a numeric matrix / data frame.
+sortEachColumn <- function(data, ...) { # Sort each column of a numeric matrix / data frame.
 	sapply(data, sort, ...) }
 
 colMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each column of a numeric matrix / data frame.
@@ -468,17 +466,19 @@ list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Conv
 }
 
 
-
 list_to_fullDF <- function(ll){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
-  entrytypes = unique(names(unlist(ll)))
-  mat =matrix(0, ncol = l(ll), nrow = l(entrytypes))
-  colnames(mat) = 1:l(ll);   rownames(mat) = sort(entrytypes)
+  entrytypes = unique(unlist(lapply(ll, names)))
+  ls_len  = l(ll)
+  mat =matrix(0, ncol = ls_len, nrow = l(entrytypes))
+  colnames(mat) = if (l(names(ll))) names(ll) else 1:ls_len
+  rownames(mat) = sort(entrytypes)
   for (i in 1:l(ll)) {
     entries = ll[[i]]
     mat[names(entries) ,i] = entries
   }
   mat
 }
+
 
 splitbyitsnames <- function(namedVec){ # split a list by its names
 stopif(is.null(names(namedVec)), message = "NO NAMES")
@@ -732,7 +732,8 @@ top_indices <- function(x, n = 3, top = T){ # Returns the position / index of th
 	head( order(x, decreasing =top), n )
 }
 
-attach_w_rownames <- function(df_w_dimnames) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
+attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
+  if (removePreviousVariables) { rm(list = colnames(df_w_dimnames)) }
 	if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
 		namez= rownames(df_w_dimnames)
 		any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
@@ -750,6 +751,18 @@ Color_Check <- function(..., incrBottMarginBy=0 ) { # Display the colors encoded
 	barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
 	if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
 }
+
+## Clustering heatmap tools -----------------------------------------------------------------------------------------------------
+
+hclust.getOrder.row <-function(pheatmapObject) pheatmapObject$tree_row$labels[pheatmapObject$tree_row$order]
+hclust.getOrder.col <-function(pheatmapObject) pheatmapObject$tree_col$labels[pheatmapObject$tree_col$order]
+
+hclust.getClusterID.row <-function(pheatmapObject, k=3) cutree(pheatmapObject$tree_row, k = k)
+hclust.getClusterID.col <-function(pheatmapObject, k=3) cutree(pheatmapObject$tree_col, k = k)
+
+hclust.ClusterSeparatingLines.row <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_row, k = k)[pheatmapObject$tree_row$order])[-1])
+hclust.ClusterSeparatingLines.col <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_col, k = k)[pheatmapObject$tree_col$order])[-1])
+
 
 ## New additions -----------------------------------------------------------------------------------------------------
 
@@ -824,4 +837,6 @@ clpie <-function(..., percentage = TRUE, both_pc_and_value = F, plotname = "Dist
 clbarplot <-function( ..., col = "gold1", sub = F) { #  Draw a barplot from data pasted from clipboard.  Works on OS X only.
   wbarplot(fromClipboard.as_num_vec(), percentage = percentage, savefile = F)
 }
+
+
 
