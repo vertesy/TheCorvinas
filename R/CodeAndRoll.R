@@ -40,6 +40,9 @@ try.dev.off <- function () { try(dev.off(), silent = T) }
 topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decreasing = T), n=n) }
 bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
 colSums.barplot <- function (df, col="seagreen2") { barplot(colSums(df), col=col) }
+as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
+
+unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
 l=length
 
@@ -257,9 +260,9 @@ which_names <- function(named_Vec) { # Return the names where the input vector i
 	return(names(which(as.logical.wNames(named_Vec)))) }
 
 
-na.omit.strip <- function(vec) {  # Omit NA values from a vector and return a clean vector without any spam.
+na.omit.strip <- function(vec, silent = F) {  # Omit NA values from a vector and return a clean vector without any spam.
 	if (is.data.frame(vec)) {
-		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
+		if ( min(dim(vec)) > 1 & silent == F) { any_print(dim(vec), "dimensional array is converted to a vector.") }
 		vec = unlist(vec) }
 	clean = na.omit(vec)
 	attributes(clean)$na.action <- NULL
@@ -744,12 +747,15 @@ attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Ta
 	} else { print ("ERROR: the DF does not have some of the dimnames!")}
 }
 
-Color_Check <- function(..., incrBottMarginBy=0 ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
-	if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
-	Numbers  = c(...)
-	if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
-	barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
-	if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+  if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
+  Numbers  = c(...)
+  if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
+  barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
+  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+  
+  fname = substitute(...)
+  if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "ColorCheck.pdf")) }
 }
 
 ## Clustering heatmap tools -----------------------------------------------------------------------------------------------------
@@ -837,6 +843,11 @@ clpie <-function(..., percentage = TRUE, both_pc_and_value = F, plotname = "Dist
 clbarplot <-function( ..., col = "gold1", sub = F) { #  Draw a barplot from data pasted from clipboard.  Works on OS X only.
   wbarplot(fromClipboard.as_num_vec(), percentage = percentage, savefile = F)
 }
+
+
+printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report at every e.g. 1000
+
+icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = gplots::rich.colors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
 
 
