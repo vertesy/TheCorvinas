@@ -864,5 +864,12 @@ icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = gplots::
 #   }
 # }
 
-icolor_categories <- function (vec) {  x= table(vec);colvec = gplots::rich.colors(l(x)); names(colvec) =names(x); return(colvec) }
+icolor_categories <- function (vec) {  x= table(vec);colvec = gplots::rich.colors(l(x)); names(colvec) =names(x); return(colvec) } # create rich colors for each category
 
+irequire <- function (package) { package = as.character(substitute(package)); if(!require(package)) install.packages(package) } # install package if cannot be loaded
+
+
+zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
+  mod = if (length(vec)%%2) 0 else 1
+  for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
+}
