@@ -850,4 +850,19 @@ printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report
 icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = gplots::rich.colors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
 
+### THIS IS DUPLICATE OF THE ONE IN MD REPORTS
+# wlegend <- function(x="bottomleft", legend, fill = NULL, ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+#   legend(x=x,legend=legend,fill=fill, ..., bty=bty)
+#   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
+# }
+
+
+# llwrite_list <- function(yalist) {
+#   for (e in 1:l(yalist)) {
+#     if (is.null( names(yalist) )) { llprint("#####",names(yalist)[e]) } else { llprint("#####", e)}
+#     print(yalist[e]); llogit("`", yalist[e], "`")
+#   }
+# }
+
+icolor_categories <- function (vec) {  x= table(vec);colvec = gplots::rich.colors(l(x)); names(colvec) =names(x); return(colvec) }
 
