@@ -41,6 +41,8 @@ topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decre
 bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
 colSums.barplot <- function (df, col="seagreen2") { barplot(colSums(df), col=col) }
 as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
+sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
+
 
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
@@ -323,24 +325,19 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 }
 
 ## Matrix operations -------------------------------------------------------------------------------------------------
-sortEachColumn <- function(data, ...) { # Sort each column of a numeric matrix / data frame.
-	sapply(data, sort, ...) }
+sortEachColumn <- function(data, ...) sapply(data, sort, ...) # Sort each column of a numeric matrix / data frame.
 
-colMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each column of a numeric matrix / data frame.
-	return(apply(mat,2,median, na.rm=na.rm)) }
 
-rowMedians <- function(mat,na.rm=TRUE) { # Calculates the median of each row of a numeric matrix / data frame.
-	return(apply(mat,1,median, na.rm=na.rm)) }
+colMedians <- function(x, na.rm=T) apply(data.matrix(x), 2, median, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
+rowMedians <- function(x, na.rm=T) apply(data.matrix(x), 1,median, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
 
-colCV <- function(mat) return(apply(mat,2,cv ) ) # Calculates the CV of each column of a numeric matrix / data frame.
+colCV <- function(x, na.rm=T) apply(data.matrix(x), 2,cv, na.rm=na.rm ) # Calculates the CV of each column of a numeric matrix / data frame.
 
-rowMin <- function(x) apply(x, 1, min) # Calculates the minimum of each row of a numeric matrix / data frame.
+rowMin <- function(x, na.rm=T) apply(data.matrix(x), 1, min, na.rm=na.rm) # Calculates the minimum of each row of a numeric matrix / data frame.
+rowMax <- function(x, na.rm=T) apply(data.matrix(x), 1, max, na.rm=na.rm) # Calculates the maximum of each row of a numeric matrix / data frame.
 
-rowMax <- function(x) apply(x, 1, max) # Calculates the maximum of each row of a numeric matrix / data frame.
-
-colMin <- function(x) apply(x, 2, min) # Calculates the minimum of each column of a numeric matrix / data frame.
-
-colMax <- function(X) apply(x, 2, max) # Calculates the maximum of each column of a numeric matrix / data frame.
+colMin <- function(x, na.rm=T) apply(data.matrix(x), 2, min, na.rm=na.rm) # Calculates the minimum of each column of a numeric matrix / data frame.
+colMax <- function(X, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calculates the maximum of each column of a numeric matrix / data frame.
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
@@ -506,14 +503,11 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 
 ## Math $ stats -------------------------------------------------------------------------------------------------
 
-sem <- function(x, na.rm=T) {  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s by default)
-	sd(unlist(x), na.rm = na.rm)/sqrt(length(na.omit.strip(as.numeric(x))))}
+sem <- function(x, na.rm=T) sd(unlist(x), na.rm = na.rm)/sqrt(length(na.omit.strip(as.numeric(x))))  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s by default)
+	
+cv <- function(x, na.rm=T) sd( x, na.rm=na.rm)/mean(x, na.rm=na.rm) # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s by default)
 
-cv <- function(x) { # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s by default)
-	sd( x, na.rm=T)/mean(x, na.rm=T) }
-
-fano <- function(x) { # Calculates the fano factor on a numeric vector (it excludes NA-s by default)
-	var(x, na.rm=T)/mean(x, na.rm=T) }
+fano <- function(x, na.rm=T) var(x, na.rm=na.rm)/mean(x, na.rm=na.rm) # Calculates the fano factor on a numeric vector (it excludes NA-s by default)
 
 modus <- function(x) { # Calculates the modus of a numeric vector (it excludes NA-s by default)
 	x= unlist(na.exclude(x))
@@ -524,20 +518,21 @@ modus <- function(x) { # Calculates the modus of a numeric vector (it excludes N
 
 gm_mean <- function(x, na.rm=TRUE){ # Calculates the geometric mean of a numeric vector (it excludes NA-s by default)
   exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
+geomean = gm_mean
 
 mean_of_log <- function(x, k=2, na.rm=TRUE){ # Calculates the mean of the log_k of a numeric vector (it excludes NA-s by default)
   negs = sum(x<0);  zeros = sum(x==0)
   if (negs | zeros) { any_print("The input vector has", negs, "negative values and", zeros, "zeros." )  }
   mean(log(x, base = k), na.rm = na.rm) }
 
-movingAve <- function(x, oneSide) { # Calculates the moving / rolling average of a numeric vector.
+movingAve <- function(x, oneSide = 5) { # Calculates the moving / rolling average of a numeric vector.
 	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
-movingSEM <- function(x, oneSide) { # Calculates the moving / rolling standard deviation of the mean (SEM) on a numeric vector.
+movingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard deviation of the mean (SEM) on a numeric vector.
 	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = sem( x[ (i-oneSide):(i+oneSide) ] )
@@ -558,9 +553,7 @@ eval_parse_kollapse <- function( ... ){ # evaluate and parse (dyn_var_caller)
 	substitute(eval(parse(text=kollapse( ... , print=F))))
 }
 
-substrRight <- function(x, n){ # Take the right substring of a string
-	substr(x, nchar(x)-n+1, nchar(x))
-}
+substrRight <- function(x, n) substr(x, nchar(x)-n+1, nchar(x)) # Take the right substring of a string
 
 lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pattern matching for a set of values in another set of values. Returns a list with all kinds of results.
 	ls_out = as.list( c(ln_needle = length(needle), ln_haystack = length(haystack), ln_hits = "",  hit_poz = "", hits = "") )
@@ -850,13 +843,13 @@ printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report
 icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = gplots::rich.colors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
 
+wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+  legend(x=x,legend=legend,fill=fill, ..., bty=bty)
+  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
+}
+
+
 ### THIS IS DUPLICATE OF THE ONE IN MD REPORTS
-# wlegend <- function(x="bottomleft", legend, fill = NULL, ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
-#   legend(x=x,legend=legend,fill=fill, ..., bty=bty)
-#   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
-# }
-
-
 # llwrite_list <- function(yalist) {
 #   for (e in 1:l(yalist)) {
 #     if (is.null( names(yalist) )) { llprint("#####",names(yalist)[e]) } else { llprint("#####", e)}
@@ -873,3 +866,32 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
   mod = if (length(vec)%%2) 0 else 1
   for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
 }
+
+
+name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x]
+
+
+
+
+create_set_SubDir <-function (..., setDir=T) {
+  NewOutDir = kollapse(OutDir,"/", ..., print = F)
+  any_print("All files will be saved under 'NewOutDir': ", NewOutDir)
+  if (!exists(NewOutDir)) {	dir.create(NewOutDir)	}
+  if (setDir) {	setwd(NewOutDir)}
+  assign("OutDir", NewOutDir, envir = .GlobalEnv)
+}
+
+
+wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
+  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+  fname = kollapse(substitute(yalist), ".", imagetype, print = F)
+  filename = kollapse(OutDir,"/", fname, print = F)
+  subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
+  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... , 
+               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+  if (mdlink) {
+    llogit(MarkDown_ImgLink_formatter(fname))
+    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+  }
+}
+
