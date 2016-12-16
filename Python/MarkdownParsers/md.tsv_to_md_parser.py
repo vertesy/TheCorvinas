@@ -6,9 +6,17 @@
 '''
 import csv, sys
 
-write_file = True
+if len(sys.argv) > 0:			# First poz File location
+	tsv=sys.argv[1]
+	if len(tsv) == 0:
+		tsv="/Users/abelvertesy/bin/tmp.tsv"
 
-tsv=sys.argv[1]
+if len(sys.argv) > 1:			# second poz False or True
+	write_file=sys.argv[2]
+	if len(write_file) == 0:
+		write_file = False
+
+
 Outfile= tsv+'.md'
 print Outfile
 
