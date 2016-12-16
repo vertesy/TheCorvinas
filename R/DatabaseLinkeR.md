@@ -1,15 +1,18 @@
 
 # Parse links to databases from your list of  gene symbols
 
-[Get DatabaseLinke.R](https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR)
+[Get DatabaseLinke.R](https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R)
 
 
 ### Install
 
-1.) Download and source
-https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R
-2.) Source from the web
-source(https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/DatabaseLinke.R)
+1.) Download and source: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R
+
+
+2.) Source from the web:  
+
+`source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/DatabaseLinke.R")`
+
 Read: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR.md
 
 
