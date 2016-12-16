@@ -5,9 +5,10 @@
 
 ######################################################################
 ## If sth does not work, please let me know by raising an issue on Github/vertesy/TheCorvinas
+## https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
 ######################################################################
 
-# vector_of_gene_symbols = c("Ldhc", "Dazl")
+# vector_of_gene_symbols = c("Oct4", "Dazl")
 
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "/Users/abelvertesy/bin/run.sh"
