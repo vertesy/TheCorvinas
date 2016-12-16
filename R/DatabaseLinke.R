@@ -4,7 +4,7 @@
 # source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/DatabaseLinke.R')
 
 ######################################################################
-## If sth does not work, please let me know by raising an issue on Github/vertesy/TheCorvinas
+## If you encounter a bug, or something doesn't work, please let me know by raising an issue on Github/vertesy/TheCorvinas
 ## https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
 ######################################################################
 
