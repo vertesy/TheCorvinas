@@ -42,6 +42,7 @@ bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), dec
 colSums.barplot <- function (df, col="seagreen2") { barplot(colSums(df), col=col) }
 as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
 sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
+coolor <- function (n=3) {  gplots::rich.colors(n) }
 
 
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
@@ -840,8 +841,8 @@ clbarplot <-function( ..., col = "gold1", sub = F) { #  Draw a barplot from data
 
 printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report at every e.g. 1000
 
-icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = gplots::rich.colors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
+icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = coolor(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
 wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
   legend(x=x,legend=legend,fill=fill, ..., bty=bty)
@@ -857,7 +858,6 @@ wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty
 #   }
 # }
 
-icolor_categories <- function (vec) {  x= table(vec);colvec = gplots::rich.colors(l(x)); names(colvec) =names(x); return(colvec) } # create rich colors for each category
 
 irequire <- function (package) { package = as.character(substitute(package)); if(!require(package)) install.packages(package) } # install package if cannot be loaded
 
@@ -869,8 +869,6 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 
 
 name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x]
-
-
 
 
 create_set_SubDir <-function (..., setDir=T) {
@@ -894,4 +892,6 @@ wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist
     if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
   }
 }
+
+
 
