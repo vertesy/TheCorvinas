@@ -6,19 +6,24 @@
 '''
 import csv, sys
 
-if len(sys.argv) > 0:			# First poz File location
-	tsv=sys.argv[1]
-	if len(tsv) == 0:
-		tsv="/Users/abelvertesy/bin/tmp.tsv"
+# Defaults
+tsv="/Users/abelvertesy/bin/tmp.tsv"
+write_file = False
 
-if len(sys.argv) > 1:			# second poz False or True
+# Use Default, unless passed on
+if len(sys.argv) > 1:			# First poz File location
+	tsv=sys.argv[1]
+
+if len(sys.argv) > 2:			# second poz False or True
 	write_file=sys.argv[2]
-	if len(write_file) == 0:
+	if write_file == "F":
 		write_file = False
 
+# print "write_file:", write_file
+# print "tsv", tsv
 
 Outfile= tsv+'.md'
-print Outfile
+print "\n",Outfile,"\n\n"
 
 # Execute --------------------------------------------------------
 Markdown_file=open(Outfile,'w'); Markdown_file.close()				# Overwrite
