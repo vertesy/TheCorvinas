@@ -58,5 +58,8 @@ http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwil1&spe
 
 as a character vector, so you can write out in a column of your gene-table.
 
+---------
 
-#### For detailed usage, browse the code of the functions.
+https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
+
+### If you encounter a bug, or something doesn't work, please let me know by raising an issue on [The Corvinas](https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R)
