@@ -2,14 +2,14 @@
 
 
 ```
-# if (!require('devtools')) install.packages('devtools'); require('devtools')
+if (!require('devtools')) install.packages('devtools'); require('devtools')
 # make sure you have Rtools installed first! if not, then run:
 #install_Rtools()
-#install_github('installr', 'talgalili') # get the latest installr R package
+install_github('installr', 'talgalili') # get the latest installr R package
 # or run the code from here:
-# https://github.com/talgalili/installr/blob/master/R/RStudio_CRAN_data.r
+https://github.com/talgalili/installr/blob/master/R/RStudio_CRAN_data.r
  
-if(packageVersion("installr") %in% c("0.8","0.9","0.9.2")) install.packages('installr') #If you have one of the older installr versions, install the latest one....
+if(packageVersion("installr") %in% c("0.8","0.9","0.9.2")) install.packages('installr') # If you have one of the older installr versions, install the latest one....
  
 require(installr)
  
@@ -20,4 +20,5 @@ my_RStudio_CRAN_data <- read_RStudio_CRAN_data(RStudio_CRAN_data_folder)
  # barplots: (more functions can easily be added in the future)
 barplot_package_users_per_day("plyr", my_RStudio_CRAN_data)
 barplot_package_users_per_day("installr", my_RStudio_CRAN_data)
+
 ```
