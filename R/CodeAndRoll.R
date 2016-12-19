@@ -893,5 +893,10 @@ wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist
   }
 }
 
-
-
+getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
+  idx = intersect(row.names(mat), rownamez)
+  if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
+  if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
+  if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
+  mat[ idx,]
+} # Get rows it can, report how much it could not find
