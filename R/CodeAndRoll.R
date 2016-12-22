@@ -368,6 +368,7 @@ colsplit <- function(df, f) { # split a data frame by a factor corresponding to 
   ListOfDFs = NULL
   levelz = unique(f)
   for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
+  names(ListOfDFs) = levelz
   return(ListOfDFs)
 }
 splitByCol = colsplit
@@ -849,6 +850,7 @@ wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty
   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
 }
 
+# ttl_field <- function (flname = basename(fname) ) { paste0(flname, " by ", if (exists("scriptname")) scriptname else "Rscript") }
 
 ### THIS IS DUPLICATE OF THE ONE IN MD REPORTS
 # llwrite_list <- function(yalist) {
@@ -859,7 +861,7 @@ wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty
 # }
 
 
-irequire <- function (package) { package = as.character(substitute(package)); if(!require(package)) install.packages(package) } # install package if cannot be loaded
+irequire <- function (package) { package_ = as.character(substitute(package)); if(!require(package_)) install.packages(package_) } # install package if cannot be loaded
 
 
 zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
@@ -880,18 +882,18 @@ create_set_SubDir <-function (..., setDir=T) {
 }
 
 
-wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
-  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
-  fname = kollapse(substitute(yalist), ".", imagetype, print = F)
-  filename = kollapse(OutDir,"/", fname, print = F)
-  subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
-  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... , 
-               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
-  if (mdlink) {
-    llogit(MarkDown_ImgLink_formatter(fname))
-    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
-  }
-}
+# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
+#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+#   fname = kollapse(substitute(yalist), ".", imagetype, print = F)
+#   filename = kollapse(OutDir,"/", fname, print = F)
+#   subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
+#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... , 
+#                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+#   if (mdlink) {
+#     llogit(MarkDown_ImgLink_formatter(fname))
+#     if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+#   }
+# }
 
 getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
   idx = intersect(row.names(mat), rownamez)
@@ -900,3 +902,72 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
   if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
   mat[ idx,]
 } # Get rows it can, report how much it could not find
+
+
+
+parFlags <- function(..., pasteflg=T, collapsechar =".") {
+  namez=as.character(as.list(match.call())[-1])
+  val = c(...)
+  names(val) =namez
+  flg = which_names(val)
+  flg= if (pasteflg) paste0(collapsechar, paste0(flg, collapse = collapsechar))
+  return(flg)
+}
+
+
+#' #' wpie
+#' #'
+#' #' Create and save pie charts as .pdf, in "OutDir". If mdlink =T, it inserts a .pdf and a .png link in the markdown report, set by "path_of_report". The .png version is not created, only the link is put in place, not to overwrite previous versions.
+#' #' @param variable The variable to plot.
+#' #' @param ... Pass any other parameter of the corresponding plotting function (most of them should work).
+#' #' @param percentage Display percentage instead of counts. TRUE by default.
+#' #' @param both_pc_and_value Report both percentage AND number. 
+#' #' @param plotname Title of the plot (main parameter) and also the name of the file.
+#' #' @param col Fill color. Defined by rich colours by default
+#' #' @param savefile Save plot as pdf in OutDir, TRUE by default.
+#' #' @param w Width of the saved pdf image, in inches.
+#' #' @param h Height of the saved pdf image, in inches.
+#' #' @param mdlink Insert a .pdf and a .png image link in the markdown report, set by "path_of_report".
+#' #' @examples wpie (variable =  , ... =  , percentage = TRUE, plotname = substitute(variable), w = 7, h = 7, mdlink = F)
+#' #' @export
+#' 
+#' wpie <-function (variable, ..., percentage = TRUE, both_pc_and_value=F, plotname = substitute(variable), col = gplots::rich.colors(length(variable)), savefile = T, w = 7, h = 7, mdlink = F) {
+#'   if (!require("gplots")) { print("Please install gplots: install.packages('gplots')") }
+#'   fname = kollapse(plotname, ".pie")
+#'   subt = kollapse("Total = ", sum(variable), print = F)
+#'   if (percentage) {	labs <- paste("(", names(variable), ")", "\n", percentage_formatter(variable/sum(variable)), sep = "")
+#'   if (both_pc_and_value) { labs <- paste("(", names(variable), ")", "\n", percentage_formatter(variable/sum(variable)),"\n", variable , sep = "")}
+#'   } else {	labs <- paste("(", names(variable), ")", "\n", variable, sep = "")	}
+#'   pie(variable, ..., main = plotname, sub = subt, clockwise = T, labels = labs, col = col )
+#'   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field()) }
+#'   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname) }
+#' }
+#' 
+
+
+# wvioplot_list <-function (yalist, ..., coll = c(2:(length(yalist)+1)),
+#                           plotname = as.character(substitute(yalist)), sub = NULL, xlb = names(yalist), ylb = "", ylimm=F,
+#                           incrBottMarginBy = 0, tilted_text = F, yoffset=0, savefile = T, w = 7, h = 7, mdlink = F) {
+#   if (!require("vioplot")) { print("Please install vioplot: install.packages('vioplot')") }
+#   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
+#   l_list = length(yalist)
+#   fname = kollapse(plotname, ".vioplot")
+#   if (length(coll) < l_list) { coll = rep(coll, l_list) }
+#   if (tilted_text) {	xlb = NA } else { xlb = names(yalist) }
+#   if (! (is.numeric(ylimm) & length(ylimm)==2)) { ylimm = range(unlist(yalist),na.rm = T)}
+#   plot(0, 0, type = "n", xlim = c(0.5, (l_list + 0.5)), ylim = ylimm, xaxt = "n", xlab = "",
+#        ylab = ylb, main = plotname, sub = sub)
+#   for (i in 1:l_list) {
+#     if( l(na.omit.strip(yalist[[i]])) ){
+#       vioplot::vioplot(na.omit(yalist[[i]]), ..., at = i, add = T, col = coll[i])
+#     }
+#   }
+#   axis(side = 1, at = 1:l_list, labels = xlb, las = 2)
+#   if (tilted_text) {
+#     text(x = 1:length(yalist), y = min(unlist(yalist))+yoffset, labels = names(yalist), xpd = TRUE, srt = 45)
+#   }
+#   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) }
+#   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+#   assign("plotnameLastPlot", fname, envir = .GlobalEnv)
+#   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname) }
+# }
