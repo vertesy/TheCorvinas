@@ -905,7 +905,7 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
 
 
 
-parFlags <- function(..., pasteflg=T, collapsechar =".") {
+parFlags <- function(..., pasteflg=T, collapsechar =".") { # Create a string from the names of the true parameters (T or F)
   namez=as.character(as.list(match.call())[-1])
   val = c(...)
   names(val) =namez
@@ -971,3 +971,16 @@ parFlags <- function(..., pasteflg=T, collapsechar =".") {
 #   assign("plotnameLastPlot", fname, envir = .GlobalEnv)
 #   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname) }
 # }
+
+list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
+  liszt = as.list(rep(NaN,l(name_vec)))
+  names(liszt) = name_vec
+  return(liszt)
+}
+
+matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
+  mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
+  any_print("Dimensions:", dim(mx))
+  return(mx)
+}
+
