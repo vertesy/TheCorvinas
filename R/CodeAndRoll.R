@@ -49,6 +49,13 @@ unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
 l=length
 
+
+any_print <-function (...) { # A more flexible printing function that collapses any variable passed to it by white spaces.
+  argument_list <- c(...)
+  print(paste(argument_list, collapse = " "))
+}
+
+
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
 ### Clipboard interaction -------------------------------------------------------------------------------------------------
