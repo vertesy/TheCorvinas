@@ -336,15 +336,18 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 sortEachColumn <- function(data, ...) sapply(data, sort, ...) # Sort each column of a numeric matrix / data frame.
 
 
-colMedians <- function(x, na.rm=T) apply(data.matrix(x), 2, median, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
 rowMedians <- function(x, na.rm=T) apply(data.matrix(x), 1,median, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
+colMedians <- function(x, na.rm=T) apply(data.matrix(x), 2, median, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
+
+rowGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 1,geomean, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
+colGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 2, geomean, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
 
 colCV <- function(x, na.rm=T) apply(data.matrix(x), 2,cv, na.rm=na.rm ) # Calculates the CV of each column of a numeric matrix / data frame.
 
 rowMin <- function(x, na.rm=T) apply(data.matrix(x), 1, min, na.rm=na.rm) # Calculates the minimum of each row of a numeric matrix / data frame.
-rowMax <- function(x, na.rm=T) apply(data.matrix(x), 1, max, na.rm=na.rm) # Calculates the maximum of each row of a numeric matrix / data frame.
-
 colMin <- function(x, na.rm=T) apply(data.matrix(x), 2, min, na.rm=na.rm) # Calculates the minimum of each column of a numeric matrix / data frame.
+
+rowMax <- function(x, na.rm=T) apply(data.matrix(x), 1, max, na.rm=na.rm) # Calculates the maximum of each row of a numeric matrix / data frame.
 colMax <- function(X, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calculates the maximum of each column of a numeric matrix / data frame.
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
@@ -811,6 +814,7 @@ merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rowna
   rownames(merged) = merged$Row.names
   merged = merged[ ,-1] # remove row names
   merged[is.na(merged)] <- 0
+  any_print("Dimensions of merged DF:", dim(merged))
   return(merged)
 }
 
@@ -868,7 +872,12 @@ wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty
 # }
 
 
-irequire <- function (package) { package_ = as.character(substitute(package)); if(!require(package_)) install.packages(package_) } # install package if cannot be loaded
+irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
+                                if(!require(package = package_,  character.only = T)) {
+                                  print("Not Installed yet.");install.packages(pkgs = package_); 
+                                  require(package=package_, character.only = T) 
+                                  } 
+}  # install package if cannot be loaded
 
 
 zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
