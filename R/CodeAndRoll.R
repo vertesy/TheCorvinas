@@ -1000,3 +1000,90 @@ matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 
   return(mx)
 }
 
+
+# TEMP
+wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
+  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+  fname = kollapse(plotname, ".", imagetype, print = F)
+  LsLen = length(yalist)
+  if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
+  print(names(yalist))
+  
+  filename = kollapse(OutDir,"/", fname, print = F)
+  subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
+  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... , 
+               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+  if (mdlink) {
+    llogit(MarkDown_ImgLink_formatter(fname))
+    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+  }
+}
+
+
+rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
+  colz = gplots::rich.colors(l(unique(vec)))
+  if (randomize) {
+    seed=11
+    colz = sample(colz)
+  }
+  colz[vec]
+  
+}
+
+
+
+
+#' BaseFrequencies
+#'
+#' @param mygene Gene of interest. You need either the ID or Gene symbol
+#' @param genome mm10 of hg19 for now
+#' @export
+#'
+#' @examples BaseFrequencies()
+
+BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives you the base distribution of a gene of interest, and how extreme it is compared to all transcripts
+  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  
+  if ( !exists("BaseFrequencies_")) {
+    if (genome=="mm10") {        BaseFrequencies_ = read.simple.tsv(MetaDdir, "mm10/BaseFrequencies.mm10.tsv")  } 
+    else if (genome=="hg19") {   BaseFrequencies_ = read.simple.tsv(MetaDdir, "hg19/BaseFrequencies.hg19.tsv")  }
+    assign("BaseFrequencies_", BaseFrequencies_, envir = .GlobalEnv)
+  }
+  mygene = grep(mygene, rownames(BaseFrequencies_), value = T)
+  stopif(condition = (l(mygene)==0),message =  "Gene not found in BaseFrequencies.mm10.tsv or in BaseFrequencies.hg19.tsv")
+  frz = BaseFrequencies_[mygene, 1:4]
+  
+  x =NULL
+  Bases = c("A","C","G","T" )
+  if (!silent) {
+    for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_[ ,Bases[L]])(frz[L])  }
+    print("",quote = F)
+    print("Position in the distribution of base frequencies across all genes")
+    print (percentage_formatter(x))
+  }
+  return(frz)
+}
+
+# BaseFrequencies()
+
+
+
+TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the transctipt length of a gene of interest, and how extreme it is compared to all transcripts
+  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  if ( !exists("TrLength_")) {
+    if (genome=="mm10") {        TrLength_ = read.simple.tsv.named.vector(MetaDdir, "mm10/TranscriptLength.mm10.tsv")  } 
+    else if (genome=="hg19") {   TrLength_ = read.simple.tsv(MetaDdir, "hg19/TranscriptLength.hg19.tsv")  }
+    assign("TrLength_", TrLength_, envir = .GlobalEnv)
+  }
+  mygene = grep(mygene, names(TrLength_), value = T)
+  stopif(condition = (l(mygene)==0),message =  "Gene not found in TranscriptLength.hmm10.tsv or in TranscriptLength.hg19.tsv")
+  Len_MyGene = TrLength_[mygene]
+  
+  if (!silent) {
+    for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_)(Len_MyGene)  }
+    print("",quote = F)
+    print("Position in the distribution of lengths across all genes")
+    print (percentage_formatter(x))
+  }
+  return(Len_MyGene)
+}
