@@ -1001,24 +1001,6 @@ matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 
 }
 
 
-# TEMP
-wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
-  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
-  fname = kollapse(plotname, ".", imagetype, print = F)
-  LsLen = length(yalist)
-  if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
-  print(names(yalist))
-  
-  filename = kollapse(OutDir,"/", fname, print = F)
-  subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
-  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... , 
-               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
-  if (mdlink) {
-    llogit(MarkDown_ImgLink_formatter(fname))
-    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
-  }
-}
-
 
 rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
   colz = gplots::rich.colors(l(unique(vec)))
@@ -1086,4 +1068,50 @@ TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the t
     print (percentage_formatter(x))
   }
   return(Len_MyGene)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+# TEMP ------------------------------------
+wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
+  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+  fname = kollapse(plotname, ".", imagetype, print = F)
+  LsLen = length(yalist)
+  if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
+  print(names(yalist))
+  
+  filename = kollapse(OutDir,"/", fname, print = F)
+  subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
+  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... , 
+               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+  if (mdlink) {
+    llogit(MarkDown_ImgLink_formatter(fname))
+    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+  }
+}
+
+wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function 
+  print(coeff)
+  regression <- lm(DF[,2] ~ DF[,1])
+  abline(regression, ...)
+  legendText = NULL
+  if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "pearson"))
+  legendText  =  c(legendText, paste0("Pearson c.c.: ", dispCoeff))  } 
+  if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "spearman"))
+  legendText = c(legendText, paste0("Spearman c.c.: ", dispCoeff))  }  
+  if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared) 
+  legendText = c(legendText, paste0("R^2: ", r2))  }
+  print(legendText)
+  if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2",suffix = paste0(": ", r2)) , bty="n")
+  } else {                                    legend(textlocation, legend = legendText , bty="n") }
+  if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
 }
