@@ -350,6 +350,9 @@ colMin <- function(x, na.rm=T) apply(data.matrix(x), 2, min, na.rm=na.rm) # Calc
 rowMax <- function(x, na.rm=T) apply(data.matrix(x), 1, max, na.rm=na.rm) # Calculates the maximum of each row of a numeric matrix / data frame.
 colMax <- function(X, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calculates the maximum of each column of a numeric matrix / data frame.
 
+rowSEM <- function(x, na.rm=T) apply(data.matrix(x), 1, sem, na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
+colSEM <- function(X, na.rm=T) apply(data.matrix(x), 2, sem, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
+
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
 	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
