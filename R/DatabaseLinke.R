@@ -166,7 +166,7 @@ link_wormbase <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut)
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
 
-# wormbase links ------------------------------------------------------------------------
+# Wikipedia links ------------------------------------------------------------------------
 
 link_wikipedia <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
   links = paste0( wikipedia, vector_of_gene_symbols)
@@ -176,4 +176,18 @@ link_wikipedia <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
+
+# CGC links (worms mutant database) ------------------------------------------------------------------------
+
+worm_CGC_prefix = c("http://www.cgc.cbs.umn.edu/search.php?st=","&field=all&exst=&exfield=all")
+
+link_CGC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse CGC links (worms mutant database).
+  links = paste0( worm_CGC_prefix[1], vector_of_gene_symbols, worm_CGC_prefix[2] )
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
 
