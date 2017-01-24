@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 ### md.csv_to_md_parser.py
-- read a tab delimeted file and print the output in [github] .md format
+- read a semicolon delimeted file and print the output in [github] .md format
 - Usage: script tsv_filepath
 '''
 import csv, sys
@@ -17,7 +17,7 @@ Markdown_file=open(Outfile,'w'); Markdown_file.close()				# Overwrite
 Markdown_file=open(Outfile,'a')
 
 i=0
-with open(tsv, 'rU') as textfile:									# U for Universal lien ending
+with open(tsv, 'rU') as textfile:									# U for Universal line ending
 	for row in (list(csv.reader(textfile, delimiter=';'))):
 		i +=1
 		if i ==1:

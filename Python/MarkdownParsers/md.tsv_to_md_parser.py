@@ -30,7 +30,7 @@ Markdown_file=open(Outfile,'w'); Markdown_file.close()				# Overwrite
 Markdown_file=open(Outfile,'a')
 
 i=0
-with open(tsv, 'rU') as textfile:									# U for Universal lien ending
+with open(tsv, 'rU') as textfile:									# U for Universal line ending
 	for row in (list(csv.reader(textfile, delimiter='\t'))):
 		i +=1
 		if i ==1:
