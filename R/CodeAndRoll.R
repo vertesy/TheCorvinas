@@ -295,9 +295,10 @@ zero.omit <- function(vec) { # Omit zero values from a vector.
 	return(v2)
 }
 
-pc_TRUE <- function(logical_vector, percentify =T) { # Percentage of true values in a logical vector, parsed as text (useful for reports.)
+pc_TRUE <- function(logical_vector, percentify =T, NumberAndPC=F) { # Percentage of true values in a logical vector, parsed as text (useful for reports.)
 	out = sum(logical_vector, na.rm=T) / length(logical_vector)
 	if (percentify) {out = percentage_formatter (out) }
+	if (NumberAndPC) { out = paste0(sum(logical_vector, na.rm=T)," or ", out)	}
 	return(out)
 	}
 
@@ -481,7 +482,7 @@ list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Conv
 }
 
 
-list_to_fullDF <- function(ll){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
+list2fullDF <- function(ll){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
   entrytypes = unique(unlist(lapply(ll, names)))
   ls_len  = l(ll)
   mat =matrix(0, ncol = ls_len, nrow = l(entrytypes))
@@ -493,7 +494,7 @@ list_to_fullDF <- function(ll){ # convert a list to a full numeric data matrix. 
   }
   mat
 }
-
+list_to_fullDF = list2fullDF
 
 splitbyitsnames <- function(namedVec){ # split a list by its names
 stopif(is.null(names(namedVec)), message = "NO NAMES")
