@@ -1,0 +1,6331 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>Meaning and transliteration (romanisation) of the 1000 most frequent words on the Farsi wikipedia</title>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath:[['$$$','$$$']]}});</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<h3>Meaning and transliteration (romanisation) of the 1000 most frequent words on the Farsi wikipedia</h3>
+
+<p>Based on Behnam Esfahbod's <a href="https://github.com/behnam/persian-words-frequency">Persian Words Frequency Database</a></p>
+
+<p>Translation by <a href="https://translate.google.com/#fa/en/">Google translate</a>, romanisation by <a href="http://mylanguages.org/farsi_romanization.php">mylanguages.org</a>. Both are known to consist mistakes, the romanisation is just approximate.</p>
+
+<p>See how it was created in [[CreateFarsi.md]]</p>
+
+<table>
+<thead>
+<tr>
+<th> Farsi     </th>
+<th> English   </th>
+<th> Pinglish  </th>
+<th> Frequency </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88#Persian">و</a>   </td>
+<td> And   </td>
+<td> w     </td>
+<td> 778211 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1#Persian">در</a>   </td>
+<td> At    </td>
+<td> red   </td>
+<td> 720406 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%87#Persian">به</a>   </td>
+<td> To    </td>
+<td> heb   </td>
+<td> 509081 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B2#Persian">از</a>   </td>
+<td> From  </td>
+<td> za    </td>
+<td> 476880 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%87#Persian">که</a>   </td>
+<td> That  </td>
+<td> hek   </td>
+<td> 285043 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%AA#Persian">است</a>   </td>
+<td> Is    </td>
+<td> tesa  </td>
+<td> 238876 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D9%86#Persian">این</a>   </td>
+<td> This  </td>
+<td> naa   </td>
+<td> 227097 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A7#Persian">را</a>   </td>
+<td> And   </td>
+<td> ar    </td>
+<td> 220832 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7#Persian">با</a>   </td>
+<td> With  </td>
+<td> ab    </td>
+<td> 168867 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%AF%D9%87#Persian">رده</a>   </td>
+<td> Category  </td>
+<td> hedr  </td>
+<td> 141844 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%86#Persian">آن</a>   </td>
+<td> It    </td>
+<td> na    </td>
+<td> 111050 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D9%84#Persian">سال</a>   </td>
+<td> Year  </td>
+<td> las   </td>
+<td> 107712 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D8%A7%DB%8C#Persian">برای</a>   </td>
+<td> To    </td>
+<td> aareb     </td>
+<td> 85421 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%DA%A9#Persian">یک</a>   </td>
+<td> One   </td>
+<td> eka   </td>
+<td> 84193 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%B1%D8%A7%D9%86#Persian">ایران</a>   </td>
+<td> Iran  </td>
+<td> naraa     </td>
+<td> 83178 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%88%D8%AF#Persian">بود</a>   </td>
+<td> were  </td>
+<td> dewb  </td>
+<td> 70730 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%88#Persian">او</a>   </td>
+<td> She   </td>
+<td> wa    </td>
+<td> 69800 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1#Persian">بر</a>   </td>
+<td> On    </td>
+<td> reb   </td>
+<td> 66158 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AF#Persian">شد</a>   </td>
+<td> Was   </td>
+<td> dhes  </td>
+<td> 65409 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%A7%D9%85#Persian">نام</a>   </td>
+<td> name  </td>
+<td> man   </td>
+<td> 58230 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%A7%D8%A8%D8%B9#Persian">منابع</a>   </td>
+<td> References    </td>
+<td> nawen     </td>
+<td> 57741 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AF%D9%87#Persian">شده</a>   </td>
+<td> By    </td>
+<td> rugad     </td>
+<td> 57409 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A7#Persian">تا</a>   </td>
+<td> until the     </td>
+<td> heshekb   </td>
+<td> 55865 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%88%D8%AF#Persian">خود</a>   </td>
+<td> Own   </td>
+<td> aeka  </td>
+<td> 55622 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D8%A7#Persian">یا</a>   </td>
+<td> Or    </td>
+<td> natesa    </td>
+<td> 53086 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B4%D9%88%D8%AF#Persian">میشود</a>   </td>
+<td> Is    </td>
+<td> sep   </td>
+<td> 50251 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B1%D8%AF#Persian">دارد</a>   </td>
+<td> has it    </td>
+<td> rareq     </td>
+<td> 45163 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D8%AF#Persian">کرد</a>   </td>
+<td> Did   </td>
+<td> wed   </td>
+<td> 44980 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A7%D8%B1%DB%8C%D8%AE#Persian">تاریخ</a>   </td>
+<td> Date  </td>
+<td> natesrhhes    </td>
+<td> 44379 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%87%D8%B1#Persian">شهر</a>   </td>
+<td> City  </td>
+<td> ekeraas   </td>
+<td> 44009 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D8%B2#Persian">نیز</a>   </td>
+<td> Also  </td>
+<td> zan   </td>
+<td> 43532 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%A7%D8%B1%DA%A9#Persian">سیارک</a>   </td>
+<td> Asteroid  </td>
+<td> rhhes     </td>
+<td> 43029 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%87%D8%B1%D8%B3%D8%AA%D8%A7%D9%86#Persian">شهرستان</a>   </td>
+<td> City  </td>
+<td> hekarat   </td>
+<td> 42756 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88#Persian">دو</a>   </td>
+<td> Two   </td>
+<td> derek     </td>
+<td> 37123 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%B1%D8%A7%D8%B1#Persian">قرار</a>   </td>
+<td> The   </td>
+<td> derad     </td>
+<td> 37062 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B3#Persian">پس</a>   </td>
+<td> So    </td>
+<td> dewhesam  </td>
+<td> 35527 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%AA%D8%A7%D9%86#Persian">استان</a>   </td>
+<td> State     </td>
+<td> aa    </td>
+<td> 35486 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%DA%A9%DB%8C#Persian">یکی</a>   </td>
+<td> One   </td>
+<td> dewhek    </td>
+<td> 34886 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AE%D8%B4#Persian">بخش</a>   </td>
+<td> the part  </td>
+<td> at    </td>
+<td> 34126 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%DB%8C%DA%AF%D8%B1#Persian">دیگر</a>   </td>
+<td> Other     </td>
+<td> hedhes    </td>
+<td> 31701 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%86%D9%88%D8%A7%D9%86#Persian">عنوان</a>   </td>
+<td> the subject   </td>
+<td> ebanem    </td>
+<td> 30183 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D8%B1%D9%88%D9%86#Persian">بیرون</a>   </td>
+<td> the outside   </td>
+<td> newrab    </td>
+<td> 29967 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%DB%8C#Persian">وی</a>   </td>
+<td> She   </td>
+<td> aw    </td>
+<td> 29917 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D8%A8%D8%A7%D9%86#Persian">زبان</a>   </td>
+<td> Language  </td>
+<td> nabez     </td>
+<td> 29842 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C#Persian">می</a>   </td>
+<td> The   </td>
+<td> am    </td>
+<td> 29561 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%87%D8%B1%D8%A7%D9%86#Persian">تهران</a>   </td>
+<td> Tehran    </td>
+<td> narhet    </td>
+<td> 29488 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%DB%8C%D9%88%D9%86%D8%AF#Persian">پیوند</a>   </td>
+<td> link  </td>
+<td> denwaep   </td>
+<td> 29386 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85#Persian">هم</a>   </td>
+<td> Too   </td>
+<td> mh    </td>
+<td> 29328 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%A7%DB%8C#Persian">های</a>   </td>
+<td> Of    </td>
+<td> aah   </td>
+<td> 29288 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87#Persian">دانشگاه</a>   </td>
+<td> University    </td>
+<td> haughesnad    </td>
+<td> 28377 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%AA%D9%81%D8%A7%D8%AF%D9%87#Persian">استفاده</a>   </td>
+<td> Use   </td>
+<td> hedafetsa     </td>
+<td> 28359 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D9%84%D8%A7%D8%AF%DB%8C#Persian">میلادی</a>   </td>
+<td> ad    </td>
+<td> adalam    </td>
+<td> 28214 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%B1#Persian">هر</a>   </td>
+<td> Each  </td>
+<td> rh    </td>
+<td> 26512 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B7%D9%84%D9%82#Persian">مطلق</a>   </td>
+<td> Absolute  </td>
+<td> qeltem    </td>
+<td> 26384 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%81%D8%B1#Persian">نفر</a>   </td>
+<td> Person    </td>
+<td> refn  </td>
+<td> 25315 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B4%D9%88%D8%B1#Persian">کشور</a>   </td>
+<td> Country   </td>
+<td> rewhesek  </td>
+<td> 25077 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%84%DB%8C#Persian">ملی</a>   </td>
+<td> National  </td>
+<td> alem  </td>
+<td> 24953 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%85%D8%B9%DB%8C%D8%AA#Persian">جمعیت</a>   </td>
+<td> the population    </td>
+<td> deb   </td>
+<td> 24228 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%AC%D9%88%D8%AF#Persian">وجود</a>   </td>
+<td> Existence     </td>
+<td> zekerm    </td>
+<td> 23580 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7#Persian">آمریکا</a>   </td>
+<td> America   </td>
+<td> augednez  </td>
+<td> 23578 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D8%B3%D8%B7#Persian">توسط</a>   </td>
+<td> By    </td>
+<td> azekerm   </td>
+<td> 23182 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%A8%D8%A7%D8%B4%D8%AF#Persian">میباشد</a>   </td>
+<td> is    </td>
+<td> nateshed  </td>
+<td> 23104 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%A9%D9%86%D8%AF#Persian">میکند</a>   </td>
+<td> he does   </td>
+<td> nab   </td>
+<td> 22945 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D8%A7%D8%A8%D8%B1#Persian">برابر</a>   </td>
+<td> Equal     </td>
+<td> rebmatepes    </td>
+<td> 22366 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%A7%D8%B1#Persian">کار</a>   </td>
+<td> Work  </td>
+<td> tesd  </td>
+<td> 22355 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%86%D9%87%D8%A7#Persian">آنها</a>   </td>
+<td> They  </td>
+<td> ah    </td>
+<td> 22352 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%88%DA%86%DA%A9#Persian">کوچک</a>   </td>
+<td> Little    </td>
+<td> namez     </td>
+<td> 21641 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%B1%D8%AF#Persian">مورد</a>   </td>
+<td> Case  </td>
+<td> awer  </td>
+<td> 21481 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%DB%8C%D9%84%D9%85#Persian">فیلم</a>   </td>
+<td> the movie     </td>
+<td> hedweb    </td>
+<td> 21424 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B5%D9%88%D8%B1%D8%AA#Persian">صورت</a>   </td>
+<td> the face  </td>
+<td> dentesh   </td>
+<td> 21151 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D9%85%D8%AF#Persian">محمد</a>   </td>
+<td> Mohammad  </td>
+<td> ama   </td>
+<td> 21072 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AF%D9%87%D8%A7%D8%B3%D8%AA#Persian">شدهاست</a>   </td>
+<td> Is    </td>
+<td> batek     </td>
+<td> 20970 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B4%D8%AF#Persian">باشد</a>   </td>
+<td> Is    </td>
+<td> dhesab    </td>
+<td> 20968 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%AA%D8%A7%D8%A8#Persian">کتاب</a>   </td>
+<td> Book  </td>
+<td> tesahedhes    </td>
+<td> 20933 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D8%A7#Persian">اما</a>   </td>
+<td> But   </td>
+<td> demhem    </td>
+<td> 20476 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%B3%D8%AA%D9%86%D8%AF#Persian">هستند</a>   </td>
+<td> are   </td>
+<td> terwes    </td>
+<td> 20454 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%88%D8%AF%D9%87#Persian">بوده</a>   </td>
+<td> Been  </td>
+<td> melaf     </td>
+<td> 20453 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%DB%8C#Persian">روی</a>   </td>
+<td> On    </td>
+<td> derwem    </td>
+<td> 20152 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%85%D8%A7%D9%86#Persian">زمان</a>   </td>
+<td> Time  </td>
+<td> ekehecwek     </td>
+<td> 20057 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%A7#Persian">ها</a>   </td>
+<td> And   </td>
+<td> ahena     </td>
+<td> 19071 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B3%D8%AA#Persian">دست</a>   </td>
+<td> Hand  </td>
+<td> raek  </td>
+<td> 18959 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%BE%D8%AA%D8%A7%D9%85%D8%A8%D8%B1#Persian">سپتامبر</a>   </td>
+<td> September     </td>
+<td> rebareb   </td>
+<td> 18826 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D9%86#Persian">بین</a>   </td>
+<td> Among     </td>
+<td> denekam   </td>
+<td> 18734 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%87%D8%B3%D8%AA%D8%A7%D9%86#Persian">دهستان</a>   </td>
+<td> Rural district    </td>
+<td> dhesabam  </td>
+<td> 18658 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%DA%A9%D8%B2%DB%8C#Persian">مرکزی</a>   </td>
+<td> Central   </td>
+<td> teswet    </td>
+<td> 17876 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%86%D8%AF%DA%AF%DB%8C#Persian">زندگی</a>   </td>
+<td> Life  </td>
+<td> aekarema  </td>
+<td> 17772 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%DA%A9%D8%B2#Persian">مرکز</a>   </td>
+<td> Center    </td>
+<td> dewjew    </td>
+<td> 17748 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B9%D8%AF#Persian">بعد</a>   </td>
+<td> Then  </td>
+<td> taemej    </td>
+<td> 17395 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%DA%86%D9%86%DB%8C%D9%86#Persian">همچنین</a>   </td>
+<td> also  </td>
+<td> nanehecmh     </td>
+<td> 17388 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%DB%8C%D8%B4#Persian">پیش</a>   </td>
+<td> Ago   </td>
+<td> hesaep    </td>
+<td> 17374 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B2#Persian">روز</a>   </td>
+<td> Day   </td>
+<td> zewr  </td>
+<td> 17273 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B1%D8%A7%DB%8C#Persian">دارای</a>   </td>
+<td> Has   </td>
+<td> aarad     </td>
+<td> 17254 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%88%D8%AF#Persian">شود</a>   </td>
+<td> Is    </td>
+<td> dewhes    </td>
+<td> 17099 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%A8%D8%B9#Persian">منبع</a>   </td>
+<td> Source    </td>
+<td> eqaw  </td>
+<td> 16892 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%A7%D8%B1%D8%B3%DB%8C#Persian">فارسی</a>   </td>
+<td> Farsi     </td>
+<td> medrem    </td>
+<td> 16801 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%88%D9%84#Persian">اول</a>   </td>
+<td> First     </td>
+<td> amalesa   </td>
+<td> 16763 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D9%84%D8%A7%D9%85%DB%8C#Persian">اسلامی</a>   </td>
+<td> Islamic   </td>
+<td> lewa  </td>
+<td> 16733 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%AF%D9%85#Persian">مردم</a>   </td>
+<td> People    </td>
+<td> aseraf    </td>
+<td> 16631 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A7%D9%82%D8%B9#Persian">واقع</a>   </td>
+<td> Indeed    </td>
+<td> ebenm     </td>
+<td> 16577 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%88%D9%87#Persian">گروه</a>   </td>
+<td> group     </td>
+<td> hewrug    </td>
+<td> 16175 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B2%D8%B1%DA%AF#Persian">بزرگ</a>   </td>
+<td> Great     </td>
+<td> ugerzeb   </td>
+<td> 16044 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%A8#Persian">آب</a>   </td>
+<td> Water     </td>
+<td> ba    </td>
+<td> 15824 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AC%D8%B1%D8%A7%D9%85#Persian">اجرام</a>   </td>
+<td> Bodies    </td>
+<td> mareja    </td>
+<td> 15755 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B4%D8%AA#Persian">داشت</a>   </td>
+<td> The   </td>
+<td> thesad    </td>
+<td> 15741 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%87%D9%84#Persian">اهل</a>   </td>
+<td> From  </td>
+<td> lha   </td>
+<td> 15623 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B3%D8%AA%D8%A7%D9%87%D8%A7%DB%8C#Persian">روستاهای</a>   </td>
+<td> Villages  </td>
+<td> aahateswer    </td>
+<td> 15586 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%A7%D8%B3%D8%A7#Persian">ناسا</a>   </td>
+<td> NASA  </td>
+<td> asan  </td>
+<td> 15585 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A7%D8%A8%D8%B3%D8%AA%D9%87#Persian">وابسته</a>   </td>
+<td> Dependent     </td>
+<td> hetsebaw  </td>
+<td> 15500 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B5%D9%88%DB%8C%D8%B1#Persian">تصویر</a>   </td>
+<td> Image     </td>
+<td> rawest    </td>
+<td> 15434 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%DB%8C%D8%A7%D8%A8%DB%8C%D8%B4%D8%AF%D9%87#Persian">بازیابیشده</a>   </td>
+<td> Recovered     </td>
+<td> hedhesabaazab     </td>
+<td> 15406 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B5%D9%84%DB%8C#Persian">اصلی</a>   </td>
+<td> the original  </td>
+<td> alesa     </td>
+<td> 15280 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B1%DA%A9%D8%AA#Persian">شرکت</a>   </td>
+<td> Company   </td>
+<td> tekerhes  </td>
+<td> 15256 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AF%DA%AF%D8%A7%D9%86#Persian">دادگان</a>   </td>
+<td> Data set  </td>
+<td> naugedad  </td>
+<td> 15129 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%A7%D8%B1%DA%A9%D9%87%D8%A7#Persian">سیارکها</a>   </td>
+<td> Asteroids     </td>
+<td> ahekeraas     </td>
+<td> 15116 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%86%DA%AF#Persian">جنگ</a>   </td>
+<td> War   </td>
+<td> ugenj     </td>
+<td> 14804 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D9%85#Persian">دوم</a>   </td>
+<td> Second    </td>
+<td> mewd  </td>
+<td> 14798 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%D8%AF#Persian">کند</a>   </td>
+<td> Slow  </td>
+<td> denek     </td>
+<td> 14765 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D9%87%D8%B1%D8%B3%D8%AA#Persian">فهرست</a>   </td>
+<td> Contents  </td>
+<td> tesrhef   </td>
+<td> 14760 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%DA%AF%D9%84%DB%8C%D8%B3%DB%8C#Persian">انگلیسی</a>   </td>
+<td> English   </td>
+<td> asalugena     </td>
+<td> 14519 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B8%D8%B1#Persian">نظر</a>   </td>
+<td> Opinion   </td>
+<td> rezn  </td>
+<td> 14495 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%B9%D8%A8%D9%87#Persian">جعبه</a>   </td>
+<td> Box   </td>
+<td> al    </td>
+<td> 14494 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7%D9%86%D9%86%D8%AF#Persian">مانند</a>   </td>
+<td> As    </td>
+<td> dennekam  </td>
+<td> 14386 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D8%B4%D8%AA%D8%B1#Persian">بیشتر</a>   </td>
+<td> More  </td>
+<td> anaraa    </td>
+<td> 14310 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%B3%DB%8C%D9%82%DB%8C#Persian">موسیقی</a>   </td>
+<td> Music     </td>
+<td> redq  </td>
+<td> 14302 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D8%AF%D9%87#Persian">کرده</a>   </td>
+<td> done  </td>
+<td> epaehec   </td>
+<td> 14255 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%B7%D9%82%D9%87#Persian">منطقه</a>   </td>
+<td> Area  </td>
+<td> hes   </td>
+<td> 14197 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D8%B1%D9%87#Persian">دوره</a>   </td>
+<td> the period    </td>
+<td> raz   </td>
+<td> 14184 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B3%DB%8C%D8%A7%D8%B1#Persian">بسیار</a>   </td>
+<td> Very  </td>
+<td> raaseb    </td>
+<td> 14166 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%DB%8C%D8%B1#Persian">زیر</a>   </td>
+<td> Under     </td>
+<td> herwed    </td>
+<td> 14157 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%87#Persian">سه</a>   </td>
+<td> Three     </td>
+<td> heqtenm   </td>
+<td> 14151 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D8%A7%D9%BE#Persian">چاپ</a>   </td>
+<td> print     </td>
+<td> hedrek    </td>
+<td> 14136 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%AF%D8%B1#Persian">قدر</a>   </td>
+<td> Magnitude     </td>
+<td> aqasewm   </td>
+<td> 14101 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%B1%D8%A7%D9%86%DB%8C#Persian">ایرانی</a>   </td>
+<td> Iranian   </td>
+<td> rethesab  </td>
+<td> 14084 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%A9%D9%86%D9%86%D8%AF#Persian">میکنند</a>   </td>
+<td> they do   </td>
+<td> dennam    </td>
+<td> 14064 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%DB%8C#Persian">علی</a>   </td>
+<td> Ali   </td>
+<td> hebej     </td>
+<td> 13570 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%B2%D9%85%D8%A7%D9%86#Persian">سازمان</a>   </td>
+<td> Organization  </td>
+<td> namezas   </td>
+<td> 13517 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AF#Persian">داد</a>   </td>
+<td> The   </td>
+<td> dad   </td>
+<td> 13334 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%AB%D8%A7%D8%B1#Persian">آثار</a>   </td>
+<td> Effects   </td>
+<td> raheta    </td>
+<td> 13274 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B7%D9%84%D8%A7%D8%B9%D8%A7%D8%AA#Persian">اطلاعات</a>   </td>
+<td> Information   </td>
+<td> talaef    </td>
+<td> 13257 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%86#Persian">بن</a>   </td>
+<td> B.    </td>
+<td> zahega    </td>
+<td> 13226 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AC%D8%A7%D9%85#Persian">انجام</a>   </td>
+<td> Performance   </td>
+<td> lah   </td>
+<td> 13179 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D9%84%DB%8C#Persian">ولی</a>   </td>
+<td> But   </td>
+<td> nalewa    </td>
+<td> 13155 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%87%D8%A7%D9%86#Persian">جهان</a>   </td>
+<td> the world     </td>
+<td> ahekreb   </td>
+<td> 13093 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%88%D8%AF%D9%86%D8%AF#Persian">بودند</a>   </td>
+<td> They were     </td>
+<td> azab  </td>
+<td> 13061 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D8%A7%D8%B1#Persian">آمار</a>   </td>
+<td> Facts     </td>
+<td> denehec   </td>
+<td> 13041 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B4%D8%AA%D9%87#Persian">داشته</a>   </td>
+<td> Have  </td>
+<td> har   </td>
+<td> 12983 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%B3%D8%AA%D8%A7%D8%B1%D9%87%D8%A7%DB%8C#Persian">جستارهای</a>   </td>
+<td> See also  </td>
+<td> denrad    </td>
+<td> 12919 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%DA%AF#Persian">مرگ</a>   </td>
+<td> Death     </td>
+<td> naam  </td>
+<td> 12867 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%85%D9%87%D9%88%D8%B1%DB%8C#Persian">جمهوری</a>   </td>
+<td> Republic  </td>
+<td> arewhemj  </td>
+<td> 12859 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%A7%D9%86#Persian">میان</a>   </td>
+<td> Among     </td>
+<td> ugerm     </td>
+<td> 12850 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B1%D9%86%D8%AF#Persian">دارند</a>   </td>
+<td> have  </td>
+<td> aaheratesj    </td>
+<td> 12838 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A7%D9%87#Persian">راه</a>   </td>
+<td> Way   </td>
+<td> hethesad  </td>
+<td> 12820 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%86%D8%AF#Persian">چند</a>   </td>
+<td> Several   </td>
+<td> rama  </td>
+<td> 12522 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%DB%8C#Persian">بازی</a>   </td>
+<td> game  </td>
+<td> dendewb   </td>
+<td> 12255 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D8%AE%DB%8C#Persian">برخی</a>   </td>
+<td> Some  </td>
+<td> nahej     </td>
+<td> 12254 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%88%D9%84%DB%8C%D9%86#Persian">اولین</a>   </td>
+<td> the first     </td>
+<td> alew  </td>
+<td> 12134 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%A7%D9%84#Persian">حال</a>   </td>
+<td> Now   </td>
+<td> majena    </td>
+<td> 12083 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%BA%D8%A7%D8%B2#Persian">آغاز</a>   </td>
+<td> the beginning     </td>
+<td> neb   </td>
+<td> 11997 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B9%D8%A7%D9%84%DB%8C%D8%AA#Persian">فعالیت</a>   </td>
+<td> Activity  </td>
+<td> taealeta  </td>
+<td> 11985 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AF%D9%87#Persian">داده</a>   </td>
+<td> Data  </td>
+<td> hedad     </td>
+<td> 11965 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B3%D8%AA%D8%A7#Persian">روستا</a>   </td>
+<td> Village   </td>
+<td> ateswer   </td>
+<td> 11782 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AB%D8%B1#Persian">اثر</a>   </td>
+<td> Effect    </td>
+<td> rheta     </td>
+<td> 11780 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%86%D9%88%D8%A8#Persian">جنوب</a>   </td>
+<td> South     </td>
+<td> bewnej    </td>
+<td> 11680 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B1%D9%82%DB%8C#Persian">شرقی</a>   </td>
+<td> Eastern   </td>
+<td> aqerhes   </td>
+<td> 11663 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%AA%D9%88%D8%A7%D9%86#Persian">میتوان</a>   </td>
+<td> Can   </td>
+<td> nawetam   </td>
+<td> 11557 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%BA%D8%B1%D8%A8%DB%8C#Persian">غربی</a>   </td>
+<td> Western   </td>
+<td> aberheg   </td>
+<td> 11541 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%D8%B9#Persian">نوع</a>   </td>
+<td> Type  </td>
+<td> hewemjem  </td>
+<td> 11533 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%A7%D9%87#Persian">شاه</a>   </td>
+<td> King  </td>
+<td> a     </td>
+<td> 11521 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%B3%D9%85%DB%8C#Persian">رسمی</a>   </td>
+<td> Official  </td>
+<td> daab  </td>
+<td> 11511 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D9%84%D8%AA#Persian">دولت</a>   </td>
+<td> Government    </td>
+<td> narewd    </td>
+<td> 11499 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%81%D8%AA%D9%87#Persian">گرفته</a>   </td>
+<td> Was   </td>
+<td> tefrug    </td>
+<td> 11481 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%AF%D9%88%D8%AF#Persian">حدود</a>   </td>
+<td> About     </td>
+<td> nedhes    </td>
+<td> 11405 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D9%84%DB%8C%D8%AF#Persian">تولید</a>   </td>
+<td> Production    </td>
+<td> ruga  </td>
+<td> 11230 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%82%D8%B4#Persian">نقش</a>   </td>
+<td> Role  </td>
+<td> haugbew   </td>
+<td> 11206 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B1#Persian">بار</a>   </td>
+<td> Bar   </td>
+<td> ham   </td>
+<td> 11156 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B4%DA%A9%DB%8C%D9%84#Persian">تشکیل</a>   </td>
+<td> Formation     </td>
+<td> lemahes   </td>
+<td> 11085 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D9%88%D8%AA%D8%A8%D8%A7%D9%84#Persian">فوتبال</a>   </td>
+<td> Soccer    </td>
+<td> nedrek    </td>
+<td> 11049 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B3%D8%AA%D8%A7%DB%8C#Persian">روستای</a>   </td>
+<td> village   </td>
+<td> ab    </td>
+<td> 11036 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B4%D9%88%D9%86%D8%AF#Persian">میشوند</a>   </td>
+<td> be    </td>
+<td> asaas     </td>
+<td> 11035 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%B0%D8%B1%D8%A8%D8%A7%DB%8C%D8%AC%D8%A7%D9%86#Persian">آذربایجان</a>   </td>
+<td> Azerbaijan    </td>
+<td> lamhes    </td>
+<td> 10897 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%D8%B1%D8%A7%D9%87#Persian">همراه</a>   </td>
+<td> Along     </td>
+<td> ahent     </td>
+<td> 10875 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%83%D9%87#Persian">كه</a>   </td>
+<td> That  </td>
+<td> araaseb   </td>
+<td> 10870 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B3%DB%8C%D8%A7%D8%B1%DB%8C#Persian">بسیاری</a>   </td>
+<td> Many  </td>
+<td> hek   </td>
+<td> 10822 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%86%D9%87%D8%A7#Persian">تنها</a>   </td>
+<td> single    </td>
+<td> haremh    </td>
+<td> 10752 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%85%D8%A7%D9%84#Persian">شمال</a>   </td>
+<td> North     </td>
+<td> najaaberda    </td>
+<td> 10696 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%A7%D8%B3%DB%8C#Persian">سیاسی</a>   </td>
+<td> Political     </td>
+<td> denwhesam     </td>
+<td> 10675 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C#Persian">بی</a>   </td>
+<td> Without   </td>
+<td> aateswer  </td>
+<td> 10665 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D8%AF%D9%86#Persian">کردن</a>   </td>
+<td> The   </td>
+<td> labetwef  </td>
+<td> 10660 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%A7%D9%85%D9%84#Persian">شامل</a>   </td>
+<td> Contains  </td>
+<td> laekhest  </td>
+<td> 10645 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7%D9%87#Persian">ماه</a>   </td>
+<td> the moon  </td>
+<td> rab   </td>
+<td> 10596 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A8%DA%AF%D8%A7%D9%87#Persian">وبگاه</a>   </td>
+<td> Website   </td>
+<td> hesqen    </td>
+<td> 10535 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DA%AF%D8%B1#Persian">اگر</a>   </td>
+<td> If    </td>
+<td> dalewt    </td>
+<td> 10491 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AF%D9%86#Persian">شدن</a>   </td>
+<td> Become    </td>
+<td> dewdh     </td>
+<td> 10483 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%81%D8%AA#Persian">گرفت</a>   </td>
+<td> Was   </td>
+<td> hetferug  </td>
+<td> 10446 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D8%B1%D8%A7%D9%86#Persian">دوران</a>   </td>
+<td> Era   </td>
+<td> telwed    </td>
+<td> 10376 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%DB%8C%D8%AF#Persian">باید</a>   </td>
+<td> Must  </td>
+<td> amesr     </td>
+<td> 10259 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C#Persian">ی</a>   </td>
+<td> The   </td>
+<td> hahes     </td>
+<td> 10213 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AC%D9%85%D9%88%D8%B9%D9%87#Persian">مجموعه</a>   </td>
+<td> Collection    </td>
+<td> ewen  </td>
+<td> 10002 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%B2%D8%A8#Persian">حزب</a>   </td>
+<td> Party     </td>
+<td> bezh  </td>
+<td> 9994 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D9%84#Persian">محل</a>   </td>
+<td> Location  </td>
+<td> lhem  </td>
+<td> 9974 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%AC%D8%A7%D8%AF#Persian">ایجاد</a>   </td>
+<td> Creation  </td>
+<td> dajaa     </td>
+<td> 9653 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%85%D9%84%D9%87#Persian">جمله</a>   </td>
+<td> Sentence  </td>
+<td> helmej    </td>
+<td> 9643 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%87%D8%A7%D9%86%DB%8C#Persian">جهانی</a>   </td>
+<td> Global    </td>
+<td> anahej    </td>
+<td> 9545 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%A7%D8%B3#Persian">اساس</a>   </td>
+<td> Basis     </td>
+<td> sasa  </td>
+<td> 9520 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%DB%8C%D9%86#Persian">همین</a>   </td>
+<td> This  </td>
+<td> namh  </td>
+<td> 9498 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%85%DB%8C%D9%86#Persian">زمین</a>   </td>
+<td> the earth     </td>
+<td> namez     </td>
+<td> 9480 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%AF%D9%87%D8%AF#Persian">میدهد</a>   </td>
+<td> Gives     </td>
+<td> dhedam    </td>
+<td> 9478 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AE%D8%AA%D9%84%D9%81#Persian">مختلف</a>   </td>
+<td> Different     </td>
+<td> felthekm  </td>
+<td> 9442 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%87%D8%B1%D9%87%D8%A7%DB%8C#Persian">شهرهای</a>   </td>
+<td> cities of     </td>
+<td> aaherhhes     </td>
+<td> 9366 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1#Persian">سر</a>   </td>
+<td> Head  </td>
+<td> res   </td>
+<td> 9292 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%DA%A9%D9%84#Persian">شکل</a>   </td>
+<td> Shape     </td>
+<td> lekhes    </td>
+<td> 9272 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%AE%D8%AA%D9%87#Persian">ساخته</a>   </td>
+<td> Made  </td>
+<td> hethekas  </td>
+<td> 9248 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B4%D8%A7%D9%86#Persian">نشان</a>   </td>
+<td> sign  </td>
+<td> nahesn    </td>
+<td> 9231 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D8%A7%D8%AF%DA%AF%D8%A7%D9%86#Persian">زادگان</a>   </td>
+<td> Descendants   </td>
+<td> naugedaz  </td>
+<td> 9156 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%8A%D9%86#Persian">اين</a>   </td>
+<td> this  </td>
+<td> neya  </td>
+<td> 9144 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D9%82%D9%84%D8%A7%D8%A8#Persian">انقلاب</a>   </td>
+<td> the revolution    </td>
+<td> baleqna   </td>
+<td> 9102 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D9%87%D9%86%DA%AF#Persian">فرهنگ</a>   </td>
+<td> Culture   </td>
+<td> ugenherf  </td>
+<td> 8999 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D9%88%D9%84#Persian">طول</a>   </td>
+<td> the length    </td>
+<td> lewt  </td>
+<td> 8914 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%D9%87#Persian">همه</a>   </td>
+<td> All   </td>
+<td> hemh  </td>
+<td> 8862 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D8%AF%D9%86%D8%AF#Persian">کردند</a>   </td>
+<td> They  </td>
+<td> denderek  </td>
+<td> 8788 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AA%D8%B1#Persian">متر</a>   </td>
+<td> Meter     </td>
+<td> retm  </td>
+<td> 8681 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%D9%88%D9%85#Persian">علوم</a>   </td>
+<td> Sciences  </td>
+<td> fewrem    </td>
+<td> 8644 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7%DB%8C%D8%B2%D9%87#Persian">جایزه</a>   </td>
+<td> Award     </td>
+<td> adaaz     </td>
+<td> 8629 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%B7#Persian">خط</a>   </td>
+<td> Line  </td>
+<td> newehec   </td>
+<td> 8582 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%AE%D8%AA#Persian">ساخت</a>   </td>
+<td> Making    </td>
+<td> hedhetm   </td>
+<td> 8538 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AF%D9%86%D8%AF#Persian">شدند</a>   </td>
+<td> Was   </td>
+<td> hesnaref  </td>
+<td> 8527 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%81%D8%B1%D8%A7%D8%AF#Persian">افراد</a>   </td>
+<td> People    </td>
+<td> mamet     </td>
+<td> 8495 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D8%B4#Persian">بیش</a>   </td>
+<td> More  </td>
+<td> hets  </td>
+<td> 8458 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%DB%8C%D9%85#Persian">تیم</a>   </td>
+<td> Team  </td>
+<td> laled     </td>
+<td> 8457 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DA%AF%D8%A7%D9%87#Persian">درگاه</a>   </td>
+<td> Port  </td>
+<td> ahekarat  </td>
+<td> 8450 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A7%D8%B1%DB%8C%D8%AE%DB%8C#Persian">تاریخی</a>   </td>
+<td> Historical    </td>
+<td> haugerd   </td>
+<td> 8405 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%84%DB%8C%D9%84#Persian">دلیل</a>   </td>
+<td> the reason    </td>
+<td> mat   </td>
+<td> 8359 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B7%D8%AD#Persian">سطح</a>   </td>
+<td> Level     </td>
+<td> hesab     </td>
+<td> 8355 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%85%D8%A7%D9%85#Persian">تمام</a>   </td>
+<td> All   </td>
+<td> darefa    </td>
+<td> 8306 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D8%A7%D9%86%D8%B3%D9%87#Persian">فرانسه</a>   </td>
+<td> France    </td>
+<td> dendhes   </td>
+<td> 8297 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AA%D8%AD%D8%AF%D9%87#Persian">متحده</a>   </td>
+<td> United    </td>
+<td> thekas    </td>
+<td> 8295 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%88%D9%86#Persian">چون</a>   </td>
+<td> Because   </td>
+<td> thek  </td>
+<td> 8284 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%DB%8C%D8%A7%D8%AF%DB%8C#Persian">زیادی</a>   </td>
+<td> Lot   </td>
+<td> hezaaj    </td>
+<td> 8261 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D8%B1%D9%88%D9%81#Persian">معروف</a>   </td>
+<td> Famous    </td>
+<td> mewl  </td>
+<td> 8218 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%AF#Persian">سید</a>   </td>
+<td> Syed  </td>
+<td> das   </td>
+<td> 8216 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D8%AC%D9%87#Persian">توجه</a>   </td>
+<td> Attention     </td>
+<td> hejwet    </td>
+<td> 8195 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C#Persian">ای</a>   </td>
+<td> Oh you    </td>
+<td> aa    </td>
+<td> 8192 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B1%D8%A8%DB%8C#Persian">عربی</a>   </td>
+<td> Arabic    </td>
+<td> dadet     </td>
+<td> 8184 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%AE%D8%B3%D8%AA%DB%8C%D9%86#Persian">نخستین</a>   </td>
+<td> First     </td>
+<td> tefaa     </td>
+<td> 8168 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%D8%A7%D9%86#Persian">همان</a>   </td>
+<td> Same  </td>
+<td> tesan     </td>
+<td> 8125 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%B3%D8%AA%D9%85#Persian">سیستم</a>   </td>
+<td> System    </td>
+<td> reteked   </td>
+<td> 8122 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86#Persian">من</a>   </td>
+<td> I     </td>
+<td> dadej     </td>
+<td> 8107 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%DB%8C%D8%A7%D9%86#Persian">پایان</a>   </td>
+<td> End   </td>
+<td> dewmen    </td>
+<td> 8057 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%AC%D8%B1%DB%8C#Persian">هجری</a>   </td>
+<td> Hegira    </td>
+<td> arejh     </td>
+<td> 8036 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%85%D9%88%D8%AF#Persian">نمود</a>   </td>
+<td> The   </td>
+<td> naaaep    </td>
+<td> 7981 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%AF%DB%8C%D8%AF#Persian">جدید</a>   </td>
+<td> New   </td>
+<td> nem   </td>
+<td> 7972 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%DA%A9%D8%AA%D8%B1#Persian">دکتر</a>   </td>
+<td> Doctor    </td>
+<td> metsas    </td>
+<td> 7972 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D8%B3%D8%AA#Persian">نیست</a>   </td>
+<td> is not    </td>
+<td> namh  </td>
+<td> 7962 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D8%A7%D9%81%D8%AA#Persian">یافت</a>   </td>
+<td> Found     </td>
+<td> nateshekn     </td>
+<td> 7905 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B9%D8%AF%D8%A7%D8%AF#Persian">تعداد</a>   </td>
+<td> Number    </td>
+<td> aber  </td>
+<td> 7887 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%B2%D8%A7%D8%B1#Persian">هزار</a>   </td>
+<td> Thousand  </td>
+<td> razh  </td>
+<td> 7870 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AC%D9%84%D8%B3#Persian">مجلس</a>   </td>
+<td> Parliament    </td>
+<td> seljem    </td>
+<td> 7860 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D9%87#Persian">برنامه</a>   </td>
+<td> Program   </td>
+<td> hemanerb  </td>
+<td> 7857 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%A7%D9%84%D8%A7%D8%AA#Persian">ایالات</a>   </td>
+<td> States    </td>
+<td> talaaa    </td>
+<td> 7831 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AD%D9%85%D8%AF#Persian">احمد</a>   </td>
+<td> Ahmad     </td>
+<td> demha     </td>
+<td> 7828 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%D9%85%DB%8C#Persian">علمی</a>   </td>
+<td> Academic  </td>
+<td> ebawet    </td>
+<td> 7817 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B5#Persian">ص</a>   </td>
+<td> P.    </td>
+<td> hetfug    </td>
+<td> 7811 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D9%81%D8%AA%D9%87#Persian">گفته</a>   </td>
+<td> Statement     </td>
+<td> s     </td>
+<td> 7811 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D8%A7%D8%A8%D8%B9#Persian">توابع</a>   </td>
+<td> Functions     </td>
+<td> amel  </td>
+<td> 7795 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%87%D8%AA#Persian">جهت</a>   </td>
+<td> Direction     </td>
+<td> thej  </td>
+<td> 7755 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D9%88%D8%B1#Persian">طور</a>   </td>
+<td> Way   </td>
+<td> rewt  </td>
+<td> 7746 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%B1%D9%86#Persian">قرن</a>   </td>
+<td> Century   </td>
+<td> nerq  </td>
+<td> 7736 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%A8%D9%84#Persian">قبل</a>   </td>
+<td> Before    </td>
+<td> lebq  </td>
+<td> 7734 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%87%D8%AA%D8%B1%DB%8C%D9%86#Persian">بهترین</a>   </td>
+<td> Best  </td>
+<td> naretheb  </td>
+<td> 7722 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D9%84%D8%A7%D9%85#Persian">اسلام</a>   </td>
+<td> Islam     </td>
+<td> malesa    </td>
+<td> 7702 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%88%D9%85#Persian">سوم</a>   </td>
+<td> Third     </td>
+<td> mews  </td>
+<td> 7675 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%88%D8%AF%D9%87%D8%A7%D8%B3%D8%AA#Persian">بودهاست</a>   </td>
+<td> have been     </td>
+<td> tesahedweb    </td>
+<td> 7667 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%DB%8C%D8%B3%D9%86%D8%AF%D9%87#Persian">نویسنده</a>   </td>
+<td> the writer    </td>
+<td> hednesawen    </td>
+<td> 7661 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D8%B9%D9%86%DB%8C#Persian">یعنی</a>   </td>
+<td> that's mean   </td>
+<td> heteab    </td>
+<td> 7650 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%B2%D8%A7%D8%AF#Persian">آزاد</a>   </td>
+<td> Free  </td>
+<td> tebsen    </td>
+<td> 7620 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%88%D8%A7%DB%8C%D8%B2#Persian">جوایز</a>   </td>
+<td> awards    </td>
+<td> hemjert   </td>
+<td> 7613 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%A7%D8%A8%D9%84#Persian">قابل</a>   </td>
+<td> Able  </td>
+<td> temwekh   </td>
+<td> 7503 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%BA%DB%8C%D8%B1#Persian">غیر</a>   </td>
+<td> Other     </td>
+<td> bew   </td>
+<td> 7407 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%86%D8%A7%D9%86#Persian">زنان</a>   </td>
+<td> Women     </td>
+<td> dena  </td>
+<td> 7402 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D9%84%D8%AF#Persian">تولد</a>   </td>
+<td> Birth     </td>
+<td> namela    </td>
+<td> 7391 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1#Persian">تغییر</a>   </td>
+<td> Change    </td>
+<td> tarahestena   </td>
+<td> 7389 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B3%D8%AA%D8%A7%D9%86#Persian">داستان</a>   </td>
+<td> Story     </td>
+<td> dennek    </td>
+<td> 7353 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D9%86%D9%87#Persian">خانه</a>   </td>
+<td> Home  </td>
+<td> thet  </td>
+<td> 7352 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AF%D8%AA#Persian">مدت</a>   </td>
+<td> Time  </td>
+<td> sawenaep  </td>
+<td> 7347 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7#Persian">ما</a>   </td>
+<td> We    </td>
+<td> herahesa  </td>
+<td> 7335 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B4%D8%A7%D8%B1%D9%87#Persian">اشاره</a>   </td>
+<td> Hint  </td>
+<td> am    </td>
+<td> 7331 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%D9%86%D9%88%DB%8C%D8%B3#Persian">پانویس</a>   </td>
+<td> References    </td>
+<td> tedm  </td>
+<td> 7318 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%AD%D8%AA#Persian">تحت</a>   </td>
+<td> Under     </td>
+<td> henahek   </td>
+<td> 7315 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%D9%86%D8%AF#Persian">کنند</a>   </td>
+<td> They  </td>
+<td> natesad   </td>
+<td> 7280 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AA%D8%B4%D8%A7%D8%B1%D8%A7%D8%AA#Persian">انتشارات</a>   </td>
+<td> Publishers    </td>
+<td> raahegt   </td>
+<td> 7210 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%84%D9%85%D8%A7%D9%86#Persian">آلمان</a>   </td>
+<td> Germany   </td>
+<td> delwet    </td>
+<td> 7207 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AF#Persian">اند</a>   </td>
+<td> Have  </td>
+<td> nanez     </td>
+<td> 7175 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A8#Persian">وب</a>   </td>
+<td> the Web   </td>
+<td> raheg     </td>
+<td> 7106 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%DA%A9%D9%88%D9%85%D8%AA#Persian">حکومت</a>   </td>
+<td> Government    </td>
+<td> lebaq     </td>
+<td> 7105 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1%D8%AC%D9%85%D9%87#Persian">ترجمه</a>   </td>
+<td> Translation   </td>
+<td> zaawej    </td>
+<td> 7102 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B3%D8%A8%D8%AA#Persian">نسبت</a>   </td>
+<td> Ratio     </td>
+<td> daza  </td>
+<td> 7084 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B9%D8%AB#Persian">باعث</a>   </td>
+<td> cause     </td>
+<td> anea  </td>
+<td> 7065 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%85%D8%A7%D9%86%DB%8C#Persian">زمانی</a>   </td>
+<td> Time  </td>
+<td> anamez    </td>
+<td> 7056 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A7%D8%B1%D8%AF#Persian">وارد</a>   </td>
+<td> Enter     </td>
+<td> deraw     </td>
+<td> 7055 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%B4%D8%AA%D9%87#Persian">رشته</a>   </td>
+<td> field     </td>
+<td> hethesr   </td>
+<td> 7046 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%D8%B4%D8%AA%D9%87#Persian">نوشته</a>   </td>
+<td> Writing   </td>
+<td> hetheswen     </td>
+<td> 7025 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%B3%DB%8C%D9%86#Persian">حسین</a>   </td>
+<td> Hossein   </td>
+<td> nash  </td>
+<td> 7020 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A6%DB%8C%D8%B3#Persian">رئیس</a>   </td>
+<td> head of   </td>
+<td> amewm     </td>
+<td> 7008 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AA%D8%B4%D8%A7%D8%B1#Persian">انتشار</a>   </td>
+<td> Publication   </td>
+<td> sepes     </td>
+<td> 7004 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%85%D8%AA#Persian">سمت</a>   </td>
+<td> Side  </td>
+<td> denawetam     </td>
+<td> 6998 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%DB%8C%D9%84%D9%88%D9%85%D8%AA%D8%B1#Persian">کیلومتر</a>   </td>
+<td> Kilometer     </td>
+<td> abewnej   </td>
+<td> 6996 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B3%D8%AC%D8%AF#Persian">مسجد</a>   </td>
+<td> Mosque    </td>
+<td> newnaq    </td>
+<td> 6975 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%DB%8C%DA%AF%D8%B1%DB%8C#Persian">دیگری</a>   </td>
+<td> Other     </td>
+<td> arugad    </td>
+<td> 6962 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%A7%D9%86%D9%88%D9%86#Persian">قانون</a>   </td>
+<td> Law   </td>
+<td> dejsem    </td>
+<td> 6944 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%86%D9%88%D8%A8%DB%8C#Persian">جنوبی</a>   </td>
+<td> Southern  </td>
+<td> retmewlaek    </td>
+<td> 6937 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%AA%D9%88%D8%A7%D9%86%D8%AF#Persian">میتواند</a>   </td>
+<td> Can   </td>
+<td> tems  </td>
+<td> 6933 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%BE%D8%B3#Persian">سپس</a>   </td>
+<td> Then  </td>
+<td> rahestena     </td>
+<td> 6921 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%85%D9%88%D9%85%DB%8C#Persian">عمومی</a>   </td>
+<td> General   </td>
+<td> saer  </td>
+<td> 6916 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D9%86%DA%A9%D9%87#Persian">اینکه</a>   </td>
+<td> That  </td>
+<td> hekenaa   </td>
+<td> 6907 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%88%D8%B1%D8%A7%DB%8C#Persian">شورای</a>   </td>
+<td> Council   </td>
+<td> aarewhes  </td>
+<td> 6877 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AF%D8%A7%D9%85%D9%87#Persian">ادامه</a>   </td>
+<td> Continuation  </td>
+<td> hemada    </td>
+<td> 6864 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%84%D9%84%D9%87#Persian">الله</a>   </td>
+<td> Allah     </td>
+<td> hella     </td>
+<td> 6852 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%88%D8%A7%D9%87%D8%AF#Persian">خواهد</a>   </td>
+<td> Will  </td>
+<td> dhawhek   </td>
+<td> 6852 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D9%87%D9%86%DA%AF%DB%8C#Persian">فرهنگی</a>   </td>
+<td> Cultural  </td>
+<td> augenherf     </td>
+<td> 6836 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%87%D8%A7%D8%B1#Persian">چهار</a>   </td>
+<td> Four  </td>
+<td> rahehec   </td>
+<td> 6823 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%AA%D8%B4%D8%B1#Persian">منتشر</a>   </td>
+<td> publish   </td>
+<td> rhestenm  </td>
+<td> 6808 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%88%DB%8C#Persian">سوی</a>   </td>
+<td> The   </td>
+<td> awes  </td>
+<td> 6791 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D8%AF#Persian">آمد</a>   </td>
+<td> Came  </td>
+<td> dema  </td>
+<td> 6790 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AF%D9%88%D9%86#Persian">بدون</a>   </td>
+<td> Without   </td>
+<td> newdeb    </td>
+<td> 6756 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D9%86#Persian">خان</a>   </td>
+<td> Khan  </td>
+<td> nahek     </td>
+<td> 6702 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1%D8%B4%D9%85%D8%A7%D8%B1%DB%8C#Persian">سرشماری</a>   </td>
+<td> Census    </td>
+<td> aramhesres    </td>
+<td> 6665 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%84%D8%A8%D9%88%D9%85#Persian">آلبوم</a>   </td>
+<td> Albums    </td>
+<td> mewbela   </td>
+<td> 6664 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D9%84%D8%B9%D9%87#Persian">قلعه</a>   </td>
+<td> Castle    </td>
+<td> malea     </td>
+<td> 6626 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DA%AF%D8%B0%D8%B4%D8%AA%DA%AF%D8%A7%D9%86#Persian">درگذشتگان</a>   </td>
+<td> Dead  </td>
+<td> heswer    </td>
+<td> 6613 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B3%D8%AA%D8%A7%DB%8C%DB%8C#Persian">روستایی</a>   </td>
+<td> rural     </td>
+<td> aaj   </td>
+<td> 6598 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%86%D9%87%D8%A7#Persian">آنها</a>   </td>
+<td> They  </td>
+<td> haughesab     </td>
+<td> 6596 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B4%D8%AF#Persian">میشد</a>   </td>
+<td> Been  </td>
+<td> mhem  </td>
+<td> 6569 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D8%AC%D9%87#Persian">درجه</a>   </td>
+<td> Degree    </td>
+<td> nez   </td>
+<td> 6551 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%A8%D9%88%D8%B7#Persian">مربوط</a>   </td>
+<td> Related   </td>
+<td> heszewma  </td>
+<td> 6543 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B5%D9%81%D8%AD%D9%87#Persian">صفحه</a>   </td>
+<td> Page  </td>
+<td> aahnateshed   </td>
+<td> 6515 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%DB%8C%DA%AF%D8%B1#Persian">بازیگر</a>   </td>
+<td> Actor     </td>
+<td> bahektena     </td>
+<td> 6501 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%86%DA%AF#Persian">رنگ</a>   </td>
+<td> Color     </td>
+<td> hekahes   </td>
+<td> 6413 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D9%84%D8%A7#Persian">بالا</a>   </td>
+<td> Top   </td>
+<td> hehec     </td>
+<td> 6396 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%87#Persian">چه</a>   </td>
+<td> What  </td>
+<td> alab  </td>
+<td> 6386 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%DB%8C%D8%AE#Persian">شیخ</a>   </td>
+<td> Sheikh    </td>
+<td> ugenr     </td>
+<td> 6372 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AA%D8%AE%D8%A7%D8%A8#Persian">انتخاب</a>   </td>
+<td> Selection     </td>
+<td> rugazab   </td>
+<td> 6371 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%87%D8%B3%D8%AA%D8%A7%D9%86%D9%87%D8%A7%DB%8C#Persian">دهستانهای</a>   </td>
+<td> Municipality  </td>
+<td> hhefs     </td>
+<td> 6352 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D9%88%D8%B2%D8%B4#Persian">آموزش</a>   </td>
+<td> Education     </td>
+<td> tewberm   </td>
+<td> 6334 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%86#Persian">زن</a>   </td>
+<td> Female    </td>
+<td> hejred    </td>
+<td> 6321 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%87%D9%85#Persian">مهم</a>   </td>
+<td> Important     </td>
+<td> dhesam    </td>
+<td> 6319 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B4%DA%AF%D8%A7%D9%87#Persian">باشگاه</a>   </td>
+<td> Gym   </td>
+<td> ahna  </td>
+<td> 6316 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7%DB%8C#Persian">جای</a>   </td>
+<td> Instead   </td>
+<td> aaateswer     </td>
+<td> 6279 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B4#Persian">روش</a>   </td>
+<td> Way   </td>
+<td> naugethesdugerd   </td>
+<td> 6260 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B9%D9%84%D8%A7%D9%85#Persian">اعلام</a>   </td>
+<td> Declaration   </td>
+<td> heleq     </td>
+<td> 6256 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D8%B1#Persian">دور</a>   </td>
+<td> far way   </td>
+<td> rewd  </td>
+<td> 6206 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2#Persian">باز</a>   </td>
+<td> Open  </td>
+<td> zab   </td>
+<td> 6202 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%BA%D8%B1%D8%A8#Persian">غرب</a>   </td>
+<td> the West  </td>
+<td> berheg    </td>
+<td> 6164 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%88%D9%87#Persian">کوه</a>   </td>
+<td> Mountain  </td>
+<td> hewek     </td>
+<td> 6138 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D8%AF%DB%8C%D8%AF#Persian">گردید</a>   </td>
+<td> Was   </td>
+<td> daderug   </td>
+<td> 6138 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B1%D9%88%D9%BE%D8%A7#Persian">اروپا</a>   </td>
+<td> Europe    </td>
+<td> aepewra   </td>
+<td> 6136 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%87#Persian">نه</a>   </td>
+<td> No    </td>
+<td> hen   </td>
+<td> 6136 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B2%D9%86%D8%A7%D9%85%D9%87#Persian">روزنامه</a>   </td>
+<td> Newspaper     </td>
+<td> hemanezwer    </td>
+<td> 6135 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%A7%D9%85%D9%84#Persian">کامل</a>   </td>
+<td> Full  </td>
+<td> lemaek    </td>
+<td> 6133 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B1%D9%88%D8%B9#Persian">شروع</a>   </td>
+<td> Start     </td>
+<td> qar   </td>
+<td> 6132 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%87%D8%A7%D9%84%DB%8C#Persian">اهالی</a>   </td>
+<td> inhabitants   </td>
+<td> temseq    </td>
+<td> 6105 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%B3%D9%85%D8%AA#Persian">قسمت</a>   </td>
+<td> Section   </td>
+<td> alaha     </td>
+<td> 6080 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B1%D8%A7%D9%82#Persian">عراق</a>   </td>
+<td> Iraq  </td>
+<td> ewerhes   </td>
+<td> 6070 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%85%D8%A7%D9%84%DB%8C#Persian">شمالی</a>   </td>
+<td> North     </td>
+<td> alamhes   </td>
+<td> 6063 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%DB%8C#Persian">اجتماعی</a>   </td>
+<td> Social    </td>
+<td> aadea     </td>
+<td> 6025 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B9%D8%B6%D8%A7%DB%8C#Persian">اعضای</a>   </td>
+<td> members   </td>
+<td> aeametja  </td>
+<td> 6022 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%85%DA%A9%D9%86#Persian">ممکن</a>   </td>
+<td> Possible  </td>
+<td> nekemm    </td>
+<td> 6011 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A8%D8%AF%DB%8C%D9%84#Persian">تبدیل</a>   </td>
+<td> Conversion    </td>
+<td> ladebt    </td>
+<td> 6009 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%86%D8%B1#Persian">هنر</a>   </td>
+<td> Art   </td>
+<td> renh  </td>
+<td> 6006 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D9%86%D9%88%D8%A7%D8%B1#Persian">خانوار</a>   </td>
+<td> Family    </td>
+<td> rawenahek     </td>
+<td> 6005 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B4%D9%88%D8%B1%D9%87%D8%A7%DB%8C#Persian">کشورهای</a>   </td>
+<td> countries     </td>
+<td> aaherwhesek   </td>
+<td> 5999 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1%DB%8C%D9%86#Persian">ترین</a>   </td>
+<td> Most  </td>
+<td> naret     </td>
+<td> 5997 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7%DB%8C%DB%8C#Persian">آمریکایی</a>   </td>
+<td> American  </td>
+<td> aaaekarema    </td>
+<td> 5994 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%B3%D8%A7%D9%86#Persian">انسان</a>   </td>
+<td> Man   </td>
+<td> nasena    </td>
+<td> 5978 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B3%D8%B1#Persian">پسر</a>   </td>
+<td> Boy   </td>
+<td> resep     </td>
+<td> 5977 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%A8%DA%A9%D9%87#Persian">شبکه</a>   </td>
+<td> Network   </td>
+<td> hekebhes  </td>
+<td> 5969 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D8%A7%D9%85#Persian">امام</a>   </td>
+<td> Imam  </td>
+<td> mama  </td>
+<td> 5949 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%88%D8%B1%D8%B4%DB%8C%D8%AF%DB%8C#Persian">خورشیدی</a>   </td>
+<td> Solar     </td>
+<td> adahesrewhek  </td>
+<td> 5941 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%DB%8C%D8%AA#Persian">سایت</a>   </td>
+<td> site  </td>
+<td> taas  </td>
+<td> 5939 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%81%D8%B2%D8%A7%DB%8C%D8%B4#Persian">افزایش</a>   </td>
+<td> Increase  </td>
+<td> hesaazefa     </td>
+<td> 5917 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D9%82%D9%88%D9%82#Persian">حقوق</a>   </td>
+<td> Law   </td>
+<td> qewqh     </td>
+<td> 5913 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%D8%AF%DB%8C%D8%AF#Persian">بازدید</a>   </td>
+<td> Visit     </td>
+<td> dadezab   </td>
+<td> 5871 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%B3%D9%86#Persian">حسن</a>   </td>
+<td> Hasan     </td>
+<td> nesh  </td>
+<td> 5846 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%A7%D8%B7%D9%82#Persian">مناطق</a>   </td>
+<td> areas     </td>
+<td> qetanem   </td>
+<td> 5841 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D8%B1%D9%88%DB%8C#Persian">نیروی</a>   </td>
+<td> the force     </td>
+<td> aweran    </td>
+<td> 5838 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%B2%D8%A7%D8%B1%D8%AA#Persian">وزارت</a>   </td>
+<td> Ministry  </td>
+<td> terazew   </td>
+<td> 5809 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B8%D8%A7%D9%85%DB%8C#Persian">نظامی</a>   </td>
+<td> Military  </td>
+<td> amazen    </td>
+<td> 5790 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%82%D9%88%DB%8C%D9%85#Persian">تقویم</a>   </td>
+<td> Calendar  </td>
+<td> maweqt    </td>
+<td> 5781 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%85%D8%A7%D8%B1%D9%87#Persian">شماره</a>   </td>
+<td> No    </td>
+<td> heramhes  </td>
+<td> 5775 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7%D9%86#Persian">جان</a>   </td>
+<td> John  </td>
+<td> naj   </td>
+<td> 5770 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%D8%A7%D8%B1#Persian">کنار</a>   </td>
+<td> next to the   </td>
+<td> ranek     </td>
+<td> 5755 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%B3%DB%8C%D8%AF#Persian">رسید</a>   </td>
+<td> Receipt   </td>
+<td> daser     </td>
+<td> 5754 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%87%D9%87#Persian">دهه</a>   </td>
+<td> Decade    </td>
+<td> hhed  </td>
+<td> 5720 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%86%DB%8C%D8%A7#Persian">دنیا</a>   </td>
+<td> World     </td>
+<td> aaned     </td>
+<td> 5716 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%DB%8C%DA%86#Persian">هیچ</a>   </td>
+<td> Any   </td>
+<td> ehecah    </td>
+<td> 5713 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%86%DB%8C%D9%86#Persian">چنین</a>   </td>
+<td> Such  </td>
+<td> nanehec   </td>
+<td> 5710 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B6%D9%88#Persian">عضو</a>   </td>
+<td> Member    </td>
+<td> hesewt    </td>
+<td> 5709 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%A8%D8%A7%D8%AF#Persian">آباد</a>   </td>
+<td> Abad  </td>
+<td> seraf     </td>
+<td> 5696 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%86%D8%AC%D8%A7#Persian">آنجا</a>   </td>
+<td> There     </td>
+<td> hedaz     </td>
+<td> 5694 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%86%D8%A7%D9%86#Persian">آنان</a>   </td>
+<td> They  </td>
+<td> dewjewm   </td>
+<td> 5693 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%81%D8%BA%D8%A7%D9%86%D8%B3%D8%AA%D8%A7%D9%86#Persian">افغانستان</a>   </td>
+<td> Afghanistan   </td>
+<td> taabeda   </td>
+<td> 5686 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%B1%D8%A7%D8%B3%D8%A7%D9%86#Persian">خراسان</a>   </td>
+<td> Khorasan  </td>
+<td> aneb  </td>
+<td> 5670 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%86%D8%A7#Persian">بنا</a>   </td>
+<td> Building  </td>
+<td> nasarhek  </td>
+<td> 5664 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AF%D8%A8%DB%8C%D8%A7%D8%AA#Persian">ادبیات</a>   </td>
+<td> the literature    </td>
+<td> natesnahegfa  </td>
+<td> 5662 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%AC%D9%88%D8%AF#Persian">موجود</a>   </td>
+<td> Available     </td>
+<td> nana  </td>
+<td> 5650 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D8%A7%D8%AF%D9%87#Persian">زاده</a>   </td>
+<td> born  </td>
+<td> ajena     </td>
+<td> 5615 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%A7%D8%B1%D8%B3#Persian">فارس</a>   </td>
+<td> Fars  </td>
+<td> daba  </td>
+<td> 5608 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D8%B3%D8%B9%D9%87#Persian">توسعه</a>   </td>
+<td> Development   </td>
+<td> wed   </td>
+<td> 5599 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C#Persian">سی</a>   </td>
+<td> Thirty    </td>
+<td> as    </td>
+<td> 5599 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%85%D9%84#Persian">عمل</a>   </td>
+<td> Action    </td>
+<td> anem  </td>
+<td> 5577 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%D9%86%D8%AF%D9%87#Persian">کننده</a>   </td>
+<td> Of    </td>
+<td> tesaar    </td>
+<td> 5573 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%DB%8C%D8%A7%D8%B3%D8%AA#Persian">ریاست</a>   </td>
+<td> Presidency    </td>
+<td> hednenek  </td>
+<td> 5559 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D9%86%DB%8C#Persian">معنی</a>   </td>
+<td> Meaning   </td>
+<td> lem   </td>
+<td> 5546 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%BE%D9%87#Persian">تپه</a>   </td>
+<td> Hill  </td>
+<td> hepet     </td>
+<td> 5540 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%87%D9%86%D8%AF%D8%B3%DB%8C#Persian">مهندسی</a>   </td>
+<td> Engineering   </td>
+<td> asednhem  </td>
+<td> 5533 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%84%D8%AF#Persian">جلد</a>   </td>
+<td> Cover     </td>
+<td> delj  </td>
+<td> 5531 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%AF%DB%8C%D8%B1%D8%AF#Persian">میگیرد</a>   </td>
+<td> Takes     </td>
+<td> deraugam  </td>
+<td> 5526 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D8%A8%D8%A7%D8%B1%D9%87#Persian">درباره</a>   </td>
+<td> About     </td>
+<td> heraberd  </td>
+<td> 5523 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%A7%D8%AF#Persian">مواد</a>   </td>
+<td> materials     </td>
+<td> dawem     </td>
+<td> 5510 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7%D9%85#Persian">جام</a>   </td>
+<td> Cup   </td>
+<td> maj   </td>
+<td> 5503 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D9%86%D9%88%D8%A7%D8%AF%D9%87#Persian">خانواده</a>   </td>
+<td> Family    </td>
+<td> hedawenahek   </td>
+<td> 5490 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D8%A8%DB%8C%D8%B9%DB%8C#Persian">طبیعی</a>   </td>
+<td> normal    </td>
+<td> laearesa  </td>
+<td> 5477 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%AF%D8%B1%D8%AA#Persian">قدرت</a>   </td>
+<td> the power     </td>
+<td> tefr  </td>
+<td> 5470 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DB%8C%D8%A7%D9%81%D8%AA#Persian">دریافت</a>   </td>
+<td> Reception     </td>
+<td> newalam   </td>
+<td> 5445 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%B6%D9%88%D8%B1#Persian">حضور</a>   </td>
+<td> Presence  </td>
+<td> aahewran  </td>
+<td> 5442 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A8%DA%A9#Persian">سبک</a>   </td>
+<td> Light     </td>
+<td> dewram    </td>
+<td> 5429 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%DB%8C%D9%84%D9%85%D9%87%D8%A7%DB%8C#Persian">فیلمهای</a>   </td>
+<td> Films     </td>
+<td> alhekad   </td>
+<td> 5424 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%AA%DB%8C#Persian">حتی</a>   </td>
+<td> Even  </td>
+<td> herazej   </td>
+<td> 5421 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%B1%DB%8C%D8%A7%D9%86#Persian">جریان</a>   </td>
+<td> current   </td>
+<td> nahefsa   </td>
+<td> 5404 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AA%D8%AE%D8%A7%D8%A8%D8%A7%D8%AA#Persian">انتخابات</a>   </td>
+<td> election  </td>
+<td> telaaa    </td>
+<td> 5400 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%B2%DB%8C#Persian">سازی</a>   </td>
+<td> Of    </td>
+<td> nedweb    </td>
+<td> 5383 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%86%DA%AF%D8%A7%D9%85#Persian">هنگام</a>   </td>
+<td> Time  </td>
+<td> at    </td>
+<td> 5368 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D8%B1%DB%8C%D9%82#Persian">طریق</a>   </td>
+<td> Way   </td>
+<td> redep     </td>
+<td> 5358 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%AF%D8%B1#Persian">پدر</a>   </td>
+<td> Father    </td>
+<td> qaret     </td>
+<td> 5357 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%DB%8C#Persian">طی</a>   </td>
+<td> During    </td>
+<td> maugenh   </td>
+<td> 5356 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%88%D8%AF%D9%86#Persian">بودن</a>   </td>
+<td> to be     </td>
+<td> azas  </td>
+<td> 5335 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%A7%D9%84%D8%AA#Persian">ایالت</a>   </td>
+<td> State     </td>
+<td> tabahektena   </td>
+<td> 5326 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B5%D9%81%D9%87%D8%A7%D9%86#Persian">اصفهان</a>   </td>
+<td> Esfahan   </td>
+<td> naarej    </td>
+<td> 5306 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%B2%DB%8C%D8%B1%D9%87#Persian">جزیره</a>   </td>
+<td> Island    </td>
+<td> ath   </td>
+<td> 5301 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AE%D9%84%DB%8C#Persian">داخلی</a>   </td>
+<td> Internal  </td>
+<td> aahmelaf  </td>
+<td> 5299 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B1%D9%88%D8%AF#Persian">میرود</a>   </td>
+<td> goes  </td>
+<td> ekebs     </td>
+<td> 5292 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D8%B1%D9%88%D9%87%D8%A7%DB%8C#Persian">نیروهای</a>   </td>
+<td> Forces    </td>
+<td> rewdh     </td>
+<td> 5285 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D9%84%DB%8C%D9%88%D9%86#Persian">میلیون</a>   </td>
+<td> Million   </td>
+<td> tefaared  </td>
+<td> 5282 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%81%D8%AA#Persian">رفت</a>   </td>
+<td> Went  </td>
+<td> terdeq    </td>
+<td> 5275 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%B1%D8%A7%D8%A6%DB%8C%D9%84#Persian">اسرائیل</a>   </td>
+<td> Israel    </td>
+<td> aeabet    </td>
+<td> 5261 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D8%B1%D8%A7%D8%AD%DB%8C#Persian">طراحی</a>   </td>
+<td> Designing     </td>
+<td> aharet    </td>
+<td> 5233 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%AA%DB%8C%D8%AC%D9%87#Persian">نتیجه</a>   </td>
+<td> Result    </td>
+<td> hejaten   </td>
+<td> 5212 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D9%84#Persian">گل</a>   </td>
+<td> Flower    </td>
+<td> lug   </td>
+<td> 5205 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%A9%D8%B1%D8%AF#Persian">میکرد</a>   </td>
+<td> Was   </td>
+<td> derekam   </td>
+<td> 5198 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%85%DA%A9#Persian">کمک</a>   </td>
+<td> Help  </td>
+<td> ekemek    </td>
+<td> 5184 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%AF%D8%B1%D8%AF%D8%AF#Persian">میگردد</a>   </td>
+<td> Is    </td>
+<td> dedrugam  </td>
+<td> 5179 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D9%81%D8%AA#Persian">گفت</a>   </td>
+<td> said  </td>
+<td> tefug     </td>
+<td> 5170 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%DB%8C%D8%AF%D8%A7#Persian">پیدا</a>   </td>
+<td> Find  </td>
+<td> adaep     </td>
+<td> 5167 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B9%D8%B1#Persian">شعر</a>   </td>
+<td> Poetry    </td>
+<td> tel   </td>
+<td> 5161 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%D8%AA#Persian">علت</a>   </td>
+<td> Cause     </td>
+<td> rehes     </td>
+<td> 5160 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D8%B5%D8%AF#Persian">درصد</a>   </td>
+<td> Percent   </td>
+<td> desred    </td>
+<td> 5158 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B2%D8%B4%DA%A9%DB%8C#Persian">پزشکی</a>   </td>
+<td> medical   </td>
+<td> aekheszep     </td>
+<td> 5157 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D9%84%D8%A7%D8%AF#Persian">میلاد</a>   </td>
+<td> Birth     </td>
+<td> dalam     </td>
+<td> 5156 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%B1%DA%A9%D8%AA#Persian">حرکت</a>   </td>
+<td> movement  </td>
+<td> tekerh    </td>
+<td> 5144 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%DB%8C%DA%A9%DB%8C#Persian">ویکی</a>   </td>
+<td> Wiki  </td>
+<td> aekaw     </td>
+<td> 5130 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%AA%D8%A7%D8%AF#Persian">استاد</a>   </td>
+<td> Professor     </td>
+<td> datesa    </td>
+<td> 5108 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B2%D8%AF%DB%8C%DA%A9#Persian">نزدیک</a>   </td>
+<td> Close     </td>
+<td> ekadezn   </td>
+<td> 5108 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D8%B1%D8%AC#Persian">خارج</a>   </td>
+<td> Out   </td>
+<td> jerahek   </td>
+<td> 5081 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D9%85%D8%B1%DB%8C#Persian">قمری</a>   </td>
+<td> Lunar     </td>
+<td> aremq     </td>
+<td> 5062 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D9%88%D8%A7%D8%B9#Persian">انواع</a>   </td>
+<td> types of  </td>
+<td> teres     </td>
+<td> 5051 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B0%D8%B4%D8%AA%D9%87#Persian">گذشته</a>   </td>
+<td> Past  </td>
+<td> hedekhesnad   </td>
+<td> 5046 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85#Persian">م</a>   </td>
+<td> The   </td>
+<td> teqf  </td>
+<td> 5045 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%DB%8C%D8%B1#Persian">سایر</a>   </td>
+<td> Other     </td>
+<td> hejaw     </td>
+<td> 5043 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A7%D8%AD%D8%AF#Persian">واحد</a>   </td>
+<td> the unit  </td>
+<td> yem   </td>
+<td> 5042 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%B4%D8%AF#Persian">رشد</a>   </td>
+<td> Growth    </td>
+<td> aanaepesa     </td>
+<td> 5027 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%86%D8%AF#Persian">هند</a>   </td>
+<td> India     </td>
+<td> haugaaep  </td>
+<td> 5023 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%DB%8C%D9%86#Persian">چین</a>   </td>
+<td> China     </td>
+<td> denhesab  </td>
+<td> 5020 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%AF%D9%87#Persian">سده</a>   </td>
+<td> Century   </td>
+<td> hasewr    </td>
+<td> 4996 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AC%D9%85%D9%86#Persian">انجمن</a>   </td>
+<td> Community     </td>
+<td> adasetqa  </td>
+<td> 4996 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%AF#Persian">مرد</a>   </td>
+<td> Man   </td>
+<td> fert  </td>
+<td> 4984 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%AF%D8%A7%D8%B1%D8%AF#Persian">ندارد</a>   </td>
+<td> does not have     </td>
+<td> dewr  </td>
+<td> 4981 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%86%D8%A7%D8%AE%D8%AA%D9%87#Persian">شناخته</a>   </td>
+<td> known     </td>
+<td> ahedadawer    </td>
+<td> 4981 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D8%AF#Persian">برد</a>   </td>
+<td> win   </td>
+<td> henamez   </td>
+<td> 4979 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%85%DB%8C%D9%86%D9%87#Persian">زمینه</a>   </td>
+<td> Background    </td>
+<td> derb  </td>
+<td> 4969 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%DB%8C%D8%AF%D8%A7%D8%AF%D9%87%D8%A7#Persian">رویدادها</a>   </td>
+<td> events    </td>
+<td> hethekanhes   </td>
+<td> 4965 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%AF#Persian">رود</a>   </td>
+<td> River     </td>
+<td> deraden   </td>
+<td> 4962 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D8%B1%D9%81#Persian">طرف</a>   </td>
+<td> the side  </td>
+<td> derm  </td>
+<td> 4954 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF%DB%8C#Persian">اقتصادی</a>   </td>
+<td> Economic  </td>
+<td> nemjena   </td>
+<td> 4953 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%B3%DB%8C%D9%87#Persian">روسیه</a>   </td>
+<td> Russia    </td>
+<td> heds  </td>
+<td> 4942 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B4%D9%86%D8%AF#Persian">باشند</a>   </td>
+<td> Are   </td>
+<td> naehec    </td>
+<td> 4939 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%DB%8C%DA%AF%D8%A7%D9%87#Persian">پایگاه</a>   </td>
+<td> Base  </td>
+<td> denh  </td>
+<td> 4931 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D9%BE%D8%A7%D9%86%DB%8C%D8%A7#Persian">اسپانیا</a>   </td>
+<td> Spain     </td>
+<td> dhesr     </td>
+<td> 4929 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%8A#Persian">مي</a>   </td>
+<td> The   </td>
+<td> dhaw  </td>
+<td> 4925 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%DB%8C%DA%98%D9%87#Persian">ویژه</a>   </td>
+<td> Special   </td>
+<td> raas  </td>
+<td> 4924 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D9%82%D8%B7#Persian">فقط</a>   </td>
+<td> Only  </td>
+<td> m     </td>
+<td> 4920 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D9%86%D8%B4%DA%A9%D8%AF%D9%87#Persian">دانشکده</a>   </td>
+<td> College   </td>
+<td> hethesdug     </td>
+<td> 4918 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1%D8%B9%D8%AA#Persian">سرعت</a>   </td>
+<td> Speed     </td>
+<td> eawena    </td>
+<td> 4903 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%B2%DB%8C%D8%B1#Persian">وزیر</a>   </td>
+<td> Minister  </td>
+<td> razew     </td>
+<td> 4897 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%85#Persian">کم</a>   </td>
+<td> little    </td>
+<td> mek   </td>
+<td> 4882 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%A7%D9%84%D8%AA#Persian">حالت</a>   </td>
+<td> state of  </td>
+<td> telah     </td>
+<td> 4874 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%DB%8C#Persian">پی</a>   </td>
+<td> Foundation    </td>
+<td> aep   </td>
+<td> 4868 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1#Persian">تر</a>   </td>
+<td> Wet   </td>
+<td> ret   </td>
+<td> 4864 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B1%D9%82#Persian">شرق</a>   </td>
+<td> East  </td>
+<td> qerhes    </td>
+<td> 4849 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%86%D8%AF%D9%87#Persian">زنده</a>   </td>
+<td> Live  </td>
+<td> hednez    </td>
+<td> 4848 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D9%85%D8%A7%D8%B1%DB%8C#Persian">بیماری</a>   </td>
+<td> Sickness  </td>
+<td> aramab    </td>
+<td> 4819 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%B1%D8%A2%D9%86#Persian">قرآن</a>   </td>
+<td> Quran     </td>
+<td> nareq     </td>
+<td> 4803 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DA%A9%D9%86%D9%88%D9%86#Persian">اکنون</a>   </td>
+<td> now   </td>
+<td> newneka   </td>
+<td> 4801 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AF%D8%A7%D8%B2%D9%87#Persian">اندازه</a>   </td>
+<td> Size  </td>
+<td> hezadena  </td>
+<td> 4775 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D8%B1%D8%B3%DB%8C#Persian">بررسی</a>   </td>
+<td> Check     </td>
+<td> aserreb   </td>
+<td> 4761 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AF%D8%B1%D8%B3%D9%87#Persian">مدرسه</a>   </td>
+<td> School    </td>
+<td> hesredm   </td>
+<td> 4749 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D8%AF%D9%87#Persian">آمده</a>   </td>
+<td> The   </td>
+<td> hedma     </td>
+<td> 4720 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%85%D8%A7%D8%B1#Persian">شمار</a>   </td>
+<td> the count     </td>
+<td> ramhes    </td>
+<td> 4716 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B1%D8%A7%D8%A6%D9%87#Persian">ارائه</a>   </td>
+<td> Presentation  </td>
+<td> mel   </td>
+<td> 4707 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%B6%D8%A7#Persian">رضا</a>   </td>
+<td> Reza  </td>
+<td> ad    </td>
+<td> 4691 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AF%D9%86#Persian">بدن</a>   </td>
+<td> Body  </td>
+<td> taradem   </td>
+<td> 4689 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B1%D8%B2%D8%A7#Persian">میرزا</a>   </td>
+<td> Mirza     </td>
+<td> azeram    </td>
+<td> 4687 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AF%DB%8C%D8%B1%DB%8C%D8%AA#Persian">مدیریت</a>   </td>
+<td> Management    </td>
+<td> nedb  </td>
+<td> 4670 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%DB%8C#Persian">دی</a>   </td>
+<td> January   </td>
+<td> ader  </td>
+<td> 4669 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%D9%85#Persian">علم</a>   </td>
+<td> Science   </td>
+<td> heara     </td>
+<td> 4667 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%84#Persian">کل</a>   </td>
+<td> Total     </td>
+<td> lek   </td>
+<td> 4652 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B4%D8%A7%D9%88%D8%B1%D8%B2%DB%8C#Persian">کشاورزی</a>   </td>
+<td> Agriculture   </td>
+<td> azerwahesek   </td>
+<td> 4648 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%DB%8C%D8%AF%D9%87#Persian">دیده</a>   </td>
+<td> Seen  </td>
+<td> hedad     </td>
+<td> 4636 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B4%D8%B1#Persian">نشر</a>   </td>
+<td> Publication   </td>
+<td> rhesn     </td>
+<td> 4635 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D8%A7%D8%B2#Persian">نیاز</a>   </td>
+<td> Need  </td>
+<td> zaan  </td>
+<td> 4633 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%86#Persian">سن</a>   </td>
+<td> Age   </td>
+<td> nes   </td>
+<td> 4626 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D9%88%D9%86%D9%87#Persian">گونه</a>   </td>
+<td> Species   </td>
+<td> henwug    </td>
+<td> 4620 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B1%D8%AA%D8%B4#Persian">ارتش</a>   </td>
+<td> Army  </td>
+<td> hestera   </td>
+<td> 4619 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%A7%D9%85%D9%87#Persian">نامه</a>   </td>
+<td> Letter    </td>
+<td> heman     </td>
+<td> 4604 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B1%D8%AF%D8%A7%D8%AE%D8%AA#Persian">پرداخت</a>   </td>
+<td> the payment   </td>
+<td> thekaderep    </td>
+<td> 4604 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%85%D8%A7%DB%8C%D8%B4#Persian">نمایش</a>   </td>
+<td> the show  </td>
+<td> hesaamen  </td>
+<td> 4603 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D8%A7%D8%AF%DA%A9%D8%B1%D8%AF#Persian">یادکرد</a>   </td>
+<td> Mention   </td>
+<td> derekedaa     </td>
+<td> 4599 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D9%85%D9%84%D9%87#Persian">حمله</a>   </td>
+<td> Attack    </td>
+<td> helmh     </td>
+<td> 4593 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1%D8%AA%DB%8C%D8%A8#Persian">ترتیب</a>   </td>
+<td> Order     </td>
+<td> batert    </td>
+<td> 4556 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B4%D9%87%D9%88%D8%B1#Persian">مشهور</a>   </td>
+<td> Famous    </td>
+<td> rewhhesm  </td>
+<td> 4551 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7%D9%85%D8%B9%D9%87#Persian">جامعه</a>   </td>
+<td> Society   </td>
+<td> adeb  </td>
+<td> 4546 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%A7%D8%B1%D8%AF#Persian">موارد</a>   </td>
+<td> Items     </td>
+<td> amadeq    </td>
+<td> 4538 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%AE%D8%B1%DB%8C%D9%86#Persian">آخرین</a>   </td>
+<td> Latest    </td>
+<td> rhesan    </td>
+<td> 4533 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%D8%AA%D8%B1%D9%84#Persian">کنترل</a>   </td>
+<td> Control   </td>
+<td> arhhes    </td>
+<td> 4531 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%86%D8%B1%DB%8C#Persian">هنری</a>   </td>
+<td> artistic  </td>
+<td> aahlas    </td>
+<td> 4525 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%88%D9%86%D8%AF#Persian">شوند</a>   </td>
+<td> Are   </td>
+<td> derwa     </td>
+<td> 4521 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%A7%D9%87%D8%B4#Persian">کاهش</a>   </td>
+<td> Decrease  </td>
+<td> rad   </td>
+<td> 4496 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88#Persian">رو</a>   </td>
+<td> Face  </td>
+<td> maseqt    </td>
+<td> 4484 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%82%D8%B3%DB%8C%D9%85#Persian">تقسیم</a>   </td>
+<td> Division  </td>
+<td> wer   </td>
+<td> 4483 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B1#Persian">دار</a>   </td>
+<td> Arrow     </td>
+<td> heshaek   </td>
+<td> 4483 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%88%D8%B1%D8%AF#Persian">آورد</a>   </td>
+<td> The   </td>
+<td> denwhes   </td>
+<td> 4456 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D9%84%D9%87%D8%A7%DB%8C#Persian">سالهای</a>   </td>
+<td> Years     </td>
+<td> arenh     </td>
+<td> 4453 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%87%D8%B1%DB%8C#Persian">شهری</a>   </td>
+<td> Urban     </td>
+<td> lertenek  </td>
+<td> 4452 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%A7%D8%B4%D8%B1#Persian">ناشر</a>   </td>
+<td> Publisher     </td>
+<td> narheka   </td>
+<td> 4448 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%AF%DB%8C%D9%85%DB%8C#Persian">قدیمی</a>   </td>
+<td> Old   </td>
+<td> derawem   </td>
+<td> 4447 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B9%D8%B6%DB%8C#Persian">بعضی</a>   </td>
+<td> Some  </td>
+<td> hemaj     </td>
+<td> 4444 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%AF%D8%AF#Persian">عدد</a>   </td>
+<td> number    </td>
+<td> atenes    </td>
+<td> 4443 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82#Persian">ق</a>   </td>
+<td> Reddit    </td>
+<td> hert  </td>
+<td> 4441 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AF%D9%87%D8%A7%D9%86%D8%AF#Persian">شدهاند</a>   </td>
+<td> have became   </td>
+<td> denahedhes    </td>
+<td> 4441 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D8%B1%D8%AD#Persian">طرح</a>   </td>
+<td> Plan  </td>
+<td> q     </td>
+<td> 4440 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B5%D9%86%D8%B9%D8%AA%DB%8C#Persian">صنعتی</a>   </td>
+<td> Industrial    </td>
+<td> ded   </td>
+<td> 4425 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B3%D8%AA%DA%AF%D8%A7%D9%87#Persian">دستگاه</a>   </td>
+<td> Device    </td>
+<td> haugetsed     </td>
+<td> 4409 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%A7%D9%84%DB%8C#Persian">عالی</a>   </td>
+<td> Excellent     </td>
+<td> teas  </td>
+<td> 4407 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B5%D8%B1#Persian">مصر</a>   </td>
+<td> Egypt     </td>
+<td> retahek   </td>
+<td> 4402 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D9%87%D9%84%D9%88%DB%8C#Persian">پهلوی</a>   </td>
+<td> Pahlavi   </td>
+<td> ugens     </td>
+<td> 4375 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%86%DA%AF#Persian">سنگ</a>   </td>
+<td> Rock  </td>
+<td> awelhep   </td>
+<td> 4369 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D8%B7%D8%B1#Persian">خاطر</a>   </td>
+<td> Mind  </td>
+<td> resm  </td>
+<td> 4346 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%B9%D8%AA#Persian">ساعت</a>   </td>
+<td> the watch     </td>
+<td> ala   </td>
+<td> 4343 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AE%D8%B4%D9%87%D8%A7%DB%8C#Persian">بخشهای</a>   </td>
+<td> Sections  </td>
+<td> aahheshekb    </td>
+<td> 4343 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%DB%8C%D9%86#Persian">دین</a>   </td>
+<td> Religion  </td>
+<td> nad   </td>
+<td> 4324 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%A7%D8%B3%D8%A8%D8%AA%D9%87%D8%A7#Persian">مناسبتها</a>   </td>
+<td> Events    </td>
+<td> ahtebsanem    </td>
+<td> 4324 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A8%D8%B1%DB%8C%D8%B2#Persian">تبریز</a>   </td>
+<td> Tabriz    </td>
+<td> zarebt    </td>
+<td> 4322 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1#Persian">بازار</a>   </td>
+<td> Market    </td>
+<td> razab     </td>
+<td> 4321 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%DB%8C%D9%87#Persian">پایه</a>   </td>
+<td> Foundation    </td>
+<td> haaep     </td>
+<td> 4318 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%87%D8%AF#Persian">دهد</a>   </td>
+<td> The   </td>
+<td> dhed  </td>
+<td> 4317 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B5%D9%84#Persian">فصل</a>   </td>
+<td> Season    </td>
+<td> lesf  </td>
+<td> 4311 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%A2%DB%8C%D8%AF#Persian">میآید</a>   </td>
+<td> comes     </td>
+<td> daaam     </td>
+<td> 4293 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B3%D8%AA%D8%A7%D9%86#Persian">باستان</a>   </td>
+<td> Ancient   </td>
+<td> natesab   </td>
+<td> 4281 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%AE%D8%AA%D8%B1#Persian">دختر</a>   </td>
+<td> Girl  </td>
+<td> rethekd   </td>
+<td> 4280 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B1%D9%88%D9%86%D8%AF%D9%87#Persian">پرونده</a>   </td>
+<td> File  </td>
+<td> hednewrep     </td>
+<td> 4276 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%A7%D8%B6%D8%B1#Persian">حاضر</a>   </td>
+<td> Present   </td>
+<td> redah     </td>
+<td> 4275 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D9%85%D9%88%D8%AF#Persian">محمود</a>   </td>
+<td> Mahmood   </td>
+<td> dewmhem   </td>
+<td> 4266 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D9%86%D8%B4#Persian">دانش</a>   </td>
+<td> Knowledge     </td>
+<td> hesnad    </td>
+<td> 4262 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D8%A7%D9%86#Persian">بیان</a>   </td>
+<td> Expression    </td>
+<td> naab  </td>
+<td> 4256 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D9%86%D8%AA%D8%B1%D9%86%D8%AA%DB%8C#Persian">اینترنتی</a>   </td>
+<td> Online    </td>
+<td> atenretnaa    </td>
+<td> 4236 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B1%D8%AA%D9%81%D8%A7%D8%B9#Persian">ارتفاع</a>   </td>
+<td> Height    </td>
+<td> aferem    </td>
+<td> 4228 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%DB%8C%D9%87%D8%A7%DB%8C#Persian">بازیهای</a>   </td>
+<td> Games of  </td>
+<td> rewma     </td>
+<td> 4227 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B3%D8%A7%D8%AD%D8%AA#Persian">مساحت</a>   </td>
+<td> Area  </td>
+<td> d     </td>
+<td> 4219 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%AE%D8%B4#Persian">پخش</a>   </td>
+<td> Broadcast     </td>
+<td> sahek     </td>
+<td> 4216 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AC%D8%B1%D8%A7#Persian">اجرا</a>   </td>
+<td> Performance   </td>
+<td> aahnatesa     </td>
+<td> 4210 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AE%D9%84#Persian">داخل</a>   </td>
+<td> Inside    </td>
+<td> laqetna   </td>
+<td> 4206 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%B2%D8%A7%D8%AF%DB%8C#Persian">آزادی</a>   </td>
+<td> the freedom   </td>
+<td> denzerf   </td>
+<td> 4202 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%84%D8%A8%D8%AA%D9%87#Persian">البته</a>   </td>
+<td> Of course     </td>
+<td> tabetra   </td>
+<td> 4193 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%D8%AF%D8%B4%D8%A7%D9%87#Persian">پادشاه</a>   </td>
+<td> King  </td>
+<td> resmh     </td>
+<td> 4192 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%AF%D9%87%D9%86%D8%AF#Persian">میدهند</a>   </td>
+<td> they give     </td>
+<td> alelmelanab   </td>
+<td> 4188 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A8%DA%AF%D8%A7%D9%87#Persian">وبگاه</a>   </td>
+<td> Website   </td>
+<td> nateslugena   </td>
+<td> 4178 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%DA%AF%D9%84%D8%B3%D8%AA%D8%A7%D9%86#Persian">انگلستان</a>   </td>
+<td> England   </td>
+<td> haugebw   </td>
+<td> 4177 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D9%86%D8%A7%D9%84%D9%85%D9%84%D9%84%DB%8C#Persian">بینالمللی</a>   </td>
+<td> international     </td>
+<td> denhedam  </td>
+<td> 4166 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%D8%B3%D8%B1#Persian">همسر</a>   </td>
+<td> Spouse    </td>
+<td> hahesdaep     </td>
+<td> 4148 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B1%D8%AA%D8%A8%D8%A7%D8%B7#Persian">ارتباط</a>   </td>
+<td> Relationship  </td>
+<td> hetbela   </td>
+<td> 4147 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D8%B2%D9%86%D8%AF#Persian">فرزند</a>   </td>
+<td> Son   </td>
+<td> adaza     </td>
+<td> 4147 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%AA%D9%82%D8%A7%D9%84#Persian">انتقال</a>   </td>
+<td> the transfer  </td>
+<td> lhekad    </td>
+<td> 4146 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%AA%D8%A7%D9%86%D9%87%D8%A7%DB%8C#Persian">استانهای</a>   </td>
+<td> States    </td>
+<td> areja     </td>
+<td> 4141 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D8%B5#Persian">خاص</a>   </td>
+<td> Special   </td>
+<td> heshekep  </td>
+<td> 4140 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF#Persian">د</a>   </td>
+<td> D.    </td>
+<td> thasem    </td>
+<td> 4127 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D9%88%D8%B1#Persian">امور</a>   </td>
+<td> Affairs   </td>
+<td> aahazab   </td>
+<td> 4126 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D8%B1%D9%81%DB%8C#Persian">معرفی</a>   </td>
+<td> Introduction  </td>
+<td> eafetra   </td>
+<td> 4114 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%D8%B1%D8%AC%DB%8C#Persian">خارجی</a>   </td>
+<td> Foreign   </td>
+<td> ajerahek  </td>
+<td> 4107 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B4%D8%A7%D9%86%DB%8C#Persian">نشانی</a>   </td>
+<td> Address   </td>
+<td> anahesn   </td>
+<td> 4105 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%D8%B1#Persian">نور</a>   </td>
+<td> Light     </td>
+<td> rewn  </td>
+<td> 4099 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D8%B4%D9%85#Persian">چشم</a>   </td>
+<td> Eye   </td>
+<td> mhesehec  </td>
+<td> 4098 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%B1%DA%98%DB%8C#Persian">انرژی</a>   </td>
+<td> Energy    </td>
+<td> aejerna   </td>
+<td> 4092 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B9%D8%B1%DB%8C%D9%81#Persian">تعریف</a>   </td>
+<td> Definition    </td>
+<td> sab   </td>
+<td> 4079 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D9%86%D8%AC#Persian">پنج</a>   </td>
+<td> Five  </td>
+<td> hahet     </td>
+<td> 4079 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AF%D9%86#Persian">دادن</a>   </td>
+<td> Give  </td>
+<td> nadam     </td>
+<td> 4064 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%AF%D8%A7%D9%86#Persian">میدان</a>   </td>
+<td> square    </td>
+<td> nedad     </td>
+<td> 4060 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%87%DB%8C%D9%87#Persian">تهیه</a>   </td>
+<td> Procurement   </td>
+<td> jenep     </td>
+<td> 4058 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%A8%D8%A7%D8%B3#Persian">عباس</a>   </td>
+<td> Abbas     </td>
+<td> faret     </td>
+<td> 4051 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%AF%D9%81#Persian">هدف</a>   </td>
+<td> Target    </td>
+<td> fedh  </td>
+<td> 4049 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B5%D8%B1%D9%81#Persian">مصرف</a>   </td>
+<td> Consumption   </td>
+<td> fersem    </td>
+<td> 4048 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D9%85%D9%88%D9%84%D8%A7%D9%8B#Persian">معمولاً</a>   </td>
+<td> Usually   </td>
+<td> hewal     </td>
+<td> 4042 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%AE%D8%AA%D9%85%D8%A7%D9%86#Persian">ساختمان</a>   </td>
+<td> Building  </td>
+<td> net   </td>
+<td> 4037 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B3%D8%AE%D9%87#Persian">نسخه</a>   </td>
+<td> prescription  </td>
+<td> hezwerma  </td>
+<td> 4026 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%A7%D8%B5%D9%84%D9%87#Persian">فاصله</a>   </td>
+<td> Space     </td>
+<td> helsaf    </td>
+<td> 4026 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D8%B1%D9%88%D8%B2%D9%87#Persian">امروزه</a>   </td>
+<td> Nowadays  </td>
+<td> hheksen   </td>
+<td> 4021 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%86#Persian">تن</a>   </td>
+<td> Ton   </td>
+<td> namethekas    </td>
+<td> 4017 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%D8%A7%D9%88%D9%87#Persian">علاوه</a>   </td>
+<td> plus  </td>
+<td> naalewmem     </td>
+<td> 4017 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%82%D9%84#Persian">نقل</a>   </td>
+<td> Transportation    </td>
+<td> leqn  </td>
+<td> 4016 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%A7%DA%98%D9%87#Persian">واژه</a>   </td>
+<td> Word  </td>
+<td> hejaw     </td>
+<td> 4016 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7%D8%AF%D9%87#Persian">ماده</a>   </td>
+<td> a matter  </td>
+<td> hedam     </td>
+<td> 4011 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AE%D8%B4%DB%8C#Persian">بخشی</a>   </td>
+<td> Sectional     </td>
+<td> aheshekb  </td>
+<td> 4002 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B1%D8%AD#Persian">شرح</a>   </td>
+<td> Description   </td>
+<td> herhes    </td>
+<td> 3992 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B4%D8%AA%D9%87#Persian">کشته</a>   </td>
+<td> murdered  </td>
+<td> hethesek  </td>
+<td> 3984 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%A8#Persian">شب</a>   </td>
+<td> the night     </td>
+<td> bhes  </td>
+<td> 3981 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%A8%D8%AA%D8%AF%D8%A7#Persian">ابتدا</a>   </td>
+<td> Beginning     </td>
+<td> adetba    </td>
+<td> 3975 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B4%D8%AE%D8%B5#Persian">مشخص</a>   </td>
+<td> Specified     </td>
+<td> shekhesm  </td>
+<td> 3971 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%B6%D9%88%D8%B9#Persian">موضوع</a>   </td>
+<td> Issue     </td>
+<td> aanem     </td>
+<td> 3970 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%B4%D8%AA%D9%86%D8%AF#Persian">داشتند</a>   </td>
+<td> they had  </td>
+<td> lhetm     </td>
+<td> 3959 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%87#Persian">ده</a>   </td>
+<td> Ten   </td>
+<td> ekahek    </td>
+<td> 3958 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%81%DB%8C%D8%AF#Persian">سفید</a>   </td>
+<td> White     </td>
+<td> aretmewlaek   </td>
+<td> 3955 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7%D8%B1%D8%B3#Persian">مارس</a>   </td>
+<td> March     </td>
+<td> naugednesawen     </td>
+<td> 3940 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B2%D8%AF%D9%88%D8%A7%D8%AC#Persian">ازدواج</a>   </td>
+<td> Marriage  </td>
+<td> teshekn   </td>
+<td> 3921 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%A7%D8%B1%DA%AF%D8%B1%D8%AF%D8%A7%D9%86#Persian">کارگردان</a>   </td>
+<td> Director  </td>
+<td> haas  </td>
+<td> 3913 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%A7%D9%87#Persian">سیاه</a>   </td>
+<td> Black     </td>
+<td> naderugeraek  </td>
+<td> 3908 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%AE%D8%B3%D8%AA#Persian">نخست</a>   </td>
+<td> First     </td>
+<td> jawedza   </td>
+<td> 3906 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%DB%8C%D8%B3%D9%86%D8%AF%DA%AF%D8%A7%D9%86#Persian">نویسندگان</a>   </td>
+<td> writers   </td>
+<td> seram     </td>
+<td> 3900 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%DB%8C%D9%84%D9%88%D9%85%D8%AA%D8%B1%DB%8C#Persian">کیلومتری</a>   </td>
+<td> Km    </td>
+<td> dafes     </td>
+<td> 3899 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A7%DA%A9#Persian">خاک</a>   </td>
+<td> Soil  </td>
+<td> hed   </td>
+<td> 3893 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AB%D9%84#Persian">مثل</a>   </td>
+<td> Like  </td>
+<td> denthesad     </td>
+<td> 3887 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D9%86%D8%A7%DB%8C#Persian">معنای</a>   </td>
+<td> Meaning   </td>
+<td> ewedwem   </td>
+<td> 3884 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%86%D9%88%D8%B2#Persian">هنوز</a>   </td>
+<td> yet still     </td>
+<td> zewnh     </td>
+<td> 3880 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D9%84#Persian">پل</a>   </td>
+<td> Bridge    </td>
+<td> lep   </td>
+<td> 3872 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%88%D8%AA%D8%A7%D9%87#Persian">کوتاه</a>   </td>
+<td> Short     </td>
+<td> hatewek   </td>
+<td> 3861 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%86%D8%A7%D8%B3%DB%8C#Persian">شناسی</a>   </td>
+<td> knowing   </td>
+<td> asanhes   </td>
+<td> 3855 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%A8%D8%B1%D8%A7%D9%87%DB%8C%D9%85#Persian">ابراهیم</a>   </td>
+<td> Abraham   </td>
+<td> mahareba  </td>
+<td> 3855 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B2%D8%A7%D9%86#Persian">میزان</a>   </td>
+<td> Amount    </td>
+<td> nazam     </td>
+<td> 3851 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D9%84%DB%8C#Persian">محلی</a>   </td>
+<td> local     </td>
+<td> alhem     </td>
+<td> 3849 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D9%84%DA%AF%DB%8C#Persian">سالگی</a>   </td>
+<td> Years     </td>
+<td> augelas   </td>
+<td> 3848 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%87%D8%A7%D8%B1%D9%85#Persian">چهارم</a>   </td>
+<td> Fourth    </td>
+<td> merahehec     </td>
+<td> 3847 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF#Persian">اقتصاد</a>   </td>
+<td> Economy   </td>
+<td> dasetqa   </td>
+<td> 3844 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%81%D8%B1#Persian">سفر</a>   </td>
+<td> a trip    </td>
+<td> refs  </td>
+<td> 3827 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%98%D8%A7%D9%86%D9%88%DB%8C%D9%87#Persian">ژانویه</a>   </td>
+<td> January   </td>
+<td> hawenaej  </td>
+<td> 3823 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%A8%D8%B9#Persian">مربع</a>   </td>
+<td> Square    </td>
+<td> hal   </td>
+<td> 3822 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AC%D8%B1%D8%A7%DB%8C#Persian">اجرای</a>   </td>
+<td> implementation of     </td>
+<td> alek  </td>
+<td> 3820 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AB%D8%A7%D9%84#Persian">مثال</a>   </td>
+<td> Example   </td>
+<td> razugerb  </td>
+<td> 3816 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%87%D8%AF%DB%8C#Persian">مهدی</a>   </td>
+<td> Mehdi     </td>
+<td> tesekhes  </td>
+<td> 3814 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1%D8%B2%D9%85%DB%8C%D9%86#Persian">سرزمین</a>   </td>
+<td> Land  </td>
+<td> j     </td>
+<td> 3808 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D9%84%D8%B3%D9%81%D9%87#Persian">فلسفه</a>   </td>
+<td> Philosophy    </td>
+<td> herawenhesj   </td>
+<td> 3806 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B5%D9%84#Persian">اصل</a>   </td>
+<td> Principle     </td>
+<td> 40734073  </td>
+<td> 3796 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%A8%D9%86#Persian">ابن</a>   </td>
+<td> son   </td>
+<td> aanatareb     </td>
+<td> 3789 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%A8%D8%A7%D8%B4%D9%86%D8%AF#Persian">میباشند</a>   </td>
+<td> Are   </td>
+<td> tesahedrek    </td>
+<td> 3787 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B8%D8%B1%DB%8C%D9%87#Persian">نظریه</a>   </td>
+<td> Theory    </td>
+<td> daaz  </td>
+<td> 3772 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D8%A7%D8%AF#Persian">یاد</a>   </td>
+<td> Memory    </td>
+<td> derf  </td>
+<td> 3770 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DA%A9%D8%AA%D8%A8%D8%B1#Persian">اکتبر</a>   </td>
+<td> October   </td>
+<td> na    </td>
+<td> 3767 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%AF%D8%A7#Persian">خدا</a>   </td>
+<td> God   </td>
+<td> adhek     </td>
+<td> 3756 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86#Persian">ان</a>   </td>
+<td> It    </td>
+<td> rebteka   </td>
+<td> 3726 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D8%AF#Persian">فرد</a>   </td>
+<td> Man   </td>
+<td> daa   </td>
+<td> 3722 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%DB%8C%D8%A7%D8%AF#Persian">زیاد</a>   </td>
+<td> much  </td>
+<td> harezn    </td>
+<td> 3718 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D8%AF%D9%87%D8%A7%D8%B3%D8%AA#Persian">کردهاست</a>   </td>
+<td> has done  </td>
+<td> denhesabam    </td>
+<td> 3716 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%DB%8C%D8%AA%D8%A7%D9%86%DB%8C%D8%A7#Persian">بریتانیا</a>   </td>
+<td> Great Britain     </td>
+<td> neba  </td>
+<td> 3709 </td>
+</tr>
+<tr>
+<td>   [   </td>
+<td>](https://en.wiktionary.org/wiki/</td>
+<td>#Persian) 37043704   </td>
+<td>   | lesa3685 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%B4%D9%86%D9%88%D8%A7%D8%B1%D9%87#Persian">جشنواره</a>   </td>
+<td> Festival  </td>
+<td> hefself   </td>
+<td> 3684 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC#Persian">ج</a>   </td>
+<td> C.    </td>
+<td> namezres  </td>
+<td> 3684 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%DA%A9%D8%B3%D8%AA#Persian">شکست</a>   </td>
+<td> Break     </td>
+<td> adhem     </td>
+<td> 3672 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%DA%AF%D8%B2%D8%A7%D8%B1#Persian">برگزار</a>   </td>
+<td> hold  </td>
+<td> lahetm    </td>
+<td> 3666 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%84%DB%8C#Persian">کلی</a>   </td>
+<td> General   </td>
+<td> aareja    </td>
+<td> 3660 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%84%DB%8C%D9%87#Persian">علیه</a>   </td>
+<td> Against   </td>
+<td> eberm     </td>
+<td> 3657 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AA%D9%88%D9%84%D8%AF#Persian">متولد</a>   </td>
+<td> Born  </td>
+<td> delwetm   </td>
+<td> 3655 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%A7%D8%B3%DB%8C#Persian">اساسی</a>   </td>
+<td> Basic     </td>
+<td> asasa     </td>
+<td> 3653 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%85%D9%88%D9%86%D9%87#Persian">نمونه</a>   </td>
+<td> Sample    </td>
+<td> henwemn   </td>
+<td> 3648 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%AF%D8%AE%D8%A7%D9%86%D9%87#Persian">رودخانه</a>   </td>
+<td> River     </td>
+<td> henahekdewr   </td>
+<td> 3643 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%85%D9%87%D9%88%D8%B1#Persian">جمهور</a>   </td>
+<td> President     </td>
+<td> rewhemj   </td>
+<td> 3640 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D8%A8%D8%A7%D9%86%D9%87%D8%A7%DB%8C#Persian">زبانهای</a>   </td>
+<td> Languages     </td>
+<td> aahnabez  </td>
+<td> 3638 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%82%D8%AF%D8%A7%D8%B1#Persian">مقدار</a>   </td>
+<td> the amount of     </td>
+<td> radeqm    </td>
+<td> 3636 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%86%D8%B3%D8%A7%D9%86%DB%8C#Persian">انسانی</a>   </td>
+<td> human     </td>
+<td> anasena   </td>
+<td> 3624 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B8%D8%A7%D9%85#Persian">نظام</a>   </td>
+<td> System    </td>
+<td> mazen     </td>
+<td> 3619 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D9%85%D8%A7%D8%B1%DB%8C#Persian">معماری</a>   </td>
+<td> Architecture  </td>
+<td> reahes    </td>
+<td> 3619 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D9%82%DB%8C#Persian">باقی</a>   </td>
+<td> rest  </td>
+<td> danek     </td>
+<td> 3610 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D8%AC%D8%B3%D8%AA%D9%87#Persian">برجسته</a>   </td>
+<td> highlight     </td>
+<td> thesdugerd    </td>
+<td> 3610 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B3%DB%8C%D8%B1#Persian">مسیر</a>   </td>
+<td> Direction     </td>
+<td> aaadepaekaw   </td>
+<td> 3601 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B3%DB%8C#Persian">کسی</a>   </td>
+<td> Someone   </td>
+<td> rhem  </td>
+<td> 3601 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%B4%D8%A7%D9%86#Persian">ایشان</a>   </td>
+<td> They  </td>
+<td> nahesaa   </td>
+<td> 3599 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%87%D8%B1#Persian">مهر</a>   </td>
+<td> stamp     </td>
+<td> asek  </td>
+<td> 3596 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%DB%8C%DA%A9%DB%8C%D9%BE%D8%AF%DB%8C%D8%A7%DB%8C#Persian">ویکیپدیای</a>   </td>
+<td> Wikipedia     </td>
+<td> rasem     </td>
+<td> 3592 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DA%AF%D8%B0%D8%B4%D8%AA#Persian">درگذشت</a>   </td>
+<td> passed away   </td>
+<td> hetsejreb     </td>
+<td> 3590 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%DB%8C%D8%AF#Persian">کنید</a>   </td>
+<td> do    </td>
+<td> aqab  </td>
+<td> 3585 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%A7%D8%B9%D8%B1#Persian">شاعر</a>   </td>
+<td> Poet  </td>
+<td> aramem    </td>
+<td> 3585 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D8%A7%D9%86%D8%B3%D9%88%DB%8C#Persian">فرانسوی</a>   </td>
+<td> French    </td>
+<td> awesnaref     </td>
+<td> 3583 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B3%D8%AA%D8%B1%D8%B4#Persian">گسترش</a>   </td>
+<td> Spread    </td>
+<td> hesretsug     </td>
+<td> 3578 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A7%D8%AF%DB%8C%D9%88#Persian">رادیو</a>   </td>
+<td> Radio     </td>
+<td> wadar     </td>
+<td> 3577 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%88%D8%B1%DB%8C%D9%84#Persian">آوریل</a>   </td>
+<td> April     </td>
+<td> larewa    </td>
+<td> 3571 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B1#Persian">پر</a>   </td>
+<td> Full  </td>
+<td> rep   </td>
+<td> 3564 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%82%D8%A7%D8%A8%D9%84#Persian">مقابل</a>   </td>
+<td> front side    </td>
+<td> lebaqem   </td>
+<td> 3563 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%82%D8%A7%D9%85#Persian">مقام</a>   </td>
+<td> Office    </td>
+<td> maqem     </td>
+<td> 3535 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%88%D9%86#Persian">خون</a>   </td>
+<td> Blood     </td>
+<td> newhek    </td>
+<td> 3535 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%86%D8%AF%DB%8C%D9%86#Persian">چندین</a>   </td>
+<td> Several   </td>
+<td> nadenehec     </td>
+<td> 3530 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%DA%A9%D8%A7%D9%86#Persian">امکان</a>   </td>
+<td> Possible  </td>
+<td> naekema   </td>
+<td> 3530 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%D8%A7%D9%85%D8%A8%D8%B1#Persian">نوامبر</a>   </td>
+<td> November  </td>
+<td> rebmawen  </td>
+<td> 3530 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%B8%D9%88%D8%B1#Persian">منظور</a>   </td>
+<td> intended purpose  </td>
+<td> rewzenm   </td>
+<td> 3514 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%A9%D8%B1%D8%AF%D9%86%D8%AF#Persian">میکردند</a>   </td>
+<td> they did  </td>
+<td> denderekam    </td>
+<td> 3511 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%AD%D8%B5%DB%8C%D9%84#Persian">تحصیل</a>   </td>
+<td> Schooling     </td>
+<td> lashet    </td>
+<td> 3499 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%BA%D9%84%D8%A8#Persian">اغلب</a>   </td>
+<td> mostly    </td>
+<td> belhega   </td>
+<td> 3497 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%DA%86%D9%88%D9%86#Persian">همچون</a>   </td>
+<td> Like  </td>
+<td> newehecmh     </td>
+<td> 3497 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%AE%D8%B5%DB%8C#Persian">شخصی</a>   </td>
+<td> Personal  </td>
+<td> ashekhes  </td>
+<td> 3497 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B3%D8%AA%D9%87#Persian">دسته</a>   </td>
+<td> Category  </td>
+<td> hetsed    </td>
+<td> 3496 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%A7%D9%85%D9%84#Persian">عامل</a>   </td>
+<td> Factor    </td>
+<td> rem   </td>
+<td> 3495 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B3%D8%A7%D9%85%D8%A8%D8%B1#Persian">دسامبر</a>   </td>
+<td> December  </td>
+<td> rebmased  </td>
+<td> 3495 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%85%D8%B1#Persian">عمر</a>   </td>
+<td> Life  </td>
+<td> lema  </td>
+<td> 3492 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88%D8%B9%DB%8C#Persian">نوعی</a>   </td>
+<td> Typical   </td>
+<td> taalem    </td>
+<td> 3489 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%84%D8%A7%D8%B1#Persian">دلار</a>   </td>
+<td> Dollar    </td>
+<td> bewshem   </td>
+<td> 3487 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D9%82%D8%AA%DB%8C#Persian">وقتی</a>   </td>
+<td> when  </td>
+<td> daejen    </td>
+<td> 3486 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%DA%AF%D8%B4%D8%AA#Persian">بازگشت</a>   </td>
+<td> coming back   </td>
+<td> redneb    </td>
+<td> 3483 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%B1%D8%B3%D8%AF#Persian">میرسد</a>   </td>
+<td> arrives   </td>
+<td> aaawh     </td>
+<td> 3480 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%85%DA%A9%D8%A7%D8%B1%DB%8C#Persian">همکاری</a>   </td>
+<td> Cooperation   </td>
+<td> halewa    </td>
+<td> 3473 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D9%84%D8%AA%DB%8C#Persian">دولتی</a>   </td>
+<td> Governmental  </td>
+<td> araug     </td>
+<td> 3473 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B3%D8%A8#Persian">کسب</a>   </td>
+<td> Business  </td>
+<td> tefh  </td>
+<td> 3471 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%84%D9%88%DB%8C%D8%B2%DB%8C%D9%88%D9%86%DB%8C#Persian">تلویزیونی</a>   </td>
+<td> TV    </td>
+<td> rewtesd   </td>
+<td> 3469 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%88%D8%B1%D9%88%DB%8C#Persian">شوروی</a>   </td>
+<td> Soviet    </td>
+<td> narugazab     </td>
+<td> 3465 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B3%D8%AA%D8%A7%D9%86%DB%8C#Persian">باستانی</a>   </td>
+<td> Ancient   </td>
+<td> bejwem    </td>
+<td> 3465 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AB%D8%A8%D8%AA#Persian">ثبت</a>   </td>
+<td> Record    </td>
+<td> hedaman   </td>
+<td> 3463 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%84%DB%8C%DA%AF#Persian">لیگ</a>   </td>
+<td> League    </td>
+<td> ugal  </td>
+<td> 3463 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%A7%D9%85%DB%8C%D8%AF%D9%87#Persian">نامیده</a>   </td>
+<td> Called    </td>
+<td> tebhet    </td>
+<td> 3460 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%AC%D8%A8#Persian">موجب</a>   </td>
+<td> Cause     </td>
+<td> anatesab  </td>
+<td> 3452 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%B2%DB%8C%DA%AF%D8%B1%D8%A7%D9%86#Persian">بازیگران</a>   </td>
+<td> Actors    </td>
+<td> awerwhes  </td>
+<td> 3443 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B3%D8%AA%D9%88%D8%B1#Persian">دستور</a>   </td>
+<td> Order     </td>
+<td> anewazawelt   </td>
+<td> 3443 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%81%D8%AA#Persian">هفت</a>   </td>
+<td> Seven     </td>
+<td> besek     </td>
+<td> 3436 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%DB%8C%D8%B1%DB%8C#Persian">گیری</a>   </td>
+<td> Trade     </td>
+<td> atelwed   </td>
+<td> 3435 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%88%D9%84%DB%8C%D9%87#Persian">اولیه</a>   </td>
+<td> Primary   </td>
+<td> araekemh  </td>
+<td> 3427 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%88%D8%A7%DB%8C%DB%8C#Persian">هوایی</a>   </td>
+<td> by air    </td>
+<td> desram    </td>
+<td> 3413 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%86%D8%AF%D8%B1#Persian">بندر</a>   </td>
+<td> Port  </td>
+<td> thesugezab    </td>
+<td> 3411 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DA%98%D8%A7%D8%AF#Persian">نژاد</a>   </td>
+<td> Race  </td>
+<td> ateqw     </td>
+<td> 3406 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D8%B3%D9%88%D8%A8#Persian">محسوب</a>   </td>
+<td> Is    </td>
+<td> raled     </td>
+<td> 3391 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%85%D9%84%DB%8C%D8%A7%D8%AA#Persian">عملیات</a>   </td>
+<td> the operation     </td>
+<td> aewen     </td>
+<td> 3390 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D9%87%D8%AF%D9%87#Persian">عهده</a>   </td>
+<td> Responsibility    </td>
+<td> emej  </td>
+<td> 3385 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%85%D8%B9#Persian">جمع</a>   </td>
+<td> Total     </td>
+<td> hedh  </td>
+<td> 3384 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%A7%D8%AD%DB%8C%D9%87#Persian">ناحیه</a>   </td>
+<td> Area  </td>
+<td> hahan     </td>
+<td> 3384 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B4%D9%81#Persian">کشف</a>   </td>
+<td> Discovery     </td>
+<td> fhesek    </td>
+<td> 3380 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D9%85%D9%86#Persian">یمن</a>   </td>
+<td> Yemen     </td>
+<td> nema  </td>
+<td> 3379 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87%D9%87%D8%A7%DB%8C#Persian">دانشگاههای</a>   </td>
+<td> Universities  </td>
+<td> aahhaughesnad     </td>
+<td> 3378 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%88#Persian">نو</a>   </td>
+<td> New   </td>
+<td> wen   </td>
+<td> 3371 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D8%B6%DB%8C%D8%AD#Persian">توضیح</a>   </td>
+<td> Explanation   </td>
+<td> hadewt    </td>
+<td> 3370 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%DB%8C%D8%B1%D8%A7#Persian">زیرا</a>   </td>
+<td> Because   </td>
+<td> araz  </td>
+<td> 3368 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D9%85%D8%A7%DB%8C%D8%AA#Persian">حمایت</a>   </td>
+<td> Protection    </td>
+<td> taamh     </td>
+<td> 3368 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B7%D8%B1%D8%A7%D9%81#Persian">اطراف</a>   </td>
+<td> Around    </td>
+<td> fareta    </td>
+<td> 3367 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B7%D8%A8%D9%82#Persian">طبق</a>   </td>
+<td> According to  </td>
+<td> qebt  </td>
+<td> 3364 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%81%D8%AA#Persian">نفت</a>   </td>
+<td> Oil   </td>
+<td> tefn  </td>
+<td> 3364 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%82%D8%B7%D9%87#Persian">نقطه</a>   </td>
+<td> Point     </td>
+<td> hetqen    </td>
+<td> 3359 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%DB%8C%DB%8C%D9%86#Persian">پایین</a>   </td>
+<td> down  </td>
+<td> naaaep    </td>
+<td> 3355 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%AA%D8%A7%D8%B1%D9%87#Persian">ستاره</a>   </td>
+<td> Star  </td>
+<td> herates   </td>
+<td> 3351 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%B2%D9%87#Persian">موزه</a>   </td>
+<td> Museum    </td>
+<td> hezwem    </td>
+<td> 3349 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%DB%8C%D8%B7#Persian">محیط</a>   </td>
+<td> Environment   </td>
+<td> tahem     </td>
+<td> 3346 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%D8%B1%DA%A9#Persian">پارک</a>   </td>
+<td> Park  </td>
+<td> ekeraep   </td>
+<td> 3346 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D9%81%D9%82#Persian">موفق</a>   </td>
+<td> Successful    </td>
+<td> qefwem    </td>
+<td> 3316 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%82%DB%8C%D9%82%D9%87#Persian">دقیقه</a>   </td>
+<td> Minute    </td>
+<td> heqaqed   </td>
+<td> 3316 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%84%D8%A7%D8%B2%D9%85#Persian">لازم</a>   </td>
+<td> Necessary     </td>
+<td> mezal     </td>
+<td> 3316 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%DB%8C%D8%B3%D8%AA#Persian">بیست</a>   </td>
+<td> twenty    </td>
+<td> tesab     </td>
+<td> 3315 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%86%D9%88%D9%86%DB%8C#Persian">کنونی</a>   </td>
+<td> Modern    </td>
+<td> anewnek   </td>
+<td> 3311 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%85%D8%A7#Persian">شما</a>   </td>
+<td> You   </td>
+<td> amhes     </td>
+<td> 3308 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%88%D8%A7%D9%86%D9%86%D8%AF%D9%87#Persian">خواننده</a>   </td>
+<td> Singer    </td>
+<td> hednenawhek   </td>
+<td> 3300 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%DB%8C%D8%B2%DB%8C%DA%A9#Persian">فیزیک</a>   </td>
+<td> Physics   </td>
+<td> ekazaf    </td>
+<td> 3300 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DB%8C%D8%A7%DB%8C%DB%8C#Persian">دریایی</a>   </td>
+<td> Marine    </td>
+<td> aaaared   </td>
+<td> 3295 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2#Persian">شیراز</a>   </td>
+<td> Shiraz    </td>
+<td> zarahes   </td>
+<td> 3294 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%98%D8%A7%D9%BE%D9%86#Persian">ژاپن</a>   </td>
+<td> Japan     </td>
+<td> nepaej    </td>
+<td> 3293 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B0%DA%A9%D8%B1#Persian">ذکر</a>   </td>
+<td> Mention   </td>
+<td> reked     </td>
+<td> 3292 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%DB%8C%D8%A7%D8%A8%D8%A7%D9%86#Persian">خیابان</a>   </td>
+<td> Avenue    </td>
+<td> nabaahek  </td>
+<td> 3289 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D9%88%D8%B4#Persian">فروش</a>   </td>
+<td> Sale  </td>
+<td> heswerf   </td>
+<td> 3280 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A7%D8%B1%DB%8C%D8%AE%DA%86%D9%87#Persian">تاریخچه</a>   </td>
+<td> History   </td>
+<td> hehechekarat  </td>
+<td> 3276 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%B4%D8%AA#Persian">پشت</a>   </td>
+<td> Back  </td>
+<td> thesep    </td>
+<td> 3275 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D9%88%DB%8C%D9%88%D8%B1%DA%A9#Persian">نیویورک</a>   </td>
+<td> New York  </td>
+<td> ekerwawan     </td>
+<td> 3274 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D8%A7%D8%B5%D8%B1#Persian">معاصر</a>   </td>
+<td> Contemporary  </td>
+<td> eaanes    </td>
+<td> 3266 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%A7%D8%BA#Persian">باغ</a>   </td>
+<td> Garden    </td>
+<td> amenas    </td>
+<td> 3264 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D9%85%D8%A7%D9%86#Persian">درمان</a>   </td>
+<td> Treatment     </td>
+<td> aalataa   </td>
+<td> 3263 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B1%D8%A7%DB%8C%D8%B7#Persian">شرایط</a>   </td>
+<td> Conditions    </td>
+<td> taarhes   </td>
+<td> 3254 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%AA%D8%A7%D9%84%DB%8C%D8%A7#Persian">ایتالیا</a>   </td>
+<td> Italy     </td>
+<td> namerd    </td>
+<td> 3248 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D9%86%D9%85%D8%A7#Persian">سینما</a>   </td>
+<td> the cinema    </td>
+<td> hegab     </td>
+<td> 3244 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B5%D9%86%D8%A7%DB%8C%D8%B9#Persian">صنایع</a>   </td>
+<td> Industry  </td>
+<td> resaem    </td>
+<td> 3240 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%D8%AA%D9%82%D9%84%D8%A7%D9%84#Persian">استقلال</a>   </td>
+<td> Esteghlal     </td>
+<td> laleqtesa     </td>
+<td> 3237 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%87%D9%85%D9%86#Persian">بهمن</a>   </td>
+<td> Avalanche     </td>
+<td> nemheb    </td>
+<td> 3236 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%85#Persian">گرم</a>   </td>
+<td> Hot   </td>
+<td> merug     </td>
+<td> 3236 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%DB%8C%D8%B1#Persian">تیر</a>   </td>
+<td> Arrow     </td>
+<td> rat   </td>
+<td> 3225 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%AF%DB%8C%D9%85#Persian">قدیم</a>   </td>
+<td> Old   </td>
+<td> madeq     </td>
+<td> 3218 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B4%D8%BA%D9%88%D9%84#Persian">مشغول</a>   </td>
+<td> Busy  </td>
+<td> lewheghesm    </td>
+<td> 3217 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%A8%D8%A7%D8%B1%D8%AA#Persian">عبارت</a>   </td>
+<td> Phrase    </td>
+<td> naaet     </td>
+<td> 3215 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%88%D9%87%D9%87%D8%A7%DB%8C#Persian">گروههای</a>   </td>
+<td> groups    </td>
+<td> netm  </td>
+<td> 3214 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%D8%AF%D8%B4%D8%A7%D9%87%DB%8C#Persian">پادشاهی</a>   </td>
+<td> Kingdom   </td>
+<td> saraep    </td>
+<td> 3208 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D9%84%D9%87#Persian">ساله</a>   </td>
+<td> Year  </td>
+<td> taqebasem     </td>
+<td> 3208 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D8%A7%D9%81%D8%AA%D9%87#Persian">یافته</a>   </td>
+<td> Found     </td>
+<td> ekert     </td>
+<td> 3205 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1%DA%A9#Persian">ترک</a>   </td>
+<td> Turkish   </td>
+<td> hetfaa    </td>
+<td> 3195 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B3%D8%A7%D8%A8%D9%82%D8%A7%D8%AA#Persian">مسابقات</a>   </td>
+<td> Competitions  </td>
+<td> helas     </td>
+<td> 3195 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%D8%B1%DB%8C%D8%B3#Persian">پاریس</a>   </td>
+<td> Paris     </td>
+<td> ahahesdaep    </td>
+<td> 3189 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AA%D9%86#Persian">متن</a>   </td>
+<td> Text  </td>
+<td> aahhewrug     </td>
+<td> 3189 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B9%DB%8C%DB%8C%D9%86#Persian">تعیین</a>   </td>
+<td> Determination     </td>
+<td> terab     </td>
+<td> 3184 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%98%D9%88%D8%A6%D9%86#Persian">ژوئن</a>   </td>
+<td> June  </td>
+<td> laef  </td>
+<td> 3179 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7%D8%AF%D8%B1#Persian">مادر</a>   </td>
+<td> Mother    </td>
+<td> hesrazug  </td>
+<td> 3174 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B2%D8%AF%DB%8C%DA%A9%DB%8C#Persian">نزدیکی</a>   </td>
+<td> Proximity     </td>
+<td> taqen     </td>
+<td> 3166 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DA%A9%D8%A7%D9%86#Persian">مکان</a>   </td>
+<td> Place     </td>
+<td> teqw  </td>
+<td> 3163 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A3%D8%B3%DB%8C%D8%B3#Persian">تأسیس</a>   </td>
+<td> Founded   </td>
+<td> awedr     </td>
+<td> 3161 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%A7%D9%86%D9%87#Persian">میانه</a>   </td>
+<td> Middle    </td>
+<td> haepes    </td>
+<td> 3161 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B0%D9%87%D8%A8%DB%8C#Persian">مذهبی</a>   </td>
+<td> Religious     </td>
+<td> hednerb   </td>
+<td> 3160 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%A7%D9%87#Persian">گاه</a>   </td>
+<td> Time  </td>
+<td> rathekas  </td>
+<td> 3157 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%DB%8C%D8%AA%D8%AE%D8%AA#Persian">پایتخت</a>   </td>
+<td> Capital   </td>
+<td> adenb     </td>
+<td> 3157 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D9%84%D9%87%D8%A7%DB%8C#Persian">سالهای</a>   </td>
+<td> Years     </td>
+<td> hesbenj   </td>
+<td> 3145 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%B1%D8%AF%D8%A7%D8%AF#Persian">خرداد</a>   </td>
+<td> June  </td>
+<td> newred    </td>
+<td> 3145 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D9%85%DB%8C%D9%86#Persian">دومین</a>   </td>
+<td> The second    </td>
+<td> harewf    </td>
+<td> 3135 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D9%88%D8%B1%DB%8C%D9%87#Persian">فوریه</a>   </td>
+<td> February  </td>
+<td> namewd    </td>
+<td> 3133 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D9%88%D9%86#Persian">درون</a>   </td>
+<td> inside of     </td>
+<td> daderhek  </td>
+<td> 3132 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D9%86%D8%A8%D8%B4#Persian">جنبش</a>   </td>
+<td> Movement  </td>
+<td> aahelas   </td>
+<td> 3130 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%86%D8%AF%DB%8C#Persian">بندی</a>   </td>
+<td> Category  </td>
+<td> thektaaep     </td>
+<td> 3125 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%AE%D8%AA%D8%A7%D8%B1#Persian">ساختار</a>   </td>
+<td> Structure     </td>
+<td> haug  </td>
+<td> 3124 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D9%86%D8%AF%D9%87#Persian">برنده</a>   </td>
+<td> Winner    </td>
+<td> abhedm    </td>
+<td> 3124 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%BE%D8%A7%D9%87#Persian">سپاه</a>   </td>
+<td> Army  </td>
+<td> henaam    </td>
+<td> 3120 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%B6%D9%88%DB%8C#Persian">رضوی</a>   </td>
+<td> Razavi    </td>
+<td> sasat     </td>
+<td> 3119 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D9%82%D8%AA#Persian">وقت</a>   </td>
+<td> Time  </td>
+<td> naekem    </td>
+<td> 3118 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D9%82%D8%A7%D8%B7#Persian">نقاط</a>   </td>
+<td> points    </td>
+<td> aekadezn  </td>
+<td> 3110 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B2%D8%A7%D8%B1%D8%B4#Persian">گزارش</a>   </td>
+<td> Report    </td>
+<td> redam     </td>
+<td> 3105 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B9%D8%A7%D9%84#Persian">فعال</a>   </td>
+<td> active    </td>
+<td> newej     </td>
+<td> 3103 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D9%82#Persian">حق</a>   </td>
+<td> Right     </td>
+<td> qh    </td>
+<td> 3102 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B4#Persian">اش</a>   </td>
+<td> His   </td>
+<td> hesa  </td>
+<td> 3094 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%AF%D8%A7#Persian">جدا</a>   </td>
+<td> Apart     </td>
+<td> adej  </td>
+<td> 3093 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D9%86%D8%AC%D9%85#Persian">پنجم</a>   </td>
+<td> Fifth     </td>
+<td> mejnep    </td>
+<td> 3090 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%AF%D9%85%D8%A7%D8%AA#Persian">خدمات</a>   </td>
+<td> Services  </td>
+<td> tamedhek  </td>
+<td> 3089 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B5%D8%B1#Persian">عصر</a>   </td>
+<td> Evening   </td>
+<td> helladeb  </td>
+<td> 3086 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AF%D8%B3%D8%AA#Persian">بدست</a>   </td>
+<td> By    </td>
+<td> ma    </td>
+<td> 3086 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%84%DB%8C%D8%AC#Persian">خلیج</a>   </td>
+<td> Gulf  </td>
+<td> jalhek    </td>
+<td> 3080 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85#Persian">ام</a>   </td>
+<td> Th    </td>
+<td> tesdeb    </td>
+<td> 3076 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D9%84%D9%87#Persian">عبدالله</a>   </td>
+<td> Abdullah  </td>
+<td> res   </td>
+<td> 3074 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%88%D8%AF%DA%A9%D8%A7%D9%86#Persian">کودکان</a>   </td>
+<td> children  </td>
+<td> naekedwek     </td>
+<td> 3059 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%AF%D8%A7%D8%B1%D9%87#Persian">اداره</a>   </td>
+<td> office    </td>
+<td> herada    </td>
+<td> 3059 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B9%D8%AF%DB%8C#Persian">بعدی</a>   </td>
+<td> next one  </td>
+<td> emaj  </td>
+<td> 3059 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7%D9%85%D8%B9#Persian">جامع</a>   </td>
+<td> Comprehensive     </td>
+<td> adeb  </td>
+<td> 3056 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%AD%D9%84%D9%87#Persian">مرحله</a>   </td>
+<td> the level     </td>
+<td> helherm   </td>
+<td> 3048 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DB%8C%D8%A7#Persian">دریا</a>   </td>
+<td> Sea   </td>
+<td> aared     </td>
+<td> 3041 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1%DB%8C#Persian">سری</a>   </td>
+<td> Series    </td>
+<td> ares  </td>
+<td> 3040 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%DB%8C%D8%A7%D8%B3%D8%AA#Persian">سیاست</a>   </td>
+<td> Policy    </td>
+<td> tesaas    </td>
+<td> 3032 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B2%D9%86%D8%AF%D8%A7%D9%86#Persian">زندان</a>   </td>
+<td> Prison    </td>
+<td> nadenz    </td>
+<td> 3026 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B7%D9%88%D8%B1#Persian">بطور</a>   </td>
+<td> The   </td>
+<td> rewteb    </td>
+<td> 3023 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%A7%D8%B1%D8%A8%D8%B1%D8%AF#Persian">کاربرد</a>   </td>
+<td> Application   </td>
+<td> derberaek     </td>
+<td> 3021 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AF%D9%84#Persian">مدل</a>   </td>
+<td> Model     </td>
+<td> ledm  </td>
+<td> 3019 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%B3%DB%8C%D9%84%D9%87#Persian">وسیله</a>   </td>
+<td> the device    </td>
+<td> helasew   </td>
+<td> 3019 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%84%D9%85%D9%BE%DB%8C%DA%A9#Persian">المپیک</a>   </td>
+<td> Olympic   </td>
+<td> ekaepemla     </td>
+<td> 3018 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B4%D8%A7%D8%B1#Persian">فشار</a>   </td>
+<td> Pressure  </td>
+<td> rahesf    </td>
+<td> 3016 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%84%D9%86%D8%AF#Persian">بلند</a>   </td>
+<td> Tall  </td>
+<td> denleb    </td>
+<td> 3016 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%84%D9%85%D9%84%D9%84%DB%8C#Persian">المللی</a>   </td>
+<td> International     </td>
+<td> alelmela  </td>
+<td> 3016 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D8%B1#Persian">امر</a>   </td>
+<td> Affair    </td>
+<td> rema  </td>
+<td> 3015 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B9%D8%AF%D9%87%D8%A7#Persian">بعدها</a>   </td>
+<td> Later     </td>
+<td> tenes     </td>
+<td> 3010 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%82%D8%A7%D9%84%D9%87#Persian">مقاله</a>   </td>
+<td> Article   </td>
+<td> mesarem   </td>
+<td> 3006 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%85%D9%88%D8%B2%D8%B4%DB%8C#Persian">آموزشی</a>   </td>
+<td> Training  </td>
+<td> hetfer    </td>
+<td> 3001 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88#Persian">تو</a>   </td>
+<td> You   </td>
+<td> retmek    </td>
+<td> 2997 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D9%85%D8%AA%D8%B1#Persian">کمتر</a>   </td>
+<td> fewer     </td>
+<td> wet   </td>
+<td> 2995 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%81%D8%AA%D9%87#Persian">رفته</a>   </td>
+<td> Gone  </td>
+<td> aheszewma     </td>
+<td> 2994 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%A7%D8%B3%D9%85#Persian">مراسم</a>   </td>
+<td> Ceremony  </td>
+<td> helaqem   </td>
+<td> 2992 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B5%D9%86%D8%B9%D8%AA#Persian">صنعت</a>   </td>
+<td> Industry  </td>
+<td> ahedeb    </td>
+<td> 2992 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%DB%8C%D8%A7%DB%8C#Persian">دریای</a>   </td>
+<td> sea   </td>
+<td> aaared    </td>
+<td> 2986 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%A8%DB%8C#Persian">آبی</a>   </td>
+<td> Blue  </td>
+<td> aba   </td>
+<td> 2981 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B1%D9%85#Persian">نرم</a>   </td>
+<td> Soft  </td>
+<td> mern  </td>
+<td> 2979 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%84%D9%88%DB%8C%D8%B2%DB%8C%D9%88%D9%86#Persian">تلویزیون</a>   </td>
+<td> television    </td>
+<td> newazawelt    </td>
+<td> 2976 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%84%DA%A9%D9%87#Persian">بلکه</a>   </td>
+<td> But   </td>
+<td> hekelb    </td>
+<td> 2971 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%87#Persian">به</a>   </td>
+<td> To    </td>
+<td> heb   </td>
+<td> 2969 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%DB%8C%D8%B9%D9%87#Persian">شیعه</a>   </td>
+<td> Shia  </td>
+<td> med   </td>
+<td> 2967 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%87%D8%A8%D8%B1%DB%8C#Persian">رهبری</a>   </td>
+<td> Leadership    </td>
+<td> aaaafarhegj   </td>
+<td> 2966 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D9%84%D9%87#Persian">محله</a>   </td>
+<td> The Neighbourhood     </td>
+<td> majenares     </td>
+<td> 2961 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D8%B4#Persian">شش</a>   </td>
+<td> Six   </td>
+<td> zewrema   </td>
+<td> 2960 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%88%D9%87%DB%8C#Persian">گروهی</a>   </td>
+<td> Group     </td>
+<td> hezwh     </td>
+<td> 2955 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D9%88%D8%B2%D9%87#Persian">حوزه</a>   </td>
+<td> Area  </td>
+<td> ahewrug   </td>
+<td> 2954 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D8%B1%D9%88%D8%B2#Persian">امروز</a>   </td>
+<td> Today     </td>
+<td> heshes    </td>
+<td> 2954 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1%D8%A7%D9%86%D8%AC%D8%A7%D9%85#Persian">سرانجام</a>   </td>
+<td> Finally   </td>
+<td> helhem    </td>
+<td> 2952 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%BA%D8%B1%D8%A7%D9%81%DB%8C%D8%A7%DB%8C%DB%8C#Persian">جغرافیایی</a>   </td>
+<td> Geographical  </td>
+<td> arebher   </td>
+<td> 2951 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%AF%D9%85#Persian">عدم</a>   </td>
+<td> Lack  </td>
+<td> heahes    </td>
+<td> 2949 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%DB%8C%D8%B1#Persian">امیر</a>   </td>
+<td> Amir  </td>
+<td> rama  </td>
+<td> 2947 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%88%D8%B3%D8%B3%D9%87#Persian">موسسه</a>   </td>
+<td> Institution   </td>
+<td> hessewm   </td>
+<td> 2940 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%88%D8%A7%D9%86#Persian">توان</a>   </td>
+<td> Power     </td>
+<td> nawet     </td>
+<td> 2940 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%A7%D9%BE#Persian">پاپ</a>   </td>
+<td> the pope  </td>
+<td> epaep     </td>
+<td> 2939 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%81%D8%AA%D8%B1#Persian">دفتر</a>   </td>
+<td> Office    </td>
+<td> retfed    </td>
+<td> 2939 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AA%D9%81%D8%A7%D9%88%D8%AA#Persian">متفاوت</a>   </td>
+<td> Different     </td>
+<td> tewafetm  </td>
+<td> 2936 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%84%D8%AD%D8%A7%D8%B8#Persian">لحاظ</a>   </td>
+<td> Perspective   </td>
+<td> zahel     </td>
+<td> 2933 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%B2#Persian">ساز</a>   </td>
+<td> Tool  </td>
+<td> zas   </td>
+<td> 2931 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AF%D8%AA%DB%8C#Persian">مدتی</a>   </td>
+<td> Period    </td>
+<td> atedm     </td>
+<td> 2929 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A8%D8%B2#Persian">سبز</a>   </td>
+<td> Green     </td>
+<td> zebs  </td>
+<td> 2927 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%AA%D8%A7%D8%A8%D8%AE%D8%A7%D9%86%D9%87#Persian">کتابخانه</a>   </td>
+<td> Library   </td>
+<td> henahekbatek  </td>
+<td> 2920 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B3%D8%AA%D9%87#Persian">بسته</a>   </td>
+<td> Closed    </td>
+<td> hetseb    </td>
+<td> 2912 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%86%D8%A7%D8%A8%D8%B1%D8%A7%DB%8C%D9%86#Persian">بنابراین</a>   </td>
+<td> So    </td>
+<td> naarebaneb    </td>
+<td> 2910 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%84%D8%B7%D8%A7%D9%86#Persian">سلطان</a>   </td>
+<td> King  </td>
+<td> natels    </td>
+<td> 2903 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%88%D8%AA#Persian">اوت</a>   </td>
+<td> August    </td>
+<td> tewa  </td>
+<td> 2903 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A7%D8%B3%D8%AA#Persian">راست</a>   </td>
+<td> Right     </td>
+<td> tesar     </td>
+<td> 2901 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AC%D9%84%D9%87#Persian">مجله</a>   </td>
+<td> Journal   </td>
+<td> heljem    </td>
+<td> 2898 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86#Persian">دانشجویان</a>   </td>
+<td> Students  </td>
+<td> naawejhesnad  </td>
+<td> 2896 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B1%D8%A8#Persian">عرب</a>   </td>
+<td> Arab  </td>
+<td> ebat  </td>
+<td> 2894 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D8%AE%D8%AA#Persian">درخت</a>   </td>
+<td> Tree  </td>
+<td> hesta     </td>
+<td> 2892 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%84#Persian">دل</a>   </td>
+<td> Heart     </td>
+<td> amamet    </td>
+<td> 2891 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%85%D8%A7%D9%85%DB%8C#Persian">تمامی</a>   </td>
+<td> all   </td>
+<td> led   </td>
+<td> 2887 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%AA%D8%B4#Persian">آتش</a>   </td>
+<td> Fire  </td>
+<td> thekred   </td>
+<td> 2886 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A7%D8%A8%D8%B9#Persian">تابع</a>   </td>
+<td> Function  </td>
+<td> ber   </td>
+<td> 2880 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%87%D9%86%DA%AF#Persian">آهنگ</a>   </td>
+<td> Music     </td>
+<td> ugenha    </td>
+<td> 2870 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D9%84%D9%85%D8%A7%D9%86%DB%8C#Persian">آلمانی</a>   </td>
+<td> German    </td>
+<td> anamela   </td>
+<td> 2870 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%88%D8%A8%D8%A7%D8%B1%D9%87#Persian">دوباره</a>   </td>
+<td> Again     </td>
+<td> herabewd  </td>
+<td> 2865 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%AF%D9%85%D8%AA#Persian">خدمت</a>   </td>
+<td> Service   </td>
+<td> temdhek   </td>
+<td> 2864 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AB%D8%A7%D8%A8%D8%AA#Persian">ثابت</a>   </td>
+<td> Fixed     </td>
+<td> tebahet   </td>
+<td> 2864 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D8%A7%D9%87%D9%85#Persian">فراهم</a>   </td>
+<td> Prepared  </td>
+<td> mharef    </td>
+<td> 2863 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%82%D8%AF%D8%B3#Persian">مقدس</a>   </td>
+<td> Holy  </td>
+<td> sedqem    </td>
+<td> 2862 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D8%B1%D9%81%D8%AA%D9%86#Persian">گرفتن</a>   </td>
+<td> Catch     </td>
+<td> netferug  </td>
+<td> 2862 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%B1%D9%88%D8%AF#Persian">ورود</a>   </td>
+<td> log in    </td>
+<td> dewrew    </td>
+<td> 2860 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B5%D9%88%D8%B1%D8%AA#Persian">بصورت</a>   </td>
+<td> Just  </td>
+<td> terwesb   </td>
+<td> 2856 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B7%D8%B1%D8%AD#Persian">مطرح</a>   </td>
+<td> Proposed  </td>
+<td> hertem    </td>
+<td> 2853 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A7%DA%A9#Persian">راک</a>   </td>
+<td> rock  </td>
+<td> ekar  </td>
+<td> 2850 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%A7%D9%84%DB%8C#Persian">مالی</a>   </td>
+<td> Financial     </td>
+<td> alam  </td>
+<td> 2848 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D8%AA%D9%84#Persian">قتل</a>   </td>
+<td> Murder    </td>
+<td> letq  </td>
+<td> 2847 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B1%D8%B2%D9%86%D8%AF%D8%A7%D9%86#Persian">فرزندان</a>   </td>
+<td> Children  </td>
+<td> nadenzerf     </td>
+<td> 2847 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%AA%D8%A8%D9%87#Persian">رتبه</a>   </td>
+<td> Rank  </td>
+<td> hebter    </td>
+<td> 2846 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A8%D8%A8#Persian">سبب</a>   </td>
+<td> Cause     </td>
+<td> bebs  </td>
+<td> 2845 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%87%D8%B1%D8%AA#Persian">شهرت</a>   </td>
+<td> the fame  </td>
+<td> terhhes   </td>
+<td> 2845 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B4%D9%88%D8%B1%DB%8C#Persian">کشوری</a>   </td>
+<td> State     </td>
+<td> arewhesek     </td>
+<td> 2840 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1%DA%A9%DB%8C%D9%87#Persian">ترکیه</a>   </td>
+<td> Turkey    </td>
+<td> haekert   </td>
+<td> 2838 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%A7%D9%84%DB%8C#Persian">حالی</a>   </td>
+<td> While     </td>
+<td> alah  </td>
+<td> 2831 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B3%DA%A9%D8%A7%D8%B1#Persian">اسکار</a>   </td>
+<td> Oscar     </td>
+<td> raekesa   </td>
+<td> 2831 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B6%D8%AF#Persian">ضد</a>   </td>
+<td> Against   </td>
+<td> ded   </td>
+<td> 2829 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%87#Persian">مه</a>   </td>
+<td> Fog   </td>
+<td> hem   </td>
+<td> 2825 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D9%88%D9%86%D8%A7%D9%86#Persian">یونان</a>   </td>
+<td> Greece    </td>
+<td> nanewa    </td>
+<td> 2822 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%D8%B2%D8%AF#Persian">نزد</a>   </td>
+<td> To    </td>
+<td> dezn  </td>
+<td> 2814 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%A7#Persian">ها</a>   </td>
+<td> And   </td>
+<td> ah    </td>
+<td> 2814 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%86%D8%AA#Persian">سنت</a>   </td>
+<td> Tradition     </td>
+<td> tens  </td>
+<td> 2808 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%BE%D8%AF%D8%B1%D8%B4#Persian">پدرش</a>   </td>
+<td> His father    </td>
+<td> hesredep  </td>
+<td> 2806 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D8%A7%D8%A8%D8%B7#Persian">روابط</a>   </td>
+<td> Relations     </td>
+<td> tebawer   </td>
+<td> 2801 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%86%D8%A7%D8%B3%D8%A8#Persian">مناسب</a>   </td>
+<td> Appropriate   </td>
+<td> besanem   </td>
+<td> 2799 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%88%D8%A7#Persian">هوا</a>   </td>
+<td> Air   </td>
+<td> awh   </td>
+<td> 2796 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D8%AF%D9%88%D8%AF#Persian">محدود</a>   </td>
+<td> Limited   </td>
+<td> dewdhem   </td>
+<td> 2794 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%A8%D9%87%D8%A7%D9%85%D8%B2%D8%AF%D8%A7%DB%8C%DB%8C#Persian">ابهامزدایی</a>   </td>
+<td> disambiguation    </td>
+<td> aaadezmaheba  </td>
+<td> 2789 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%81%D8%A7%D8%B9#Persian">دفاع</a>   </td>
+<td> Defense   </td>
+<td> natesber  </td>
+<td> 2771 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D9%86%D8%AA%DB%8C#Persian">سنتی</a>   </td>
+<td> Traditional   </td>
+<td> atens     </td>
+<td> 2767 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B1%D8%A8%D8%B3%D8%AA%D8%A7%D9%86#Persian">عربستان</a>   </td>
+<td> Arabia    </td>
+<td> eafed     </td>
+<td> 2765 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%87%D9%85%DB%8C%D8%AA#Persian">اهمیت</a>   </td>
+<td> Importance    </td>
+<td> tamha     </td>
+<td> 2754 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%88%D9%85#Persian">روم</a>   </td>
+<td> Rome  </td>
+<td> mewr  </td>
+<td> 2746 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B1%D9%88%D9%85%DB%8C%D9%87#Persian">ارومیه</a>   </td>
+<td> Orumieh   </td>
+<td> hamewra   </td>
+<td> 2746 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%A7%D8%AF%D9%87#Persian">ساده</a>   </td>
+<td> Simple    </td>
+<td> hedas     </td>
+<td> 2745 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D9%85%D8%A7%D9%86#Persian">کرمان</a>   </td>
+<td> Kerman    </td>
+<td> namerek   </td>
+<td> 2740 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D9%87#Persian">کره</a>   </td>
+<td> Butter    </td>
+<td> herek     </td>
+<td> 2739 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D9%87%D8%B1%D9%87#Persian">بهره</a>   </td>
+<td> Interest  </td>
+<td> herheb    </td>
+<td> 2735 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B9%D8%B4%D9%82#Persian">عشق</a>   </td>
+<td> Love  </td>
+<td> alewmem   </td>
+<td> 2735 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%AF%D9%88%DB%8C%D8%AF#Persian">میگوید</a>   </td>
+<td> Says  </td>
+<td> epehec    </td>
+<td> 2728 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%DA%AF%D9%88%DB%8C%D9%86%D8%AF#Persian">میگویند</a>   </td>
+<td> they say  </td>
+<td> denawugam     </td>
+<td> 2725 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%86%D9%BE#Persian">چپ</a>   </td>
+<td> Left  </td>
+<td> dawugam   </td>
+<td> 2723 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B9%D9%85%D9%88%D9%84%D8%A7#Persian">معمولا</a>   </td>
+<td> Usually   </td>
+<td> qhes  </td>
+<td> 2721 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D9%85%D8%A7%D9%86#Persian">رمان</a>   </td>
+<td> Novel     </td>
+<td> namer     </td>
+<td> 2721 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B4%D9%87%DB%8C%D8%AF#Persian">شهید</a>   </td>
+<td> Martyr    </td>
+<td> dahhes    </td>
+<td> 2720 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%88%D8%B1%D8%B4%DB%8C%D8%AF#Persian">خورشید</a>   </td>
+<td> Sun   </td>
+<td> dahesrewhek   </td>
+<td> 2718 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D9%84%D8%A7%D8%B4#Persian">تلاش</a>   </td>
+<td> Effort    </td>
+<td> hesalet   </td>
+<td> 2715 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D8%A7%D9%8A#Persian">هاي</a>   </td>
+<td> Of    </td>
+<td> yah   </td>
+<td> 2714 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%B1%DA%A9%DB%8C%D8%A8#Persian">ترکیب</a>   </td>
+<td> Compound  </td>
+<td> baekert   </td>
+<td> 2714 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%D9%88%D9%86%D8%A7%D9%86%DB%8C#Persian">یونانی</a>   </td>
+<td> Greek     </td>
+<td> ananewa   </td>
+<td> 2711 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%A7%D8%B1%DA%AF%D8%B1%D8%AF%D8%A7%D9%86%DB%8C#Persian">کارگردانی</a>   </td>
+<td> Directing     </td>
+<td> anaderugeraek     </td>
+<td> 2705 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D9%81%D8%B8#Persian">حفظ</a>   </td>
+<td> Protection    </td>
+<td> zefh  </td>
+<td> 2698 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%AC%D8%A7%D8%B1%DB%8C#Persian">تجاری</a>   </td>
+<td> Commercial    </td>
+<td> arajet    </td>
+<td> 2694 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%88%D8%B6%D8%B9%DB%8C%D8%AA#Persian">وضعیت</a>   </td>
+<td> Condition     </td>
+<td> haewej    </td>
+<td> 2688 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B6%D8%A7%DB%8C%DB%8C#Persian">فضایی</a>   </td>
+<td> Spatial   </td>
+<td> denahedrek    </td>
+<td> 2688 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D9%86%D8%A8%D8%A7%D9%84#Persian">دنبال</a>   </td>
+<td> Follow    </td>
+<td> aasa  </td>
+<td> 2684 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D8%B5%D9%88%D9%84#Persian">اصول</a>   </td>
+<td> Principles    </td>
+<td> aj    </td>
+<td> 2676 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%B4%D9%86#Persian">جشن</a>   </td>
+<td> Celebration   </td>
+<td> rugadeka  </td>
+<td> 2670 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%85%D9%BE%D8%B1%D8%A7%D8%AA%D9%88%D8%B1%DB%8C#Persian">امپراتوری</a>   </td>
+<td> Imperial  </td>
+<td> h     </td>
+<td> 2668 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%AD%D9%82%DB%8C%D9%82%D8%A7%D8%AA#Persian">تحقیقات</a>   </td>
+<td> researches    </td>
+<td> nadeb     </td>
+<td> 2664 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D9%84%D9%84#Persian">ملل</a>   </td>
+<td> United    </td>
+<td> qelhek    </td>
+<td> 2663 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%AD%D8%B5%D9%88%D9%84%D8%A7%D8%AA#Persian">محصولات</a>   </td>
+<td> Products  </td>
+<td> qerb  </td>
+<td> 2661 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%DB%8C%D8%AA%D9%88%D8%A7%D9%86%D9%86%D8%AF#Persian">میتوانند</a>   </td>
+<td> they can  </td>
+<td> amaugenh  </td>
+<td> 2659 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B4%D8%B1#Persian">بشر</a>   </td>
+<td> the human     </td>
+<td> dh    </td>
+<td> 2658 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AA%D8%A7%D8%B3%DB%8C%D8%B3#Persian">تاسیس</a>   </td>
+<td> Establishment     </td>
+<td> madeqa    </td>
+<td> 2658 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%86%DB%8C%D9%85%D9%87#Persian">نیمه</a>   </td>
+<td> Half  </td>
+<td> aadef     </td>
+<td> 2655 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%81%D8%B6%D8%A7%DB%8C#Persian">فضای</a>   </td>
+<td> space     </td>
+<td> heman     </td>
+<td> 2642 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%82%D8%AF%D8%A7%D9%85#Persian">اقدام</a>   </td>
+<td> Action    </td>
+<td> sasat     </td>
+<td> 2641 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%AF#Persian">حد</a>   </td>
+<td> Limit     </td>
+<td> rhesb     </td>
+<td> 2632 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87%D9%86%DA%AF%D8%A7%D9%85%DB%8C#Persian">هنگامی</a>   </td>
+<td> when  </td>
+<td> dennawetam    </td>
+<td> 2629 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B1%D9%82#Persian">برق</a>   </td>
+<td> Power     </td>
+<td> talewshem     </td>
+<td> 2626 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D9%84%D9%82#Persian">خلق</a>   </td>
+<td> Creation  </td>
+<td> lelm  </td>
+<td> 2623 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%AF%DB%8C%D9%86#Persian">بدین</a>   </td>
+<td> The   </td>
+<td> taqaqhet  </td>
+<td> 2623 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%87#Persian">ه</a>   </td>
+<td> Of    </td>
+<td> arewtarepema  </td>
+<td> 2623 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DB%8C%DA%A9%D8%AF%DB%8C%DA%AF%D8%B1#Persian">یکدیگر</a>   </td>
+<td> Each other    </td>
+<td> nhesj     </td>
+<td> 2620 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AC%D8%A7#Persian">جا</a>   </td>
+<td> Place     </td>
+<td> lewsa     </td>
+<td> 2618 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A2%D8%B3%DB%8C%D8%A7#Persian">آسیا</a>   </td>
+<td> Asia  </td>
+<td> labend    </td>
+<td> 2617 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%A9%D8%B1%D8%AF%D9%87%D8%A7%D9%86%D8%AF#Persian">کردهاند</a>   </td>
+<td> Have  </td>
+<td> aaadef    </td>
+<td> 2616 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%98%D9%88%D8%A6%DB%8C%D9%87#Persian">ژوئیه</a>   </td>
+<td> June  </td>
+<td> taedew    </td>
+<td> 2614 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AD%D8%A7%D8%B5%D9%84#Persian">حاصل</a>   </td>
+<td> Result    </td>
+<td> lesah     </td>
+<td> 2614 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%AE%D8%AA#Persian">سخت</a>   </td>
+<td> Hard  </td>
+<td> theks     </td>
+<td> 2612 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%D9%88%D8%A7%D8%AE%D8%B1#Persian">اواخر</a>   </td>
+<td> the late  </td>
+<td> rhekawa   </td>
+<td> 2610 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A7%DB%8C%D8%B1%D8%A7%D9%86%DB%8C%D8%A7%D9%86#Persian">ایرانیان</a>   </td>
+<td> Iranians  </td>
+<td> naanaraa  </td>
+<td> 2610 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B1%D8%A7%D8%A8%D8%B7%D9%87#Persian">رابطه</a>   </td>
+<td> Relation  </td>
+<td> hetbar    </td>
+<td> 2610 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%DA%AF%D9%88%D9%86%D8%A7%DA%AF%D9%88%D9%86#Persian">گوناگون</a>   </td>
+<td> Various   </td>
+<td> newuganewug   </td>
+<td> 2610 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%82%D9%88%D8%A7%D9%86%DB%8C%D9%86#Persian">قوانین</a>   </td>
+<td> Rules     </td>
+<td> nanaweq   </td>
+<td> 2607 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B3%D8%AA%DA%A9#Persian">بستک</a>   </td>
+<td> Bstk  </td>
+<td> eketseb   </td>
+<td> 2603 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%A8%D8%B2%D8%B1%DA%AF%DB%8C#Persian">بزرگی</a>   </td>
+<td> Magnitude     </td>
+<td> augerzeb  </td>
+<td> 2600 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%B1%D8%A2%D9%85%D8%AF#Persian">درآمد</a>   </td>
+<td> Earnings  </td>
+<td> demared   </td>
+<td> 2592 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AE%D8%A8%D8%B1#Persian">خبر</a>   </td>
+<td> News  </td>
+<td> rebhek    </td>
+<td> 2587 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%84%D9%86%D8%AF%D9%86#Persian">لندن</a>   </td>
+<td> London    </td>
+<td> nednel    </td>
+<td> 2584 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D9%85%D8%B1%D8%A7%DA%A9%D8%B2#Persian">مراکز</a>   </td>
+<td> centers   </td>
+<td> zekarem   </td>
+<td> 2580 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%AF%D8%A7%D8%AF%D9%86%D8%AF#Persian">دادند</a>   </td>
+<td> gave  </td>
+<td> dendad    </td>
+<td> 2572 </td>
+</tr>
+<tr>
+<td> <a href="https://en.wiktionary.org/wiki/%D8%B3%D8%B1%D8%AE#Persian">سرخ</a>   </td>
+<td> Red   </td>
+<td> hekres    </td>
+<td> 2572 </td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
