@@ -44,6 +44,7 @@ as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  name
 sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
 coolor <- function (n=3) {  gplots::rich.colors(n) }
 
+intersect.ls <- function (ls, ...){ Reduce(intersect, ls) }
 
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
@@ -916,7 +917,7 @@ create_set_SubDir <-function (..., setDir=T) {
 # }
 
 getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
-  idx = intersect(row.names(mat), rownamez)
+  idx = intersect(rownamez, row.names(mat))
   if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
   if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
   if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
