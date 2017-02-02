@@ -483,17 +483,18 @@ list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Conv
 }
 
 
-list2fullDF <- function(ll){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
+list2fullDF <- function(ll, byRow=T){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
   entrytypes = unique(unlist(lapply(ll, names)))
   ls_len  = l(ll)
   mat =matrix(0, ncol = ls_len, nrow = l(entrytypes))
   colnames(mat) = if (l(names(ll))) names(ll) else 1:ls_len
   rownames(mat) = sort(entrytypes)
   for (i in 1:l(ll)) {
-    entries = ll[[i]]
-    mat[names(entries) ,i] = entries
+    mat[names(ll[[i]]) ,i] = ll[[i]]
+    print(names(ll[[i]]))
   }
-  mat
+  if(!byRow) {mat = t(mat)}
+  return(mat)
 }
 list_to_fullDF = list2fullDF
 
