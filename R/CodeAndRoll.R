@@ -36,6 +36,7 @@ require("MarkdownReports")
 "Depends: gtools"
 
 # Alisases ----------------
+p0 = paste0
 try.dev.off <- function () { try(dev.off(), silent = T) }
 topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decreasing = T), n=n) }
 bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
@@ -1121,3 +1122,116 @@ wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlo
   } else {                                    legend(textlocation, legend = legendText , bty="n") }
   if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
 }
+
+
+
+
+
+
+multitSNE <- function (sc_obj=sc, genes=rownames(sc@ndata)[1:5], cols_ = 2, rows_ = 3, log_10_ =F, pname_="tSNE.multiple.genes", cex_=.5) {
+  pdfA4plot_on(pname = pname_, cols = cols_, rows = rows_)
+  for(i in 1:length(genes)){
+    tsne.multiplex(sc_ = sc_obj, g = genes[i], title = genes[i], log_10 = log_10_ )
+  }
+  pdfA4plot_off()
+} # multitSNE(log_10_ = T, pname_ = "aaa")
+
+# inside function of multitSNE()
+tsne.multiplex <- function(sc_=sc, g="Hsp90aa1__chr12", legendPos="topleft", title=g, pchx =T, log_10 =F, cex_=.5){
+  exp = as.numeric(sc_@ndata[g,])
+  rng = iround(range(exp))
+  if(log_10) {exp = log10(exp)}
+  ccc=val2col(exp, col = rev(terrain.colors(max(12, 3 * l(unique(exp))))) )
+  ColorRamp <- rev(terrain.colors(100))
+  if(isTRUE(clPch)) {clID = sc@cluster$kpart; clID[clID>5] = (clID[clID>5])-5
+  pchx=(20+clID)  }
+  plot(sc@tsne, pch=pchx, bg=ccc, col="grey33", main=title)
+  
+  lll = ccc[c(which.min(exp), which.max(exp))]; names(lll) = rng # legend labels 
+  wlegend2(x = legendPos,fill = lll, OverwritePrevPDF = F, title="Transcripts", cex=cex_)
+}
+
+
+# http://stackoverflow.com/questions/20127282/r-color-scatterplot-points-by-col-value-with-legend
+scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color), 
+                          nlevels = 20, plot.title, plot.axes, pch=20, cex=1,
+                          key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+                          axes = TRUE, frame.plot = axes, ...) {
+  mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
+  on.exit(par(par.orig))
+  w <- (3 + mar.orig[2L]) * par("csi") * 2.54
+  layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(w)))
+  par(las = las)
+  mar <- mar.orig
+  mar[4L] <- mar[2L]
+  mar[2L] <- 1
+  par(mar = mar)
+  
+  # choose colors to interpolate
+  levels <- seq(zlim[1], zlim[2], length.out = nlevels)
+  col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)  
+  colz <- col[cut(color, nlevels)]  
+  
+  plot.new()
+  plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
+  
+  rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col) 
+  if (missing(key.axes)) {if (axes){axis(4)}}
+  else key.axes
+  box()
+  if (!missing(key.title)) 
+    key.title
+  mar <- mar.orig
+  mar[4L] <- 1
+  par(mar = mar)
+  
+  # points
+  plot(x, y, type = "n", xaxt='n', yaxt='n', xlab="", ylab="", xlim=xlim, ylim=ylim, bty="n")
+  points(x, y, col = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
+  
+  ## options to make mapping more customizable
+  if (missing(plot.axes)) {
+    if (axes) {
+      title(main = "", xlab = "", ylab = "")
+      Axis(x, side = 1)
+      Axis(y, side = 2)
+    }
+  }
+  else plot.axes
+  if (frame.plot) 
+    box()
+  if (missing(plot.title)) 
+    title(...)
+  else plot.title
+  invisible()
+}
+# scatter_fill(x=rnorm(100), y=rnorm(100), color=rnorm(100), nlevels=15, pch = 2)
+
+
+
+# ## A largish data set
+# n <- 10000
+# x1  <- matrix(rnorm(n), ncol = 2)
+# x2  <- matrix(rnorm(n, mean = 3, sd = 1.5), ncol = 2)
+# x   <- rbind(x1, x2)
+# oldpar <- par(mfrow = c(2, 2))
+# smoothScatter(x, nrpoints = 0)
+# dim(x)
+# l(x)
+
+
+# # http://stackoverflow.com/questions/14271584/r-legend-for-color-density-scatterplot-produced-using-smoothscatter
+# install.packages("fields")
+# fudgeit <- function(){
+#   xm <- get('xm', envir = parent.frame(1))
+#   ym <- get('ym', envir = parent.frame(1))
+#   z  <- get('dens', envir = parent.frame(1))
+#   colramp <- get('colramp', parent.frame(1))
+#   fields::image.plot(xm,ym,z, col = colramp(256), legend.only = T, add =F)
+# }
+# # 
+# par(mar = c(5,4,4,5) + .1)
+# smoothScatter(x, nrpoints = 0, postPlotHook = fudgeit)
+
+
+
