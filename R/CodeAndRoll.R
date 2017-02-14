@@ -1007,6 +1007,12 @@ matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 
   return(mx)
 }
 
+vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
+  v=numeric(length(namesvec))
+  # if(length(values==length(namesvec))) {v=values}
+  names(v)=namesvec
+  return(v)
+}
 
 
 rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
@@ -1076,11 +1082,6 @@ TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the t
   }
   return(Len_MyGene)
 }
-
-
-
-
-
 
 
 
@@ -1235,3 +1236,10 @@ scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(
 
 
 
+hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit. 
+  # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
+  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
+  xx = hist(splitby, breaks = breaks_, plot = T)
+  IDX = findInterval(x = splitby, vec = xx$breaks)
+  split(toSplit, IDX)
+}#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
