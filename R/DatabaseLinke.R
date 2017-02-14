@@ -4,8 +4,19 @@
 # source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/DatabaseLinke.R')
 
 ######################################################################
-## If you encounter a bug, or something doesn't work, please let me know by raising an issue on Github/vertesy/TheCorvinas
-## https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
+## Full functionality is only expected on OS X
+## See details: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR.md
+## - Set writeOut=FALSE, in each function for first usage.
+## 
+## If you encounter a bug, or something doesn't work, 
+## 1.)  please let me know by raising an issue on Github/vertesy/TheCorvinas
+##      https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
+## 2.)  It might be a missing function. 
+##      - Try to source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")
+##        See details: https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md
+##      - If still some functons are missing, try to install MarkdownReports: install.packages("devtools"); devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports"); require("MarkdownReports")
+##        See details: https://vertesy.github.io/MarkdownReports/
+## 
 ######################################################################
 
 # vector_of_gene_symbols = c("Oct4", "Dazl")

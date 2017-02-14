@@ -1,8 +1,19 @@
 
 # Parse links to databases from your list of  gene symbols
 
-[Get DatabaseLinke.R](https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R)
+[Get the DatabaseLinke.R](https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R)
 
+### Summary
+
+A set of functions to parse links to genomics related websites.
+
+It can do 3 things:
+
+1. Parse the links for a vector of gene symbols
+2. Parse the links, and open them in the default browser (beware for 20+ genes)
+3. Parse the link, and write them as open into a bash script (that you can later open in batches.)
+
+*Note: It typically parses query (search) links, instead direct links*
 
 ### Install
 
