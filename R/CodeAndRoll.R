@@ -693,6 +693,18 @@ pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, co
   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
 }
 
+pdfA4plot_on.layout <- function (pname = date(), ..., w = 8.27, h = 11.69, layout_mat = rbind(1, c(2, 3), 4:5), mdlink = FALSE,
+                                 title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) { # Fancy layout version. Print (multiple) plots to an (A4) pdf.
+  fname = kollapse(OutDir,"/" , pname, ".pdf")
+  pdf(fname,width=w, height=h, title = title)
+  layout(layout_mat)
+  # par(mar = c(3, 3, 0, 0))
+  print(layout_mat)
+  any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
+  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
+}
+
+
 pdfA4plot_off <- function () {
   if (exists("mfrow_default")) {
     x = mfrow_default
