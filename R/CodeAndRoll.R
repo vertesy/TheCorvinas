@@ -1273,3 +1273,15 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
   IDX = findInterval(x = splitby, vec = xx$breaks)
   split(toSplit, IDX)
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
+
+
+
+
+get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
+  counter = if(rows) NROW(df_) else NCOL(df_)
+  IDX = if(odd) seq(1, to = counter, by = 2) else seq(2, to = counter, by = 2)
+  df_out = if(rows) df_[IDX, ] else df_[, IDX]
+  return(df_out)
+}
+
+
