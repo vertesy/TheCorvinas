@@ -939,7 +939,9 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 }
 
 
-name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x]
+id2name <- function(x) sub("\\_\\_chr\\w+","",x) # From RaceID
+
+name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x] # From RaceID
 
 
 create_set_SubDir <-function (..., setDir=T) {
@@ -1283,7 +1285,10 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
   if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
   xx = hist(splitby, breaks = breaks_, plot = T)
   IDX = findInterval(x = splitby, vec = xx$breaks)
-  split(toSplit, IDX)
+  ls = split(toSplit, IDX)
+  any_print("Range of data:", range(xx$breaks))
+  names(ls)=xx$breaks[-1]
+  return(ls)
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
 
 
@@ -1297,3 +1302,15 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
 }
 
 
+
+
+# corrr::correlate(mtcars[, 1:4], method = "pearson") %>%
+#   corrr::rearrange(absolute=F) %>% #  rearrange cols and rows
+#   corrr::shave()%>% # shave upper triangle
+#   corrr::rplot(print_cor = T,legend = T)# dot plot
+# 
+# corrr::correlate(mtcars[, 1:4], method = "pearson") %>% network_plot()
+
+
+
+nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
