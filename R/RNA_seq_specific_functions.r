@@ -3,6 +3,100 @@
 # source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 
+
+
+# Differential Gene Expression ------------------------------------------------------------------------------------------------------------------------------
+
+# source: http://www.gettinggeneticsdone.com/2014/05/r-volcano-plots-to-visualize-rnaseq-microarray.html
+wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, higlight =T) {
+  if (pname_ == FALSE) { pname_ = substitute(DEseqResults) }
+  Columns =c("Gene", "log2FoldChange", "padj")
+  DE = as.data.frame(DEseqResults)
+  if (!is.null(rownames(DE)) & !"Gene" %in% colnames(DE)) {    DE = cbind( "Gene" = rownames(DE), DE)  }
+  if (sum(! (Columns %in% colnames(DE)))) { any_print("A dataframe with 3 columns needed:", Columns )}
+  
+  # Make a basic volcano plot
+  subb = paste0("Red if padj<",thr_padj_,", orange of log2FC>",thr_log2fc_,", green if both.")
+  with(DE, plot(log2FoldChange, main=pname_, sub=subb, -log10(padj), pch=20, cex=.5, col = rgb(0,0,0,.25),xlim=range(DE$"log2FoldChange") ))
+  
+  if(higlight) { # Add colored points:
+    with(subset(DE, padj< thr_padj_ ), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))
+    with(subset(DE, abs(log2FoldChange)>thr_log2fc_), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="orange"))
+    with(subset(DE, padj< thr_padj_ & abs(log2FoldChange)>1), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="green"))
+  }
+  # Label points with the textxy function from the calibrate plot
+  if (showNames) {    with(subset(DE, padj<thr_padj_ & abs(log2FoldChange)>thr_log2fc_), calibrate::textxy(log2FoldChange, -log10(padj), labs=Gene, cex=.8))  }
+  if (saveit) { wplot_save_this(plotname = paste0(pname_,".volcano") )  }
+}
+
+
+filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj) {
+  DE = as.data.frame(DESeq_results)
+  llprint("#### ", substitute(DESeq_results))
+  index_isSign = DE$padj < thr_padj_
+  llprint(sum(index_isSign, na.rm = T), "or", pc_TRUE(index_isSign), "of the results is significant at p=",thr_padj_)
+  index_FoldChange = (DE$log2FoldChange < -thr_log2fc_ | DE$log2FoldChange >  thr_log2fc_)
+  llprint(sum(index_FoldChange, na.rm = T), "or", pc_TRUE(index_FoldChange), "of the results has a fold change more extreme than (+/-)", 2^thr_log2fc)
+  index_Hits = index_isSign & index_FoldChange
+  llprint(sum(index_Hits, na.rm = T), "or", pc_TRUE(index_Hits), "of the results meet both criteria.")
+  DE_hits = iround(DE[ which(index_Hits), ])
+  return(DE_hits)
+}
+
+prepare4plotMA <- function(DESeq_results, thr_padj_=thr_padj, thr_log2fc_ =F) { # highlight results using 2 thresholds
+  DE = as.data.frame(DESeq_results)[, c("baseMean", "log2FoldChange", "padj")]
+  index_isSign = DE$"padj" < thr_padj_
+  if (thr_log2fc_ != F) {
+    index_FoldChange = (DE$log2FoldChange < -thr_log2fc_ | DE$log2FoldChange >  thr_log2fc_)
+    DE$"padj" = (index_isSign & index_FoldChange)
+  } else { DE$"padj" = index_isSign }
+  return(DE)
+}
+
+
+# Correlation plots ------------------------------------------------------------------------------------------------------------------------------
+
+panel.cor.pearson <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ...) {  # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  excludeNAs = which(is.na(x) | is.na(y))
+  r <- abs(cor(x[-excludeNAs], y[-excludeNAs], method = method))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+panel.cor.spearman <- function(x, y, digits=2, prefix="", method = "spearman", cex.cor, ...) {  # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  excludeNAs = which(is.na(x) | is.na(y))
+  r <- abs(cor(x[-excludeNAs], y[-excludeNAs], method = method))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y, method = method))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
+  
+  test <- cor.test(x,y)
+  # borrowed from printCoefmat
+  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
+                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                   symbols = c("***", "**", "*", ".", " "))
+  
+  text(0.5, 0.5, txt, cex = cex * r)
+  text(.8, .8, Signif, cex=cex, col=2)
+}
+
+
 chop_chr_from_gene_name <- function  (name, splitcharacter = "__") { # Chop the chromosome ending!
 	strsplit(name, splitcharacter)[[1]][1] }
 
