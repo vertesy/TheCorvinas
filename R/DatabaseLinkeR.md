@@ -36,16 +36,17 @@ Read: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR.md
 
 You can use the functions in 3 ways:
 
+1. Open the link in your web browser:
 
-`link_String("Mecom")`
+   `link_String("Mecom")`
 
-Open the link in your web browser.
-
-`link_String("Mecom", writeOut = T)`
-
-Writes the link in (an executable) bash script run.sh (if you have too many links).
-
-It will actually write the links to `BashScriptLocation` in an executable format, so once you run the script, it opens all the links in your default browser (on OS X).
+2. Writes the link in a bash script, called run.sh:   `link_String("Mecom", writeOut = T)`
+	- use, if  you have too many links to open at once
+	- When you run the script, it opens all the links as tabs in your default browser (on OS X /  *nix).
+	- **Comment out some lines if its too much**
+	- More precisely, it will write the links to `BashScriptLocation` in an executable format.
+	
+### Writing to file
 
 Using `link_String("Mecom", writeOut = T)`, in your bash script, you will find:
 
@@ -54,6 +55,8 @@ open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Tuba
 open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwil1&species=10090'
 ```
 
+
+### Print links to the screen
 
 `link_String("Mecom", writeOut = F, Open=F)`
 
@@ -67,8 +70,6 @@ http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwil1&spe
 as a character vector, so you can write out in a column of your gene-table.
 
 ---------
-
-https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
 
 
 ### If you encounter a bug, or something doesn't work, 
