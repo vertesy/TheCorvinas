@@ -8,7 +8,7 @@
 # Differential Gene Expression ------------------------------------------------------------------------------------------------------------------------------
 
 # source: http://www.gettinggeneticsdone.com/2014/05/r-volcano-plots-to-visualize-rnaseq-microarray.html
-wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, higlight =T) {
+wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, highlight =T) {
   if (pname_ == FALSE) { pname_ = substitute(DEseqResults) }
   Columns =c("Gene", "log2FoldChange", "padj")
   DE = as.data.frame(DEseqResults)
@@ -19,16 +19,15 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   subb = paste0("Red if padj<",thr_padj_,", orange of log2FC>",thr_log2fc_,", green if both.")
   with(DE, plot(log2FoldChange, main=pname_, sub=subb, -log10(padj), pch=20, cex=.5, col = rgb(0,0,0,.25),xlim=range(DE$"log2FoldChange") ))
   
-  if(higlight) { # Add colored points:
-    with(subset(DE, padj< thr_padj_ ), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))
-    with(subset(DE, abs(log2FoldChange)>thr_log2fc_), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="orange"))
-    with(subset(DE, padj< thr_padj_ & abs(log2FoldChange)>1), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="green"))
+  if(highlight) { # Add colored points:
+    with(subset(DE, padj< thr_padj_ ),      points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))
+    with(subset(DE, abs(log2FoldChange)>=thr_log2fc_), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="orange"))
+    with(subset(DE, (padj< thr_padj_) & (abs(log2FoldChange)>=thr_log2fc_)), points(log2FoldChange, -log10(padj), pch=20, cex=.75, col="green"))
   }
   # Label points with the textxy function from the calibrate plot
   if (showNames) {    with(subset(DE, padj<thr_padj_ & abs(log2FoldChange)>thr_log2fc_), calibrate::textxy(log2FoldChange, -log10(padj), labs=Gene, cex=.8))  }
   if (saveit) { wplot_save_this(plotname = paste0(pname_,".volcano") )  }
 }
-
 
 filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj) {
   DE = as.data.frame(DESeq_results)
