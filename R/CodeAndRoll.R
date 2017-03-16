@@ -1322,3 +1322,20 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
 
 
 nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
+
+
+
+list2df_NA_padded <- function(L) {
+  pad.na <- function(x,len) {
+    c(x,rep(NA,len-length(x)))
+  }
+  maxlen <- max(sapply(L,length))
+  do.call(data.frame,lapply(L,pad.na,len=maxlen))
+}
+
+
+clip.values <- function(valz, high=T, thr=3) {
+  if (high) { valz[valz>thr]=thr
+  } else{     valz[valz<thr]=thr}
+  valz
+}
