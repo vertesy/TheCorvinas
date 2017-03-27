@@ -125,6 +125,12 @@ wbarplot_cellID <-  function(variable, col ="gold1", ...) { # in ... you can pas
 	dev.copy2pdf (file=FnP, width=w, height=h )
 }
 
+# RaceID -----------------------------------------------------------------------------------------------------
+
+id2name <- function(x) sub("\\_\\_chr\\w+","",x) # From RaceID
+
+name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x] # From RaceID
+
 
 
 # X-react project -----------------------------------------------------------------------------------------------------
@@ -146,3 +152,67 @@ ecdf_Abel <- function (distribution, test_values=F) {
 	for (i in 1:DisLen) { PCtiles[i] = sum(distribution < distribution[i]) / DisLen	}
 	return(PCtiles)
 }
+
+
+
+#' BaseFrequencies
+#'
+#' @param mygene Gene of interest. You need either the ID or Gene symbol
+#' @param genome mm10 of hg19 for now
+#' @export
+#'
+#' @examples BaseFrequencies()
+
+BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives you the base distribution of a gene of interest, and how extreme it is compared to all transcripts
+  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  
+  if ( !exists("BaseFrequencies_")) {
+    if (genome=="mm10") {        BaseFrequencies_ = read.simple.tsv(MetaDdir, "mm10/BaseFrequencies.mm10.tsv")  } 
+    else if (genome=="hg19") {   BaseFrequencies_ = read.simple.tsv(MetaDdir, "hg19/BaseFrequencies.hg19.tsv")  }
+    assign("BaseFrequencies_", BaseFrequencies_, envir = .GlobalEnv)
+  }
+  mygene = grep(mygene, rownames(BaseFrequencies_), value = T)
+  stopif(condition = (l(mygene)==0),message =  "Gene not found in BaseFrequencies.mm10.tsv or in BaseFrequencies.hg19.tsv")
+  frz = BaseFrequencies_[mygene, 1:4]
+  
+  x =NULL
+  Bases = c("A","C","G","T" )
+  if (!silent) {
+    for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_[ ,Bases[L]])(frz[L])  }
+    print("",quote = F)
+    print("Position in the distribution of base frequencies across all genes")
+    print (percentage_formatter(x))
+  }
+  return(frz)
+}
+
+# BaseFrequencies()
+
+
+# Transcriptome / Genome Stats -----------------------------------------------------------------------------------------------------
+
+TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the transctipt length of a gene of interest, and how extreme it is compared to all transcripts
+  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  if ( !exists("TrLength_")) {
+    if (genome=="mm10") {        TrLength_ = read.simple.tsv.named.vector(MetaDdir, "mm10/TranscriptLength.mm10.tsv")  } 
+    else if (genome=="hg19") {   TrLength_ = read.simple.tsv(MetaDdir, "hg19/TranscriptLength.hg19.tsv")  }
+    assign("TrLength_", TrLength_, envir = .GlobalEnv)
+  }
+  mygene = grep(mygene, names(TrLength_), value = T)
+  stopif(condition = (l(mygene)==0),message =  "Gene not found in TranscriptLength.hmm10.tsv or in TranscriptLength.hg19.tsv")
+  Len_MyGene = TrLength_[mygene]
+  
+  if (!silent) {
+    for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_)(Len_MyGene)  }
+    print("",quote = F)
+    print("Position in the distribution of lengths across all genes")
+    print (percentage_formatter(x))
+  }
+  return(Len_MyGene)
+}
+
+#  -----------------------------------------------------------------------------------------------------
+#  -----------------------------------------------------------------------------------------------------
+#  -----------------------------------------------------------------------------------------------------
+#  -----------------------------------------------------------------------------------------------------
+

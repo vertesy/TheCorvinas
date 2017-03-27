@@ -1,7 +1,7 @@
 ######################################################################
 # A collection of custom R functions
 ######################################################################
-# source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/CodeAndRoll.R')
+# source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R')
 ## If something is not found:
 # source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
 # source("/Users/abelvertesy/MarkdownReports/MarkDownLogg.R")
@@ -61,59 +61,8 @@ any_print <-function (...) { # A more flexible printing function that collapses 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
 ### Clipboard interaction -------------------------------------------------------------------------------------------------
-oo <- function () {toClipboard(OutDir); print("OutDir is copied to the Clipbiard")}
+source("~/Github_repos/DataInCode/DataInCode.R")
 
-toClipboard <- function(x, sep="\t", header=FALSE, row.names=FALSE, col.names =F) { # Copy an R-object to your clipboard on OS X.
-	write.table(x, pipe("pbcopy"), sep=sep, row.names=row.names, col.names =col.names, quote = F)
-}
-
-fromClipboard <- function( sep="\t", header=F) { # Paste data from your clipboard (e.g. a table from Excel) into R, parse it to a code-snippet defining an R data frame on OS X.
-	return (read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))
-}
-
-fromClipboard.as_vec <- function( sep="\t", header=F) { # Paste a list of numbers from your clipboard (e.g. from Excel) into R, parse it to a code-snippet defining an R vector on OS X.
-	return (as.vector(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
-}
-
-fromClipboard.as_num_vec <- function( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
-  return (as.numeric(unlist(read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F))))
-}
-
-fromClipboard.as_named_vec <- function( sep="\t", header=F) { # Paste a list of strings from your clipboard (e.g. from Excel) into R, parse it to a numeric R vector on OS X.
-  tbl = read.table(pipe("pbpaste"), sep=sep, header=header, stringsAsFactors =F)
-  vecc = tbl[ ,2]
-  names(vecc) = tbl[ ,1]
-  print("Names should eb in column 1, data in column 2, no header row.")
-  return (vecc)
-}
-
-inline_vec.char <- function(char_vector) {	# Paste data into your code easily. Take a character vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( '", paste (char_vector, collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
-}
-
-inline_vec.num <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( ", paste (num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied to Clipboard")
-}
-
-inline_named_vec <- function(num_vector) {	# Paste data into your code easily. Take a numeric vector, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
-  toClipboard(    print(paste("c( ", paste (paste0('"', names(num_vector),'"'),"=", num_vector, collapse =  ", "),  " )", collapse = "", sep=""), quote = F)    )
-  print(" Copied to Clipboard")
-}
-
-inline_list_char <- function(char_list) {	# Paste data into your code easily. Take a list of character vectors, parse it to a code-snippet defining an R list, and copy back to the Clipboard.
-	print ("list(", quote = F)
-	for (l in 1: length(list)) {
-		print(paste("c( '", paste (char_list[[l]], collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)
-	};	print (")", quote = F)
-}
-
-inline_vec.char.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of strings from your clipboard, parse it to a code-snippet defining an R character vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( '", paste (fromClipboard.as_vec(), collapse =  "', '"),  "')", collapse = "", sep=""), quote = F)); print(" Copied from & to Clipboard")
-}
-
-inline_vec.num.from_Clipboard <- function() {	# Paste data into your code easily. Take a list of numbers from your clipboard, parse it to a code-snippet defining an R numeric vector, and copy back to the Clipboard.
-	toClipboard(print(paste("c( ", paste (fromClipboard.as_num_vec(), collapse =  ", "),  " )", collapse = "", sep=""), quote = F)); print(" Copied from Clipboard")
-}
 
 ### Reading files in -------------------------------------------------------------------------------------------------
 FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
@@ -887,30 +836,6 @@ numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(
 # toClipboard(numerate(1, 122))
 
 
-plot_filtering_RaceID <- function(sc, minexpr=p$minexpr, minnumber = p$minnumber) {
-  GeneExpression = log10(rowSums(sc@expdata)+1)
-  GeneOccurences = rowSums(sc@expdata>0)
-  GeneOccurence_above_MinEx = rowSums(sc@expdata > minexpr)
-  index = GeneOccurence_above_MinEx >= minnumber
-
-  coll = (index)+2
-  sub = kollapse(pc_TRUE(index)," or ", sum(index), " genes have ", minexpr, "+ reads in ", minnumber, "+ cells.")
-  plot(jitter(GeneOccurences, amount = .5) ~ GeneExpression , pch=".", main ="GeneFiltering", col = coll, sub = sub, xlab = "log10(Transcript Count+1)", ylab = "Expressed in so many cells" )
-}
-
-
-clhist <-function(..., breaks = 20, col = "gold1", xlb = "-") { # Draw a histogram from data pasted from clipboard. Works on OS X only.
-  whist(fromClipboard.as_num_vec(),breaks = breakz, savefile = F)
-}
-
-clpie <-function(..., percentage = TRUE, both_pc_and_value = F, plotname = "Distribution" ) { #  Draw a pie chart from data pasted from clipboard.  Works on OS X only.
-  wpie(fromClipboard.as_num_vec(), percentage = percentage, savefile = F)
-}
-
-clbarplot <-function( ..., col = "gold1", sub = F) { #  Draw a barplot from data pasted from clipboard.  Works on OS X only.
-  wbarplot(fromClipboard.as_num_vec(), percentage = percentage, savefile = F)
-}
-
 
 printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report at every e.g. 1000
 
@@ -947,11 +872,6 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 }
 
 
-id2name <- function(x) sub("\\_\\_chr\\w+","",x) # From RaceID
-
-name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x] # From RaceID
-
-
 create_set_SubDir <-function (..., setDir=T) {
   NewOutDir = kollapse(OutDir,"/", ..., print = F)
   any_print("All files will be saved under 'NewOutDir': ", NewOutDir)
@@ -983,15 +903,6 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
 } # Get rows it can, report how much it could not find
 
 
-
-parFlags <- function(..., pasteflg=T, collapsechar =".") { # Create a string from the names of the true parameters (T or F)
-  namez=as.character(as.list(match.call())[-1])
-  val = c(...)
-  names(val) =namez
-  flg = which_names(val)
-  flg= if (pasteflg) paste0(collapsechar, paste0(flg, collapse = collapsechar))
-  return(flg)
-}
 
 
 #' #' wpie
@@ -1070,7 +981,6 @@ vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vect
   return(v)
 }
 
-
 rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
   colz = gplots::rich.colors(l(unique(vec)))
   if (randomize) {
@@ -1080,65 +990,6 @@ rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors w
   colz[vec]
   
 }
-
-
-
-#' BaseFrequencies
-#'
-#' @param mygene Gene of interest. You need either the ID or Gene symbol
-#' @param genome mm10 of hg19 for now
-#' @export
-#'
-#' @examples BaseFrequencies()
-
-BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives you the base distribution of a gene of interest, and how extreme it is compared to all transcripts
-  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
-  
-  if ( !exists("BaseFrequencies_")) {
-    if (genome=="mm10") {        BaseFrequencies_ = read.simple.tsv(MetaDdir, "mm10/BaseFrequencies.mm10.tsv")  } 
-    else if (genome=="hg19") {   BaseFrequencies_ = read.simple.tsv(MetaDdir, "hg19/BaseFrequencies.hg19.tsv")  }
-    assign("BaseFrequencies_", BaseFrequencies_, envir = .GlobalEnv)
-  }
-  mygene = grep(mygene, rownames(BaseFrequencies_), value = T)
-  stopif(condition = (l(mygene)==0),message =  "Gene not found in BaseFrequencies.mm10.tsv or in BaseFrequencies.hg19.tsv")
-  frz = BaseFrequencies_[mygene, 1:4]
-  
-  x =NULL
-  Bases = c("A","C","G","T" )
-  if (!silent) {
-    for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_[ ,Bases[L]])(frz[L])  }
-    print("",quote = F)
-    print("Position in the distribution of base frequencies across all genes")
-    print (percentage_formatter(x))
-  }
-  return(frz)
-}
-
-# BaseFrequencies()
-
-
-
-TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the transctipt length of a gene of interest, and how extreme it is compared to all transcripts
-  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
-  if ( !exists("TrLength_")) {
-    if (genome=="mm10") {        TrLength_ = read.simple.tsv.named.vector(MetaDdir, "mm10/TranscriptLength.mm10.tsv")  } 
-    else if (genome=="hg19") {   TrLength_ = read.simple.tsv(MetaDdir, "hg19/TranscriptLength.hg19.tsv")  }
-    assign("TrLength_", TrLength_, envir = .GlobalEnv)
-  }
-  mygene = grep(mygene, names(TrLength_), value = T)
-  stopif(condition = (l(mygene)==0),message =  "Gene not found in TranscriptLength.hmm10.tsv or in TranscriptLength.hg19.tsv")
-  Len_MyGene = TrLength_[mygene]
-  
-  if (!silent) {
-    for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_)(Len_MyGene)  }
-    print("",quote = F)
-    print("Position in the distribution of lengths across all genes")
-    print (percentage_formatter(x))
-  }
-  return(Len_MyGene)
-}
-
-
 
 
 # TEMP ------------------------------------
@@ -1175,35 +1026,6 @@ wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlo
   } else {                                    legend(textlocation, legend = legendText , bty="n") }
   if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
 }
-
-
-
-
-
-
-multitSNE <- function (sc_obj=sc, genes=rownames(sc@ndata)[1:5], cols_ = 2, rows_ = 3, log_10_ =F, pname_="tSNE.multiple.genes", cex_=.5) {
-  pdfA4plot_on(pname = pname_, cols = cols_, rows = rows_)
-  for(i in 1:length(genes)){
-    tsne.multiplex(sc_ = sc_obj, g = genes[i], title = genes[i], log_10 = log_10_ )
-  }
-  pdfA4plot_off()
-} # multitSNE(log_10_ = T, pname_ = "aaa")
-
-# inside function of multitSNE()
-tsne.multiplex <- function(sc_=sc, g="Hsp90aa1__chr12", legendPos="topleft", title=g, pchx =T, log_10 =F, cex_=.5){
-  exp = as.numeric(sc_@ndata[g,])
-  rng = iround(range(exp))
-  if(log_10) {exp = log10(exp)}
-  ccc=val2col(exp, col = rev(terrain.colors(max(12, 3 * l(unique(exp))))) )
-  ColorRamp <- rev(terrain.colors(100))
-  if(isTRUE(clPch)) {clID = sc@cluster$kpart; clID[clID>5] = (clID[clID>5])-5
-  pchx=(20+clID)  }
-  plot(sc@tsne, pch=pchx, bg=ccc, col="grey33", main=title)
-  
-  lll = ccc[c(which.min(exp), which.max(exp))]; names(lll) = rng # legend labels 
-  wlegend2(x = legendPos,fill = lll, OverwritePrevPDF = F, title="Transcripts", cex=cex_)
-}
-
 
 # http://stackoverflow.com/questions/20127282/r-color-scatterplot-points-by-col-value-with-legend
 scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color), 
@@ -1310,8 +1132,6 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
 }
 
 
-
-
 # corrr::correlate(mtcars[, 1:4], method = "pearson") %>%
 #   corrr::rearrange(absolute=F) %>% #  rearrange cols and rows
 #   corrr::shave()%>% # shave upper triangle
@@ -1319,11 +1139,7 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
 # 
 # corrr::correlate(mtcars[, 1:4], method = "pearson") %>% network_plot()
 
-
-
 nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
-
-
 
 list2df_NA_padded <- function(L) {
   pad.na <- function(x,len) {
@@ -1332,7 +1148,6 @@ list2df_NA_padded <- function(L) {
   maxlen <- max(sapply(L,length))
   do.call(data.frame,lapply(L,pad.na,len=maxlen))
 }
-
 
 clip.values <- function(valz, high=T, thr=3) {
   if (high) { valz[valz>thr]=thr
