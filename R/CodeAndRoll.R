@@ -3,10 +3,10 @@
 ######################################################################
 # source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R')
 ## If something is not found:
-# source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
-# source("/Users/abelvertesy/MarkdownReports/MarkDownLogg.R")
+# source("~/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
+# source("~/MarkdownReports/MarkDownLogg.R")
 ## For RNA-seq specific functions, call:
-# source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
+# source("~/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 ### CHAPTERS:
 # -  File handling, export, import [read & write]
@@ -31,7 +31,7 @@
 debuggingState(on=FALSE)
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
-# source("/Users/abelvertesy/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
+# source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 require("MarkdownReports")
 "Depends: gtools"
 

@@ -9,11 +9,23 @@ A set of functions to parse links to genomics related websites.
 
 It can do 3 things:
 
-1. Parse the links for a vector of gene symbols
-2. Parse the links, and open them in the default browser (beware for 20+ genes)
-3. Parse the link, and write them as open into a bash script (that you can later open in batches.)
+1. Parse (and store) the links for a vector of gene symbols
+2. Parse the links, and **open** them **in the default browser** (beware for 20+ genes)
+3. Parse the link, and **write** `open` commands **into an** (executable) **bash script**, which you can later open in batches.
 
 *Note: It typically parses query (search) links, instead direct links*
+
+### List of Databases
+
+- Ensemble
+- Uniprot
+- STRING: a protein interaction database
+- Pubmed
+- Wikipedia
+
+#### Species specific 
+- Wormbase
+- HGNC (Human Gene Nomenclature)
 
 ### Install
 
@@ -33,6 +45,7 @@ Read: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR.md
 
 
 ## Usage
+*Default species is typically mice*
 
 You can use the functions in 3 ways:
 
@@ -51,8 +64,7 @@ You can use the functions in 3 ways:
 Using `link_String("Mecom", writeOut = T)`, in your bash script, you will find:
 
 ```
-open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Tuba3a&species=10090'
-open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwil1&species=10090'
+open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Mecom&species=10090'
 ```
 
 
@@ -63,13 +75,16 @@ open 'http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwi
 Writes the link to the screen. You get:
 
 ```
-http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Tuba3a&species=10090
-http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Piwil1&species=10090
+http://string-db.org/newstring_cgi/show_network_section.pl?identifier=Mecom&species=10090
 ```
 
 as a character vector, so you can write out in a column of your gene-table.
 
+
+
 ---------
+
+
 
 
 ### If you encounter a bug, or something doesn't work, 
@@ -77,11 +92,11 @@ as a character vector, so you can write out in a column of your gene-table.
 1. please let me know by raising an issue on [TheCorvinas](https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R)
 2. Fix by providing the missing function. 
       - Try to `source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")`
-        [See details](https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md)
+        [See details for CodeAndRoll](https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md)
       - If still some functons are missing, try to install MarkdownReports: 
 	`install.packages("devtools")`
       `devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports")`
       `require("MarkdownReports")`  
-        [See details](https://vertesy.github.io/MarkdownReports/)
+	[See details for MarkdownReports](https://vertesy.github.io/MarkdownReports/)
         
         
