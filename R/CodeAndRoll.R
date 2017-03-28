@@ -493,9 +493,9 @@ modus <- function(x) { # Calculates the modus of a numeric vector (it excludes N
 	ux[tab == max(tab)]
 }
 
-gm_mean <- function(x, na.rm=TRUE){ # Calculates the geometric mean of a numeric vector (it excludes NA-s by default)
+geomean <- function(x, na.rm=TRUE){ # Calculates the geometric mean of a numeric vector (it excludes NA-s by default)
   exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x)) }
-geomean = gm_mean
+gm_mean = geomean
 
 mean_of_log <- function(x, k=2, na.rm=TRUE){ # Calculates the mean of the log_k of a numeric vector (it excludes NA-s by default)
   negs = sum(x<0);  zeros = sum(x==0)
