@@ -129,7 +129,7 @@ wbarplot_cellID <-  function(variable, col ="gold1", ...) { # in ... you can pas
 
 id2name <- function(x) sub("\\_\\_chr\\w+","",x) # From RaceID
 
-name2id <- function(x,id) id[sub("\\_\\_chr\\w+","",id) %in% x] # From RaceID
+name2id <- function(x,id=rownames(sc@expdata)) id[sub("\\_\\_chr\\w+","",id) %in% x] # From RaceID
 
 
 
