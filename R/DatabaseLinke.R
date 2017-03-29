@@ -26,13 +26,13 @@ BashScriptLocation = "/Users/abelvertesy/bin/run.sh"
 # ALT USAGE link_fromToClilpboard = toClipboard(link_uniprot_mice(fromClipboard.as_vec(), writeOut = F))
 
 # Static part of Query links ------------------------
-HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search="
+GeneCards = "http://www.genecards.org/Search/Keyword?queryString="
+PUBMED_search_prefix = "https://www.ncbi.nlm.nih.gov/pubmed/?term="
 wikipedia = "http://en.wikipedia.org/w/index.php?search="
 
 ensembl_multispecies = c("http://www.ensembl.org/Multi/Search/Results?q=",";site=ensembl")
 grc37 = c("http://grch37.ensembl.org/Human/Search/Results?q=", ";site=ensembl;facet_feature_type=Gene;facet_species=Human")
 grc38 = c("http://www.ensembl.org/Human/Search/Results?q=", ";site=ensembl;facet_feature_type=Gene;facet_species=Human")
-
 grc_mm38 = c("http://www.ensembl.org/Mouse/Search/Results?q=", ";site=ensembl;facet_feature_type=;facet_species=Mouse")
 grc_Zebra = c("http://www.ensembl.org/Search/Results?q=", ";site=ensembl;facet_feature_type=;facet_species=Zebrafish")
 
@@ -49,18 +49,23 @@ STRING_mouse_suffix = "&species=10090"
 STRING_human_suffix = "&species=9606"
 STRING_elegans_suffix = "&species=6239"
 
+
+# Single organism databases --------------------------------------------------------------------------------
+HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search="
+
 wormbase_search_prefix = "https://www.wormbase.org/search/gene/"
+worm_CGC_prefix = c("http://www.cgc.cbs.umn.edu/search.php?st=","&field=all&exst=&exfield=all")
 
-PUBMED_search_prefix = "https://www.ncbi.nlm.nih.gov/pubmed/?term="
 
-# HGNC links ------------------------------------------------------------------------------------------------
-link_HGNC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse HGNC links to your list of gene symbols
-	links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
-	if (writeOut) {
-		bash_commands = paste0("open ", links)
-		write.simple.append("", ManualName = BashScriptLocation)
-		write.simple.append(bash_commands, ManualName = BashScriptLocation)
-	} else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+
+# GeneCards links ------------------------------------------------------------------------------------------------
+link_GeneCards <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse GeneCards links to your list of gene symbols
+  links = paste0(GeneCards, vector_of_gene_symbols)
+  if (writeOut) {
+    bash_commands = paste0("open ", links)
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
 
 # ENSEMBL Links --------------------------------------------------------------------------------------------------------------------------------
@@ -166,16 +171,6 @@ link_pubmed <- function (vector_of_gene_symbols, additional_terms = "", writeOut
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
 
-# wormbase links ------------------------------------------------------------------------
-
-link_wormbase <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
-  links = paste0( wormbase_search_prefix, vector_of_gene_symbols)
-  if (writeOut) {
-    bash_commands = paste0("open '", links, "'")
-    write.simple.append("", ManualName = BashScriptLocation)
-    write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
-}
 
 # Wikipedia links ------------------------------------------------------------------------
 
@@ -188,9 +183,30 @@ link_wikipedia <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
 
-# CGC links (worms mutant database) ------------------------------------------------------------------------
 
-worm_CGC_prefix = c("http://www.cgc.cbs.umn.edu/search.php?st=","&field=all&exst=&exfield=all")
+
+# HGNC links ------------------------------------------------------------------------------------------------
+link_HGNC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse HGNC links to your list of gene symbols
+  links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
+  if (writeOut) {
+    bash_commands = paste0("open ", links)
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+# wormbase links ------------------------------------------------------------------------
+
+link_wormbase <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( wormbase_search_prefix, vector_of_gene_symbols)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+# CGC links (worms mutant database) ------------------------------------------------------------------------
 
 link_CGC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # Parse CGC links (worms mutant database).
   links = paste0( worm_CGC_prefix[1], vector_of_gene_symbols, worm_CGC_prefix[2] )
