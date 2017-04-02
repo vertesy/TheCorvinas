@@ -1140,6 +1140,7 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
 # corrr::correlate(mtcars[, 1:4], method = "pearson") %>% network_plot()
 
 nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
+flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) },toggle,sep = Separator) } # returns the name if its value is true
 
 list2df_NA_padded <- function(L) {
   pad.na <- function(x,len) {
