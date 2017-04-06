@@ -40,7 +40,7 @@ p0 = paste0
 try.dev.off <- function () { try(dev.off(), silent = T) }
 topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decreasing = T), n=n) }
 bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
-colSums.barplot <- function (df, col="seagreen2") { barplot(colSums(df), col=col) }
+colSums.barplot <- function (df, col="seagreen2", ...) { barplot(colSums(df), col=col, ...) }
 as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
 sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
 coolor <- function (n=3) {  gplots::rich.colors(n) }
@@ -1155,3 +1155,10 @@ clip.values <- function(valz, high=T, thr=3) {
   } else{     valz[valz<thr]=thr}
   valz
 }
+
+quantile_breaks <- function(xs, n = 10) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
+  breaks <- quantile(xs, probs = seq(0, 1, length.out = n))
+  breaks[!duplicated(breaks)]
+}
+
+
