@@ -98,16 +98,16 @@ read.simple.table <- function(..., colnames=T ) { # Read in a file. default: hea
 	return(read_in)
 }
 
-read.simple.tsv <- function(...) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.tsv <- function(..., sep_ = "\t") { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
-	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
+	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
 	any_print ("New variable dim: ",dim(read_in))
 	return(read_in)
 }
 
-read.simple.tsv.named.vector <- function(...) { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
-	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep="\t", row.names=1, header=T )
+	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=sep_, row.names=1, header=T )
 	rn = row.names(read_in)
 	read_in =  as.vector(unlist(read_in));
 	names(read_in) = rn
@@ -308,10 +308,10 @@ rowMin <- function(x, na.rm=T) apply(data.matrix(x), 1, min, na.rm=na.rm) # Calc
 colMin <- function(x, na.rm=T) apply(data.matrix(x), 2, min, na.rm=na.rm) # Calculates the minimum of each column of a numeric matrix / data frame.
 
 rowMax <- function(x, na.rm=T) apply(data.matrix(x), 1, max, na.rm=na.rm) # Calculates the maximum of each row of a numeric matrix / data frame.
-colMax <- function(X, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calculates the maximum of each column of a numeric matrix / data frame.
+colMax <- function(x, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calculates the maximum of each column of a numeric matrix / data frame.
 
 rowSEM <- function(x, na.rm=T) apply(data.matrix(x), 1, sem, na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
-colSEM <- function(X, na.rm=T) apply(data.matrix(x), 2, sem, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
+colSEM <- function(x, na.rm=T) apply(data.matrix(x), 2, sem, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
@@ -842,9 +842,9 @@ printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report
 
 icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = coolor(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
-wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+wlegend2 <- function(x="bottomleft", fill = NULL, legend = names(fill), ..., w_=7, h_=w_, bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
   legend(x=x,legend=legend,fill=fill, ..., bty=bty)
-  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
+  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot, w= w_, h = h_)  }
 }
 
 # ttl_field <- function (flname = basename(fname) ) { paste0(flname, " by ", if (exists("scriptname")) scriptname else "Rscript") }
@@ -1162,3 +1162,18 @@ quantile_breaks <- function(xs, n = 10) { # Quantile breakpoints in any data vec
 }
 
 
+
+whist.back2back <- function(ListOf2, breaks1 = 20, breaks2 = 20) {
+  h1 = hist(ListOf2[[1]], plot=FALSE, breaks = breaks1)
+  h2 = hist(ListOf2[[2]], plot=FALSE, breaks = breaks2)
+  h2$counts = - h2$counts
+  hmax = max(h1$counts, na.rm =T)
+  hmin = min(h2$counts, na.rm =T)
+  rr =range(unlist(ListOf2), na.rm =T)
+  print(rr)
+  xmin = rr[1]
+  xmax = rr[2]
+  X = c(h1$breaks, h2$breaks)
+  barplot(h1$counts, ylim=c(hmin, hmax), col="green", xlim=c(xmin, xmax))
+  barplot(h2$counts, col="blue", add=T)
+}
