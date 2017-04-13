@@ -399,15 +399,14 @@ intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same length) s
 	return(Lout)
 }
 
-intermingle2vec <- function(V1, V2) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
+intermingle2vec <- function(V1, V2, wNames=T) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
   stopifnot(length(V1) == length(V2) )
-  LEN = length(c(V1, V2))
-
-  Vout = rep(NA, LEN)
-  Vout[seq(1,LEN, by=2)] = V1
-  Vout[seq(2, LEN, by=2)] = V2
+  Vout  = c(rbind(V1, V2))
+  if(wNames) {names(Vout) = c(rbind(names(V1),names(V2)))}
   return(Vout)
 }
+
+
 
 as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with certain dimensions, taken from the list it wanna resemble
 	stopifnot(length(vec) == length(unlist(list_wannabe)))
