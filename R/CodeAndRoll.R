@@ -587,6 +587,27 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
+
+
+annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+  stopifnot( l(annot_vec) == dim(df)[2] )
+  print(substitute(annot_vec))
+  df = as.data.frame(annot_vec)
+  if (!is.null(annot_names)) {  stopifnot(length(annot_col) == length(annot_names));     
+              colnames(df) = annot_names  
+  } else {    colnames(df) =  substitute(annot_vec)    }
+  
+  df[,1] = as.character(df[,1])
+  assign(x = "annot", value = df, envir = .GlobalEnv)
+  
+  xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
+  if (!is.null(annot_names)) {    stopifnot(length(annot_col) == length(annot_names));
+            names(xx) = annot_names  } 
+  else {    names(xx) = substitute(annot_vec)  }
+  
+  assign(x = "annot_col", value = xx, envir = .GlobalEnv)
+  print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+}
 ## Read and write plotting functions READ -------------------------------------
 # rw-funcitons cannot call the w-functions, there would be too much things lost: rw writes where the file comes from, w writes in Outdir & current dir
 
