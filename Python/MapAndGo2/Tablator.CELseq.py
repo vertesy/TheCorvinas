@@ -61,9 +61,9 @@ class samSingleRead(object):
 # Initialize -------------------------------------------------------
 
 #  The readname ends in *:BC:UMI:CELL_ID , therefore the positions from the end are (0-indexing!):
-bc_position = -3
-umi_position = -2
-cell_position = -1
+bc_position = 3
+umi_position = 2
+cell_position = 1
 
 try:
 	InputSamFile = sys.argv[1]
@@ -110,15 +110,15 @@ with open(InputSamFile) as f:
 
 		if read.isMapped() and read.isUniquelyMapped() and not read.isReverseStrand():
 			gene = read.rname
-			bc = q[len(q)-bc_position] 		# -3 for the beforelast element (-1  coz it's 0-indexed)
+			bc = q[len(q) - bc_position] 		# -3 for the beforelast element (-1  coz it's 0-indexed)
 			if not len(bc) == bclen:
 				print 'len(bc) != bclen'
 				sys.exit()
-			umi = q[len(q)-umi_position] 		# -2 for the beforelast element (-1  coz it's 0-indexed)
+			umi = q[len(q) - umi_position] 		# -2 for the beforelast element (-1  coz it's 0-indexed)
 			if not len(umi) == umilen:
 				print 'len(umi) != umilen'
 				sys.exit()
-			cell = q[len(q)-cell_position] 		# -1 for the last element (-1  coz it's 0-indexed)
+			cell = q[len(q) - cell_position] 		# -1 for the last element (-1  coz it's 0-indexed)
 			# cell = int(q[9]) # not a number any more
 
 			try:

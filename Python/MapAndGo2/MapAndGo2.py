@@ -14,7 +14,7 @@ import os
 # Default parameters
 # def_email = "<none>"
 def_email = "a.vertesy@hubrecht.eu"
-def_CelSeqPrimerVersion = "1"
+def_CelSeqPrimerVersion = "2"
 def_MaxHammingDist = "1"
 def_ScriptsFolder = "/hpc/hub_oudenaarden/MapAndGo2/"
 def_BWA_Folder = "/hpc/hub_oudenaarden/bin/software/bwa-0.7.10/"
