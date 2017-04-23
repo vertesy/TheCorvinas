@@ -1182,18 +1182,19 @@ quantile_breaks <- function(xs, n = 10) { # Quantile breakpoints in any data vec
 }
 
 
-
-whist.back2back <- function(ListOf2, breaks1 = 20, breaks2 = 20) {
+whist.back2back <- function(ListOf2, breaks1 = 20, breaks2 = 20, main_ = substitute(ListOf2), colorz = c("green", "blue"), ...) {
+  lng = length(ListOf2) 
+  if (lng != 2) { any_print("length(List): ", lng, " First two elements used" ) } #if
   h1 = hist(ListOf2[[1]], plot=FALSE, breaks = breaks1)
   h2 = hist(ListOf2[[2]], plot=FALSE, breaks = breaks2)
   h2$counts = - h2$counts
   hmax = max(h1$counts, na.rm =T)
   hmin = min(h2$counts, na.rm =T)
-  rr =range(unlist(ListOf2), na.rm =T)
-  print(rr)
-  xmin = rr[1]
-  xmax = rr[2]
+  xlimm =range(unlist(ListOf2), na.rm =T)
+  xlimm = c(1, max(l(h2$counts), l(h1$counts))+3)
+  
+  print(xlimm)
   X = c(h1$breaks, h2$breaks)
-  barplot(h1$counts, ylim=c(hmin, hmax), col="green", xlim=c(xmin, xmax))
-  barplot(h2$counts, col="blue", add=T)
+  barplot(h1$counts, ylim=c(hmin, hmax), xlim = xlimm, col=colorz[1], main = main_,...)
+  barplot(h2$counts, col=colorz[2], add=T)
 }
