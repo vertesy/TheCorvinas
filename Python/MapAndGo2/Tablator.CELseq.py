@@ -5,7 +5,7 @@
 # - Test it by running in bash: `python path/to/Tablator.CELseq.py`
 # - Run it with your data: python `python path/to/Tablator.CELseq.py path/to/InputSam 1` # Put 1 (or 2 if you used CELseq2 primers)
 # - Original author: Anna Alemany, van Oudenaarden group, 25-10-2016
-# - Modified  by Abel Vertesy, van Oudenaarden group, 25-10-2016
+# - Modified  by Abel Vertesy, van Oudenaarden group, 25-04-2017
 # ## Loaction: /home/hub_oudenaarden/avertesy/bin/Mapping/Tablator.CELseq.py
 
 print "Tablator.CELseq.py Started"
@@ -133,9 +133,14 @@ with open(InputSamFile) as f:
 # Writing out count tables -------------------------------------------------------
 print "...Writing out count tables"
 
-fc = open(InputSamFile[:-4] + '.ReadCounts.tsv', 'w+')
-fb = open(InputSamFile[:-4] + '.BarcodeCounts.tsv', 'w+')
-ft = open(InputSamFile[:-4] + '.TranscriptCounts.tsv', 'w+')
+ftrunk = InputSamFile[:-4]
+fc_n = ftrunk + '.ReadCounts.tsv'
+fb_n = ftrunk + '.BarcodeCounts.tsv'
+ft_n = ftrunk + '.TranscriptCounts.tsv'
+
+fc = open( fc_n, 'w+')
+fb = open( fb_n, 'w+')
+ft = open( ft_n, 'w+')
 
 print >> fc, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
 print >> fb, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
@@ -143,7 +148,8 @@ print >> ft, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
 
 for gene in sorted(umicnt):
 	print >> fc, '\t'.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
-	print >> fb, gene, '\t', '\t'.join( str(len(set(	 umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) )
+	print >> fb, gene,'\t','\t'.join( str(len(set(	 umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) ) # original
+
 	t = []
 	for cell in sorted(bc2sample.values()):
 		x = 1.0 * len(set(umicnt[gene][cell]))
@@ -158,10 +164,11 @@ for gene in sorted(umicnt):
 			print len(set(umicnt[gene][cell]))
 		else:
 			t.append(0)
-	print >> ft, gene, '\t', '\t'.join(str(ti) for ti in t)
+	print >> ft, gene,'\t','\t'.join(str(ti) for ti in t)
 
 fc.close()
 fb.close()
 ft.close()
+
 
 print "CountingTablator.CELseq.py Finished"
