@@ -914,13 +914,13 @@ create_set_SubDir <-function (..., setDir=T) {
 #   }
 # }
 
-getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
+getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) { # Get the subset of rows with existing rownames, report how much it could not find.
   idx = intersect(rownamez, row.names(mat))
   if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
   if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
   if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
   mat[ idx,]
-} # Get rows it can, report how much it could not find
+} 
 
 
 
