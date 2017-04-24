@@ -5,15 +5,15 @@
 ### Run it with -> python MapAndGo.py
 ### For usage run -> python MapAndGo.py -help
 # - Authors: Abel Vertesy and Thom de Hoog van Oudenaarden group, 02-03-2015
-# - Maintained by Abel Vertesy, van Oudenaarden group, 22-04-2017
+# - Maintained by Abel Vertesy, van Oudenaarden group, 25-04-2017
 
 import glob
 import sys
 import os
 
 # Default parameters
-# def_email = "<none>"
-def_email = "a.vertesy@hubrecht.eu"
+def_email = "<none>"
+# def_email = "a.vertesy@hubrecht.eu"
 def_CelSeqPrimerVersion = "2"
 def_MaxHammingDist = "1"
 def_ScriptsFolder = "/hpc/hub_oudenaarden/MapAndGo2/"
@@ -31,9 +31,9 @@ def_refseq_elegans = "/hpc/hub_oudenaarden/gene_models/cel_gene_models/Aggregate
 def_refseq_briggsae = "/hpc/hub_oudenaarden/gene_models/cbr_gene_models/cb3_transcriptome_ERCC92.fa"
 
 def_qsub = "no"
-def_mem = "5"
+def_mem = "8"
 def_time = "06:00:00"
-def_core = "8"
+def_core = "4"
 def_unzip = "yes"
 def_zip = "yes"
 
@@ -354,6 +354,8 @@ print "Email: 						" + emailAddress
 print "zip .fastq files afterwards:			" + params['-zip']
 
 #Make unique filenames
+print "\n\n\t\tIMPORTANT: Make sure to check the bash files:\n"
+
 for i in range(0,len(files)):
 	nr = 1
 	file_name = params['-bash_out'] + "/map_"+files[i]+"_"+str(nr)+".sh"
@@ -362,10 +364,11 @@ for i in range(0,len(files)):
 		split = file_name.split("_")[len(file_name.split("_"))-1]
 		nr = int(split.split(".sh")[0]) + 1
 		file_name = params['-bash_out'] + "/map_"+files[i]+"_"+str(nr)+".sh"
+	print "\t\t\t\t"+file_name
 
 	bash_file_name.append(file_name)
 
-print "\nImportant: Make sure to check the bash files:\n\t\t\t\t", bash_file_name, "\n"
+print "\n\n"
 
 # Make commands ------------------------------------------------------------------------------------------------------------------------
 for i in range(0,len(files)):
@@ -389,7 +392,8 @@ for i in range(0,len(files)):
 	MakeSingleEnd = params["-ScriptsFolder"] + "Concatenator.CELseq.py " + FastQ1_cat + " " + params["-CelSeqPrimerVersion"] + " " +  params["-MaxHammingDist"] + "\n\n"
 	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam + "\n\n"
 	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"] + "\n\n"
-	DownloadResults = "rsync -avzP UMC: " + params["-counts_out"] + " " + "~/Downloads\n"
+	Copy = "mv " + params["-map_out"] + "/*.tsv " + params["-counts_out"] + "/\n\n\n"
+	DownloadResults = "# rsync -avzP UMC: " + params["-counts_out"] + " " + "~/Downloads\n"
 
 	if params['-zip'] == "yes":
 		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
@@ -398,7 +402,7 @@ for i in range(0,len(files)):
 	else:
 		ZipUp = ""
 
-	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + '\n\n# '+ DownloadResults
+	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + Copy + DownloadResults
 	# bash_text = head_bash + MakeSingleEnd + mapping +extract + ZipUp + DownloadResults
 	bash_file.write(bash_text)
 	bash_file.close()
