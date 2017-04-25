@@ -1,6 +1,6 @@
 
 # RNA-seq specific R functions -----------------------------------------------------------------------------------------------------
-# source("/Users/abelvertesy/TheCorvinas/R/RNA_seq_specific_functions.r")
+# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 
 
