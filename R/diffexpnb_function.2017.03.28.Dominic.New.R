@@ -7,7 +7,7 @@ diffexpnb <- function(x, A, B, DESeq=FALSE, method="pooled", norm=FALSE, vfit=NU
     require(DESeq2)
     # run on sc@expdata
     des <- data.frame( row.names = colnames(x), condition = factor(c( rep(1, length(A)), rep(2, length(B)) )), libType = rep("single-end", dim(x)[2]))
-    cds <- DESeqDataSetFromMatrix(countData=round(x, 0), colData=des, design =~ condition, fitType='local', ...) 
+    cds <- DESeqDataSetFromMatrix(countData=round(x, 0), colData=des, design =~ condition, fitType='local', ...)
     res <- results(cds)
     list(des=des, cds=cds, res=res)
   }else{
@@ -42,7 +42,7 @@ diffexpnb <- function(x, A, B, DESeq=FALSE, method="pooled", norm=FALSE, vfit=NU
           vl <- vl[f]
           mm <- -8
           repeat{
-            fit[[i]] <- lm(vl ~ ml + I(ml^2)) 
+            fit[[i]] <- lm(vl ~ ml + I(ml^2))
             if( coef(fit[[i]])[3] >= 0 | mm >= -1){
               break
             }
@@ -66,7 +66,7 @@ diffexpnb <- function(x, A, B, DESeq=FALSE, method="pooled", norm=FALSE, vfit=NU
 
     psp <- 1e-99
     pv <- apply(data.frame(m[[1]], m[[2]]), 1, function(x){ p12 <- (dnbinom(0:round(x[1]*length(A) + x[2]*length(B), 0), mu=mean(x)*length(A), size=length(A)*sf(mean(x), 1)) + psp)*(dnbinom(round(x[1]*length(A) + x[2]*length(B), 0):0, mu=mean(x)*length(B), size=length(B)*sf(mean(x), 2)) + psp); sum(p12[p12 <= p12[round(x[1]*length(A), 0) + 1]])/sum(p12)} )
-    
+
     res <- data.frame(baseMean=(m[[1]] + m[[2]])/2, baseMeanA=m[[1]], baseMeanB=m[[2]], foldChange=m[[2]]/m[[1]], log2FoldChange=log2(m[[2]]/m[[1]]), pval=pv, padj=p.adjust(pv, method="BH"))
     vf1 <- data.frame(m=m[[1]], v=v[[1]], vm=vf(m[[1]], 1))
     vf2 <- data.frame(m=m[[2]], v=v[[2]], vm=vf(m[[2]], 2))
@@ -77,14 +77,16 @@ diffexpnb <- function(x, A, B, DESeq=FALSE, method="pooled", norm=FALSE, vfit=NU
   }
 }
 
-plotdiffgenesnb <- function(x, pthr=.05, padj=TRUE, lthr=0, mthr=-Inf, Aname=NULL, Bname=NULL, show_names=TRUE, ...){
+plotdiffgenesnb <- function(x, pthr=.05, padj=TRUE, lthr=1, mthr=-Inf, Aname=NULL, Bname=NULL, show_names=TRUE, lthr_line=TRUE, ...){
   y <- as.data.frame(x$res)
   if ( is.null(Aname) ) Aname <- "baseMeanA"
   if ( is.null(Bname) ) Bname <- "baseMeanB"
 
-  plot(log2(y$baseMean), y$log2FoldChange, pch=20, ..., col="grey", 
-       xlab=paste("log2 ( ( #mRNA[", Aname, "] + #mRNA[", Bname, "] )/2 )", sep=""), ylab=paste("log2 #mRNA[", Bname, "] - log2 #mRNA[", Aname, "]", sep=""))
+  plot(log2(y$baseMean), y$log2FoldChange, pch=20, ..., col="grey",
+       xlab=paste("log2 ( ( #mRNA[", Aname, "] + #mRNA[", Bname, "] )/2 )", sep=""),
+       ylab=paste("log2 #mRNA[", Bname, "] - log2 #mRNA[", Aname, "]", sep=""))
   abline(0, 0)
+  if(lthr_line){abline(h=c(-lthr,lthr), lty=3, col="grey")}
   if ( ! is.null(pthr) ){
     if ( padj ) f <- y$padj < pthr else f <- y$pval < pthr
     points(log2(y$baseMean)[f], y$log2FoldChange[f], col="red", pch=20)

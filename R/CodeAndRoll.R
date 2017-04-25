@@ -662,6 +662,7 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, pl
 
 pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, mdlink = FALSE,
                           title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) { # Print (multiple) plots to an (A4) pdf.
+  try.dev.off()
   assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
   fname = kollapse(OutDir,"/" , pname, ".pdf")
   pdf(fname,width=w, height=h, title = title)
@@ -672,6 +673,7 @@ pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, co
 
 pdfA4plot_on.layout <- function (pname = date(), ..., w = 8.27, h = 11.69, layout_mat = rbind(1, c(2, 3), 4:5), mdlink = FALSE,
                                  title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) { # Fancy layout version. Print (multiple) plots to an (A4) pdf.
+  try.dev.off()
   fname = kollapse(OutDir,"/" , pname, ".pdf")
   pdf(fname,width=w, height=h, title = title)
   layout(layout_mat)
