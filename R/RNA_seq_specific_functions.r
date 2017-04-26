@@ -127,9 +127,14 @@ wbarplot_cellID <-  function(variable, col ="gold1", ...) { # in ... you can pas
 
 # RaceID -----------------------------------------------------------------------------------------------------
 
-id2name <- function(x) sub("\\_\\_chr\\w+","",x) # From RaceID
+id2name <- function(x) sub("\\_\\_chr\\w+","",x ) # From RaceID
 
-name2id <- function(x,id=rownames(sc@expdata)) id[sub("\\_\\_chr\\w+","",id) %in% x] # From RaceID
+name2id <- function(x,id=rownames(sc@expdata)) {
+  found = id[sub("\\_\\_chr\\w+","",id) %in% x] 
+  not_found = setdiff(x, found)
+  any_print("NOT FOUND: ", not_found, "or", inline_vec.char(not_found))
+  return(found)
+} # From RaceID
 
 
 
