@@ -24,10 +24,10 @@
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "~/bin/run.sh"
 
-gene_IDs_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec")
-gene_IDs_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec")
-gene_names_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec")
-gene_names_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec")
+.gene_IDs_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec")
+.gene_IDs_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec")
+.gene_names_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec")
+.gene_names_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec")
 
 # ALT USAGE link_fromToClilpboard = toClipboard(link_uniprot_mice(fromClipboard.as_vec(), writeOut = F))
 
@@ -228,10 +228,17 @@ link_CGC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # 
 
 validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, species = c("human", "mice")[1]) { # Validate Gene Symbols / Names / IDs
   condition = F
-  gene_IDs = if (species == "human") {gene_IDs_hg19} else if (species == "mice") {gene_IDs_mm10}
-  x = lookup(vector_of_gene_symbols, gene_IDs)
-
-
+  any_print(length(MarkerGenes), " gene symbols are provided."); print("", quote = F)
+  gene_IDs = if (species == "human") {.gene_IDs_hg19} else if (species == "mice") {.gene_IDs_mm10}
+  found = gene_IDs[sub("\\_\\_chr\\w+","",gene_IDs) %in% vector_of_gene_symbols] 
+  not_found = setdiff(vector_of_gene_symbols, id2name(found))
+  any_print(length(not_found), "genes are not found in the reference: ", not_found, "or", x=parse_vec(not_found)); print("", quote = F)
+  # print(found)
+  GenesDetected = rownames(ExpressionMatrix)
+  expressed = intersect(found, GenesDetected)
+  not_expressed = setdiff(found, GenesDetected)
+  any_print(length(not_expressed), "existing genes are not expressed: ", not_expressed, "or", x=parse_vec(not_expressed))
+  any_print(length(expressed), "genes are found: ",  expressed)
+  return(expressed)
 }
-
 
