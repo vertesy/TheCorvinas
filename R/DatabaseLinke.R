@@ -1,28 +1,34 @@
 ######################################################################
 # Parse links to databases from your list of gene symbols
 ######################################################################
-# source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/DatabaseLinke.R')
+# source ('~/Github_repos/TheCorvinas/R/DatabaseLinke.R')
 
 ######################################################################
 ## Full functionality is only expected on OS X
 ## See details: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinkeR.md
 ## - Set writeOut=FALSE, in each function for first usage.
-## 
-## If you encounter a bug, or something doesn't work, 
+##
+## If you encounter a bug, or something doesn't work,
 ## 1.)  please let me know by raising an issue on Github/vertesy/TheCorvinas
 ##      https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
-## 2.)  It might be a missing function. 
+## 2.)  It might be a missing function.
 ##      - Try to source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")
 ##        See details: https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md
 ##      - If still some functons are missing, try to install MarkdownReports: install.packages("devtools"); devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports"); require("MarkdownReports")
 ##        See details: https://vertesy.github.io/MarkdownReports/
-## 
+##
 ######################################################################
 
 # vector_of_gene_symbols = c("Oct4", "Dazl")
 
 # User Setup ----------------------------------------------------------------------
-BashScriptLocation = "/Users/abelvertesy/bin/run.sh"
+BashScriptLocation = "~/bin/run.sh"
+
+gene_IDs_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec")
+gene_IDs_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec")
+gene_names_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec")
+gene_names_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec")
+
 # ALT USAGE link_fromToClilpboard = toClipboard(link_uniprot_mice(fromClipboard.as_vec(), writeOut = F))
 
 # Static part of Query links ------------------------
@@ -147,9 +153,9 @@ link_uniprot_zebrafish <- function (vector_of_gene_symbols, writeOut = F, Open=!
 
 # SRING links ------------------------------------------------------------------------
 link_String <- function (vector_of_gene_symbols, organism="mouse", writeOut = T, Open=!writeOut) { # Parse STRING protein interaction database links to your list of gene symbols. "organism" can be mouse, human or NA
-  suffix = if (is.na(organism)) { "" } 
-  else if (organism== "elegans") { STRING_elegans_suffix } 
-  else if (organism== "mouse") { STRING_mouse_suffix } 
+  suffix = if (is.na(organism)) { "" }
+  else if (organism== "elegans") { STRING_elegans_suffix }
+  else if (organism== "mouse") { STRING_mouse_suffix }
   else if (organism== "human") { STRING_human_suffix }
     links = paste0( STRING, vector_of_gene_symbols, suffix )
   if (writeOut) {
@@ -215,6 +221,17 @@ link_CGC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # 
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+
+# Validate Gene Symbols / Names / IDs ------------------------------------------------------------------------
+
+validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, species = c("human", "mice")[1]) { # Validate Gene Symbols / Names / IDs
+  condition = F
+  gene_IDs = if (species == "human") {gene_IDs_hg19} else if (species == "mice") {gene_IDs_mm10}
+  x = lookup(vector_of_gene_symbols, gene_IDs)
+
+
 }
 
 

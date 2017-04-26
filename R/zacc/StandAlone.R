@@ -1,7 +1,7 @@
 ######################################################################
 # Make a script standalone by exporting all the funcitons into an .RDA object
 ######################################################################
-# source ('/Users/abelvertesy/TheCorvinas/R/StandAlone.R')
+# source ('~/TheCorvinas/R/StandAlone.R')
 
 
 
@@ -11,8 +11,8 @@
 
 
 # Setup ------------------------
-yaFile = "/Users/abelvertesy/TheCorvinas/R/CodeAndRoll.R"
-OutFile = "/Users/abelvertesy/TheCorvinas/R/CodeAndRoll.rda"
+yaFile = "~/TheCorvinas/R/CodeAndRoll.R"
+OutFile = "~/TheCorvinas/R/CodeAndRoll.rda"
 
 
 
@@ -21,7 +21,7 @@ FunList  = NCmisc::list.functions.in.file(yaFile)
 
 Funzy = lapply(FunList, get)
 str(Funzy)
-save(Funzy, file = "/Users/abelvertesy/Downloads/aaa.rda")
+save(Funzy, file = "~/Downloads/aaa.rda")
 
 Functions = unlist(FunList)
 write.simple.tsv(Functions)
@@ -33,7 +33,7 @@ load(file = OutFile, envir = , verbose=T)
 
 # try with RDS ------------------------
 
-saveRDS(Funzy, file = "/Users/abelvertesy/Downloads/aaa.rds")
-geocodenew <- readRDS("/Users/abelvertesy/Downloads/aaa.rds")
+saveRDS(Funzy, file = "~/Downloads/aaa.rds")
+geocodenew <- readRDS("~/Downloads/aaa.rds")
 
 get(geocodenew$`c("package:RoxygenReady", "package:MarkdownReports")`)

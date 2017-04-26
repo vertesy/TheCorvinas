@@ -1,4 +1,4 @@
-# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/diffexpnb_function.2017.03.28.Dominic.New.R")
+# source("~/Github_repos/TheCorvinas/R/diffexpnb_function.2017.03.28.Dominic.New.R")
 
 diffexpnb <- function(x, A, B, DESeq=FALSE, method="pooled", norm=FALSE, vfit=NULL, locreg=FALSE, ...){
   if ( ! method %in% c("per-condition", "pooled") ) stop("invalid method: choose pooled or per-condition")

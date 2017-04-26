@@ -1,6 +1,6 @@
 
 ## _Old_Functions.r
-# source("/Users/abelvertesy/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
+# source("~/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
 
 
 # old <- `[`

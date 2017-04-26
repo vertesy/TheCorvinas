@@ -4,9 +4,9 @@ import glob, os
 
 
 # Setup ------------------------------------------------------
-InputDir = "/Users/abelvertesy/Downloads/fasta"
+InputDir = "~/Downloads/fasta"
 inGenomeName = "hg19.fa"
-OutDir = "/Users/abelvertesy/Downloads/fasta_cbc"
+OutDir = "~/Downloads/fasta_cbc"
 
 if not os.path.isdir(OutDir): #Check if output folders exists
 		os.mkdir(OutDir)

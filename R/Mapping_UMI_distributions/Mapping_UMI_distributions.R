@@ -1,10 +1,10 @@
 
 
-setup_MarkdownReports(OutDir = "/Users/abelvertesy/Github_repos/TheCorvinas/R/Mapping_UMI_distributions/")
+setup_MarkdownReports(OutDir = "~/Github_repos/TheCorvinas/R/Mapping_UMI_distributions/")
 
 
-UMI_distr_in_mapped_reads = 	read.simple.tsv("/Users/abelvertesy/Github_repos/TheCorvinas/R/Mapping_UMI_distributions/UMI_distr_in_mapped_reads.tsv")
-UMI_distr_in_unmapped_reads = 	read.simple.tsv("/Users/abelvertesy/Github_repos/TheCorvinas/R/Mapping_UMI_distributions/UMI_distr_in_unmapped_reads.tsv")
+UMI_distr_in_mapped_reads = 	read.simple.tsv("~/Github_repos/TheCorvinas/R/Mapping_UMI_distributions/UMI_distr_in_mapped_reads.tsv")
+UMI_distr_in_unmapped_reads = 	read.simple.tsv("~/Github_repos/TheCorvinas/R/Mapping_UMI_distributions/UMI_distr_in_unmapped_reads.tsv")
 
 AllMapped_Reads =	sum(UMI_distr_in_mapped_reads)
 AllUnmapped_Reads =	sum(UMI_distr_in_unmapped_reads)

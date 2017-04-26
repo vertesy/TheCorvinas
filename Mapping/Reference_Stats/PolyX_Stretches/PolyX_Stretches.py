@@ -6,7 +6,7 @@ import glob
 import sys, os
 
 # Default parameters
-inputdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/PolyX_Stretches/"
+inputdir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/PolyX_Stretches/"
 inputfile = "head.fa"
 outputfile = "PolyX_Stretches.tsv"
 

@@ -1,6 +1,6 @@
 
 # RNA-seq specific R functions -----------------------------------------------------------------------------------------------------
-# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
+# source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 
 
@@ -14,11 +14,11 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   DE = as.data.frame(DEseqResults)
   if (!is.null(rownames(DE)) & !"Gene" %in% colnames(DE)) {    DE = cbind( "Gene" = rownames(DE), DE)  }
   if (sum(! (Columns %in% colnames(DE)))) { any_print("A dataframe with 3 columns needed:", Columns )}
-  
+
   # Make a basic volcano plot
   subb = paste0("Red if padj<",thr_padj_,", orange of log2FC>",thr_log2fc_,", green if both.")
   with(DE, plot(log2FoldChange, main=pname_, sub=subb, -log10(padj), pch=20, cex=.5, col = rgb(0,0,0,.25),xlim=range(DE$"log2FoldChange") ))
-  
+
   if(highlight) { # Add colored points:
     with(subset(DE, padj< thr_padj_ ),      points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))
     with(subset(DE, abs(log2FoldChange)>=thr_log2fc_), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="orange"))
@@ -84,13 +84,13 @@ panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {
   txt <- format(c(r, 0.123456789), digits=digits)[1]
   txt <- paste(prefix, txt, sep="")
   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-  
+
   test <- cor.test(x,y)
   # borrowed from printCoefmat
   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                    symbols = c("***", "**", "*", ".", " "))
-  
+
   text(0.5, 0.5, txt, cex = cex * r)
   text(.8, .8, Signif, cex=cex, col=2)
 }
@@ -164,17 +164,17 @@ ecdf_Abel <- function (distribution, test_values=F) {
 #' @examples BaseFrequencies()
 
 BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives you the base distribution of a gene of interest, and how extreme it is compared to all transcripts
-  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
-  
+  MetaDdir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+
   if ( !exists("BaseFrequencies_")) {
-    if (genome=="mm10") {        BaseFrequencies_ = read.simple.tsv(MetaDdir, "mm10/BaseFrequencies.mm10.tsv")  } 
+    if (genome=="mm10") {        BaseFrequencies_ = read.simple.tsv(MetaDdir, "mm10/BaseFrequencies.mm10.tsv")  }
     else if (genome=="hg19") {   BaseFrequencies_ = read.simple.tsv(MetaDdir, "hg19/BaseFrequencies.hg19.tsv")  }
     assign("BaseFrequencies_", BaseFrequencies_, envir = .GlobalEnv)
   }
   mygene = grep(mygene, rownames(BaseFrequencies_), value = T)
   stopif(condition = (l(mygene)==0),message =  "Gene not found in BaseFrequencies.mm10.tsv or in BaseFrequencies.hg19.tsv")
   frz = BaseFrequencies_[mygene, 1:4]
-  
+
   x =NULL
   Bases = c("A","C","G","T" )
   if (!silent) {
@@ -192,16 +192,16 @@ BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives yo
 # Transcriptome / Genome Stats -----------------------------------------------------------------------------------------------------
 
 TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the transctipt length of a gene of interest, and how extreme it is compared to all transcripts
-  MetaDdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  MetaDdir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
   if ( !exists("TrLength_")) {
-    if (genome=="mm10") {        TrLength_ = read.simple.tsv.named.vector(MetaDdir, "mm10/TranscriptLength.mm10.tsv")  } 
+    if (genome=="mm10") {        TrLength_ = read.simple.tsv.named.vector(MetaDdir, "mm10/TranscriptLength.mm10.tsv")  }
     else if (genome=="hg19") {   TrLength_ = read.simple.tsv(MetaDdir, "hg19/TranscriptLength.hg19.tsv")  }
     assign("TrLength_", TrLength_, envir = .GlobalEnv)
   }
   mygene = grep(mygene, names(TrLength_), value = T)
   stopif(condition = (l(mygene)==0),message =  "Gene not found in TranscriptLength.hmm10.tsv or in TranscriptLength.hg19.tsv")
   Len_MyGene = TrLength_[mygene]
-  
+
   if (!silent) {
     for (L in 1:l(Bases)) {    x[L]=ecdf(BaseFrequencies_)(Len_MyGene)  }
     print("",quote = F)

@@ -8,8 +8,8 @@
 import re
 
 def main():
-	file = open("/Users/abelvertesy/zz_local_backups/servers/UMC/bin/x_reactivation/DevCell_analysis/05.5.Reference_generation/ERCC/ERCC92.reformat.fa","r")
-	# file = open("/Users/abelvertesy/zz_local_backups/servers/UMC/bin/x_reactivation/DevCell_analysis/05.5.Reference_generation/ERCC/ERCC92.reformat.fa.head","r")
+	file = open("~/zz_local_backups/servers/UMC/bin/x_reactivation/DevCell_analysis/05.5.Reference_generation/ERCC/ERCC92.reformat.fa","r")
+	# file = open("~/zz_local_backups/servers/UMC/bin/x_reactivation/DevCell_analysis/05.5.Reference_generation/ERCC/ERCC92.reformat.fa.head","r")
 	gcCount = 0
 	totalBaseCount = 0
 	for line in file:

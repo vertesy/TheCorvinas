@@ -1,4 +1,4 @@
-# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/diffexpnb_AV.r")
+# source("~/Github_repos/TheCorvinas/R/diffexpnb_AV.r")
 
 diffexpnb_AV <- function(x, cells_of_interest, cells_background , norm=TRUE, DESeq=FALSE, method="per-condition", vfit=NULL, locreg=FALSE){
   if ( ! method %in% c("per-condition","pooled","pooled-CR") ) stop("invalid method")
@@ -90,16 +90,16 @@ diffexpnb_AV <- function(x, cells_of_interest, cells_background , norm=TRUE, DES
 plotdiffgenesnb <- function(diffexpnb_object, pthr=.05, lthr=1, mthr=0, xname="A", yname="B", bgcol="grey", ppch = 20,
                             lcol = "grey33", show_names=TRUE, padj=TRUE, draw_mthr =T, draw_lthr =T, dontplotbelow=1, ...){
   y <- diffexpnb_object$res
-  
+
   xlname =  paste0("log2 ((mRNA[",xname,"] + mRNA[",yname,"])/2)")
   ylname =  paste0("log2 (mRNA[",yname,"] / mRNA[",xname,"])")
   meanExpr = log2( (y$baseMeanA + y$baseMeanB)/2 )
   if (!is.na(dontplotbelow)) { meanExpr[meanExpr<dontplotbelow] = NA} # exlcude lowly expressed
-  
+
   plot(meanExpr, y$log2FoldChange, pch=ppch, xlab=xlname , ylab=ylname, col=bgcol, ...)
   if (draw_mthr) { abline(v=mthr, lty=3, col=lcol) }
   if (draw_lthr) { abline(h=c(lthr, -lthr), lty=3, col=lcol)  }
-  
+
   if ( ! is.null(pthr) ){
     if ( padj ) f <- y$padj < pthr else f <- y$pval < pthr
     points(meanExpr[f], y$log2FoldChange[f], col="red",pch=20)
@@ -107,5 +107,5 @@ plotdiffgenesnb <- function(diffexpnb_object, pthr=.05, lthr=1, mthr=0, xname="A
   if ( !is.null(lthr) ) f <- f & abs( y$log2FoldChange ) > lthr
   if ( !is.null(mthr) ) f <- f &  (log2( (y$baseMeanA + y$baseMeanB)/2 ) ) > mthr
   if ( show_names )  text(meanExpr[f],y$log2FoldChange[f],id2name(rownames(y))[f],cex=.5)
-  
+
 }

@@ -1,15 +1,15 @@
 #!/usr/bin/python
 ### This script counts bases in a reference file
-# /Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/BaseFrequencies/BaseCounter.py
+# ~/Github_repos/TheCorvinas/Mapping/Reference_Stats/BaseFrequencies/BaseCounter.py
 
 print "BaseCounter.py started, eyy!"
 import glob
 import sys, os
 
 # Default parameters
-# inputdir = "/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/BaseFrequencies/"
+# inputdir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/BaseFrequencies/"
 # inputfile = "head.fa"
-inputdir = "/Users/abelvertesy/Downloads/"
+inputdir = "~/Downloads/"
 inputfile = "C.elegans.Aggregate_1003_genes_sorted_oriented_ERCC92.fa"
 outputfile = "BaseFrequencies.C.elegans.tsv"
 

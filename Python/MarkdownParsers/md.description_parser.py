@@ -6,8 +6,8 @@
 import os, glob, re
 
 # setup ------------------------------------------------
-Outfile ="/Users/abelvertesy/x_reactivation.wiki/Analysis_Methods/Pipeline-Diff-Mapping.md"
-ScriptDir = "/Users/abelvertesy/x_reactivation/analysis/DevCell_analysis/"
+Outfile ="~/x_reactivation.wiki/Analysis_Methods/Pipeline-Diff-Mapping.md"
+ScriptDir = "~/x_reactivation/analysis/DevCell_analysis/"
 GitRepo = "https://github.com/bow/x_reactivation/"
 
 

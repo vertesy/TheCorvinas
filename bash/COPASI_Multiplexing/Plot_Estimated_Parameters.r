@@ -1,41 +1,41 @@
 ######################################################################
 # Plot_Estimated_Parameters.r
 ######################################################################
-# source ("/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/Plot_Estimated_Parameters.r")
+# source ("~/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/Plot_Estimated_Parameters.r")
 
 # This scripts read in a Fits*Parameters dataframe and plots histograms and pairwise correlations among them. The file should have row and column names.
 
 # Functions ------------------------
 require(MarkdownReports)
-source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/CodeAndRoll.R')
+source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R')
 
 cormethod = "spearman"
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {
-  usr <- par("usr"); on.exit(par(usr)) 
-  par(usr = c(0, 1, 0, 1)) 
-  r <- abs(cor(x, y, method = method)) 
-  txt <- format(c(r, 0.123456789), digits=digits)[1] 
-  txt <- paste(prefix, txt, sep="") 
-  if(missing(cex.cor)) cex <- 0.8/strwidth(txt) 
-  
-  test <- cor.test(x,y) 
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y, method = method))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
+
+  test <- cor.test(x,y)
   # borrowed from printCoefmat
-  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE, 
+  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                   symbols = c("***", "**", "*", ".", " ")) 
-  
-  text(0.5, 0.5, txt, cex = cex * r) 
-  text(.8, .8, Signif, cex=cex, col=2) 
+                   symbols = c("***", "**", "*", ".", " "))
+
+  text(0.5, 0.5, txt, cex = cex * r)
+  text(.8, .8, Signif, cex=cex, col=2)
 }
 
 
 # Setup ------------------------
-OutDir = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/q10/"
+OutDir = "~/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/q10/"
 setup_MarkdownReports(OutDir = OutDir, scriptname = "Plot_Estimated_Parameters.r", append = F)
 
 # Read in the files ------------------------
-infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/q10/FitResults_q10_BestFits.tsv"
-# infile = "/Users/abelvertesy/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/FitResults_best.tsv"
+infile = "~/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/q10/FitResults_q10_BestFits.tsv"
+# infile = "~/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/FitResults_best.tsv"
 
 Estimates = read.simple.tsv(infile)
 NrParams = ncol(Estimates)
@@ -63,7 +63,7 @@ pdfA4plot_off()
 par("pch" =18)
 par("col" =rgb(0,0,0,.3))
 ccc=(val2col(-Estimates$ObjValue))
-  
+
 cormethod = "spearman"
 pname ="Pairwise_correlation_of_parameters"
 pairs(Estimates, lower.panel=panel.smooth, upper.panel=panel.cor, main = pname) # , pch =".", cex.labels = .5

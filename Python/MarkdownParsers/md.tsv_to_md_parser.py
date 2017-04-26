@@ -7,7 +7,7 @@
 import csv, sys
 
 # Defaults
-tsv="/Users/abelvertesy/bin/tmp.tsv"
+tsv="~/bin/tmp.tsv"
 write_file = False
 
 # Use Default, unless passed on
