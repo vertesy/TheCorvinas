@@ -226,19 +226,25 @@ link_CGC <- function (vector_of_gene_symbols, writeOut = T, Open=!writeOut) { # 
 
 # Validate Gene Symbols / Names / IDs ------------------------------------------------------------------------
 
-validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, species = c("human", "mice")[1]) { # Validate Gene Symbols / Names / IDs
+validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, SubsetOfGeneIDs = NULL, species = c("human", "mice")[1]) { # Validate Gene Symbols / Names / IDs
   condition = F
   any_print(length(MarkerGenes), " gene symbols are provided."); print("", quote = F)
   gene_IDs = if (species == "human") {.gene_IDs_hg19} else if (species == "mice") {.gene_IDs_mm10}
   found = gene_IDs[sub("\\_\\_chr\\w+","",gene_IDs) %in% vector_of_gene_symbols] 
   not_found = setdiff(vector_of_gene_symbols, id2name(found))
-  any_print(length(not_found), "genes are not found in the reference: ", not_found, "or", x=parse_vec(not_found)); print("", quote = F)
-  # print(found)
+  if (length(not_found)) {any_print(length(not_found), "genes are not found in the",species,"reference: ", not_found, "or", x=parse_vec(not_found)); print("", quote = F) } #if
+  
   GenesDetected = rownames(ExpressionMatrix)
   expressed = intersect(found, GenesDetected)
   not_expressed = setdiff(found, GenesDetected)
-  any_print(length(not_expressed), "existing genes are not expressed: ", not_expressed, "or", x=parse_vec(not_expressed))
-  any_print(length(expressed), "genes are found: ",  expressed)
-  return(expressed)
+  if (length(not_expressed)) {any_print(length(not_expressed), "existing genes are not expressed: ", not_expressed, "or", x=parse_vec(not_expressed)); print("", quote = F) } #if
+  any_print(length(expressed), "genes are expressed: ",  expressed); print("", quote = F)
+  
+  if (length(SubsetOfGeneIDs)) {
+    inSubset = intersect(expressed, SubsetOfGeneIDs)
+    any_print(length(inSubset), "genes are expressed and found in", substitute(SubsetOfGeneIDs),": ",  inSubset); print("", quote = F) 
+    return(inSubset)
+  } else { return(expressed) }
+  
 }
-
+x=validateGene(MarkerGenes, HeartSlices, SubsetOfGeneIDs = HE_genes)
