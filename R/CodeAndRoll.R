@@ -588,12 +588,13 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 }
 
 
+matlabColors.pheatmap <- function(matrixx) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = 31)) - 1)}
 
 annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopifnot( l(annot_vec) == dim(df)[2] )
   print(substitute(annot_vec))
   df = as.data.frame(annot_vec)
-  if (!is.null(annot_names)) {  stopifnot(length(annot_col) == length(annot_names));     
+  if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));     
               colnames(df) = annot_names  
   } else {    colnames(df) =  substitute(annot_vec)    }
   
@@ -608,8 +609,29 @@ annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary func
   assign(x = "annot_col", value = xx, envir = .GlobalEnv)
   print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
+annot_col.create
+
+"FOR VECTOR. it works"
+annot_col.create.pheatmap <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+  stopifnot( l(annot_vec) == dim(data)[2] )
+  print(substitute(annot_vec))
+  namez = as.character (if (is.null(annot_names)) substitute(annot_vec) else annot_names)
+  
+  df = data.frame(x = annot_vec); df[,1] = as.character(df[,1])
+  names(df) = namez 
+  assign(x = "annot", value = df, envir = .GlobalEnv)
+  
+  xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
+  names(xx) = namez
+  assign(x = "annot_col", value = xx, envir = .GlobalEnv)
+  
+  print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+}
+
+
 ## Read and write plotting functions READ -------------------------------------
 # rw-funcitons cannot call the w-functions, there would be too much things lost: rw writes where the file comes from, w writes in Outdir & current dir
+
 
 rwplot <- function(FnP, ..., w=7, h=7) { # read in a table, plot it and save it.
 	print ('file without header, and file path between ""')
@@ -1182,7 +1204,6 @@ quantile_breaks <- function(xs, n = 10) { # Quantile breakpoints in any data vec
   breaks <- quantile(xs, probs = seq(0, 1, length.out = n))
   breaks[!duplicated(breaks)]
 }
-
 
 whist.back2back <- function(ListOf2, breaks1 = 20, breaks2 = 20, main_ = substitute(ListOf2), colorz = c("green", "blue"), ...) {
   lng = length(ListOf2) 

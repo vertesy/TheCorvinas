@@ -8,7 +8,7 @@
 # Differential Gene Expression ------------------------------------------------------------------------------------------------------------------------------
 
 # source: http://www.gettinggeneticsdone.com/2014/05/r-volcano-plots-to-visualize-rnaseq-microarray.html
-wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, highlight =T) {
+wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, highlight =T, ...) {
   if (pname_ == FALSE) { pname_ = substitute(DEseqResults) }
   Columns =c("Gene", "log2FoldChange", "padj")
   DE = as.data.frame(DEseqResults)
@@ -17,7 +17,7 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
 
   # Make a basic volcano plot
   subb = paste0("Red if padj<",thr_padj_,", orange of log2FC>",thr_log2fc_,", green if both.")
-  with(DE, plot(log2FoldChange, main=pname_, sub=subb, -log10(padj), pch=20, cex=.5, col = rgb(0,0,0,.25),xlim=range(DE$"log2FoldChange") ))
+  with(DE, plot(log2FoldChange, main=pname_, sub=subb, -log10(padj), ..., pch=20, cex=.5, col = rgb(0,0,0,.25),xlim=range(DE$"log2FoldChange") ))
 
   if(highlight) { # Add colored points:
     with(subset(DE, padj< thr_padj_ ),      points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))

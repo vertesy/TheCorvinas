@@ -246,5 +246,5 @@ validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, SubsetOfGene
     return(inSubset)
   } else { return(expressed) }
   
-}
-x=validateGene(MarkerGenes, HeartSlices, SubsetOfGeneIDs = HE_genes)
+} 
+# x=validateGene(MarkerGenes, HeartSlices, SubsetOfGeneIDs = HE_genes)
