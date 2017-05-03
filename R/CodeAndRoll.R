@@ -1221,3 +1221,18 @@ whist.back2back <- function(ListOf2, breaks1 = 20, breaks2 = 20, main_ = substit
   barplot(h1$counts, ylim=c(hmin, hmax), xlim = xlimm, col=colorz[1], main = main_,...)
   barplot(h2$counts, col=colorz[2], add=T)
 }
+
+
+
+rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames 
+  rownames(matrix1) = trimws(rownames(matrix1))
+  return(matrix1)  
+}
+
+combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
+  rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
+  idx = intersect(rn1, rn2)
+  any_print(length(idx), "out of", substitute(matrix2), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
+  merged = cbind(matrix1[idx,], matrix2[idx,])
+  dim(merged); return(merged)
+}
