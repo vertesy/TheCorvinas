@@ -1,23 +1,24 @@
-# source("~/Github_repos/TheCorvinas/R/diffexpnb_function.2017.03.28.Dominic.New.R")
+# source("~/Github_repos/TheCorvinas/R/diffexpnb_function.2017.03.28.Dominic.New.Tidy.R")
 
-diffexpnb <- function(x, A, B, DESeq = FALSE, method="pooled", norm = FALSE, vfit = NULL, locreg = FALSE, ...){
+diffexpnb <- function(x, cells_of_interest, cells_background, DESeq = FALSE, method="pooled", norm = FALSE, vfit = NULL, locreg = FALSE, ...){ # 2017.03.28 updated 2017.05.08
   if ( ! method %in% c("per-condition", "pooled") ) stop("invalid method: choose pooled or per-condition")
-  x <- x[, c(A, B)]
+  x <- x[, c(cells_background, cells_of_interest)]
   if ( DESeq ){
     require(DESeq2)    # run on sc@expdata
-    des <- data.frame( row.names = colnames(x), condition = factor(c( rep(1, length(A)), rep(2, length(B)) )), libType = rep("single-end", dim(x)[2]))
+    des <- data.frame( row.names = colnames(x), condition = factor(c( rep(1, length(cells_background)), rep(2, length(cells_of_interest)) )), libType = rep("single-end", dim(x)[2]))
     cds <- DESeqDataSetFromMatrix(countData = round(x, 0), colData = des, design =~ condition, fitType='local', ...)
     res <- results(cds)
-    list(des = des, cds = cds, res = res)
+    list("des" = des, "cds" = cds, "res" = res)
   }else{
     if (norm) x <- as.data.frame( t(t(x)/apply(x, 2, sum))*min(apply(x, 2, sum, na.rm = TRUE)) )
-    fit <- list()
-    Meanz   <- list()
-    v   <- list()
+    fit = Meanz = GeoMeanz = v = list()
     for ( i in 1:2 ){
-      g <- if ( i == 1 ) A else B
-      Meanz[[i]] <- if ( length(g) > 1 ) apply(x[, g], 1, mean) else x[, g]
-      v[[i]] <- if ( length(g) > 1 ) apply(x[, g], 1, var)  else apply(x, 1, var)
+      group <- if ( i == 1 ) cells_background else cells_of_interest
+      Meanz[[i]]    <- if ( length(group) > 1 ) apply(x[, group], 1, mean) else x[, group]
+      v[[i]]        <- if ( length(group) > 1 ) apply(x[, group], 1, var)  else apply(x, 1, var)
+      if (!exists("geomean")) { print("geomean() function in missing!!!")      }
+      GeoMeanz[[i]]	<- if ( length(group) > 1 ) apply(x[, group], 1, geomean) else x[, group]
+      
       if ( method == "pooled"){
         mg <- apply(x, 1, mean)
         vg <- apply(x, 1, var)
@@ -64,13 +65,16 @@ diffexpnb <- function(x, A, B, DESeq = FALSE, method="pooled", norm = FALSE, vfi
     sf  <- function(x, i) x**2/(max(x + 1e-6, vf(x, i)) - x)
 
     psp <- 1e-99
-    pv <- apply(data.frame(Meanz[[1]], Meanz[[2]]), 1, function(x){ p12 <- (dnbinom(0:round(x[1]*length(A) + x[2]*length(B), 0), mu = mean(x)*length(A), size = length(A)*sf(mean(x), 1)) + psp)*(dnbinom(round(x[1]*length(A) + x[2]*length(B), 0):0, mu = mean(x)*length(B), size = length(B)*sf(mean(x), 2)) + psp); sum(p12[p12 <= p12[round(x[1]*length(A), 0) + 1]])/sum(p12)} )
+    pv <- apply(data.frame(Meanz[[1]], Meanz[[2]]), 1, function(x){ p12 <- (dnbinom(0:round(x[1]*length(cells_background) + x[2]*length(cells_of_interest), 0), mu = mean(x)*length(cells_background), size = length(cells_background)*sf(mean(x), 1)) + psp)*(dnbinom(round(x[1]*length(cells_background) + x[2]*length(cells_of_interest), 0):0, mu = mean(x)*length(cells_of_interest), size = length(cells_of_interest)*sf(mean(x), 2)) + psp); sum(p12[p12 <= p12[round(x[1]*length(cells_background), 0) + 1]])/sum(p12)} )
 
     res <- data.frame("baseMean" = (Meanz[[1]] + Meanz[[2]])/2, 
                       "baseMeanA" = Meanz[[1]], 
                       "baseMeanB" = Meanz[[2]], 
                       "foldChange" = Meanz[[2]]/Meanz[[1]], 
                       "log2FoldChange" = log2(Meanz[[2]]/Meanz[[1]]), 
+                      "GeoMeanA" = 			  GeoMeanz[[1]],
+                      "GeoMeanB" = 			  GeoMeanz[[2]],
+                      "foldChange_GeoMean" = signif(GeoMeanz[[2]]/GeoMeanz[[1]], digits  =  1),
                       "pval" = pv, 
                       "padj" = p.adjust(pv, method="BH"))
     
