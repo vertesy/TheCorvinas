@@ -1232,7 +1232,10 @@ rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames
 combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
   rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
   idx = intersect(rn1, rn2)
-  any_print(length(idx), "out of", substitute(matrix2), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
+  llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
   merged = cbind(matrix1[idx,], matrix2[idx,])
   dim(merged); return(merged)
 }
+
+
+list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
