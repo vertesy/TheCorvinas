@@ -609,7 +609,7 @@ annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary func
   assign(x = "annot_col", value = xx, envir = .GlobalEnv)
   print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
-annot_col.create
+# annot_col.create
 
 "FOR VECTOR. it works"
 annot_col.create.pheatmap <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap

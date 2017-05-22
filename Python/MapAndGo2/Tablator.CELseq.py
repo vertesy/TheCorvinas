@@ -130,6 +130,8 @@ with open(InputSamFile) as f:
 				readscnt[gene] = {c: 0 for c in bc2sample.values()}
 				readscnt[gene][cell] = 1
 
+cellIDs_sorted = sorted(bc2sample.values())
+
 # Writing out count tables -------------------------------------------------------
 print "...Writing out count tables"
 
@@ -142,16 +144,18 @@ fc = open( fc_n, 'w+')
 fb = open( fb_n, 'w+')
 ft = open( ft_n, 'w+')
 
-print >> fc, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
-print >> fb, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
-print >> ft, "GENEID\t", '\t'.join( str(c) for c in sorted(bc2sample.values()))
+print >> fc, '\t'.join(['GENEID', '\t'.join( str(c) for c in cellIDs_sorted)])
+print >> fb, '\t'.join(['GENEID', '\t'.join( str(c) for c in cellIDs_sorted)])
+print >> ft, '\t'.join(['GENEID', '\t'.join( str(c) for c in cellIDs_sorted)])
 
 for gene in sorted(umicnt):
-	print >> fc, '\t'.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
-	print >> fb, gene,'\t','\t'.join( str(len(set(	 umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) ) # original
+	# print >> fc, '\t'.join( [gene, '\t'.join(str(readscnt[gene][cell]) for cell in sorted(bc2sample.values()) ) ] )
+	print >> fc, '\t'.join([gene, '\t'.join([str(readscnt[gene][cell]) for cell in cellIDs_sorted ]) ] )
+	# print >> fb, gene,'\t','\t'.join( str(len(set(	 umicnt[gene][cell]))) for cell in sorted(bc2sample.values()) ) # original
+	print >> fb, '\t'.join([gene, '\t'.join( str(len(set(umicnt[gene][cell]))) for cell in cellIDs_sorted )])
 
 	t = []
-	for cell in sorted(bc2sample.values()):
+	for cell in cellIDs_sorted:
 		x = 1.0 * len(set(umicnt[gene][cell]))
 		if x > 0 and x < K:
 			t.append( round(np.log(1.-x/K)/np.log(1.-1./K), 2) )
@@ -164,7 +168,8 @@ for gene in sorted(umicnt):
 			print len(set(umicnt[gene][cell]))
 		else:
 			t.append(0)
-	print >> ft, gene,'\t','\t'.join(str(ti) for ti in t)
+	# print >> ft, gene,'\t','\t'.join(str(ti) for ti in t)
+	print >> ft, '\t'.join( [gene, '\t'.join(str(ti) for ti in t)] )
 
 fc.close()
 fb.close()
