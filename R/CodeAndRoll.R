@@ -32,8 +32,8 @@ debuggingState(on=FALSE)
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
-require("MarkdownReports")
-"Depends: gtools"
+try(require("MarkdownReports"))
+try(require("gtools"))
 
 # Alisases ----------------
 p0 = paste0
@@ -733,7 +733,10 @@ what <- function(x, printme=0) { # A better version of is(). It can print the fi
 }
 
 idim <- function(any_object) { # A dim() function that can handle if you pass on a vector: then, it gives the length.
-	if (is.null(dim(any_object))) {print(length(any_object))}
+	if (is.null(dim(any_object))) {
+	  if (is.list(any_object)) { print("list") } #if
+	  print(length(any_object))
+	  }
 	else {	print(dim(any_object))	}
 }
 
