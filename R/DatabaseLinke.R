@@ -24,10 +24,10 @@
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "~/bin/run.sh"
 
-.gene_IDs_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec")
-.gene_IDs_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec")
-.gene_names_hg19	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec")
-.gene_names_mm10	= read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec")
+.gene_IDs_hg19	= try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec"), silent = T)
+.gene_IDs_mm10	= try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec"), silent = T)
+.gene_names_hg19	= try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec"), silent = T)
+.gene_names_mm10	= try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec"), silent = T)
 
 # ALT USAGE link_fromToClilpboard = toClipboard(link_uniprot_mice(fromClipboard.as_vec(), writeOut = F))
 

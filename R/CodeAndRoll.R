@@ -61,7 +61,7 @@ any_print <-function (...) { # A more flexible printing function that collapses 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
 ### Clipboard interaction -------------------------------------------------------------------------------------------------
-source("~/Github_repos/DataInCode/DataInCode.R")
+try(source("~/Github_repos/DataInCode/DataInCode.R"), silent = F)
 
 
 ### Reading files in -------------------------------------------------------------------------------------------------
@@ -1203,8 +1203,8 @@ clip.values <- function(valz, high=T, thr=3) {
   valz
 }
 
-quantile_breaks <- function(xs, n = 10) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
-  breaks <- quantile(xs, probs = seq(0, 1, length.out = n))
+quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
+  breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
   breaks[!duplicated(breaks)]
 }
 
