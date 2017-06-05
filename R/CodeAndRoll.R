@@ -588,46 +588,6 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 }
 
 
-matlabColors.pheatmap <- function(matrixx) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = 31)) - 1)}
-
-annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-  stopifnot( l(annot_vec) == dim(df)[2] )
-  print(substitute(annot_vec))
-  df = as.data.frame(annot_vec)
-  if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));     
-              colnames(df) = annot_names  
-  } else {    colnames(df) =  substitute(annot_vec)    }
-  
-  df[,1] = as.character(df[,1])
-  assign(x = "annot", value = df, envir = .GlobalEnv)
-  
-  xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
-  if (!is.null(annot_names)) {    stopifnot(length(annot_col) == length(annot_names));
-            names(xx) = annot_names  } 
-  else {    names(xx) = substitute(annot_vec)  }
-  
-  assign(x = "annot_col", value = xx, envir = .GlobalEnv)
-  print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
-}
-# annot_col.create
-
-"FOR VECTOR. it works"
-annot_col.create.pheatmap <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-  stopifnot( l(annot_vec) == dim(data)[2] )
-  print(substitute(annot_vec))
-  namez = as.character (if (is.null(annot_names)) substitute(annot_vec) else annot_names)
-  
-  df = data.frame(x = annot_vec); df[,1] = as.character(df[,1])
-  names(df) = namez 
-  assign(x = "annot", value = df, envir = .GlobalEnv)
-  
-  xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
-  names(xx) = namez
-  assign(x = "annot_col", value = xx, envir = .GlobalEnv)
-  
-  print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
-}
-
 
 ## Read and write plotting functions READ -------------------------------------
 # rw-funcitons cannot call the w-functions, there would be too much things lost: rw writes where the file comes from, w writes in Outdir & current dir
@@ -719,6 +679,7 @@ pdfA4plot_off <- function () {
 
 
 stopif <- function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
+stopif2 <- function(condition, ...) { if(condition) {any_print (...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
 
 most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
 	tail(sort(table(thingy, useNA = "ifany")), topN)
@@ -797,6 +758,79 @@ hclust.getClusterID.col <-function(pheatmapObject, k=3) cutree(pheatmapObject$tr
 
 hclust.ClusterSeparatingLines.row <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_row, k = k)[pheatmapObject$tree_row$order])[-1])
 hclust.ClusterSeparatingLines.col <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_col, k = k)[pheatmapObject$tree_col$order])[-1])
+
+matlabColors.pheatmap <- function(matrixx) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = 31)) - 1)}
+
+# annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+#   stopifnot( l(annot_vec) == dim(df)[2] )
+#   print(substitute(annot_vec))
+#   df = as.data.frame(annot_vec)
+#   if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));     
+#     colnames(df) = annot_names  
+#   } else {    colnames(df) =  substitute(annot_vec)    }
+#   
+#   df[,1] = as.character(df[,1])
+#   assign(x = "annot", value = df, envir = .GlobalEnv)
+#   
+#   xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
+#   if (!is.null(annot_names)) {    stopifnot(length(annot_col) == length(annot_names));
+#     names(xx) = annot_names  } 
+#   else {    names(xx) = substitute(annot_vec)  }
+#   
+#   assign(x = "annot_col", value = xx, envir = .GlobalEnv)
+#   print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+# }
+# # annot_col.create
+
+"FOR VECTOR. it works"
+annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+  stopifnot( l(annot_vec) == dim(data)[2] )
+  namez = as.character (if (is.null(annot_names)) substitute(annot_vec) else annot_names)
+  
+  df = data.frame(x = annot_vec); df[,1] = as.character(df[,1])
+  names(df) = namez # colnames but more flexible
+  rownames(df) = colnames(data) 
+  assign(x = "annot", value = df, envir = .GlobalEnv)
+  
+  tt = table(annot_vec); nz = names(tt)
+  if (is.numeric(annot_vec)) {
+    coll = val2col(annot_vec[!duplicated(annot_vec)]); names(coll) = nz
+  } else {
+    coll = gplots::rich.colors(l(tt)); names(coll) = nz
+  }
+  col_list = list(annot_vec = coll)
+  names(col_list) = namez
+  assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
+  
+  print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+}
+
+
+annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+  stopif( dim(annot_df_per_column)[1] != dim(data)[2] , message = "The number of rows in the annotation data != to the # columns in your data frame")
+  
+  if(any(rownames(df) != colnames(data))) { print ("The rownames of annot_df_per_column are not the same as the colnames of data:")
+    print(cbind("rownames(df)" = rownames(df) , "colnames(data)" = colnames(data))) }
+  namez = as.character (if (is.null(annot_names)) colnames(annot_df_per_column) else annot_names)
+  
+  df = as.data.frame(annot_df_per_column)
+  colnames(df) = namez 
+  rownames(df) = colnames(data) 
+  assign(x = "annot", value = df, envir = .GlobalEnv)
+  
+  col_list = list.fromNames(namez)
+  for (i in 1:NCOL(df) ) {
+    annot_column_i = df[,i]
+    tt = table(annot_column_i); nz = names(tt)
+    coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
+    } else {                         gplots::rich.colors(l(tt)) }
+    names(coll) = sort(nz)
+    col_list[[i]] = coll
+  } #for each column
+  assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
+  
+  print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+}
 
 
 ## New additions -----------------------------------------------------------------------------------------------------
