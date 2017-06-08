@@ -1276,3 +1276,28 @@ combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
 
 
 list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
+
+# select.rows <- function(df, RowIndices ) {
+#   true_rownames = intersect(rownames(df), RowIndices)
+#   NotFound = setdiff(RowIndices, rownames(df))
+#   if (l(NotFound)) { any_print(l(NotFound), "Row Indices Not Found:", head(NotFound), "...     Rows found:", l(true_rownames))  } #if
+#   return(df[ true_rownames, ])
+# }
+
+select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subset rows and columns. It checks if the selected dimension names exist and reports if any of those they aren't found.
+  if (length(RowIDs)) {
+    true_rownames = intersect(rownames(df), RowIDs)
+    NotFound = setdiff(RowIDs, rownames(df))
+    if (l(NotFound)) { any_print(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {any_print("All row IDs found")} #if
+    df = df[ true_rownames, ]
+  } #if
+  if (length(ColIDs)) {
+    true_colnames = intersect(colnames(df), ColIDs)
+    NotFound = setdiff(ColIDs, colnames(df))
+    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")} 
+    df = df[ , true_colnames ]
+  } #if
+  any_print(dim(df))
+  return(df)
+}
+
