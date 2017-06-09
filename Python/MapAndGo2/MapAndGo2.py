@@ -393,6 +393,7 @@ for i in range(0,len(files)):
 	mapping = params["-BWA_Folder"] + "bwa mem -t " + params['-cores'] + " " + params['-ref'] + " " + FastQ1_cbc + " > " + FastQ1_sam + "\n\n"
 	extract =  params["-ScriptsFolder"] + "Tablator.CELseq.py " + FastQ1_sam + " " + params["-CelSeqPrimerVersion"] + "\n\n"
 	Copy = "mv " + params["-map_out"] + "/*.tsv " + params["-counts_out"] + "/\n\n\n"
+	Mappability = "samtools flagstat " + FastQ1_sam +" >" +  params["-map_out"] + " flagstat.mappability.txt" + "\n\n"
 	DownloadResults = "# rsync -avzP UMC: " + params["-counts_out"] + " " + "~/Downloads\n"
 
 	if params['-zip'] == "yes":
@@ -402,7 +403,7 @@ for i in range(0,len(files)):
 	else:
 		ZipUp = ""
 
-	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + Copy + DownloadResults
+	bash_text = head_bash + unzip + cat_r1 + cat_r2 + MakeSingleEnd + mapping +extract + ZipUp + Copy + Mappability + DownloadResults
 	# bash_text = head_bash + MakeSingleEnd + mapping +extract + ZipUp + DownloadResults
 	bash_file.write(bash_text)
 	bash_file.close()
