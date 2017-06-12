@@ -115,6 +115,21 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 	return(read_in)
 }
 
+read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
+  if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
+  # merge path and filename
+  TheSheetNames = sheetNames(pfn); NrSheets = length(TheSheetNames)
+  any_print(NrSheets, "sheets in the file.")
+  ExpData = list.fromNames(TheSheetNames)
+  for (i in 1:NrSheets ) {
+    any_print("sheet",i)
+    ExpData[[i]] = gdata::read.xls(pfn, sheet = i, row.names=row_namePos, header = header_)
+  } #for
+  lapply(ExpData, function(x) print(dimnames(x)) )
+  return(ExpData);
+}
+
+
 ### Writing files out -------------------------------------------------------------------------------------------------
 
 write.simple <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
