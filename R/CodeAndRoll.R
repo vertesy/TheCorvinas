@@ -117,8 +117,14 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
+  if(grep("^~/", pfn)) {
+    any_print("You cannot use the ~/ in the file path! Its repaced to '/Users/abelvertesy'.")
+    pfn = gsub(pattern = "^~/", replacement = "/Users/abelvertesy/", x = pfn)
+  }
+  
+  if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
   # merge path and filename
-  TheSheetNames = sheetNames(pfn); NrSheets = length(TheSheetNames)
+  TheSheetNames = sheetNames(pfn, verbose = F); NrSheets = length(TheSheetNames)
   any_print(NrSheets, "sheets in the file.")
   ExpData = list.fromNames(TheSheetNames)
   for (i in 1:NrSheets ) {
@@ -741,15 +747,17 @@ top_indices <- function(x, n = 3, top = T){ # Returns the position / index of th
 }
 
 attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
-  if (removePreviousVariables) { rm(list = colnames(df_w_dimnames)) }
-	if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
-		namez= rownames(df_w_dimnames)
-		any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
-		attach (df_w_dimnames)
-		for (n in colnames(df_w_dimnames)) {
-			x=get(n); names(x) = namez
-			assign (n,x,envir =.GlobalEnv) } # for
-	} else { print ("ERROR: the DF does not have some of the dimnames!")}
+  if (removePreviousVariables) { rm(list = colnames(df_w_dimnames), envir = .GlobalEnv); print("removed") }
+  if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
+    namez= rownames(df_w_dimnames)
+    any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
+    attach (df_w_dimnames)
+    for (n in colnames(df_w_dimnames)) {
+      # x=get(n); # it failed at some point in some columns for unknown reason??
+      x=df_w_dimnames[,n]
+      names(x) = namez
+      assign (n,x,envir =.GlobalEnv) } # for
+  } else { print ("ERROR: the DF does not have some of the dimnames!")}
 }
 
 Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
