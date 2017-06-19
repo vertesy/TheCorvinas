@@ -35,6 +35,17 @@ debuggingState(on=FALSE)
 try(require("MarkdownReports"))
 try(require("gtools"))
 
+
+# TEMPORARY ----------------
+# Thu Jun 15 16:07:39 2017 ------------------------------
+kollapse <-function (..., collapseby = "", print = T) {
+  if (print == T) {
+    print(paste0(c(...), collapse = collapseby))
+  }
+  paste0(c(...), collapse = collapseby)
+}
+
+
 # Alisases ----------------
 p0 = paste0
 try.dev.off <- function () { try(dev.off(), silent = T) }
