@@ -170,7 +170,7 @@ link_String <- function (vector_of_gene_symbols, organism="mouse", writeOut = T,
 
 
 link_pubmed <- function (vector_of_gene_symbols, additional_terms = "", writeOut = T, Open=!writeOut) { # Parse PUBMED database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
-  links = paste0( PUBMED_search_prefix, vector_of_gene_symbols, paste(additional_terms, collapse = " ") )
+  links = paste0( PUBMED_search_prefix, vector_of_gene_symbols, " ", paste(additional_terms, collapse = " ") )
   if (writeOut) {
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
