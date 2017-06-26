@@ -44,13 +44,15 @@ filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_p
 
 prepare4plotMA <- function(DESeq_results, thr_padj_=thr_padj, thr_log2fc_ =F) { # highlight results using 2 thresholds
   DE = as.data.frame(DESeq_results)[, c("baseMean", "log2FoldChange", "padj")]
-  index_isSign = DE$"padj" < thr_padj_
+  index_notNA = !is.na(DE$"padj") & !is.na(DE$"log2FoldChange")
+  index_isSign = (DE$"padj" <= thr_padj_)
   if (thr_log2fc_ != F) {
-    index_FoldChange = (DE$log2FoldChange < -thr_log2fc_ | DE$log2FoldChange >  thr_log2fc_)
-    DE$"padj" = (index_isSign & index_FoldChange)
+    index_FoldChange = (na.omit.strip(DE$log2FoldChange <= -thr_log2fc_ | DE$log2FoldChange >=  thr_log2fc_))
+    DE$"padj" = (index_isSign & index_FoldChange & index_notNA)
   } else { DE$"padj" = index_isSign }
   return(DE)
 }
+
 
 
 # Correlation plots ------------------------------------------------------------------------------------------------------------------------------
