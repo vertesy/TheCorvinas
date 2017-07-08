@@ -6,7 +6,7 @@
 # source("~/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
 # source("~/MarkdownReports/MarkDownLogg.R")
 ## For RNA-seq specific functions, call:
-# source("~/TheCorvinas/R/RNA_seq_specific_functions.r")
+# source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 ### CHAPTERS:
 # -  File handling, export, import [read & write]
@@ -432,15 +432,6 @@ intermingle2lists <- function(L1, L2) { # Combine 2 lists (of the same length) s
 	return(Lout)
 }
 
-intermingle2vec <- function(V1, V2, wNames=T) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
-  stopifnot(length(V1) == length(V2) )
-  Vout  = c(rbind(V1, V2))
-  if(wNames) {names(Vout) = c(rbind(names(V1),names(V2)))}
-  return(Vout)
-}
-
-
-
 as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with certain dimensions, taken from the list it wanna resemble
 	stopifnot(length(vec) == length(unlist(list_wannabe)))
 	list_return = list_wannabe
@@ -497,6 +488,37 @@ split(namedVec, f = names(namedVec))
 splititsnames_byValues <- function(namedVec){ # split a list by its names
   stopif(is.null(names(namedVec)), message = "NO NAMES")
   split(names(namedVec), f = namedVec)
+}
+
+intermingle2vec <- function(V1, V2, wNames=T) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
+  stopifnot(length(V1) == length(V2) )
+  Vout  = c(rbind(V1, V2))
+  if(wNames) {names(Vout) = c(rbind(names(V1),names(V2)))}
+  return(Vout)
+}
+
+
+intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same length) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
+  stopifnot(ncol(df1) == ncol(df2) )
+  if(nrow(df1) != nrow(df2) ){ # not equal rows: subset
+    print(symdiff(rownames(df2),rownames(df1)))
+    CommonGenes = intersect(rownames(df2),rownames(df1)); print(l(CommonGenes))
+    df1=df1[CommonGenes,]
+    df2=df2[CommonGenes,]
+  } else { CommonGenes = rownames(df1) }
+  
+  # Create New column names
+  if (length(colnames(df1)) == ncol(df1) & length(colnames(df2)) == ncol(df2) ) {
+    NewColNames = intermingle2vec(p0("df1.",colnames(df1) ), p0("df2.",colnames(df2) ))  
+  } else {
+    NewColNames = intermingle2vec(p0("df1.", 1:ncol(df1) ), p0("df2.", 1:ncol(df2) ))
+  }
+  for (x in 1:(2*length(df1)) ) {
+    if (x  %% 2) {	NewMatr[ ,x ] = df1[ ,(x+1)/2 ]
+    } else { 		    NewMatr[ ,x ] = df2[ ,(x)/2 ]      }
+  } # for
+  print(idim(NewMatr))
+  return(NewMatr)
 }
 
 

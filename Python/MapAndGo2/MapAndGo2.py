@@ -399,7 +399,7 @@ for i in range(0,len(files)):
 	if params['-zip'] == "yes":
 		ZipUp = "\n \ngzip " + os.getcwd() + "/" + files[i] + "*.fastq"
 		if params['-map_out'] != os.getcwd():
-			ZipUp = ZipUp + "\n \ngzip " + params['-map_out'] + "/" + files[i] + "*.fastq"
+			ZipUp = ZipUp + "\n \ngzip " + params['-map_out'] + "/" + files[i] + "*.fastq\n\n"
 	else:
 		ZipUp = ""
 
