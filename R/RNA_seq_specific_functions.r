@@ -14,11 +14,14 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   DE = as.data.frame(DEseqResults)
   if (!is.null(rownames(DE)) & !"Gene" %in% colnames(DE)) {    DE = cbind( "Gene" = rownames(DE), DE)  }
   if (sum(! (Columns %in% colnames(DE)))) { any_print("A dataframe with 3 columns needed:", Columns )}
-
+  DEseqResults = DEseqResults[!is.na(rowSums(DEseqResults)), ]
+  
   # Make a basic volcano plot
   subb = paste0("Red if padj<",thr_padj_,", orange of log2FC>",thr_log2fc_,", green if both.")
-  with(DE, plot(log2FoldChange, main=pname_, sub=subb, -log10(padj), ..., pch=20, cex=.5, col = rgb(0,0,0,.25),xlim=range(DE$"log2FoldChange") ))
-
+  logFC.4plot = DEseqResults$"log2FoldChange"
+  padj.4plot = DEseqResults$"padj"
+  with(DE, plot(logFC.4plot, main=pname_, sub=subb, -log10(padj.4plot), pch=20, cex=.5, col = rgb(0,0,0,.25), xlim=range(logFC.4plot) ))
+  
   if(highlight) { # Add colored points:
     with(subset(DE, padj< thr_padj_ ),      points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))
     with(subset(DE, abs(log2FoldChange)>=thr_log2fc_), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="orange"))
