@@ -818,27 +818,6 @@ hclust.ClusterSeparatingLines.col <-function(pheatmapObject, k=3) which(!duplica
 
 matlabColors.pheatmap <- function(matrixx) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = 31)) - 1)}
 
-# annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-#   stopifnot( l(annot_vec) == dim(df)[2] )
-#   print(substitute(annot_vec))
-#   df = as.data.frame(annot_vec)
-#   if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));     
-#     colnames(df) = annot_names  
-#   } else {    colnames(df) =  substitute(annot_vec)    }
-#   
-#   df[,1] = as.character(df[,1])
-#   assign(x = "annot", value = df, envir = .GlobalEnv)
-#   
-#   xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
-#   if (!is.null(annot_names)) {    stopifnot(length(annot_col) == length(annot_names));
-#     names(xx) = annot_names  } 
-#   else {    names(xx) = substitute(annot_vec)  }
-#   
-#   assign(x = "annot_col", value = xx, envir = .GlobalEnv)
-#   print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
-# }
-# # annot_col.create
-
 "FOR VECTOR. it works"
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopifnot( l(annot_vec) == dim(data)[2] )
@@ -891,26 +870,6 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
 
 
 ## New additions -----------------------------------------------------------------------------------------------------
-
-
-# cormethod = "spearman"
-# panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-#   usr <- par("usr"); on.exit(par(usr))
-#   par(usr = c(0, 1, 0, 1))
-#   r <- abs(cor(x, y, method = method))
-#   txt <- format(c(r, 0.123456789), digits=digits)[1]
-#   txt <- paste(prefix, txt, sep="")
-#   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-# 
-#   test <- cor.test(x,y)
-#   # borrowed from printCoefmat
-#   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
-#                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-#                    symbols = c("***", "**", "*", ".", " "))
-# 
-#   text(0.5, 0.5, txt, cex = cex * r)
-#   text(.8, .8, Signif, cex=cex, col=2)
-# }
 
 panel.cor.pearson <- function(x, y, digits=2, prefix="", cex.cor=2, method = "pearson") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
   usr <- par("usr"); on.exit(par(usr))
@@ -980,18 +939,6 @@ printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report
 
 icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = coolor(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
-
-# ttl_field <- function (flname = basename(fname) ) { paste0(flname, " by ", if (exists("scriptname")) scriptname else "Rscript") }
-
-### THIS IS DUPLICATE OF THE ONE IN MD REPORTS
-# llwrite_list <- function(yalist) {
-#   for (e in 1:l(yalist)) {
-#     if (is.null( names(yalist) )) { llprint("#####",names(yalist)[e]) } else { llprint("#####", e)}
-#     print(yalist[e]); llogit("`", yalist[e], "`")
-#   }
-# }
-
-
 irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
                                 if(!require(package = package_,  character.only = T)) {
                                   print("Not Installed yet.");install.packages(pkgs = package_); 
@@ -1005,35 +952,6 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
   for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
 }
 
-
-# create_set_SubDir <-function (..., makeOutDirOrig=T, setDir=T) {
-#   NewOutDir = kollapse(OutDir,"/", ..., print = F)
-#   any_print("All files will be saved under 'NewOutDir': ", NewOutDir)
-#   if (!exists(NewOutDir)) {	dir.create(NewOutDir)	}
-#   if (setDir) {	setwd(NewOutDir)}
-#   if (makeOutDirOrig) {
-#     if (exists("OutDirOrig")) any_print("OutDirOrig was defined as:",OutDirOrig)
-#     any_print("OutDirOrig will be:", OutDir)
-#     assign("OutDirOrig", OutDir, envir = .GlobalEnv)
-#   } #if
-#   
-#   assign("OutDir", NewOutDir, envir = .GlobalEnv)
-# }
-
-
-# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
-#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
-#   fname = kollapse(substitute(yalist), ".", imagetype, print = F)
-#   filename = kollapse(OutDir,"/", fname, print = F)
-#   subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
-#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... , 
-#                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
-#   if (mdlink) {
-#     llogit(MarkDown_ImgLink_formatter(fname))
-#     if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
-#   }
-# }
-
 getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) { # Get the subset of rows with existing rownames, report how much it could not find.
   idx = intersect(rownamez, row.names(mat))
   if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
@@ -1041,6 +959,282 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
   if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
   mat[ idx,]
 } 
+
+list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
+  liszt = as.list(rep(NaN,l(name_vec)))
+  names(liszt) = name_vec
+  return(liszt)
+}
+
+matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
+  mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
+  any_print("Dimensions:", dim(mx))
+  return(mx)
+}
+
+vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
+  v=numeric(length(namesvec))
+  # if(length(values==length(namesvec))) {v=values}
+  names(v)=namesvec
+  return(v)
+}
+
+rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
+  colz = gplots::rich.colors(l(unique(vec)))
+  if (randomize) {
+    seed=11
+    colz = sample(colz)
+  }
+  colz[vec]
+  
+}
+
+hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit. 
+  # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
+  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
+  xx = hist(splitby, breaks = breaks_, plot = T)
+  IDX = findInterval(x = splitby, vec = xx$breaks)
+  ls = split(toSplit, IDX)
+  any_print("Range of data:", range(xx$breaks))
+  names(ls)=xx$breaks[-1]
+  return(ls)
+}#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
+
+get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
+  counter = if(rows) NROW(df_) else NCOL(df_)
+  IDX = if(odd) seq(1, to = counter, by = 2) else seq(2, to = counter, by = 2)
+  df_out = if(rows) df_[IDX, ] else df_[, IDX]
+  return(df_out)
+}
+
+nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
+flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) },toggle,sep = Separator) } # returns the name if its value is true
+
+list2df_NA_padded <- function(L) {
+  pad.na <- function(x,len) {
+    c(x,rep(NA,len-length(x)))
+  }
+  maxlen <- max(sapply(L,length))
+  do.call(data.frame,lapply(L,pad.na,len=maxlen))
+}
+
+clip.values <- function(valz, high=T, thr=3) {
+  if (high) { valz[valz>thr]=thr
+  } else{     valz[valz<thr]=thr}
+  valz
+}
+
+quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
+  breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
+  breaks[!duplicated(breaks)]
+}
+
+rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames 
+  rownames(matrix1) = trimws(rownames(matrix1))
+  return(matrix1)  
+}
+
+combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
+  rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
+  idx = intersect(rn1, rn2)
+  llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
+  merged = cbind(matrix1[idx,], matrix2[idx,])
+  dim(merged); return(merged)
+}
+
+
+list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
+
+select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subset rows and columns. It checks if the selected dimension names exist and reports if any of those they aren't found.
+  if (length(RowIDs)) {
+    true_rownames = intersect(rownames(df), RowIDs)
+    NotFound = setdiff(RowIDs, rownames(df))
+    if (l(NotFound)) { any_print(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {any_print("All row IDs found")} #if
+    df = df[ true_rownames, ]
+  } #if
+  if (length(ColIDs)) {
+    true_colnames = intersect(colnames(df), ColIDs)
+    NotFound = setdiff(ColIDs, colnames(df))
+    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")} 
+    df = df[ , true_colnames ]
+  } #if
+  any_print(dim(df))
+  return(df)
+}
+# TEMP ------------------------------------
+
+
+# cormethod = "spearman"
+# panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+#   usr <- par("usr"); on.exit(par(usr))
+#   par(usr = c(0, 1, 0, 1))
+#   r <- abs(cor(x, y, method = method))
+#   txt <- format(c(r, 0.123456789), digits=digits)[1]
+#   txt <- paste(prefix, txt, sep="")
+#   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
+# 
+#   test <- cor.test(x,y)
+#   # borrowed from printCoefmat
+#   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
+#                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+#                    symbols = c("***", "**", "*", ".", " "))
+# 
+#   text(0.5, 0.5, txt, cex = cex * r)
+#   text(.8, .8, Signif, cex=cex, col=2)
+# }
+
+
+# http://stackoverflow.com/questions/20127282/r-color-scatterplot-points-by-col-value-with-legend
+# scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color), 
+#                           nlevels = 20, plot.title, plot.axes, pch=21, cex=1,
+#                           key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+#                           axes = TRUE, frame.plot = axes, ...) {
+#   mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
+#   on.exit(par(par.orig))
+#   w <- (3 + mar.orig[2L]) * par("csi") * 2.54
+#   layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(w)))
+#   par(las = las)
+#   mar <- mar.orig
+#   mar[4L] <- mar[2L]
+#   mar[2L] <- 1
+#   par(mar = mar)
+#   
+#   # choose colors to interpolate
+#   levels <- seq(zlim[1], zlim[2], length.out = nlevels)
+#   col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)  
+#   colz <- col[cut(color, nlevels)]  
+#   
+#   plot.new()
+#   plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
+#   
+#   rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col) 
+#   if (missing(key.axes)) {if (axes){axis(4)}}
+#   else key.axes
+#   box()
+#   if (!missing(key.title)) 
+#     key.title
+#   mar <- mar.orig
+#   mar[4L] <- 1
+#   par(mar = mar)
+#   
+#   # points
+#   plot(x, y, type = "n", xaxt='n', yaxt='n', xlab="", ylab="", xlim=xlim, ylim=ylim, bty="n")
+#   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
+#   
+#   ## options to make mapping more customizable
+#   if (missing(plot.axes)) {
+#     if (axes) {
+#       title(main = "", xlab = "", ylab = "")
+#       Axis(x, side = 1)
+#       Axis(y, side = 2)
+#     }
+#   }
+#   else plot.axes
+#   if (frame.plot) 
+#     box()
+#   if (missing(plot.title)) 
+#     title(...)
+#   else plot.title
+#   invisible()
+# }
+
+
+# annot_col.create <- function(df, annot_vec, annot_names=NULL) { # Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+#   stopifnot( l(annot_vec) == dim(df)[2] )
+#   print(substitute(annot_vec))
+#   df = as.data.frame(annot_vec)
+#   if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));     
+#     colnames(df) = annot_names  
+#   } else {    colnames(df) =  substitute(annot_vec)    }
+#   
+#   df[,1] = as.character(df[,1])
+#   assign(x = "annot", value = df, envir = .GlobalEnv)
+#   
+#   xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
+#   if (!is.null(annot_names)) {    stopifnot(length(annot_col) == length(annot_names));
+#     names(xx) = annot_names  } 
+#   else {    names(xx) = substitute(annot_vec)  }
+#   
+#   assign(x = "annot_col", value = xx, envir = .GlobalEnv)
+#   print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+# }
+# # annot_col.create
+
+# JUNKYARD --------------------------------------------------------------------------------
+
+# select.rows <- function(df, RowIndices ) {
+#   true_rownames = intersect(rownames(df), RowIndices)
+#   NotFound = setdiff(RowIndices, rownames(df))
+#   if (l(NotFound)) { any_print(l(NotFound), "Row Indices Not Found:", head(NotFound), "...     Rows found:", l(true_rownames))  } #if
+#   return(df[ true_rownames, ])
+# }
+
+# corrr::correlate(mtcars[, 1:4], method = "pearson") %>%
+#   corrr::rearrange(absolute=F) %>% #  rearrange cols and rows
+#   corrr::shave()%>% # shave upper triangle
+#   corrr::rplot(print_cor = T,legend = T)# dot plot
+# 
+# corrr::correlate(mtcars[, 1:4], method = "pearson") %>% network_plot()
+
+
+# ## A largish data set
+# n <- 10000
+# x1  <- matrix(rnorm(n), ncol = 2)
+# x2  <- matrix(rnorm(n, mean = 3, sd = 1.5), ncol = 2)
+# x   <- rbind(x1, x2)
+# oldpar <- par(mfrow = c(2, 2))
+# smoothScatter(x, nrpoints = 0)
+# dim(x)
+# l(x)
+
+
+# # http://stackoverflow.com/questions/14271584/r-legend-for-color-density-scatterplot-produced-using-smoothscatter
+# install.packages("fields")
+# fudgeit <- function(){
+#   xm <- get('xm', envir = parent.frame(1))
+#   ym <- get('ym', envir = parent.frame(1))
+#   z  <- get('dens', envir = parent.frame(1))
+#   colramp <- get('colramp', parent.frame(1))
+#   fields::image.plot(xm,ym,z, col = colramp(256), legend.only = T, add =F)
+# }
+# # 
+# par(mar = c(5,4,4,5) + .1)
+# smoothScatter(x, nrpoints = 0, postPlotHook = fudgeit)
+
+
+# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
+#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+#   fname = kollapse(plotname, ".", imagetype, print = F)
+#   LsLen = length(yalist)
+#   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
+#   print(names(yalist))
+#   
+#   filename = kollapse(OutDir,"/", fname, print = F)
+#   subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
+#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... , 
+#                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+#   if (mdlink) {
+#     llogit(MarkDown_ImgLink_formatter(fname))
+#     if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+#   }
+# }
+
+# wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function 
+#   print(coeff)
+#   regression <- lm(DF[,2] ~ DF[,1])
+#   abline(regression, ...)
+#   legendText = NULL
+#   if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "pearson"))
+#   legendText  =  c(legendText, paste0("Pearson c.c.: ", dispCoeff))  } 
+#   if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "spearman"))
+#   legendText = c(legendText, paste0("Spearman c.c.: ", dispCoeff))  }  
+#   if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared) 
+#   legendText = c(legendText, paste0("R^2: ", r2))  }
+#   print(legendText)
+#   if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2",suffix = paste0(": ", r2)) , bty="n")
+#   } else {                                    legend(textlocation, legend = legendText , bty="n") }
+#   if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
+# }
 
 
 
@@ -1102,47 +1296,28 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
 #   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname) }
 # }
 
-list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
-  liszt = as.list(rep(NaN,l(name_vec)))
-  names(liszt) = name_vec
-  return(liszt)
-}
 
-matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
-  mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
-  any_print("Dimensions:", dim(mx))
-  return(mx)
-}
-
-vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
-  v=numeric(length(namesvec))
-  # if(length(values==length(namesvec))) {v=values}
-  names(v)=namesvec
-  return(v)
-}
-
-rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
-  colz = gplots::rich.colors(l(unique(vec)))
-  if (randomize) {
-    seed=11
-    colz = sample(colz)
-  }
-  colz[vec]
-  
-}
-
-
-# TEMP ------------------------------------
-# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
-#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
-#   fname = kollapse(plotname, ".", imagetype, print = F)
-#   LsLen = length(yalist)
-#   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
-#   print(names(yalist))
+# create_set_SubDir <-function (..., makeOutDirOrig=T, setDir=T) {
+#   NewOutDir = kollapse(OutDir,"/", ..., print = F)
+#   any_print("All files will be saved under 'NewOutDir': ", NewOutDir)
+#   if (!exists(NewOutDir)) {	dir.create(NewOutDir)	}
+#   if (setDir) {	setwd(NewOutDir)}
+#   if (makeOutDirOrig) {
+#     if (exists("OutDirOrig")) any_print("OutDirOrig was defined as:",OutDirOrig)
+#     any_print("OutDirOrig will be:", OutDir)
+#     assign("OutDirOrig", OutDir, envir = .GlobalEnv)
+#   } #if
 #   
+#   assign("OutDir", NewOutDir, envir = .GlobalEnv)
+# }
+
+
+# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
+#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+#   fname = kollapse(substitute(yalist), ".", imagetype, print = F)
 #   filename = kollapse(OutDir,"/", fname, print = F)
 #   subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
-#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... , 
+#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... , 
 #                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
 #   if (mdlink) {
 #     llogit(MarkDown_ImgLink_formatter(fname))
@@ -1150,211 +1325,13 @@ rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors w
 #   }
 # }
 
-# wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function 
-#   print(coeff)
-#   regression <- lm(DF[,2] ~ DF[,1])
-#   abline(regression, ...)
-#   legendText = NULL
-#   if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "pearson"))
-#   legendText  =  c(legendText, paste0("Pearson c.c.: ", dispCoeff))  } 
-#   if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "spearman"))
-#   legendText = c(legendText, paste0("Spearman c.c.: ", dispCoeff))  }  
-#   if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared) 
-#   legendText = c(legendText, paste0("R^2: ", r2))  }
-#   print(legendText)
-#   if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2",suffix = paste0(": ", r2)) , bty="n")
-#   } else {                                    legend(textlocation, legend = legendText , bty="n") }
-#   if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
+
+# ttl_field <- function (flname = basename(fname) ) { paste0(flname, " by ", if (exists("scriptname")) scriptname else "Rscript") }
+
+### THIS IS DUPLICATE OF THE ONE IN MD REPORTS
+# llwrite_list <- function(yalist) {
+#   for (e in 1:l(yalist)) {
+#     if (is.null( names(yalist) )) { llprint("#####",names(yalist)[e]) } else { llprint("#####", e)}
+#     print(yalist[e]); llogit("`", yalist[e], "`")
+#   }
 # }
-
-# http://stackoverflow.com/questions/20127282/r-color-scatterplot-points-by-col-value-with-legend
-scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color), 
-                          nlevels = 20, plot.title, plot.axes, pch=21, cex=1,
-                          key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
-                          axes = TRUE, frame.plot = axes, ...) {
-  mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
-  on.exit(par(par.orig))
-  w <- (3 + mar.orig[2L]) * par("csi") * 2.54
-  layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(w)))
-  par(las = las)
-  mar <- mar.orig
-  mar[4L] <- mar[2L]
-  mar[2L] <- 1
-  par(mar = mar)
-  
-  # choose colors to interpolate
-  levels <- seq(zlim[1], zlim[2], length.out = nlevels)
-  col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)  
-  colz <- col[cut(color, nlevels)]  
-  
-  plot.new()
-  plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
-  
-  rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col) 
-  if (missing(key.axes)) {if (axes){axis(4)}}
-  else key.axes
-  box()
-  if (!missing(key.title)) 
-    key.title
-  mar <- mar.orig
-  mar[4L] <- 1
-  par(mar = mar)
-  
-  # points
-  plot(x, y, type = "n", xaxt='n', yaxt='n', xlab="", ylab="", xlim=xlim, ylim=ylim, bty="n")
-  points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
-  
-  ## options to make mapping more customizable
-  if (missing(plot.axes)) {
-    if (axes) {
-      title(main = "", xlab = "", ylab = "")
-      Axis(x, side = 1)
-      Axis(y, side = 2)
-    }
-  }
-  else plot.axes
-  if (frame.plot) 
-    box()
-  if (missing(plot.title)) 
-    title(...)
-  else plot.title
-  invisible()
-}
-
-
-# ## A largish data set
-# n <- 10000
-# x1  <- matrix(rnorm(n), ncol = 2)
-# x2  <- matrix(rnorm(n, mean = 3, sd = 1.5), ncol = 2)
-# x   <- rbind(x1, x2)
-# oldpar <- par(mfrow = c(2, 2))
-# smoothScatter(x, nrpoints = 0)
-# dim(x)
-# l(x)
-
-
-# # http://stackoverflow.com/questions/14271584/r-legend-for-color-density-scatterplot-produced-using-smoothscatter
-# install.packages("fields")
-# fudgeit <- function(){
-#   xm <- get('xm', envir = parent.frame(1))
-#   ym <- get('ym', envir = parent.frame(1))
-#   z  <- get('dens', envir = parent.frame(1))
-#   colramp <- get('colramp', parent.frame(1))
-#   fields::image.plot(xm,ym,z, col = colramp(256), legend.only = T, add =F)
-# }
-# # 
-# par(mar = c(5,4,4,5) + .1)
-# smoothScatter(x, nrpoints = 0, postPlotHook = fudgeit)
-
-
-
-hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit. 
-  # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
-  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
-  xx = hist(splitby, breaks = breaks_, plot = T)
-  IDX = findInterval(x = splitby, vec = xx$breaks)
-  ls = split(toSplit, IDX)
-  any_print("Range of data:", range(xx$breaks))
-  names(ls)=xx$breaks[-1]
-  return(ls)
-}#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
-
-
-
-
-get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
-  counter = if(rows) NROW(df_) else NCOL(df_)
-  IDX = if(odd) seq(1, to = counter, by = 2) else seq(2, to = counter, by = 2)
-  df_out = if(rows) df_[IDX, ] else df_[, IDX]
-  return(df_out)
-}
-
-
-# corrr::correlate(mtcars[, 1:4], method = "pearson") %>%
-#   corrr::rearrange(absolute=F) %>% #  rearrange cols and rows
-#   corrr::shave()%>% # shave upper triangle
-#   corrr::rplot(print_cor = T,legend = T)# dot plot
-# 
-# corrr::correlate(mtcars[, 1:4], method = "pearson") %>% network_plot()
-
-nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
-flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) },toggle,sep = Separator) } # returns the name if its value is true
-
-list2df_NA_padded <- function(L) {
-  pad.na <- function(x,len) {
-    c(x,rep(NA,len-length(x)))
-  }
-  maxlen <- max(sapply(L,length))
-  do.call(data.frame,lapply(L,pad.na,len=maxlen))
-}
-
-clip.values <- function(valz, high=T, thr=3) {
-  if (high) { valz[valz>thr]=thr
-  } else{     valz[valz<thr]=thr}
-  valz
-}
-
-quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
-  breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
-  breaks[!duplicated(breaks)]
-}
-
-whist.back2back <- function(ListOf2, breaks1 = 20, breaks2 = 20, main_ = substitute(ListOf2), colorz = c("green", "blue"), ...) {
-  lng = length(ListOf2) 
-  if (lng != 2) { any_print("length(List): ", lng, " First two elements used" ) } #if
-  h1 = hist(ListOf2[[1]], plot=FALSE, breaks = breaks1)
-  h2 = hist(ListOf2[[2]], plot=FALSE, breaks = breaks2)
-  h2$counts = - h2$counts
-  hmax = max(h1$counts, na.rm =T)
-  hmin = min(h2$counts, na.rm =T)
-  xlimm =range(unlist(ListOf2), na.rm =T)
-  xlimm = c(1, max(l(h2$counts), l(h1$counts))+3)
-  
-  print(xlimm)
-  X = c(h1$breaks, h2$breaks)
-  barplot(h1$counts, ylim=c(hmin, hmax), xlim = xlimm, col=colorz[1], main = main_,...)
-  barplot(h2$counts, col=colorz[2], add=T)
-}
-
-
-
-rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames 
-  rownames(matrix1) = trimws(rownames(matrix1))
-  return(matrix1)  
-}
-
-combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
-  rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
-  idx = intersect(rn1, rn2)
-  llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
-  merged = cbind(matrix1[idx,], matrix2[idx,])
-  dim(merged); return(merged)
-}
-
-
-list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
-
-# select.rows <- function(df, RowIndices ) {
-#   true_rownames = intersect(rownames(df), RowIndices)
-#   NotFound = setdiff(RowIndices, rownames(df))
-#   if (l(NotFound)) { any_print(l(NotFound), "Row Indices Not Found:", head(NotFound), "...     Rows found:", l(true_rownames))  } #if
-#   return(df[ true_rownames, ])
-# }
-
-select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subset rows and columns. It checks if the selected dimension names exist and reports if any of those they aren't found.
-  if (length(RowIDs)) {
-    true_rownames = intersect(rownames(df), RowIDs)
-    NotFound = setdiff(RowIDs, rownames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {any_print("All row IDs found")} #if
-    df = df[ true_rownames, ]
-  } #if
-  if (length(ColIDs)) {
-    true_colnames = intersect(colnames(df), ColIDs)
-    NotFound = setdiff(ColIDs, colnames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")} 
-    df = df[ , true_colnames ]
-  } #if
-  any_print(dim(df))
-  return(df)
-}
-
