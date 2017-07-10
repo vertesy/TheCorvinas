@@ -36,31 +36,12 @@ try(require("MarkdownReports"))
 try(require("gtools"))
 
 
-# TEMPORARY ----------------
-# Thu Jun 15 16:07:39 2017 ------------------------------
-kollapse <-function (..., collapseby = "", print = T) {
-  if (print == T) {
-    print(paste0(c(...), collapse = collapseby))
-  }
-  paste0(c(...), collapse = collapseby)
-}
 
 
 # Alisases ----------------
 p0 = paste0
-try.dev.off <- function () { try(dev.off(), silent = T) }
-topN.dfCol <- function (df_Col, n=5) 	{ head(sort(as.named.vector(df_Col), decreasing = T), n=n) }
-bottomN.dfCol <- function (df_Col, n=5) { head(sort(as.named.vector(df_Col), decreasing = F), n=n) }
-colSums.barplot <- function (df, col="seagreen2", ...) { barplot(colSums(df), col=col, ...) }
-as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
-sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
-coolor <- function (n=3) {  gplots::rich.colors(n) }
-
-intersect.ls <- function (ls, ...){ Reduce(intersect, ls) }
-
-unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
-
 l=length
+try.dev.off <- function () { try(dev.off(), silent = T) }
 
 
 any_print <-function (...) { # A more flexible printing function that collapses any variable passed to it by white spaces.
@@ -76,11 +57,19 @@ try(source("~/Github_repos/DataInCode/DataInCode.R"), silent = F)
 
 
 ### Reading files in -------------------------------------------------------------------------------------------------
+irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
+if(!require(package = package_,  character.only = T)) {
+  print("Not Installed yet.");install.packages(pkgs = package_); 
+  require(package=package_, character.only = T) 
+} 
+}  # install package if cannot be loaded
+
 FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
 	if (hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
 	} else { 					FnP = kollapse (path,"/", fname) }
 }
+
 
 read.simple.vec <- function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
 	pfn = kollapse (...) # merge path and filename
@@ -184,6 +173,13 @@ write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F
 
 
 ## Vector operations -------------------------------------------------------------------------------------------------
+as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
+
+sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
+
+topN.dfCol <- function (df_Col =as.named.vector(df[ ,1,drop=F]), n=5) 	{ head(sort(df_Col, decreasing = T), n=n) } # Find the n highest values in a named vector
+bottomN.dfCol <- function (df_Col = as.named.vector(df[ ,1,drop=F]), n=5) { head(sort(df_Col, decreasing = F), n=n) } # Find the n lowest values in a named vector
+
 
 as.named.vector <- function(df_col, WhichDimNames = 1) { # Convert a dataframe column or row into a vector, keeping the corresponding dimension name.
 	# use RowNames: WhichDimNames = 1 , 2: use ColNames
@@ -245,6 +241,16 @@ sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric or
 	names(xx) = 1:l(vec_or_list)
 	order = as.numeric(names(gtools::mixedsort(xx)))
 	vec_or_list[order]
+}
+
+any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
+  y=sum(duplicated(vec))
+  if(summarize & y){
+    x = table(vec); x= x[x>1]-1;
+    print("The following elements have >1 extra copies:")
+    print(x) # table formatting requires a separate entry
+  }
+  return(y)
 }
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
@@ -327,7 +333,6 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 ## Matrix operations -------------------------------------------------------------------------------------------------
 sortEachColumn <- function(data, ...) sapply(data, sort, ...) # Sort each column of a numeric matrix / data frame.
 
-
 rowMedians <- function(x, na.rm=T) apply(data.matrix(x), 1,median, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
 colMedians <- function(x, na.rm=T) apply(data.matrix(x), 2, median, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
 
@@ -386,7 +391,115 @@ median_normalize <- function(mat) { # normalize each column to the median of the
   return(norm_mat)
 }
 
+
+rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames 
+  rownames(matrix1) = trimws(rownames(matrix1))
+  return(matrix1)  
+}
+
+select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subset rows and columns. It checks if the selected dimension names exist and reports if any of those they aren't found.
+  if (length(RowIDs)) {
+    true_rownames = intersect(rownames(df), RowIDs)
+    NotFound = setdiff(RowIDs, rownames(df))
+    if (l(NotFound)) { any_print(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {any_print("All row IDs found")} #if
+    df = df[ true_rownames, ]
+  } #if
+  if (length(ColIDs)) {
+    true_colnames = intersect(colnames(df), ColIDs)
+    NotFound = setdiff(ColIDs, colnames(df))
+    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")} 
+    df = df[ , true_colnames ]
+  } #if
+  any_print(dim(df))
+  return(df)
+}
+
+getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) { # Get the subset of rows with existing rownames, report how much it could not find.
+  idx = intersect(rownamez, row.names(mat))
+  if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
+  if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
+  if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
+  mat[ idx,]
+} 
+
+get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
+  counter = if(rows) NROW(df_) else NCOL(df_)
+  IDX = if(odd) seq(1, to = counter, by = 2) else seq(2, to = counter, by = 2)
+  df_out = if(rows) df_[IDX, ] else df_[, IDX]
+  return(df_out)
+}
+
+combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
+  rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
+  idx = intersect(rn1, rn2)
+  llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
+  merged = cbind(matrix1[idx,], matrix2[idx,])
+  dim(merged); return(merged)
+}
+
+merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rownames
+  merged =  merge(x ,y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
+  rownames(merged) = merged$Row.names
+  merged = merged[ ,-1] # remove row names
+  merged[is.na(merged)] <- 0
+  any_print("Dimensions of merged DF:", dim(merged))
+  return(merged)
+}
+
+attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
+  if (removePreviousVariables) { rm(list = colnames(df_w_dimnames), envir = .GlobalEnv); print("removed") }
+  if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
+    namez= rownames(df_w_dimnames)
+    any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
+    attach (df_w_dimnames)
+    for (n in colnames(df_w_dimnames)) {
+      # x=get(n); # it failed at some point in some columns for unknown reason??
+      x=df_w_dimnames[,n]
+      names(x) = namez
+      assign (n,x,envir =.GlobalEnv) } # for
+  } else { print ("ERROR: the DF does not have some of the dimnames!")}
+}
+
+panel.cor.pearson <- function(x, y, digits=2, prefix="", cex.cor=2, method = "pearson") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y, method = method, use = "complete.obs"))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
+  
+  test <- cor.test(x,y)
+  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
+                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                   symbols = c("***", "**", "*", ".", " "))
+  
+  text(0.5, 0.5, txt, cex = cex * r)
+  text(.8, .8, Signif, cex=cex, col=2)
+}
+
+panel.cor.spearman <- function(x, y, digits=2, prefix="", cex.cor=2, method = "spearman") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y, method = method, use = "complete.obs"))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
+  
+  test <- cor.test(x,y)
+  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
+                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                   symbols = c("***", "**", "*", ".", " "))
+  
+  text(0.5, 0.5, txt, cex = cex * r)
+  text(.8, .8, Signif, cex=cex, col=2)
+}
+
+
 ## List operations -------------------------------------------------------------------------------------------------
+intersect.ls <- function (ls, ...){ Reduce(intersect, ls) }
+
+unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
+
 list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
 	l = list(...)
 	names(l) = as.character(match.call()[-1])
@@ -521,6 +634,22 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
   return(NewMatr)
 }
 
+list2df_NA_padded <- function(L) {
+  pad.na <- function(x,len) {
+    c(x,rep(NA,len-length(x)))
+  }
+  maxlen <- max(sapply(L,length))
+  do.call(data.frame,lapply(L,pad.na,len=maxlen))
+}
+
+clip.values <- function(valz, high=T, thr=3) {
+  if (high) { valz[valz>thr]=thr
+  } else{     valz[valz<thr]=thr}
+  valz
+}
+
+list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
+
 
 ## Set operations -------------------------------------------------------------------------------------------------
 
@@ -631,17 +760,62 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
   sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
 }
 
-## Plotting and Graphics -----------------------------------------------------------------------------------------------------
+## Colors -----------------------------------------------------------------------------------------------------
+richColors <- function (n=3) {  gplots::rich.colors(n) }
+
+rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
+  colz = gplots::rich.colors(l(unique(vec)))
+  if (randomize) {
+    seed=11
+    colz = sample(colz)
+  }
+  colz[vec]
+}
+
+icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = coolor(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
+
+Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+  if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
+  Numbers  = c(...)
+  if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
+  barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
+  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+  
+  fname = substitute(...)
+  if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "ColorCheck.pdf")) }
+}
 
 HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias=1)
 HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green"), bias=1)
+
+## Plotting and Graphics -----------------------------------------------------------------------------------------------------
+colSums.barplot <- function (df, col="seagreen2", ...) { barplot(colSums(df), col=col, ...) }
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
 	eq = (lm$coefficients);
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
+hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit. 
+  # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
+  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
+  xx = hist(splitby, breaks = breaks_, plot = T)
+  IDX = findInterval(x = splitby, vec = xx$breaks)
+  ls = split(toSplit, IDX)
+  any_print("Range of data:", range(xx$breaks))
+  names(ls)=xx$breaks[-1]
+  return(ls)
+}#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
+
+
+nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
+flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) },toggle,sep = Separator) } # returns the name if its value is true
+
+quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
+  breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
+  breaks[!duplicated(breaks)]
+}
 
 
 ## Read and write plotting functions READ -------------------------------------
@@ -694,41 +868,55 @@ rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, pl
 	dev.copy2pdf (file=kollapse(FnP,".barplot.pdf"), width=w, height=h )
 }
 
-## Plots -------------------------------------------------------------------------------------------------
+## Create and check variables -------------------------------------------------------------------------------------------------
 
-
-pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = 3, mdlink = FALSE,
-                          title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) { # Print (multiple) plots to an (A4) pdf.
-  try.dev.off()
-  assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
-  fname = kollapse(OutDir,"/" , pname, ".pdf")
-  pdf(fname,width=w, height=h, title = title)
-  par(mfrow = c(rows, cols))
-  any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
-  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
+list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
+  liszt = as.list(rep(NaN,l(name_vec)))
+  names(liszt) = name_vec
+  return(liszt)
 }
 
-pdfA4plot_on.layout <- function (pname = date(), ..., w = 8.27, h = 11.69, layout_mat = rbind(1, c(2, 3), 4:5), mdlink = FALSE,
-                                 title = paste0(basename(fname), " by ", if (exists("scriptname")) scriptname else "Rscript")) { # Fancy layout version. Print (multiple) plots to an (A4) pdf.
-  try.dev.off()
-  fname = kollapse(OutDir,"/" , pname, ".pdf")
-  pdf(fname,width=w, height=h, title = title)
-  layout(layout_mat)
-  # par(mar = c(3, 3, 0, 0))
-  print(layout_mat)
-  any_print(" ----  Don't forget to call the pair of this function to finish the pdf: pdfA4plot_off ()")
-  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
+matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
+  mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
+  any_print("Dimensions:", dim(mx))
+  return(mx)
 }
 
-
-pdfA4plot_off <- function () {
-  if (exists("mfrow_default")) {
-    x = mfrow_default
-  } else { x =  c(1,1)}
-  par(mfrow = x)
-  try(dev.off()) # close pdf
-  oo();
+vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
+  v=numeric(length(namesvec))
+  # if(length(values==length(namesvec))) {v=values}
+  names(v)=namesvec
+  return(v)
 }
+
+what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements.
+  any_print (is (x),"; nr. of elements:", length (x))
+  if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
+  if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
+  if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
+  head (x)
+}
+
+idim <- function(any_object) { # A dim() function that can handle if you pass on a vector: then, it gives the length.
+  if (is.null(dim(any_object))) {
+    if (is.list(any_object)) { print("list") } #if
+    print(length(any_object))
+  }
+  else {	print(dim(any_object))	}
+}
+
+idimnames <- function(any_object) { # A dimnames() function that can handle if you pass on a vector: it gives back the names.
+  if (!is.null(dimnames(any_object))) 	{ print(dimnames(any_object)) }
+  else if (!is.null(colnames(any_object))) { any_print("colnames:", colnames(any_object))	}
+  else if (!is.null(rownames(any_object))) { any_print("rownames:", rownames(any_object))	}
+  else if (!is.null(names(any_object))) { any_print("names:", names(any_object))	}
+}
+
+table_fixed_categories <- function(vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
+  if ( !is.vector(vector)) {print (is(vector[]))}
+  table (factor(unlist(vector), levels = categories_vec))
+}
+
 
 ## Generic -------------------------------------------------------------------------------------------------
 
@@ -740,32 +928,8 @@ most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent e
 	tail(sort(table(thingy, useNA = "ifany")), topN)
 }
 
-what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements.
-	any_print (is (x),"; nr. of elements:", length (x))
-	if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
-	if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
-	if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
-	head (x)
-}
-
-idim <- function(any_object) { # A dim() function that can handle if you pass on a vector: then, it gives the length.
-	if (is.null(dim(any_object))) {
-	  if (is.list(any_object)) { print("list") } #if
-	  print(length(any_object))
-	  }
-	else {	print(dim(any_object))	}
-}
-
-idimnames <- function(any_object) { # A dimnames() function that can handle if you pass on a vector: it gives back the names.
-	if (!is.null(dimnames(any_object))) 	{ print(dimnames(any_object)) }
-	else if (!is.null(colnames(any_object))) { any_print("colnames:", colnames(any_object))	}
-	else if (!is.null(rownames(any_object))) { any_print("rownames:", rownames(any_object))	}
-	else if (!is.null(names(any_object))) { any_print("names:", names(any_object))	}
-}
-
-table_fixed_categories <- function(vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
-	if ( !is.vector(vector)) {print (is(vector[]))}
-	table (factor(unlist(vector), levels = categories_vec))
+top_indices <- function(x, n = 3, top = T){ # Returns the position / index of the n highest values. For equal values, it maintains the original order
+	head( order(x, decreasing =top), n )
 }
 
 percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercentile =T) { # Calculate what is the actual value of the N-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
@@ -776,34 +940,7 @@ percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercen
 	return (value)
 }
 
-top_indices <- function(x, n = 3, top = T){ # Returns the position / index of the n highest values. For equal values, it maintains the original order
-	head( order(x, decreasing =top), n )
-}
 
-attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Take a data frame (of e.g. metadata) from your memory space, split it into vectors so you can directly use them. E.g.: Instead of metadata$color[blabla] use color[blabla]
-  if (removePreviousVariables) { rm(list = colnames(df_w_dimnames), envir = .GlobalEnv); print("removed") }
-  if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
-    namez= rownames(df_w_dimnames)
-    any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
-    attach (df_w_dimnames)
-    for (n in colnames(df_w_dimnames)) {
-      # x=get(n); # it failed at some point in some columns for unknown reason??
-      x=df_w_dimnames[,n]
-      names(x) = namez
-      assign (n,x,envir =.GlobalEnv) } # for
-  } else { print ("ERROR: the DF does not have some of the dimnames!")}
-}
-
-Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
-  if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
-  Numbers  = c(...)
-  if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
-  barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
-  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-  
-  fname = substitute(...)
-  if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "ColorCheck.pdf")) }
-}
 
 ## Clustering heatmap tools -----------------------------------------------------------------------------------------------------
 
@@ -871,60 +1008,6 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
 
 ## New additions -----------------------------------------------------------------------------------------------------
 
-panel.cor.pearson <- function(x, y, digits=2, prefix="", cex.cor=2, method = "pearson") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y, method = method, use = "complete.obs"))
-  txt <- format(c(r, 0.123456789), digits=digits)[1]
-  txt <- paste(prefix, txt, sep="")
-  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-  
-  test <- cor.test(x,y)
-  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
-                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                   symbols = c("***", "**", "*", ".", " "))
-  
-  text(0.5, 0.5, txt, cex = cex * r)
-  text(.8, .8, Signif, cex=cex, col=2)
-}
-
-panel.cor.spearman <- function(x, y, digits=2, prefix="", cex.cor=2, method = "spearman") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y, method = method, use = "complete.obs"))
-  txt <- format(c(r, 0.123456789), digits=digits)[1]
-  txt <- paste(prefix, txt, sep="")
-  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-  
-  test <- cor.test(x,y)
-  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
-                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                   symbols = c("***", "**", "*", ".", " "))
-  
-  text(0.5, 0.5, txt, cex = cex * r)
-  text(.8, .8, Signif, cex=cex, col=2)
-}
-
-
-any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
-  y=sum(duplicated(vec))
-  if(summarize & y){
-    x = table(vec); x= x[x>1]-1;
-    print("The following elements have >1 extra copies:")
-    print(x) # table formatting requires a separate entry
-  }
-  return(y)
-}
-
-merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rownames
-  merged =  merge(x ,y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
-  rownames(merged) = merged$Row.names
-  merged = merged[ ,-1] # remove row names
-  merged[is.na(merged)] <- 0
-  any_print("Dimensions of merged DF:", dim(merged))
-  return(merged)
-}
-
 numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x),abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
   z = x:y
   if(zeropadding){ z =stringr::str_pad(z, pad = 0, width = pad_length)   }
@@ -933,134 +1016,15 @@ numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(
 # toClipboard(numerate(1, 122))
 
 
-
 printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report at every e.g. 1000
-
-
-icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = coolor(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
-
-irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
-                                if(!require(package = package_,  character.only = T)) {
-                                  print("Not Installed yet.");install.packages(pkgs = package_); 
-                                  require(package=package_, character.only = T) 
-                                  } 
-}  # install package if cannot be loaded
-
 
 zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
   mod = if (length(vec)%%2) 0 else 1
   for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
 }
 
-getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) { # Get the subset of rows with existing rownames, report how much it could not find.
-  idx = intersect(rownamez, row.names(mat))
-  if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
-  if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
-  if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
-  mat[ idx,]
-} 
-
-list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
-  liszt = as.list(rep(NaN,l(name_vec)))
-  names(liszt) = name_vec
-  return(liszt)
-}
-
-matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
-  mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
-  any_print("Dimensions:", dim(mx))
-  return(mx)
-}
-
-vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
-  v=numeric(length(namesvec))
-  # if(length(values==length(namesvec))) {v=values}
-  names(v)=namesvec
-  return(v)
-}
-
-rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors with rich.colors() for a numeric vector
-  colz = gplots::rich.colors(l(unique(vec)))
-  if (randomize) {
-    seed=11
-    colz = sample(colz)
-  }
-  colz[vec]
-  
-}
-
-hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit. 
-  # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
-  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
-  xx = hist(splitby, breaks = breaks_, plot = T)
-  IDX = findInterval(x = splitby, vec = xx$breaks)
-  ls = split(toSplit, IDX)
-  any_print("Range of data:", range(xx$breaks))
-  names(ls)=xx$breaks[-1]
-  return(ls)
-}#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
-
-get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
-  counter = if(rows) NROW(df_) else NCOL(df_)
-  IDX = if(odd) seq(1, to = counter, by = 2) else seq(2, to = counter, by = 2)
-  df_out = if(rows) df_[IDX, ] else df_[, IDX]
-  return(df_out)
-}
-
-nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
-flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) },toggle,sep = Separator) } # returns the name if its value is true
-
-list2df_NA_padded <- function(L) {
-  pad.na <- function(x,len) {
-    c(x,rep(NA,len-length(x)))
-  }
-  maxlen <- max(sapply(L,length))
-  do.call(data.frame,lapply(L,pad.na,len=maxlen))
-}
-
-clip.values <- function(valz, high=T, thr=3) {
-  if (high) { valz[valz>thr]=thr
-  } else{     valz[valz<thr]=thr}
-  valz
-}
-
-quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
-  breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
-  breaks[!duplicated(breaks)]
-}
-
-rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames 
-  rownames(matrix1) = trimws(rownames(matrix1))
-  return(matrix1)  
-}
-
-combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
-  rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
-  idx = intersect(rn1, rn2)
-  llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
-  merged = cbind(matrix1[idx,], matrix2[idx,])
-  dim(merged); return(merged)
-}
 
 
-list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
-
-select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subset rows and columns. It checks if the selected dimension names exist and reports if any of those they aren't found.
-  if (length(RowIDs)) {
-    true_rownames = intersect(rownames(df), RowIDs)
-    NotFound = setdiff(RowIDs, rownames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {any_print("All row IDs found")} #if
-    df = df[ true_rownames, ]
-  } #if
-  if (length(ColIDs)) {
-    true_colnames = intersect(colnames(df), ColIDs)
-    NotFound = setdiff(ColIDs, colnames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")} 
-    df = df[ , true_colnames ]
-  } #if
-  any_print(dim(df))
-  return(df)
-}
 # TEMP ------------------------------------
 
 
