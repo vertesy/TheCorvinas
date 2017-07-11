@@ -697,6 +697,7 @@ intermingle2vec <- function(V1, V2, wNames=T) { # Combine 2 vectors (of the same
 }
 
 
+
 intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same length) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
   stopifnot(ncol(df1) == ncol(df2) )
   if(nrow(df1) != nrow(df2) ){ # not equal rows: subset
@@ -712,6 +713,7 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
   } else {
     NewColNames = intermingle2vec(p0("df1.", 1:ncol(df1) ), p0("df2.", 1:ncol(df2) ))
   }
+  NewMatr = matrix.fromNames(rowname_vec = CommonGenes, colname_vec = NewColNames)
   for (x in 1:(2*length(df1)) ) {
     if (x  %% 2) {	NewMatr[ ,x ] = df1[ ,(x+1)/2 ]
     } else { 		    NewMatr[ ,x ] = df2[ ,(x)/2 ]      }
@@ -719,6 +721,7 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
   print(idim(NewMatr))
   return(NewMatr)
 }
+
 
 list2df_NA_padded <- function(L) {
   pad.na <- function(x,len) {
