@@ -772,7 +772,7 @@ rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors f
   colz[vec]
 }
 
-icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = coolor(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
+icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
 
 Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
