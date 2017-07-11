@@ -15,13 +15,13 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   if (!is.null(rownames(DE)) & !"Gene" %in% colnames(DE)) {    DE = cbind( "Gene" = rownames(DE), DE)  }
   if (sum(! (Columns %in% colnames(DE)))) { any_print("A dataframe with 3 columns needed:", Columns )}
   DEseqResults = DEseqResults[!is.na(rowSums(DEseqResults)), ]
-  
+
   # Make a basic volcano plot
   subb = paste0("Red if padj<",thr_padj_,", orange of log2FC>",thr_log2fc_,", green if both.")
   logFC.4plot = DEseqResults$"log2FoldChange"
   padj.4plot = DEseqResults$"padj"
   with(DE, plot(logFC.4plot, main=pname_, sub=subb, -log10(padj.4plot), pch=20, cex=.5, col = rgb(0,0,0,.25), xlim=range(logFC.4plot) ))
-  
+
   if(highlight) { # Add colored points:
     with(subset(DE, padj< thr_padj_ ),      points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="red"))
     with(subset(DE, abs(log2FoldChange)>=thr_log2fc_), points(log2FoldChange, -log10(padj), pch=20, cex=.5, col="orange"))
@@ -135,7 +135,7 @@ wbarplot_cellID <-  function(variable, col ="gold1", ...) { # in ... you can pas
 id2name <- function(x) sub("\\_\\_chr\\w+","",x ) # From RaceID
 
 name2id <- function(x,id=rownames(sc@expdata)) {
-  found = id[sub("\\_\\_chr\\w+","",id) %in% x] 
+  found = id[sub("\\_\\_chr\\w+","",id) %in% x]
   not_found = setdiff(x, found)
   any_print("NOT FOUND: ", not_found, "or", inline_vec.char(not_found))
   return(found)
@@ -226,7 +226,7 @@ TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the t
 well2index <- function(wellnames_vec, wells =384, ZeroPaddedIndices = T, ZeroPaddedWellNames = F) {
   if (ZeroPaddedWellNames) {  wellnames=  paste0(sort(rep(LETTERS[1:16],24)), stringr::str_pad(1:24, 2, pad = "0"))  }
   else {                      wellnames=  paste0(sort(rep(LETTERS[1:16],24)), 1:24) }
-  
+
   if(ZeroPaddedIndices) { wellindices = stringr::str_pad(1:wells, width = nchar(wells), pad = "0") }
   else {                  wellindices = 1:wells }
   names(wellindices) = wellnames
@@ -238,13 +238,53 @@ well2index <- function(wellnames_vec, wells =384, ZeroPaddedIndices = T, ZeroPad
 index2wellname <- function(numeric_vec, wells =384, ZeroPaddedIndices = T, ZeroPaddedWellNames = F) {
   if (ZeroPaddedWellNames) {  wellnames=  paste0(sort(rep(LETTERS[1:16],24)), stringr::str_pad(1:24, 2, pad = "0"))  }
   else {                      wellnames=  paste0(sort(rep(LETTERS[1:16],24)), 1:24) }
-  
+
   if(ZeroPaddedIndices) { names(wellnames) = stringr::str_pad(1:wells, width = nchar(wells), pad = "0") }
   else {                  names(wellnames) = 1:wells }
   assign(x = "wellnames", value = wellnames, envir = .GlobalEnv)
   print("wellnames variable is in now the memory.")
   wellnames[numeric_vec]
 }
+
+
+find.Gene <- function(PartialSymbol, model=c("human", "mouse", "worm")[2], IgnoreCase =F, ...) {
+  SubDir = if (model == "human") { "hg19" } else if (model == "mouse") { "mm10" } else if (model == "worm") { "C_elegans" } else {print ("model has to be either of: human, mouse, worm.")}
+  MetaDir = p0("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
+  fnp = p0(MetaDir,"/TranscriptLength.",SubDir,".tsv"); stopifnot(file.exists(fnp))
+  TL = read.simple.tsv.named.vector(fnp)
+  Hits = grep(pattern = PartialSymbol, x=names(TL), ignore.case = IgnoreCase, value = T, ...)
+  iprint("Median transcript length in",SubDir,"is:", median(TL))
+  print(cbind("Length[nt]" = TL[Hits]))
+  return(Hits)
+}
+
+
+
+
+stat.Gene.sequence <- function(GeneSymbols=find.Gene("Ssx"), model=c("human", "mouse", "worm")[2], IgnoreCase =F, ...) {
+  SubDir = if (model == "human") { "hg19" } else if (model == "mouse") { "mm10" } else if (model == "worm") { "C_elegans" } else {print ("model has to be either of: human, mouse, worm.")}
+  MetaDir = p0("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
+  fnpTL = p0(MetaDir,"/TranscriptLength.",SubDir,".tsv"); stopifnot(file.exists(fnpTL))
+  TL = read.simple.tsv.named.vector(fnpTL)
+  fnpBD = p0(MetaDir,"/BaseFrequencies.",SubDir,".tsv"); stopifnot(file.exists(fnpBD))
+  BD = read.simple.tsv(fnpBD)
+
+  NotFound = setdiff(GeneSymbols, names(TL))
+  if (length(NotFound)) { iprint("GeneSymbols not found:", NotFound)  } #if
+  Found = intersect(GeneSymbols, names(TL))
+
+  median.TL = median(TL)
+  median.BD = colMedians(BD, na.rm = T)[1:4]
+
+  RelativeBaseComposition = round(100*(BD[Found  ,1:4]/median.BD))
+  colnames(RelativeBaseComposition)  = p0(colnames(RelativeBaseComposition),"%")
+
+  Statz = cbind(  "Length" = TL[Found],
+                  "Median Length (% of)" = p0(percentage_formatter(TL[Found]/ median.TL),"    "),
+                  RelativeBaseComposition)
+  return(Statz)
+}
+
 
 
 
