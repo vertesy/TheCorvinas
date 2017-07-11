@@ -287,6 +287,65 @@ stat.Gene.sequence <- function(GeneSymbols=find.Gene("Ssx"), model=c("human", "m
 
 
 
+MergeCS1s <- function( InputNames4Libs,PlotIt = T) {
+  if (length(InputNames4Libs) !=4 ) { any_print("Too many files provided:", l(InputNames4Libs)); stop()} #if
+  Ls_dfs = list.fromNames(p0("Lib",1:4))
+  i=1
+  for (i in 1:4 ) {
+    Ls_dfs[[i]] = read.simple.tsv(p0(InputDir, InputNames4Libs[i]))
+  } #for
+  l(Ls_dfs)
+  RowNZ = lapply(Ls_dfs, rownames)
+  SharedGenes = Reduce(intersect, RowNZ)
+  colSums96 = list2df(lapply(Ls_dfs, colSums))
+  
+  PcOfGenesInMerged = 100*l(SharedGenes)/ unlapply(Ls_dfs, NROW)
+  Ls_dfs.filt = lapply(Ls_dfs, select.rows.and.columns, RowIDs = SharedGenes)  # subset down to the shared genes
+  
+  
+  L12 = intermingle.cbind(Ls_dfs.filt$"Lib1", Ls_dfs.filt$"Lib2") # intermingle by columns
+  L34 = intermingle.cbind(Ls_dfs.filt$"Lib3", Ls_dfs.filt$"Lib4")
+  
+  rowStart384 = seq(1, ncol(L12), by = 24);l(rowStart384)
+  rowEnd384 = seq(24, ncol(L12), by = 24);l(rowEnd384)
+  MergeIDXs = cbind(rowStart384, rowEnd384)
+  
+  # stringr::str_pad()
+  MTX =matrix.fromNames(rowname_vec = SharedGenes, colname_vec = 1:384)
+  i=3
+  for (i in 1:8 ) {
+    idx1 = MergeIDXs[i,1]
+    idx2 = MergeIDXs[i,2]
+    colz384 = ((i-1)*48+1): (i*48)
+    MTX[ , colz384] = cbind(L12[ , (idx1:idx2)], L34[ , (idx1:idx2)])
+  } #for
+  
+  
+  if (PlotIt) {
+    
+    pdfA4plot_on.layout("CS1.Lib.Merger.Stats")
+    wbarplot(colSums(MTX), main = "mRNA per well",ylab="mRNA", xlab="cells", col = richColors(5)[-1],savefile=F)
+    wbarplot(PcOfGenesInMerged, ylab="% of genes", tilted_text = T, savefile = F)
+    barplot_label(PcOfGenesInMerged, labels = percentage_formatter(PcOfGenesInMerged/100), bottom = T, OverwritePrevPDF = F)
+    pdfA4plot_off()
+    
+    Combinations = t(combn(1:4, 2))
+    pdfA4plot_on("CS1.Primer.Correlations.in.4.Libs", rows = 3)
+    for (i in 1:NROW(Combinations) ) {
+      COLZ = Combinations[i,]
+      DAT = log10(colSums96[, COLZ]+1)
+      plot(DAT, pch="", main="log10 library correlation")
+      text(DAT, labels = 1:96)
+    } #for
+    pairs(log10(colSums96+1), pch=1:25)
+    pdfA4plot_off(); try.dev.off()
+    
+    mRNA.log10 = log10(colSums96[ ,1:2]+1)
+    wscatter.fill(mRNA.log10, color = 1:96, pch=21:25, plotname = "mRNA - 1vs2", savefile = T); try.dev.off()
+    
+  } #if Plotit
+  return(MTX)
+}
 
 
 #  -----------------------------------------------------------------------------------------------------
