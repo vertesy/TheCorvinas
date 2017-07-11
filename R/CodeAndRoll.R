@@ -35,6 +35,83 @@ debuggingState(on=FALSE)
 try(require("MarkdownReports"))
 try(require("gtools"))
 
+# TMP Tue Jul 11 13:42:29 2017 ------------------------------
+pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
+                          title = ttl_field(pname)) { # Print (multiple) plots to an (A4) pdf.
+  try.dev.off()
+  assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
+  fname = FnP_parser(pname, "pdf")
+  pdf(fname,width=w, height=h, title = title)
+  par(mfrow = c(rows, cols))
+  any_print(" ----  Don't forget to call the pair of this function to finish plotting in the A4 pdf.: pdfA4plot_off ()")
+  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
+}
+
+
+wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[,1]), ylim=range(df2col[,2]), zlim=range(color), nlevels = 20, pch=21, cex=1, 
+                           plotname = substitute(df2col), plot.title = plotname, 
+                           plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+                           axes = TRUE, frame.plot = axes, xlb, ylb,
+                           savefile = T, w = 7, h = w, incrBottMarginBy = 0, mdlink = F ) {
+  x = df2col[,1]
+  y = df2col[,2]
+  CNN = colnames(df2col)
+  xlb = if(length(CNN) & missing(xlb)) CNN[1]
+  ylb = if(length(CNN) & missing(ylb)) CNN[2]
+  
+  fname = kollapse(plotname, ".barplot")
+  if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
+  
+  mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
+  on.exit(par(par.orig))
+  WID <- (3 + mar.orig[2L]) * par("csi") * 2.54
+  layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(WID)))
+  par(las = las)
+  mar <- mar.orig
+  mar[4L] <- mar[2L]
+  mar[2L] <- 1
+  par(mar = mar)
+  
+  # choose colors to interpolate
+  levels <- seq(zlim[1], zlim[2], length.out = nlevels)
+  col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)  
+  colz <- col[cut(color, nlevels)]  
+  
+  plot.new()
+  plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
+  
+  rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col) 
+  if (missing(key.axes)) { if (axes){axis(4)} }
+  else key.axes
+  box()
+  if (!missing(key.title)) key.title
+  mar <- mar.orig
+  mar[4L] <- 1
+  par(mar = mar)
+  
+  # points
+  plot(x, y, main =plot.title, type = "n", xaxt='n', yaxt='n', ..., xlim=xlim, ylim=ylim, bty="n", xlab=xlb, ylab=ylb)
+  points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
+  
+  ## options to make mapping more customizable
+  if (missing(plot.axes)) {
+    if (axes) {
+      title(main = "", xlab = "", ylab = "")
+      Axis(x, side = 1)
+      Axis(y, side = 2)
+    }
+  }
+  else plot.axes
+  if (frame.plot) box()
+  if (missing(plot.title)) title(...)
+  else plot.title
+  invisible()
+  
+  if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field(fname)) }
+  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+  assign("plotnameLastPlot", fname, envir = .GlobalEnv)
+  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname)	}
+}
 
 
 
@@ -173,7 +250,10 @@ write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F
 
 
 ## Vector operations -------------------------------------------------------------------------------------------------
-as.factor.numeric <- function (vec) {  vec2 = as.numeric(as.factor(vec)) ;  names (vec2) =  if ( l(names(vec))) names (vec) else vec; return(vec2) }
+as.factor.numeric <- function (vec, rename=F) {  
+  vec2 = as.numeric(as.factor(vec)) ;  
+  names (vec2) =  if ( !rename & !is.null(names(vec) ) ) names (vec) else vec; return(vec2) 
+  }
 
 sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
 
@@ -193,9 +273,15 @@ as.named.vector <- function(df_col, WhichDimNames = 1) { # Convert a dataframe c
 }
 
 as.numeric.wNames <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
-	numerified_vec = as.numeric(as.factor(vec))
-	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
-	return(numerified_vec)
+  numerified_vec = as.numeric(as.factor(vec)) -1 # as factor gives numbers [1:n] instead [0:n]
+  if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
+  return(numerified_vec)
+}
+
+as.numeric.wNames.old <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
+  numerified_vec = as.numeric(as.factor(vec)) 
+  if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
+  return(numerified_vec)
 }
 
 as.logical.wNames <- function(vec) { # Converts your input vector into a logical vector, and puts the original character values into the names of the new vector, unless it already has names.
