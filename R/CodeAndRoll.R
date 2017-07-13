@@ -437,6 +437,13 @@ colMax <- function(x, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calc
 rowSEM <- function(x, na.rm=T) apply(data.matrix(x), 1, sem, na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
 colSEM <- function(x, na.rm=T) apply(data.matrix(x), 2, sem, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 
+# See more: https://stackoverflow.com/questions/20596433/how-to-divide-each-row-of-a-matrix-by-elements-of-a-vector-in-r
+colDivide <- function(mat, vec) { # divide by column
+  stopifnot(NCOL(mat), length(vec))
+  mat / vec[col(mat)] # fastest
+}
+
+
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
 	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
@@ -474,6 +481,12 @@ splitByCol = colsplit
 median_normalize <- function(mat) { # normalize each column to the median of the columns
   cs = colSums(mat, na.rm = T)
   norm_mat = (t(t(mat) / cs)) * median(cs)
+  return(norm_mat)
+}
+
+mean_normalize <- function(mat) { # normalize each column to the median of the columns
+  cs = colSums(mat, na.rm = T)
+  norm_mat = (t(t(mat) / cs)) * mean(cs)
   return(norm_mat)
 }
 
@@ -781,14 +794,14 @@ movingAve <- function(x, oneSide = 5) { # Calculates the moving / rolling averag
 	}; 	return (y)
 }
 
-movingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard deviation of the mean (SEM) on a numeric vector.
+movingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard error of the mean (SEM) on a numeric vector.
 	y = NULL
 	for (i in oneSide:l(x)) {
 		y[i] = sem( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
-imovingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard deviation of the mean (SEM). It calculates it to the edge of the vector with incrementally smaller window-size.
+imovingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard error of the mean (SEM). It calculates it to the edge of the vector with incrementally smaller window-size.
 	y = NULL
 	for (i in 1:l(x)) {
 		oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
