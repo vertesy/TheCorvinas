@@ -32,18 +32,28 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   if (saveit) { wplot_save_this(plotname = paste0(pname_,".volcano") )  }
 }
 
-filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj) {
+filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj, usepAdj=T,foldChange_GeoMean) {
   DE = as.data.frame(DESeq_results)
   llprint("#### ", substitute(DESeq_results))
-  index_isSign = DE$padj < thr_padj_
+  
+  condition = F
+  index_isSign = if (usepAdj) { DE$"padj" <= thr_padj_  } else {DE$"pval" <= thr_padj_}
   llprint(sum(index_isSign, na.rm = T), "or", pc_TRUE(index_isSign), "of the results is significant at p=",thr_padj_)
-  index_FoldChange = (DE$log2FoldChange < -thr_log2fc_ | DE$log2FoldChange >  thr_log2fc_)
-  llprint(sum(index_FoldChange, na.rm = T), "or", pc_TRUE(index_FoldChange), "of the results has a fold change more extreme than (+/-)", 2^thr_log2fc)
+  
+  index_FoldChange = (DE$"log2FoldChange" <= -thr_log2fc_ | DE$"log2FoldChange" >=  thr_log2fc_)
+  llprint(sum(index_FoldChange, na.rm = T), "or", pc_TRUE(index_FoldChange), "of the results has a fold change more extreme than (+/-)", 2^thr_log2fc_)
+  
+  if (!missing(foldChange_GeoMean)) {
+    index_foldChange_GeoMean = (DE$"foldChange_GeoMean" <= 1/foldChange_GeoMean | DE$"foldChange_GeoMean" >=  foldChange_GeoMean)
+    llprint(sum(index_foldChange_GeoMean, na.rm = T), "or", pc_TRUE(index_foldChange_GeoMean), "of the results has a Geometric Mean fold change more extreme than (+/-)", foldChange_GeoMean)
+  } #if
+  
   index_Hits = index_isSign & index_FoldChange
   llprint(sum(index_Hits, na.rm = T), "or", pc_TRUE(index_Hits), "of the results meet both criteria.")
   DE_hits = iround(DE[ which(index_Hits), ])
   return(DE_hits)
 }
+
 
 prepare4plotMA <- function(DESeq_results, thr_padj_=thr_padj, thr_log2fc_ =F) { # highlight results using 2 thresholds
   DE = as.data.frame(DESeq_results)[, c("baseMean", "log2FoldChange", "padj")]
