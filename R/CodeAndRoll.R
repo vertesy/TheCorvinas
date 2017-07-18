@@ -114,6 +114,22 @@ wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., 
 }
 
 
+wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), subt, ..., w = 7, h = w, mdlink = F, plotname = substitute(yalist)) {
+  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+  fname = kollapse(plotname, ".", imagetype, print = F)
+  LsLen = length(yalist)
+  if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
+  print(names(yalist))
+  
+  filename = kollapse(OutDir,"/", fname, print = F)
+  if (missing(subt)) { subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)  } #if
+  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
+               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+  if (mdlink) {
+    llogit(MarkDown_ImgLink_formatter(fname))
+    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+  }
+}
 
 # Alisases ----------------
 p0 = paste0
@@ -439,9 +455,10 @@ colSEM <- function(x, na.rm=T) apply(data.matrix(x), 2, sem, na.rm=na.rm) # Calc
 
 # See more: https://stackoverflow.com/questions/20596433/how-to-divide-each-row-of-a-matrix-by-elements-of-a-vector-in-r
 colDivide <- function(mat, vec) { # divide by column
-  stopifnot(NCOL(mat), length(vec))
+  stopifnot(NCOL(mat)== length(vec))
   mat / vec[col(mat)] # fastest
 }
+
 
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
@@ -468,7 +485,7 @@ matrix_from_dimnames  <- function (rownames, colnames, fill = NA) { # Set up an 
   mm = matrix(data = fill, nrow = length(rownames), ncol = length(colnames), dimnames = list(rownames, colnames))
 }
 
-colsplit <- function(df, f) { # split a data frame by a factor corresponding to columns.
+colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corresponding to columns.
   ListOfDFs = NULL
   levelz = unique(f)
   for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
