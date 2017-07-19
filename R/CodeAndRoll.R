@@ -210,10 +210,10 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
-  if(grep("^~/", pfn)) {
+  if(grepl("^~/", pfn)) {
     any_print("You cannot use the ~/ in the file path! Its repaced to '/Users/abelvertesy'.")
     pfn = gsub(pattern = "^~/", replacement = "/Users/abelvertesy/", x = pfn)
-  }
+  } else {print(pfn)}
   
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
   # merge path and filename
