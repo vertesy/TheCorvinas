@@ -1072,7 +1072,7 @@ hclust.getClusterID.col <-function(pheatmapObject, k=3) cutree(pheatmapObject$tr
 hclust.ClusterSeparatingLines.row <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_row, k = k)[pheatmapObject$tree_row$order])[-1])
 hclust.ClusterSeparatingLines.col <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_col, k = k)[pheatmapObject$tree_col$order])[-1])
 
-matlabColors.pheatmap <- function(matrixx) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = 31)) - 1)}
+matlabColors.pheatmap <- function(matrixx, nr=50) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = nr)) - 1)}
 
 "FOR VECTOR. it works"
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
