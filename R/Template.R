@@ -11,7 +11,10 @@ source("~/Github_repos/hmC/RaceID/RaceID2_class_ext.2016.05.10.R") ## load class
 source ('~/Github_repos/TheCorvinas/R/DatabaseLinke.r')
 
 # Setup ------------------------
-
+OutDir = ""
+setup_MarkdownReports(OutDir = OutDir, scriptname = "")
+OutDirOrig = OutDir
+  
 # Metadata ------------------------
 
 # Parameters ------------------------
