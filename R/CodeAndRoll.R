@@ -131,6 +131,16 @@ wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist
   }
 }
 
+
+filter_LP <- function(numeric_vector, threshold, passequal = F, prepend ="", return_survival_ratio=F, na_rm = T) { # Filter values that fall below the low-pass threshold (X <).
+  survivors <- if (passequal) { numeric_vector <= threshold } else { numeric_vector < threshold }
+  pc = percentage_formatter(sum(survivors, na.rm = na_rm)/length(survivors))
+  conclusion = kollapse(prepend, pc, " or ", sum(survivors, na.rm = na_rm), " of ",length(numeric_vector)," entries in ", substitute (numeric_vector)," fall below a threshold value of: ", iround(threshold))
+  if (file.exists(path_of_report) ) {	llogit (conclusion)	} else { print  ("NOT LOGGED") }
+  if (return_survival_ratio) {return (sum(survivors, na.rm = na_rm)/length(survivors))} else if (!return_survival_ratio) { return (survivors) }
+}
+
+
 # Alisases ----------------
 p0 = paste0
 l=length
@@ -891,7 +901,10 @@ rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors f
   colz[vec]
 }
 
-icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
+# icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
+icolor_categories <- function (vec, rndize=F, trail=0, seed=354) {  x= table(vec); colvec = richColors(l(x)+trail ); colvec = colvec[ trail:l(x)+trail]; if(rndize) {set.seed(seed); colvec=sample(colvec)}; names(colvec) =names(x); Color_Check(colvec); return(colvec) } # create color categories # ; colvec = colvec[ (1+trail):(l(x)+trail)]
+
+
 
 Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
