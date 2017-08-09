@@ -469,7 +469,10 @@ colDivide <- function(mat, vec) { # divide by column
   mat / vec[col(mat)] # fastest
 }
 
-
+rowDivide <- function(mat, vec) { # divide by row
+  stopifnot(NROW(mat)== length(vec))
+  mat / vec[row(mat)] # fastest
+}
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
