@@ -233,7 +233,7 @@ TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the t
 
 #  -----------------------------------------------------------------------------------------------------
 
-well2index <- function(wellnames_vec, wells =384, ZeroPaddedIndices = T, ZeroPaddedWellNames = F) {
+wellname2index <- function(wellnames_vec, wells =384, ZeroPaddedIndices = T, ZeroPaddedWellNames = F) {
   if (ZeroPaddedWellNames) {  wellnames=  paste0(sort(rep(LETTERS[1:16],24)), stringr::str_pad(1:24, 2, pad = "0"))  }
   else {                      wellnames=  paste0(sort(rep(LETTERS[1:16],24)), 1:24) }
 
