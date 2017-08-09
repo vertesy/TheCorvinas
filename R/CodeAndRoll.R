@@ -922,7 +922,7 @@ HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red")
 HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green"), bias=1)
 
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
-colSums.barplot <- function (df, col="seagreen2", ...) { barplot(colSums(df), col=col, ...) }
+colSums.barplot <- function (df, col="seagreen2", na_rm =T, ...) { barplot(colSums(df, na.rm = na_rm), col=col, ...) }
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
 	eq = (lm$coefficients);
