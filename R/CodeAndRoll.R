@@ -48,9 +48,9 @@ pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, co
 }
 
 
-wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[,1]), ylim=range(df2col[,2]), zlim=range(color), nlevels = 20, pch=21, cex=1, 
-                           plotname = substitute(df2col), plot.title = plotname, 
-                           plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[,1]), ylim=range(df2col[,2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
+                           plotname = substitute(df2col), plot.title = plotname,
+                           plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
                            axes = TRUE, frame.plot = axes, xlb, ylb,
                            savefile = T, w = 7, h = w, incrBottMarginBy = 0, mdlink = F ) {
   x = df2col[,1]
@@ -58,10 +58,10 @@ wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., 
   CNN = colnames(df2col)
   xlb = if(length(CNN) & missing(xlb)) CNN[1]
   ylb = if(length(CNN) & missing(ylb)) CNN[2]
-  
+
   fname = kollapse(plotname, ".barplot")
   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
-  
+
   mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
   on.exit(par(par.orig))
   WID <- (3 + mar.orig[2L]) * par("csi") * 2.54
@@ -71,16 +71,16 @@ wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., 
   mar[4L] <- mar[2L]
   mar[2L] <- 1
   par(mar = mar)
-  
+
   # choose colors to interpolate
   levels <- seq(zlim[1], zlim[2], length.out = nlevels)
-  col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)  
-  colz <- col[cut(color, nlevels)]  
-  
+  col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)
+  colz <- col[cut(color, nlevels)]
+
   plot.new()
   plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
-  
-  rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col) 
+
+  rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col)
   if (missing(key.axes)) { if (axes){axis(4)} }
   else key.axes
   box()
@@ -88,11 +88,11 @@ wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., 
   mar <- mar.orig
   mar[4L] <- 1
   par(mar = mar)
-  
+
   # points
   plot(x, y, main =plot.title, type = "n", xaxt='n', yaxt='n', ..., xlim=xlim, ylim=ylim, bty="n", xlab=xlb, ylab=ylb)
   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
-  
+
   ## options to make mapping more customizable
   if (missing(plot.axes)) {
     if (axes) {
@@ -106,7 +106,7 @@ wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., 
   if (missing(plot.title)) title(...)
   else plot.title
   invisible()
-  
+
   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field(fname)) }
   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
   assign("plotnameLastPlot", fname, envir = .GlobalEnv)
@@ -120,7 +120,7 @@ wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist
   LsLen = length(yalist)
   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
   print(names(yalist))
-  
+
   filename = kollapse(OutDir,"/", fname, print = F)
   if (missing(subt)) { subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)  } #if
   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
@@ -162,9 +162,9 @@ try(source("~/Github_repos/DataInCode/DataInCode.R"), silent = F)
 ### Reading files in -------------------------------------------------------------------------------------------------
 irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
 if(!require(package = package_,  character.only = T)) {
-  print("Not Installed yet.");install.packages(pkgs = package_); 
-  require(package=package_, character.only = T) 
-} 
+  print("Not Installed yet.");install.packages(pkgs = package_);
+  require(package=package_, character.only = T)
+}
 }  # install package if cannot be loaded
 
 FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
@@ -219,13 +219,13 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 }
 
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
-  if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
+  if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   if(grepl("^~/", pfn)) {
     any_print("You cannot use the ~/ in the file path! Its repaced to '/Users/abelvertesy'.")
-    pfn = gsub(pattern = "^~/", replacement = "/Users/abelvertesy/", x = pfn)
+    pfn = gsub(pattern = "^~/", replacement = "~/", x = pfn)
   } else {print(pfn)}
-  
-  if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }  
+
+  if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   # merge path and filename
   TheSheetNames = sheetNames(pfn, verbose = F); NrSheets = length(TheSheetNames)
   any_print(NrSheets, "sheets in the file.")
@@ -276,9 +276,9 @@ write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F
 
 
 ## Vector operations -------------------------------------------------------------------------------------------------
-as.factor.numeric <- function (vec, rename=F) {  
-  vec2 = as.numeric(as.factor(vec)) ;  
-  names (vec2) =  if ( !rename & !is.null(names(vec) ) ) names (vec) else vec; return(vec2) 
+as.factor.numeric <- function (vec, rename=F) {
+  vec2 = as.numeric(as.factor(vec)) ;
+  names (vec2) =  if ( !rename & !is.null(names(vec) ) ) names (vec) else vec; return(vec2)
   }
 
 sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
@@ -305,7 +305,7 @@ as.numeric.wNames <- function(vec) { # Converts any vector into a numeric vector
 }
 
 as.numeric.wNames.old <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
-  numerified_vec = as.numeric(as.factor(vec)) 
+  numerified_vec = as.numeric(as.factor(vec))
   if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
   return(numerified_vec)
 }
@@ -382,10 +382,10 @@ na.omit.strip <- function(vec, silent = F) {  # Omit NA values from a vector and
 
 na.omit.mat <- function(mat, any = T) {  # Omit rows with NA values from a matrix. Rows with any, or full of NA-s
   mat=as.matrix(mat)
-  stopifnot(length(dim(mat))==2) 
+  stopifnot(length(dim(mat))==2)
   if (any) outMat = mat[ !is.na(rowSums(mat)), ]
   else outMat = mat[ (rowSums(is.na(mat)) <= ncol(mat)), ] # keep rows not full with NA
-  outMat    
+  outMat
 }
 
 inf.omit <- function(vec) { # Omit infinite values from a vector.
@@ -521,9 +521,9 @@ mean_normalize <- function(mat) { # normalize each column to the median of the c
 }
 
 
-rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames 
+rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames
   rownames(matrix1) = trimws(rownames(matrix1))
-  return(matrix1)  
+  return(matrix1)
 }
 
 select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subset rows and columns. It checks if the selected dimension names exist and reports if any of those they aren't found.
@@ -536,7 +536,7 @@ select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subse
   if (length(ColIDs)) {
     true_colnames = intersect(colnames(df), ColIDs)
     NotFound = setdiff(ColIDs, colnames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")} 
+    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")}
     df = df[ , true_colnames ]
   } #if
   any_print(dim(df))
@@ -549,7 +549,7 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
   if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
   if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
   mat[ idx,]
-} 
+}
 
 get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
   counter = if(rows) NROW(df_) else NCOL(df_)
@@ -559,7 +559,7 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
 }
 
 combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
-  rn1 = rownames(matrix1); rn2 = rownames(matrix2); 
+  rn1 = rownames(matrix1); rn2 = rownames(matrix2);
   idx = intersect(rn1, rn2)
   llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
   merged = cbind(matrix1[idx,], matrix2[idx,])
@@ -596,12 +596,12 @@ panel.cor.pearson <- function(x, y, digits=2, prefix="", cex.cor=2, method = "pe
   txt <- format(c(r, 0.123456789), digits=digits)[1]
   txt <- paste(prefix, txt, sep="")
   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-  
+
   test <- cor.test(x,y)
   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                    symbols = c("***", "**", "*", ".", " "))
-  
+
   text(0.5, 0.5, txt, cex = cex * r)
   text(.8, .8, Signif, cex=cex, col=2)
 }
@@ -613,12 +613,12 @@ panel.cor.spearman <- function(x, y, digits=2, prefix="", cex.cor=2, method = "s
   txt <- format(c(r, 0.123456789), digits=digits)[1]
   txt <- paste(prefix, txt, sep="")
   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-  
+
   test <- cor.test(x,y)
   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                    symbols = c("***", "**", "*", ".", " "))
-  
+
   text(0.5, 0.5, txt, cex = cex * r)
   text(.8, .8, Signif, cex=cex, col=2)
 }
@@ -749,10 +749,10 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
     df1=df1[CommonGenes,]
     df2=df2[CommonGenes,]
   } else { CommonGenes = rownames(df1) }
-  
+
   # Create New column names
   if (length(colnames(df1)) == ncol(df1) & length(colnames(df2)) == ncol(df2) ) {
-    NewColNames = intermingle2vec(p0("df1.",colnames(df1) ), p0("df2.",colnames(df2) ))  
+    NewColNames = intermingle2vec(p0("df1.",colnames(df1) ), p0("df2.",colnames(df2) ))
   } else {
     NewColNames = intermingle2vec(p0("df1.", 1:ncol(df1) ), p0("df2.", 1:ncol(df2) ))
   }
@@ -796,7 +796,7 @@ symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of v
 ## Math $ stats -------------------------------------------------------------------------------------------------
 
 sem <- function(x, na.rm=T) sd(unlist(x), na.rm = na.rm)/sqrt(length(na.omit.strip(as.numeric(x))))  # Calculates the standard error of the mean (SEM) for a numeric vector (it excludes NA-s by default)
-	
+
 cv <- function(x, na.rm=T) sd( x, na.rm=na.rm)/mean(x, na.rm=na.rm) # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s by default)
 
 fano <- function(x, na.rm=T) var(x, na.rm=na.rm)/mean(x, na.rm=na.rm) # Calculates the fano factor on a numeric vector (it excludes NA-s by default)
@@ -915,7 +915,7 @@ Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the 
   if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
   barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-  
+
   fname = substitute(...)
   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "ColorCheck.pdf")) }
 }
@@ -932,7 +932,7 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
 }
 
-hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit. 
+hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit.
   # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
   if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
   xx = hist(splitby, breaks = breaks_, plot = T)
@@ -1094,12 +1094,12 @@ matlabColors.pheatmap <- function(matrixx, nr=50) {colorRamps::matlab.like(lengt
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopifnot( l(annot_vec) == dim(data)[2] )
   namez = as.character (if (is.null(annot_names)) substitute(annot_vec) else annot_names)
-  
+
   df = data.frame(x = annot_vec); df[,1] = as.character(df[,1])
   names(df) = namez # colnames but more flexible
-  rownames(df) = colnames(data) 
+  rownames(df) = colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
-  
+
   tt = table(annot_vec); nz = names(tt)
   if (is.numeric(annot_vec)) {
     coll = val2col(annot_vec[!duplicated(annot_vec)]); names(coll) = nz
@@ -1109,23 +1109,23 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { #
   col_list = list(annot_vec = coll)
   names(col_list) = namez
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
-  
+
   print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
 
 annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopif( dim(annot_df_per_column)[1] != dim(data)[2] , message = "The number of rows in the annotation data != to the # columns in your data frame")
-  
+
   if(any(rownames(df) != colnames(data))) { print ("The rownames of annot_df_per_column are not the same as the colnames of data:")
     print(cbind("rownames(df)" = rownames(df) , "colnames(data)" = colnames(data))) }
   namez = as.character (if (is.null(annot_names)) colnames(annot_df_per_column) else annot_names)
-  
+
   df = as.data.frame(annot_df_per_column)
-  colnames(df) = namez 
-  rownames(df) = colnames(data) 
+  colnames(df) = namez
+  rownames(df) = colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
-  
+
   col_list = list.fromNames(namez)
   for (i in 1:NCOL(df) ) {
     annot_column_i = df[,i]
@@ -1136,7 +1136,7 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
     col_list[[i]] = coll
   } #for each column
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
-  
+
   print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
@@ -1145,7 +1145,7 @@ Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate ga
   if(NAZ) iprint("There are",NAZ,"NA values in your vector. They should be last and they are omitted.")
   consecutive.lengthes = rle( na.omit.strip(annot.vec.of.categories))$lengths
   cumsum(consecutive.lengthes) # return abs.positions
-  
+
 }
 
 ## New additions -----------------------------------------------------------------------------------------------------
@@ -1178,22 +1178,22 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   txt <- format(c(r, 0.123456789), digits=digits)[1]
 #   txt <- paste(prefix, txt, sep="")
 #   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-# 
+#
 #   test <- cor.test(x,y)
 #   # borrowed from printCoefmat
 #   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
 #                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
 #                    symbols = c("***", "**", "*", ".", " "))
-# 
+#
 #   text(0.5, 0.5, txt, cex = cex * r)
 #   text(.8, .8, Signif, cex=cex, col=2)
 # }
 
 
 # http://stackoverflow.com/questions/20127282/r-color-scatterplot-points-by-col-value-with-legend
-# scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color), 
+# scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color),
 #                           nlevels = 20, plot.title, plot.axes, pch=21, cex=1,
-#                           key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+#                           key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
 #                           axes = TRUE, frame.plot = axes, ...) {
 #   mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
 #   on.exit(par(par.orig))
@@ -1204,29 +1204,29 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   mar[4L] <- mar[2L]
 #   mar[2L] <- 1
 #   par(mar = mar)
-#   
+#
 #   # choose colors to interpolate
 #   levels <- seq(zlim[1], zlim[2], length.out = nlevels)
-#   col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)  
-#   colz <- col[cut(color, nlevels)]  
-#   
+#   col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)
+#   colz <- col[cut(color, nlevels)]
+#
 #   plot.new()
 #   plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
-#   
-#   rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col) 
+#
+#   rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col)
 #   if (missing(key.axes)) {if (axes){axis(4)}}
 #   else key.axes
 #   box()
-#   if (!missing(key.title)) 
+#   if (!missing(key.title))
 #     key.title
 #   mar <- mar.orig
 #   mar[4L] <- 1
 #   par(mar = mar)
-#   
+#
 #   # points
 #   plot(x, y, type = "n", xaxt='n', yaxt='n', xlab="", ylab="", xlim=xlim, ylim=ylim, bty="n")
 #   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
-#   
+#
 #   ## options to make mapping more customizable
 #   if (missing(plot.axes)) {
 #     if (axes) {
@@ -1236,9 +1236,9 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #     }
 #   }
 #   else plot.axes
-#   if (frame.plot) 
+#   if (frame.plot)
 #     box()
-#   if (missing(plot.title)) 
+#   if (missing(plot.title))
 #     title(...)
 #   else plot.title
 #   invisible()
@@ -1249,18 +1249,18 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   stopifnot( l(annot_vec) == dim(df)[2] )
 #   print(substitute(annot_vec))
 #   df = as.data.frame(annot_vec)
-#   if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));     
-#     colnames(df) = annot_names  
+#   if (!is.null(annot_names)) {  stopifnot(length(annot_vec) == length(annot_names));
+#     colnames(df) = annot_names
 #   } else {    colnames(df) =  substitute(annot_vec)    }
-#   
+#
 #   df[,1] = as.character(df[,1])
 #   assign(x = "annot", value = df, envir = .GlobalEnv)
-#   
+#
 #   xx = list(annot_vec = val2col(annot_vec[!duplicated(annot_vec)]))
 #   if (!is.null(annot_names)) {    stopifnot(length(annot_col) == length(annot_names));
-#     names(xx) = annot_names  } 
+#     names(xx) = annot_names  }
 #   else {    names(xx) = substitute(annot_vec)  }
-#   
+#
 #   assign(x = "annot_col", value = xx, envir = .GlobalEnv)
 #   print("annot and annot_col variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 # }
@@ -1279,7 +1279,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   corrr::rearrange(absolute=F) %>% #  rearrange cols and rows
 #   corrr::shave()%>% # shave upper triangle
 #   corrr::rplot(print_cor = T,legend = T)# dot plot
-# 
+#
 # corrr::correlate(mtcars[, 1:4], method = "pearson") %>% network_plot()
 
 
@@ -1303,7 +1303,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   colramp <- get('colramp', parent.frame(1))
 #   fields::image.plot(xm,ym,z, col = colramp(256), legend.only = T, add =F)
 # }
-# # 
+# #
 # par(mar = c(5,4,4,5) + .1)
 # smoothScatter(x, nrpoints = 0, postPlotHook = fudgeit)
 
@@ -1314,10 +1314,10 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   LsLen = length(yalist)
 #   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
 #   print(names(yalist))
-#   
+#
 #   filename = kollapse(OutDir,"/", fname, print = F)
 #   subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
-#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... , 
+#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
 #                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
 #   if (mdlink) {
 #     llogit(MarkDown_ImgLink_formatter(fname))
@@ -1325,16 +1325,16 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   }
 # }
 
-# wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function 
+# wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
 #   print(coeff)
 #   regression <- lm(DF[,2] ~ DF[,1])
 #   abline(regression, ...)
 #   legendText = NULL
 #   if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "pearson"))
-#   legendText  =  c(legendText, paste0("Pearson c.c.: ", dispCoeff))  } 
+#   legendText  =  c(legendText, paste0("Pearson c.c.: ", dispCoeff))  }
 #   if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[,2], DF[,1], method = "spearman"))
-#   legendText = c(legendText, paste0("Spearman c.c.: ", dispCoeff))  }  
-#   if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared) 
+#   legendText = c(legendText, paste0("Spearman c.c.: ", dispCoeff))  }
+#   if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
 #   legendText = c(legendText, paste0("R^2: ", r2))  }
 #   print(legendText)
 #   if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2",suffix = paste0(": ", r2)) , bty="n")
@@ -1351,7 +1351,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #' #' @param variable The variable to plot.
 #' #' @param ... Pass any other parameter of the corresponding plotting function (most of them should work).
 #' #' @param percentage Display percentage instead of counts. TRUE by default.
-#' #' @param both_pc_and_value Report both percentage AND number. 
+#' #' @param both_pc_and_value Report both percentage AND number.
 #' #' @param plotname Title of the plot (main parameter) and also the name of the file.
 #' #' @param col Fill color. Defined by rich colours by default
 #' #' @param savefile Save plot as pdf in OutDir, TRUE by default.
@@ -1360,7 +1360,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #' #' @param mdlink Insert a .pdf and a .png image link in the markdown report, set by "path_of_report".
 #' #' @examples wpie (variable =  , ... =  , percentage = TRUE, plotname = substitute(variable), w = 7, h = 7, mdlink = F)
 #' #' @export
-#' 
+#'
 #' wpie <-function (variable, ..., percentage = TRUE, both_pc_and_value=F, plotname = substitute(variable), col = gplots::rich.colors(length(variable)), savefile = T, w = 7, h = 7, mdlink = F) {
 #'   if (!require("gplots")) { print("Please install gplots: install.packages('gplots')") }
 #'   fname = kollapse(plotname, ".pie")
@@ -1372,7 +1372,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #'   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field()) }
 #'   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname) }
 #' }
-#' 
+#'
 
 
 # wvioplot_list <-function (yalist, ..., coll = c(2:(length(yalist)+1)),
@@ -1413,7 +1413,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #     any_print("OutDirOrig will be:", OutDir)
 #     assign("OutDirOrig", OutDir, envir = .GlobalEnv)
 #   } #if
-#   
+#
 #   assign("OutDir", NewOutDir, envir = .GlobalEnv)
 # }
 
@@ -1423,7 +1423,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 #   fname = kollapse(substitute(yalist), ".", imagetype, print = F)
 #   filename = kollapse(OutDir,"/", fname, print = F)
 #   subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)
-#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... , 
+#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = substitute(yalist), ... ,
 #                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
 #   if (mdlink) {
 #     llogit(MarkDown_ImgLink_formatter(fname))

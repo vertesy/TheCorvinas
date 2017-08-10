@@ -35,19 +35,19 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
 filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj, usepAdj=T,foldChange_GeoMean) {
   DE = as.data.frame(DESeq_results)
   llprint("#### ", substitute(DESeq_results))
-  
+
   condition = F
   index_isSign = if (usepAdj) { DE$"padj" <= thr_padj_  } else {DE$"pval" <= thr_padj_}
   llprint(sum(index_isSign, na.rm = T), "or", pc_TRUE(index_isSign), "of the results is significant at p=",thr_padj_)
-  
+
   index_FoldChange = (DE$"log2FoldChange" <= -thr_log2fc_ | DE$"log2FoldChange" >=  thr_log2fc_)
   llprint(sum(index_FoldChange, na.rm = T), "or", pc_TRUE(index_FoldChange), "of the results has a fold change more extreme than (+/-)", 2^thr_log2fc_)
-  
+
   if (!missing(foldChange_GeoMean)) {
     index_foldChange_GeoMean = (DE$"foldChange_GeoMean" <= 1/foldChange_GeoMean | DE$"foldChange_GeoMean" >=  foldChange_GeoMean)
     llprint(sum(index_foldChange_GeoMean, na.rm = T), "or", pc_TRUE(index_foldChange_GeoMean), "of the results has a Geometric Mean fold change more extreme than (+/-)", foldChange_GeoMean)
   } #if
-  
+
   index_Hits = index_isSign & index_FoldChange
   llprint(sum(index_Hits, na.rm = T), "or", pc_TRUE(index_Hits), "of the results meet both criteria.")
   DE_hits = iround(DE[ which(index_Hits), ])
@@ -259,7 +259,7 @@ index2wellname <- function(numeric_vec, wells =384, ZeroPaddedIndices = T, ZeroP
 
 find.Gene <- function(PartialSymbol, model=c("human", "mouse", "worm")[2], IgnoreCase =F, ...) {
   SubDir = if (model == "human") { "hg19" } else if (model == "mouse") { "mm10" } else if (model == "worm") { "C_elegans" } else {print ("model has to be either of: human, mouse, worm.")}
-  MetaDir = p0("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
+  MetaDir = p0("~/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
   fnp = p0(MetaDir,"/TranscriptLength.",SubDir,".tsv"); stopifnot(file.exists(fnp))
   TL = read.simple.tsv.named.vector(fnp)
   Hits = grep(pattern = PartialSymbol, x=names(TL), ignore.case = IgnoreCase, value = T, ...)
@@ -273,7 +273,7 @@ find.Gene <- function(PartialSymbol, model=c("human", "mouse", "worm")[2], Ignor
 
 stat.Gene.sequence <- function(GeneSymbols=find.Gene("Ssx"), model=c("human", "mouse", "worm")[2], IgnoreCase =F, ...) {
   SubDir = if (model == "human") { "hg19" } else if (model == "mouse") { "mm10" } else if (model == "worm") { "C_elegans" } else {print ("model has to be either of: human, mouse, worm.")}
-  MetaDir = p0("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
+  MetaDir = p0("~/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
   fnpTL = p0(MetaDir,"/TranscriptLength.",SubDir,".tsv"); stopifnot(file.exists(fnpTL))
   TL = read.simple.tsv.named.vector(fnpTL)
   fnpBD = p0(MetaDir,"/BaseFrequencies.",SubDir,".tsv"); stopifnot(file.exists(fnpBD))
@@ -308,18 +308,18 @@ MergeCS1s <- function( InputNames4Libs,PlotIt = T) {
   RowNZ = lapply(Ls_dfs, rownames)
   SharedGenes = Reduce(intersect, RowNZ)
   colSums96 = list2df(lapply(Ls_dfs, colSums))
-  
+
   PcOfGenesInMerged = 100*l(SharedGenes)/ unlapply(Ls_dfs, NROW)
   Ls_dfs.filt = lapply(Ls_dfs, select.rows.and.columns, RowIDs = SharedGenes)  # subset down to the shared genes
-  
-  
+
+
   L12 = intermingle.cbind(Ls_dfs.filt$"Lib1", Ls_dfs.filt$"Lib2") # intermingle by columns
   L34 = intermingle.cbind(Ls_dfs.filt$"Lib3", Ls_dfs.filt$"Lib4")
-  
+
   rowStart384 = seq(1, ncol(L12), by = 24);l(rowStart384)
   rowEnd384 = seq(24, ncol(L12), by = 24);l(rowEnd384)
   MergeIDXs = cbind(rowStart384, rowEnd384)
-  
+
   # stringr::str_pad()
   MTX =matrix.fromNames(rowname_vec = SharedGenes, colname_vec = 1:384)
   i=3
@@ -329,16 +329,16 @@ MergeCS1s <- function( InputNames4Libs,PlotIt = T) {
     colz384 = ((i-1)*48+1): (i*48)
     MTX[ , colz384] = cbind(L12[ , (idx1:idx2)], L34[ , (idx1:idx2)])
   } #for
-  
-  
+
+
   if (PlotIt) {
-    
+
     pdfA4plot_on.layout("CS1.Lib.Merger.Stats")
     wbarplot(colSums(MTX), main = "mRNA per well",ylab="mRNA", xlab="cells", col = richColors(5)[-1],savefile=F)
     wbarplot(PcOfGenesInMerged, ylab="% of genes", tilted_text = T, savefile = F)
     barplot_label(PcOfGenesInMerged, labels = percentage_formatter(PcOfGenesInMerged/100), bottom = T, OverwritePrevPDF = F)
     pdfA4plot_off()
-    
+
     Combinations = t(combn(1:4, 2))
     pdfA4plot_on("CS1.Primer.Correlations.in.4.Libs", rows = 3)
     for (i in 1:NROW(Combinations) ) {
@@ -349,10 +349,10 @@ MergeCS1s <- function( InputNames4Libs,PlotIt = T) {
     } #for
     pairs(log10(colSums96+1), pch=1:25)
     pdfA4plot_off(); try.dev.off()
-    
+
     mRNA.log10 = log10(colSums96[ ,1:2]+1)
     wscatter.fill(mRNA.log10, color = 1:96, pch=21:25, plotname = "mRNA - 1vs2", savefile = T); try.dev.off()
-    
+
   } #if Plotit
   return(MTX)
 }
