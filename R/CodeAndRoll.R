@@ -1140,6 +1140,13 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
   print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
+Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate gap positions for pheatmap, based a sorted annotation vector of categories
+  NAZ = sum(is.na(annot.vec.of.categories))
+  if(NAZ) iprint("There are",NAZ,"NA values in your vector. They should be last and they are omitted.")
+  consecutive.lengthes = rle( na.omit.strip(annot.vec.of.categories))$lengths
+  cumsum(consecutive.lengthes) # return abs.positions
+  
+}
 
 ## New additions -----------------------------------------------------------------------------------------------------
 
