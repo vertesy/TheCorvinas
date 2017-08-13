@@ -32,9 +32,14 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   if (saveit) { wplot_save_this(plotname = paste0(pname_,".volcano") )  }
 }
 
-filter_DESeq <- function(DESeq_results, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj, usepAdj=T,foldChange_GeoMean) {
+filter_DESeq <- function(DESeq_results, removeNArows = F, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj, usepAdj=T, foldChange_GeoMean) {
   DE = as.data.frame(DESeq_results)
   llprint("#### ", substitute(DESeq_results))
+  if (removeNArows) {
+    idx_rem = is.na(DESeq_results$log2FoldChange)
+    llprint(pc_TRUE(idx_rem), "or", sum(idx_rem), "out of", length(idx_rem) ,"genes have NA values, and are removed.")
+    DESeq_results = DESeq_results[!idx_rem,]
+  } #if
 
   condition = F
   index_isSign = if (usepAdj) { DE$"padj" <= thr_padj_  } else {DE$"pval" <= thr_padj_}
