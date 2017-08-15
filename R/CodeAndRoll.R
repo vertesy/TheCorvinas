@@ -152,7 +152,7 @@ any_print <-function (...) { # A more flexible printing function that collapses 
   print(paste(argument_list, collapse = " "))
 }
 
-grepv <-function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...)   grep(pattern, x, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ..., value = T) # grep with value return
+grepv <-function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...) grep(pattern, x, ignore.case = ignore.case, perl = perl, fixed = fixed, useBytes = useBytes, invert = invert, ..., value = T) # grep with value return
 
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
