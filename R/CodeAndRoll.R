@@ -1188,6 +1188,27 @@ wlegend.old <- function(x=c("topleft", "topright", "bottomright", "bottomleft")[
   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
 }
 
+### Plot from clipboard directly -------------------------------------------------------------------------------------------------
+# require(MarkdownReports) # See: https://vertesy.github.io/MarkdownReports/
+
+clplot.scatter <-function(..., header = F, col = 1) { # Draw a scatterplot from a 2-column data pasted from clipboard. Works on OS X only.
+  DF = fromClipboard(header = header)
+  stopifnot(NCOL(DF)==2)
+  wplot(DF, savefile = F, col=col)
+}
+
+clhist <-function(..., breakz = 20, col = "gold1", xlb = "-") { # Draw a histogram from data pasted from clipboard. Works on OS X only.
+  whist(fromClipboard.as_num_vec(),breaks = breakz, savefile = F)
+}
+
+clpie <-function(..., percentage_ = TRUE, both_pc_and_value = F, plotname = "Distribution" ) { #  Draw a pie chart from data pasted from clipboard.  Works on OS X only.
+  wpie(fromClipboard.as_num_vec(), percentage = percentage_, both_pc_and_value = both_pc_and_value, savefile = F)
+}
+
+clbarplot <-function( ..., col_ = "gold1", sub = F) { #  Draw a barplot from data pasted from clipboard.  Works on OS X only.
+  wbarplot(fromClipboard.as_num_vec(), col =col_, savefile = F)
+}
+
 
 
 # TEMP ------------------------------------
