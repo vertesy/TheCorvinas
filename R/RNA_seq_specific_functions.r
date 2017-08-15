@@ -33,47 +33,52 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
 }
 
 # Aux function for DESeq.add.geomean2res
-DF.split.geomean <- function(DF = TPM_Table, split_vec = coldata[ ,1]) { # Calculates geometric mean of groups of samples compared by DEseq. Useful for selecting meaningful genes.
+DF.split.geomean <- function(DF = TPM_Table, split_vec = coldata[ ,1], logFC=T) { # Calculates geometric mean of groups of samples compared by DEseq, as well as fold change. Useful for selecting meaningful genes.
   ls_samples = colsplit(df = DF, f = split_vec)
   ls_GM = lapply(ls_samples, rowGeoMeans)
-  list2df(ls_GM) # GeoMeans
+  GeoMeans = list2df(ls_GM)
+  colnames(GeoMeans) = c(p0("GeoMean.",unique(coldata[ ,1])))
+  GeoMeans$"foldCh.GeoM" = GeoMeans[,1] / GeoMeans[,2]
+  if (logFC) { GeoMeans$"log2FoldChange.GeoM" = log2(GeoMeans$"foldCh.GeoM")  } #if
+  iround(GeoMeans)
 }
 
 DESeq.add.geomean2res <- function(DESeq_results = res_DEG_out, DF_ = TPM_Table, split_vec = coldata[ ,1]) {
   stopif(sum(!(rownames(DESeq_results) %in% rownames(DF_))), message ="Non matching rownames between DF and DESeq_results." )
   RNN =  rownames(DESeq_results)
   DF2add = DF.split.geomean(DF = DF_[RNN, ], split_vec = split_vec)
-  cbind(DESeq_results, DF2add)
+  DESeq_results_GeoM = cbind(DESeq_results, DF2add)
+  idim(DESeq_results_GeoM)
+  return(DESeq_results_GeoM)
 }
 
-
-filter_DESeq <- function(DESeq_results, removeNArows = F, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj, usepAdj=T, foldChange_GeoMean) {
+filter_DESeq <- function(DESeq_results, removeNArows = F, usepAdj=T, sortbyFC = T,
+                         thr_log2fc_ =thr_log2fc, log2FoldChange.GeoM, thr_padj_=thr_padj) {
   DE = as.data.frame(DESeq_results)
   llprint("#### ", substitute(DESeq_results))
-  if (removeNArows) {
-    idx_rem = is.na(DESeq_results$log2FoldChange)
-    llprint(pc_TRUE(idx_rem), "or", sum(idx_rem), "out of", length(idx_rem) ,"genes have NA values, and are removed.")
-    DESeq_results = DESeq_results[!idx_rem,]
-  } #if
 
-  condition = F
+  if (removeNArows) {   idx_rem = is.na(DESeq_results$log2FoldChange)
+                        llprint(pc_TRUE(idx_rem), "or", sum(idx_rem), "out of", length(idx_rem) ,"genes have NA values, and are removed.")
+                        DESeq_results = DESeq_results[!idx_rem,]  } #if
+
   index_isSign = if (usepAdj) { DE$"padj" <= thr_padj_  } else {DE$"pval" <= thr_padj_}
   llprint(sum(index_isSign, na.rm = T), "or", pc_TRUE(index_isSign), "of the results is significant at p=",thr_padj_)
 
   index_FoldChange = (DE$"log2FoldChange" <= -thr_log2fc_ | DE$"log2FoldChange" >=  thr_log2fc_)
   llprint(sum(index_FoldChange, na.rm = T), "or", pc_TRUE(index_FoldChange), "of the results has a fold change more extreme than (+/-)", 2^thr_log2fc_)
 
-  if (!missing(foldChange_GeoMean)) {
-    index_foldChange_GeoMean = (DE$"foldChange_GeoMean" <= 1/foldChange_GeoMean | DE$"foldChange_GeoMean" >=  foldChange_GeoMean)
-    llprint(sum(index_foldChange_GeoMean, na.rm = T), "or", pc_TRUE(index_foldChange_GeoMean), "of the results has a Geometric Mean fold change more extreme than (+/-)", foldChange_GeoMean)
-  } #if
+  if (!missing(log2FoldChange.GeoM)) {
+    stopifnot("log2FoldChange.GeoM" %in% colnames(DE))
+    index_foldChange_GeoMean = (DE$"log2FoldChange.GeoM" <= -log2FoldChange.GeoM | DE$"log2FoldChange.GeoM" >=  log2FoldChange.GeoM)
+    llprint(sum(index_foldChange_GeoMean, na.rm = T), "or", pc_TRUE(index_foldChange_GeoMean), "of the results has a Geometric Mean fold change more extreme than (+/-)", log2FoldChange.GeoM)
+    index_Hits = index_isSign & index_FoldChange & index_foldChange_GeoMean
+  } else {    index_Hits = index_isSign & index_FoldChange  } # if
 
-  index_Hits = index_isSign & index_FoldChange
-  llprint(sum(index_Hits, na.rm = T), "or", pc_TRUE(index_Hits), "of the results meet both criteria.")
+  llprint(sum(index_Hits, na.rm = T), "or", pc_TRUE(index_Hits), "of the results meet all criteria.")
   DE_hits = iround(DE[ which(index_Hits), ])
+  if (sortbyFC) { DE_hits = sortby(DE_hits, col_name = "log2FoldChange")  }
   return(DE_hits)
 }
-
 
 prepare4plotMA <- function(DESeq_results, thr_padj_=thr_padj, thr_log2fc_ =F) { # highlight results using 2 thresholds
   DE = as.data.frame(DESeq_results)[, c("baseMean", "log2FoldChange", "padj")]
