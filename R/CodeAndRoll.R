@@ -1168,6 +1168,27 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 }
 
 
+# This is a legacy function
+#' wlegend.old
+#' Add a legend, and save the plot immediately
+#'
+#' @param x location of legend
+#' @param legend Labels displayed (Text)
+#' @param fill Color of the boxes next to the text
+#' @param bty Background of legend, transparent by default
+#' @param OverwritePrevPDF Save the plot immediately with the same name the last wplot* function made (It is stored in plotnameLastPlot variable).
+#' @param ... Pass any other parameter of the corresponding text function (most of them should work).
+#' @examples wlegend(...)
+#' @export
+
+
+wlegend.old <- function(x=c("topleft", "topright", "bottomright", "bottomleft")[4],
+                        legend, fill = NULL, ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+  legend(x=x,legend=legend,fill=fill, ..., bty=bty)
+  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
+}
+
+
 
 # TEMP ------------------------------------
 
