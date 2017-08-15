@@ -32,6 +32,21 @@ wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =th
   if (saveit) { wplot_save_this(plotname = paste0(pname_,".volcano") )  }
 }
 
+# Aux function for DESeq.add.geomean2res
+DF.split.geomean <- function(DF = TPM_Table, split_vec = coldata[ ,1]) { # Calculates geometric mean of groups of samples compared by DEseq. Useful for selecting meaningful genes.
+  ls_samples = colsplit(df = DF, f = split_vec)
+  ls_GM = lapply(ls_samples, rowGeoMeans)
+  list2df(ls_GM) # GeoMeans
+}
+
+DESeq.add.geomean2res <- function(DESeq_results = res_DEG_out, DF_ = TPM_Table, split_vec = coldata[ ,1]) {
+  stopif(sum(!(rownames(DESeq_results) %in% rownames(DF_))), message ="Non matching rownames between DF and DESeq_results." )
+  RNN =  rownames(DESeq_results)
+  DF2add = DF.split.geomean(DF = DF_[RNN, ], split_vec = split_vec)
+  cbind(DESeq_results, DF2add)
+}
+
+
 filter_DESeq <- function(DESeq_results, removeNArows = F, thr_log2fc_ =thr_log2fc, thr_padj_=thr_padj, usepAdj=T, foldChange_GeoMean) {
   DE = as.data.frame(DESeq_results)
   llprint("#### ", substitute(DESeq_results))
