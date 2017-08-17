@@ -171,7 +171,7 @@ if(!require(package = package_,  character.only = T)) {
 
 FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
 	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-	if (hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
+	if (methods::hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
 	} else { 					FnP = kollapse (path,"/", fname) }
 }
 
@@ -369,6 +369,8 @@ any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
+unique.wNames <- function(vec_w_names) {  vec_w_names[!duplicated(vec_w_names)] }
+
 which_names <- function(named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
 	return(names(which(as.logical.wNames(named_Vec)))) }
 
@@ -445,6 +447,11 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 }
 
 ## Matrix operations -------------------------------------------------------------------------------------------------
+rotate  <- function(x, clockwise=T) { # rotate a matrix 90 degrees.
+  if (clockwise) { t( apply(x, 2, rev))  #first reverse, then transpose, it's the same as rotate 90 degrees
+  } else {apply( t(x),2, rev)}  #first transpose, then reverse, it's the same as rotate -90 degrees:
+}
+
 sortEachColumn <- function(data, ...) sapply(data, sort, ...) # Sort each column of a numeric matrix / data frame.
 
 rowMedians <- function(x, na.rm=T) apply(data.matrix(x), 1,median, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
@@ -897,13 +904,14 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
 ## Colors -----------------------------------------------------------------------------------------------------
 richColors <- function (n=3) {  gplots::rich.colors(n) }
 
-rich.colors.vec <- function(vec, randomize=F) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
+rich.colors.vec <- function(vec, randomize=F, seed=11) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
   colz = gplots::rich.colors(l(unique(vec)))
   if (randomize) {
-    seed=11
+    set.seed(seed)
     colz = sample(colz)
   }
-  colz[vec]
+  names(colz) = unique(vec)
+  colz[as.character(vec)] # convert to character because they are referred by name
 }
 
 # icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
