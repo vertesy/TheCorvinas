@@ -1103,7 +1103,7 @@ matlabColors.pheatmap <- function(matrixx, nr=50) {colorRamps::matlab.like(lengt
 "FOR VECTOR. it works"
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopifnot( l(annot_vec) == dim(data)[2] )
-  namez = as.character (if (is.null(annot_names)) substitute(annot_vec) else annot_names)
+  namez = as.character (if (is.null(annot_names)) substitute(annot_vec)[1] else annot_names)
 
   df = data.frame(x = annot_vec); df[,1] = as.character(df[,1])
   names(df) = namez # colnames but more flexible
