@@ -567,20 +567,39 @@ get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even column
   return(df_out)
 }
 
-combine.matrices <- function(matrix1, matrix2 ) { # combine matrices by rownames
+combine.matrices.intersect <- function(matrix1, matrix2, k=2) { # combine matrices by rownames intersect
   rn1 = rownames(matrix1); rn2 = rownames(matrix2);
   idx = intersect(rn1, rn2)
   llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
   merged = cbind(matrix1[idx,], matrix2[idx,])
-  dim(merged); return(merged)
+  diffz = symdiff(rn1, rn2)
+  print("Missing Rows 1, 2")
+  x1 =rowSums( matrix1[diffz[[1]],] )
+  x2 =rowSums( matrix2[diffz[[2]],] ); print("")
+  iprint("Values lost 1: ", round(sum(x1)), "or", percentage_formatter(sum(x1)/sum(merged)))
+  print(tail(sort(x1), n = 10));print("")
+  iprint("Values lost 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
+  print(tail(sort(x2), n = 10))
+  iprint("dim:",dim(merged)); return(merged)
 }
 
 merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rownames
+  rn1 = rownames(x); rn2 = rownames(y);
+  diffz = symdiff(rn1, rn2)
   merged =  merge(x ,y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
   rownames(merged) = merged$Row.names
   merged = merged[ ,-1] # remove row names
   merged[is.na(merged)] <- 0
+
+  print("Uniq Rows (top 10 by sum)")
+  x1 =rowSums( x[diffz[[1]],] )
+  x2 =rowSums( y[diffz[[2]],] ); print("")
+  iprint("Values lost 1: ", round(sum(x1)), "or", percentage_formatter(sum(x1)/sum(merged)))
+  print(tail(sort(x1), n = 10));print("")
+  iprint("Values lost 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
+  print(tail(sort(x2), n = 10))
   any_print("Dimensions of merged DF:", dim(merged))
+
   return(merged)
 }
 
