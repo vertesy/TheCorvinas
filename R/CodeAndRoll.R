@@ -36,6 +36,29 @@ try(require("MarkdownReports"))
 try(require("gtools"))
 
 # TMP Tue Jul 11 13:42:29 2017 ------------------------------
+
+wlegend <- function(fill_ = "NULL", poz=4, legend, bty = "n", ..., w_=7, h_=w_, OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+  stopif(is.null(fill_))
+  fNames = names(fill_)
+  if( !is.null(fNames ) ) legend = fNames
+  check_ =(  is.null(fNames) && missing(legend) )
+  stopif( check_, message = "The color vector (fill_) has no name, and the variable 'legend' is not provided.")
+  stopif( ( length(fill_)  != length(legend)), message = "fill and legend are not equally long.")
+
+  pozz = translate(poz, oldvalues = 1:4, newvalues = c("topleft", "topright", "bottomright", "bottomleft"))
+  legend(x=pozz, legend=legend, fill=fill_, ..., bty=bty)
+  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot, w= w_, h = h_)  }
+}
+
+
+llwrite_list <- function(yalist, printName="self") {
+  if (printName == "self")  llprint("####",substitute(yalist))  else if (printName == F) { ""} else { llprint("####",printName) }  #  else do not print
+  for (e in 1:l(yalist)) {
+    if (is.null( names(yalist) )) { llprint("#####", names(yalist)[e]) } else { llprint("#####", e)}
+    print(yalist[e]); llogit("`", yalist[e], "`")
+  }
+}
+
 pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
                           title = ttl_field(pname)) { # Print (multiple) plots to an (A4) pdf.
   try.dev.off()
@@ -220,7 +243,7 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 	return(read_in)
 }
 
-read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
+read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE, WhichSheets) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   if(grepl("^~/", pfn)) {
     any_print("You cannot use the ~/ in the file path! It is replaced by '/Users/abelvertesy'.")
@@ -229,10 +252,12 @@ read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ 
 
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   # merge path and filename
-  TheSheetNames = sheetNames(pfn, verbose = F); NrSheets = length(TheSheetNames)
+  TheSheetNames = sheetNames(pfn, verbose = F);
+  NrSheets = length(TheSheetNames)
   any_print(NrSheets, "sheets in the file.")
   ExpData = list.fromNames(TheSheetNames)
-  for (i in 1:NrSheets ) {
+  RangeOfSheets = if(missing(WhichSheets)) 1:NrSheets else WhichSheets
+  for (i in RangeOfSheets ) {
     any_print("sheet",i)
     ExpData[[i]] = gdata::read.xls(pfn, sheet = i, row.names=row_namePos, header = header_)
   } #for
@@ -652,6 +677,13 @@ panel.cor.spearman <- function(x, y, digits=2, prefix="", cex.cor=2, method = "s
 }
 
 
+remove.na.rows <- function(mat, cols=1:NCOL(mat)) { # cols have to be a vector of numbers corresponding to columns
+  mat2 = mat[ , cols]
+  idxOK = which(rowSums(!apply(mat2, 2, is.na)) == NCOL(mat)  )
+  mat[idxOK, ]
+}
+
+
 ## List operations -------------------------------------------------------------------------------------------------
 intersect.ls <- function (ls, ...){ Reduce(intersect, ls) }
 
@@ -923,18 +955,27 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
 ## Colors -----------------------------------------------------------------------------------------------------
 richColors <- function (n=3) {  gplots::rich.colors(n) }
 
-rich.colors.vec <- function(vec, randomize=F, seed=11) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
-  colz = gplots::rich.colors(l(unique(vec)))
+rich.colors.vec <- function(vec, pre=0, post=0, randomize=F, seed=11) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
+  colz = gplots::rich.colors(pre+l(unique(vec))+post)
+  colz = colz[(pre+1):( l(colz)-post  )] # subset
   if (randomize) {
     set.seed(seed)
     colz = sample(colz)
   }
   names(colz) = unique(vec)
+  if (randomize) Color_Check(colz)# , ylab=p0("seed:",seed)
   colz[as.character(vec)] # convert to character because they are referred by name
 }
 
 # icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
-icolor_categories <- function (vec, rndize=F, trail=0, seed=354) {  x= table(vec); colvec = richColors(l(x)+trail ); colvec = colvec[ trail:l(x)+trail]; if(rndize) {set.seed(seed); colvec=sample(colvec)}; names(colvec) =names(x); Color_Check(colvec); return(colvec) } # create color categories # ; colvec = colvec[ (1+trail):(l(x)+trail)]
+icolor_categories <- function (vec, rndize=F, trail=0, seed=354) {
+  x= table(vec);
+  colvec = richColors(l(x)+trail );
+  colvec = colvec[ trail:l(x)+trail];
+  if(rndize) {set.seed(seed); colvec=sample(colvec)};
+  names(colvec) =names(x); Color_Check(colvec);
+  return(colvec)
+} # create color categories # ; colvec = colvec[ (1+trail):(l(x)+trail)]
 
 
 
@@ -1048,7 +1089,7 @@ matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 
 
 vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
   v=numeric(length(namesvec))
-  # if(length(values==length(namesvec))) {v=values}
+  if(length(values==length(namesvec))) {v=values}
   names(v)=namesvec
   return(v)
 }
@@ -1167,6 +1208,15 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
 
   print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+}
+
+annot_col.fix.numeric <- function(ListOfColnames) { # fix class and colot
+  for (i in 1:length(ListOfColnames) ) {
+    j = ListOfColnames[i]
+    annot[[j]] = as.numeric(annot[[j]])
+    annot_col[[j]] = NULL # remove fixed colors -> auto determine by pheatmap
+  } #for
+  iprint("Columns in annot are as.numeric(), list elements in annot_col are removed")
 }
 
 Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate gap positions for pheatmap, based a sorted annotation vector of categories
