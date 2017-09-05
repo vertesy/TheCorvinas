@@ -43,10 +43,15 @@ grc_mm38 = c("http://www.ensembl.org/Mouse/Search/Results?q=", ";site=ensembl;fa
 grc_Zebra = c("http://www.ensembl.org/Search/Results?q=", ";site=ensembl;facet_feature_type=;facet_species=Zebrafish")
 
 
-uniprot_mouse = c('http://www.uniprot.org/uniprot/?query=organism%3A"Mus+musculus+[10090]"+',"&sort=score")
+uniprot_mouse = c('http://www.uniprot.org/uniprot/?query=','+Mouse+reviewed%3Ayes+&sort=score')
+uniprot_human = c('http://www.uniprot.org/uniprot/?query=','+Human+reviewed%3Ayes+&sort=score')
+uniprot_zebra = c('http://www.uniprot.org/uniprot/?query=','+zebrafish+reviewed%3Ayes+&sort=score')
 # I left out (Mouse) part because it messes up with markdown, it still works.
-uniprot_human = c('http://www.uniprot.org/uniprot/?query=organism%3A"Homo+sapiens+%28Human%29+[9606]"+',"&sort=score")
-uniprot_zebra = c('http://www.uniprot.org/uniprot/?query=organism%3A"Danio+rerio+(Zebrafish)+(Brachydanio+rerio)+[7955]"+',"&sort=score")
+# old
+# uniprot_mouse = c('http://www.uniprot.org/uniprot/?query=organism%3A"Mus+musculus+[10090]"+',"&sort=score")
+# uniprot_human = c('http://www.uniprot.org/uniprot/?query=organism%3A"Homo+sapiens+%28Human%29+[9606]"+',"&sort=score")
+# uniprot_zebra = c('http://www.uniprot.org/uniprot/?query=organism%3A"Danio+rerio+(Zebrafish)+(Brachydanio+rerio)+[7955]"+',"&sort=score")
+
 
 
 # HELP: http://string-db.org/help/faq/#how-do-i-link-to-string. Find Species ID by: http://www.ncbi.nlm.nih.gov/taxonomy
@@ -131,6 +136,8 @@ link_uniprot_mice <- function (vector_of_gene_symbols, writeOut = F, Open=!write
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
   } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
+lll='http://www.uniprot.org/uniprot/?query=Eef1d+Mouse+reviewed%3Ayes+&sort=score'
+
 
 link_uniprot_human <- function (vector_of_gene_symbols, writeOut = F, Open=!writeOut) { # Parse the latest UNIPROT links to your list of gene symbols
   links = paste0( uniprot_human[1], vector_of_gene_symbols, uniprot_human[2] )
@@ -231,21 +238,21 @@ validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, SubsetOfGene
   condition = F
   any_print(length(MarkerGenes), " gene symbols are provided."); print("", quote = F)
   gene_IDs = if (species == "human") {.gene_IDs_hg19} else if (species == "mice") {.gene_IDs_mm10}
-  found = gene_IDs[sub("\\_\\_chr\\w+","",gene_IDs) %in% vector_of_gene_symbols] 
+  found = gene_IDs[sub("\\_\\_chr\\w+","",gene_IDs) %in% vector_of_gene_symbols]
   not_found = setdiff(vector_of_gene_symbols, id2name(found))
   if (length(not_found)) {any_print(length(not_found), "genes are not found in the",species,"reference: ", not_found, "or", x=parse_vec(not_found)); print("", quote = F) } #if
-  
+
   GenesDetected = rownames(ExpressionMatrix)
   expressed = intersect(found, GenesDetected)
   not_expressed = setdiff(found, GenesDetected)
   if (length(not_expressed)) {any_print(length(not_expressed), "existing genes are not expressed: ", not_expressed, "or", x=parse_vec(not_expressed)); print("", quote = F) } #if
   any_print(length(expressed), "genes are expressed: ",  expressed); print("", quote = F)
-  
+
   if (length(SubsetOfGeneIDs)) {
     inSubset = intersect(expressed, SubsetOfGeneIDs)
-    any_print(length(inSubset), "genes are expressed and found in", substitute(SubsetOfGeneIDs),": ",  inSubset); print("", quote = F) 
+    any_print(length(inSubset), "genes are expressed and found in", substitute(SubsetOfGeneIDs),": ",  inSubset); print("", quote = F)
     return(inSubset)
   } else { return(expressed) }
-  
-} 
+
+}
 # x=validateGene(MarkerGenes, HeartSlices, SubsetOfGeneIDs = HE_genes)
