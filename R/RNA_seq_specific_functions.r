@@ -3,7 +3,14 @@
 # source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 
-
+convert.ndata2TPM <- function(sc=sc) {
+  ND = (sc@ndata-.1)
+  Factor = 1e6/colSums(ND)[1]
+  sc@ndata = ND*Factor + 0.1
+  ROWZ = rownames(sc@fdata)
+  sc@fdata = sc@ndata[ROWZ,]
+  return(sc)
+}
 
 # Differential Gene Expression ------------------------------------------------------------------------------------------------------------------------------
 
