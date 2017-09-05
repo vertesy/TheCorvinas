@@ -346,14 +346,14 @@ as.named.vector <- function(df_col, WhichDimNames = 1) { # Convert a dataframe c
 
 
 col2named.vector <- function(df_col) { # Convert a dataframe column into a vector, keeping the corresponding dimension name.
-  namez = colnames(df_col)
+  namez = rownames(df_col)
   vecc = as.vector(unlist (df_col))
   names (vecc)= namez
   return (vecc)
 }
 
 row2named.vector <- function(df_row) { # Convert a dataframe row into a vector, keeping the corresponding dimension name.
-  namez = rownames(df_row)
+  namez = colnames(df_row)
   vecc = as.vector(unlist (df_row))
   names (vecc)= namez
   return (vecc)
@@ -1264,6 +1264,20 @@ Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate ga
 }
 
 ## New additions -----------------------------------------------------------------------------------------------------
+
+wPairConnector <- function(DFwrownames=E, PairAnnot=Sisters, verbose=F, ...) { # Connect Pairs of datapoints with a line on a plot.
+  Siz = Sisters[unique(rownames(E))]
+  LS = splititsnames_byValues(Siz)
+  LengZ =unlapply(LS,length)
+  Tx = table(LengZ)
+  if (verbose) iprint(paste(names(Tx),Tx, sep = ":", collapse = " and "))
+  LScool = LS[LengZ==2]
+  i =1
+  for (i in 1:length(LScool) ) {
+    P = LScool[[i]]
+    segments(E[ P[1],1], E[ P[1],2], E[ P[2],1], E[ P[2],2], ...)
+  } #for
+}
 
 color.vec.pal <- function(vector=Size, set = "Set1", ReturnCategoriesToo=F) {
   NrCol = l(unique(vector))
