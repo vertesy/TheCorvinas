@@ -37,6 +37,25 @@ try(require("gtools"))
 
 # TMP Tue Jul 11 13:42:29 2017 ------------------------------
 
+
+wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, cexx =1, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
+  # print(coeff)
+  regression <- lm(DF[, 2] ~ DF[, 1])
+  abline(regression, ...)
+  legendText = NULL
+  if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "pearson"))
+  legendText  =  c(legendText, paste0("Pears.: ", dispCoeff))  }
+  if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "spearman"))
+  legendText = c(legendText, paste0("Spear.: ", dispCoeff))  }
+  if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
+  legendText = c(legendText, paste0("R^2: ", r2))  }
+  # print(legendText)
+  if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2", suffix = paste0(": ", r2)) , bty="n", cex = cexx)
+  } else {                                    legend(textlocation, legend = legendText , bty="n", cex = cexx) }
+  if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
+}
+
+
 wlegend <- function(fill_ = "NULL", poz=4, legend, bty = "n", ..., w_=7, h_=w_, OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
   stopif(is.null(fill_))
   fNames = names(fill_)
@@ -324,6 +343,22 @@ as.named.vector <- function(df_col, WhichDimNames = 1) { # Convert a dataframe c
 	names (vecc)= namez
 	return (vecc)
 }
+
+
+col2named.vector <- function(df_col) { # Convert a dataframe column into a vector, keeping the corresponding dimension name.
+  namez = colnames(df_col)
+  vecc = as.vector(unlist (df_col))
+  names (vecc)= namez
+  return (vecc)
+}
+
+row2named.vector <- function(df_row) { # Convert a dataframe row into a vector, keeping the corresponding dimension name.
+  namez = rownames(df_row)
+  vecc = as.vector(unlist (df_row))
+  names (vecc)= namez
+  return (vecc)
+}
+
 
 as.numeric.wNames <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
   numerified_vec = as.numeric(as.factor(vec)) -1 # as factor gives numbers [1:n] instead [0:n]
@@ -619,9 +654,9 @@ merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rowna
   print("Uniq Rows (top 10 by sum)")
   x1 =rowSums( x[diffz[[1]],] )
   x2 =rowSums( y[diffz[[2]],] ); print("")
-  iprint("Values lost 1: ", round(sum(x1)), "or", percentage_formatter(sum(x1)/sum(merged)))
+  iprint("Values specific to 1: ", round(sum(x1)), "or", percentage_formatter(sum(x1)/sum(merged)))
   print(tail(sort(x1), n = 10));print("")
-  iprint("Values lost 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
+  iprint("Values specific to 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
   print(tail(sort(x2), n = 10))
   any_print("Dimensions of merged DF:", dim(merged))
 
@@ -968,12 +1003,13 @@ rich.colors.vec <- function(vec, pre=0, post=0, randomize=F, seed=11) { # Genera
 }
 
 # icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
-icolor_categories <- function (vec, rndize=F, trail=0, seed=354) {
+icolor_categories <- function (vec, rndize=F, trail=0, seed=354, plotit=F) {
   x= table(vec);
   colvec = richColors(l(x)+trail );
   colvec = colvec[ trail:l(x)+trail];
   if(rndize) {set.seed(seed); colvec=sample(colvec)};
-  names(colvec) =names(x); Color_Check(colvec);
+  names(colvec) =names(x);
+  if(plotit) Color_Check(colvec);
   return(colvec)
 } # create color categories # ; colvec = colvec[ (1+trail):(l(x)+trail)]
 
@@ -1228,6 +1264,30 @@ Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate ga
 }
 
 ## New additions -----------------------------------------------------------------------------------------------------
+
+color.vec.pal <- function(vector=Size, set = "Set1", ReturnCategoriesToo=F) {
+  NrCol = l(unique(vector))
+  COLZ = RColorBrewer::brewer.pal(NrCol,name = set)[as.factor.numeric(vector)]
+  # if (l(names(vector))) names(COLZ) = names(vector)
+  names(COLZ) =vector
+  CATEG = unique.wNames(COLZ)
+  if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
+  COLZ
+}
+
+color.vec.base <- function(vector=Plate, set = c(F, "heat.colors", "terrain.colors", "topo.colors", "rainbow")[1], ReturnCategoriesToo=F) {
+  NrCol = l(unique(vector))
+  COLZ = as.factor.numeric(vector) # if basic
+  if(set == "rainbow") {rainbow(NrCol)[COLZ]} else
+    if(set == "heat.colors") {heat.colors(NrCol)[COLZ]} else
+      if(set == "terrain.colors") {terrain.colors(NrCol)[COLZ]} else
+        if(set == "topo.colors") {topo.colors(NrCol)[COLZ]}
+  names(COLZ) = vector
+  CATEG = unique.wNames(COLZ)
+  if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
+  COLZ
+}
+
 
 numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x),abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
   z = x:y
