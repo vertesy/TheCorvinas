@@ -184,6 +184,7 @@ filter_LP <- function(numeric_vector, threshold, passequal = F, prepend ="", ret
 
 
 # Alisases ----------------
+TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
 l=length
@@ -1363,3 +1364,7 @@ clbarplot <-function( ..., col_ = "gold1", sub = F) { #  Draw a barplot from dat
 
 
 # TEMP ------------------------------------
+NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text formatting for logical vectors (%, length)
+  x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec))
+  if(total) p0(x," of ", l(logical_vec))
+}
