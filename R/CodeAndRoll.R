@@ -43,7 +43,6 @@ TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
 l=length
-try.dev.off <- function () { try(dev.off(), silent = T) }
 
 grepv <-function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...) grep(pattern, x, ignore.case = ignore.case, perl = perl, fixed = fixed, useBytes = useBytes, invert = invert, ..., value = T) # grep with value return
 
@@ -1069,3 +1068,4 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
   if(total) p0(x, " of ", l(logical_vec))
 }
 
+# try.dev.off <- function () { try(dev.off(), silent = T) }
