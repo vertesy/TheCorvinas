@@ -20,10 +20,9 @@
 # -  Matrix operations
 # -  List operations
 # -  Set operations
-# -  Math $ stats
+# -  Math and stats
 # -  String operations
 # -  Plotting and Graphics
-# -  Read and write plotting functions READ
 # -  Generic
 # -  Plots
 # -  New additions
@@ -31,13 +30,13 @@
 ## Setup   -------------------------------------------------------------------------------------------------
 # pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
+print("Depends on MarkdownReportsm, gtools. Some functions depend on other libraries.")
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 try(require("MarkdownReports"))
 try(require("gtools"))
 
-# TMP Tue Jul 11 13:42:29 2017 ------------------------------
 
 # Alisases ----------------
 TitleCase=tools::toTitleCase
@@ -45,11 +44,6 @@ sort.natural = gtools::mixedsort
 p0 = paste0
 l=length
 try.dev.off <- function () { try(dev.off(), silent = T) }
-
-any_print <-function (...) { # A more flexible printing function that collapses any variable passed to it by white spaces.
-  argument_list <- c(...)
-  print(paste(argument_list, collapse = " "))
-}
 
 grepv <-function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...) grep(pattern, x, ignore.case = ignore.case, perl = perl, fixed = fixed, useBytes = useBytes, invert = invert, ..., value = T) # grep with value return
 
@@ -59,19 +53,11 @@ grepv <-function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, 
 ### Clipboard interaction -------------------------------------------------------------------------------------------------
 try(source("~/Github_repos/DataInCode/DataInCode.R"), silent = F)
 
-
 ### Reading files in -------------------------------------------------------------------------------------------------
-irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
-if(!require(package = package_,  character.only = T)) {
-  print("Not Installed yet.");install.packages(pkgs = package_);
-  require(package=package_, character.only = T)
-}
-}  # install package if cannot be loaded
-
 read.simple.vec <- function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
 	pfn = kollapse (...) # merge path and filename
 	read_in = as.vector(unlist(read.table( pfn , stringsAsFactors=F, sep = "\n" )) )
-	any_print(length (read_in), "elements")
+	iprint(length (read_in), "elements")
 	return(read_in);
 }
 
@@ -84,21 +70,21 @@ read.simple <- function(...) { # It is essentially read.table() with file/path p
 read.simple_char_list <- function(...) { # Read in a file.
 	pfn = kollapse (...) # merge path and filename
 	read_in = unlist(read.table( pfn , stringsAsFactors=F ) )
-	any_print ("New variable head: ", what(read_in))
+	iprint ("New variable head: ", what(read_in))
 	return(read_in)
 }
 
 read.simple.table <- function(..., colnames=T ) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
 	read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
-	any_print ("New variable dim: ", dim(read_in))
+	iprint ("New variable dim: ", dim(read_in))
 	return(read_in)
 }
 
 read.simple.tsv <- function(..., sep_ = "\t") { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
 	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
-	any_print ("New variable dim: ", dim(read_in))
+	iprint ("New variable dim: ", dim(read_in))
 	return(read_in)
 }
 
@@ -108,14 +94,14 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 	rn = row.names(read_in)
 	read_in =  as.vector(unlist(read_in));
 	names(read_in) = rn
-	any_print ("New vectors length is: ", length(read_in))
+	iprint ("New vectors length is: ", length(read_in))
 	return(read_in)
 }
 
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE, WhichSheets) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   if(grepl("^~/", pfn)) {
-    any_print("You cannot use the ~/ in the file path! It is replaced by '/Users/abelvertesy'.")
+    iprint("You cannot use the ~/ in the file path! It is replaced by '/Users/abelvertesy'.")
     pfn = gsub(pattern = "^~/", replacement = "/Users/abelvertesy/", x = pfn)
   } else {print(pfn)}
 
@@ -123,11 +109,11 @@ read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ 
   # merge path and filename
   TheSheetNames = sheetNames(pfn, verbose = F);
   NrSheets = length(TheSheetNames)
-  any_print(NrSheets, "sheets in the file.")
+  iprint(NrSheets, "sheets in the file.")
   ExpData = list.fromNames(TheSheetNames)
   RangeOfSheets = if(missing(WhichSheets)) 1:NrSheets else WhichSheets
   for (i in RangeOfSheets ) {
-    any_print("sheet", i)
+    iprint("sheet", i)
     ExpData[[i]] = gdata::read.xls(pfn, sheet = i, row.names=row_namePos, header = header_)
   } #for
   lapply(ExpData, function(x) print(dimnames(x)) )
@@ -142,14 +128,14 @@ write.simple <- function(input_df, extension='tsv', ManualName ="", o = F, ...  
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
-	any_print ("Length: ", length(input_df))
+	iprint ("Length: ", length(input_df))
 } # fun
 
 write.simple.vec <- function(input_vec, extension='vec', ManualName ="", o = F, ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_vec, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE  )
-	any_print ("Length: ", length(input_vec))
+	iprint ("Length: ", length(input_vec))
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 
@@ -158,7 +144,7 @@ write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, .
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
 	printme = if(l(dim(input_df))) paste0("Dim: ", dim(input_df) ) else paste0("Length (of your vector): ", l(input_df) )
-	any_print (printme)
+	iprint (printme)
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
@@ -287,7 +273,7 @@ which_names <- function(named_Vec) { # Return the names where the input vector i
 
 na.omit.strip <- function(vec, silent = F) {  # Omit NA values from a vector and return a clean vector without any spam.
   if (is.data.frame(vec)) {
-    if ( min(dim(vec)) > 1 & silent == F) { any_print(dim(vec), "dimensional array is converted to a vector.") }
+    if ( min(dim(vec)) > 1 & silent == F) { iprint(dim(vec), "dimensional array is converted to a vector.") }
     vec = unlist(vec) }
   clean = na.omit(vec)
   attributes(clean)$na.action <- NULL
@@ -304,7 +290,7 @@ na.omit.mat <- function(mat, any = T) {  # Omit rows with NA values from a matri
 
 inf.omit <- function(vec) { # Omit infinite values from a vector.
 	if (is.data.frame(vec)) {
-		if ( min(dim(vec)) > 1 ) { any_print(dim(vec), "dimensional array is converted to a vector.") }
+		if ( min(dim(vec)) > 1 ) { iprint(dim(vec), "dimensional array is converted to a vector.") }
 		vec = unlist(vec) }
 	clean = vec[is.finite(vec)]
 	# attributes(clean)$na.action <- NULL
@@ -313,7 +299,7 @@ inf.omit <- function(vec) { # Omit infinite values from a vector.
 
 zero.omit <- function(vec) { # Omit zero values from a vector.
 	v2= vec[vec!=0]
-	any_print("range: ", range(v2))
+	iprint("range: ", range(v2))
 	if ( !is.null(names(vec)) ) {names(v2) = names(vec)[vec!=0]}
 	return(v2)
 }
@@ -329,7 +315,7 @@ pc_in_total_of_match <- function(vec_or_table, category, NA_omit=T) { # Percenta
 	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
 	else { # if (is.vector(vec_or_table))
 		if (NA_omit){
-			if (sum(is.na(vec_or_table))) { vec_or_table = na.omit(vec_or_table); any_print (sum(is.na(vec_or_table)), 'NA are omitted from the vec_or_table of:', length(vec_or_table))}
+			if (sum(is.na(vec_or_table))) { vec_or_table = na.omit(vec_or_table); iprint (sum(is.na(vec_or_table)), 'NA are omitted from the vec_or_table of:', length(vec_or_table))}
 			"Not wokring complelety : if NaN is stored as string, it does not detect it"
 			}
 		sum (vec_or_table==category) /  length (vec_or_table)
@@ -351,7 +337,7 @@ remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remov
 }
 
 simplify_categories <-  function(category_vec, replaceit , to ) { # Replace every entry that is found in "replaceit", by a single value provided by "to"
-	matches  = which(category_vec %in% replaceit); any_print(l(matches), "instances of", replaceit, "are replaced by", to)
+	matches  = which(category_vec %in% replaceit); iprint(l(matches), "instances of", replaceit, "are replaced by", to)
 	category_vec[matches] =  to
 	return(category_vec)
 }
@@ -449,16 +435,16 @@ select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subse
   if (length(RowIDs)) {
     true_rownames = intersect(rownames(df), RowIDs)
     NotFound = setdiff(RowIDs, rownames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {any_print("All row IDs found")} #if
+    if (l(NotFound)) { iprint(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {iprint("All row IDs found")} #if
     df = df[ true_rownames, ]
   } #if
   if (length(ColIDs)) {
     true_colnames = intersect(colnames(df), ColIDs)
     NotFound = setdiff(ColIDs, colnames(df))
-    if (l(NotFound)) { any_print(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {any_print("All column IDs found")}
+    if (l(NotFound)) { iprint(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {iprint("All column IDs found")}
     df = df[ , true_colnames ]
   } #if
-  any_print(dim(df))
+  iprint(dim(df))
   return(df)
 }
 
@@ -466,7 +452,7 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
   idx = intersect(rownamez, row.names(mat))
   if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx, ]), na.rm = T)>0)  }
   if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
-  if (!silent) { any_print(l(idx), "/", l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
+  if (!silent) { iprint(l(idx), "/", l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
   mat[ idx, ]
 }
 
@@ -508,7 +494,7 @@ merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rowna
   print(tail(sort(x1), n = 10));print("")
   iprint("Values specific to 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
   print(tail(sort(x2), n = 10))
-  any_print("Dimensions of merged DF:", dim(merged))
+  iprint("Dimensions of merged DF:", dim(merged))
 
   return(merged)
 }
@@ -517,7 +503,7 @@ attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Ta
   if (removePreviousVariables) { rm(list = colnames(df_w_dimnames), envir = .GlobalEnv); print("removed") }
   if(!is.null(rownames(df_w_dimnames)) & !is.null(colnames(df_w_dimnames))) {
     namez= rownames(df_w_dimnames)
-    any_print("Now directly available in the workspace:      ", colnames(df_w_dimnames))
+    iprint("Now directly available in the workspace:      ", colnames(df_w_dimnames))
     attach (df_w_dimnames)
     for (n in colnames(df_w_dimnames)) {
       # x=get(n); # it failed at some point in some columns for unknown reason??
@@ -759,7 +745,7 @@ gm_mean = geomean
 
 mean_of_log <- function(x, k=2, na.rm=TRUE){ # Calculates the mean of the log_k of a numeric vector (it excludes NA-s by default)
   negs = sum(x<0);  zeros = sum(x==0)
-  if (negs | zeros) { any_print("The input vector has", negs, "negative values and", zeros, "zeros." )  }
+  if (negs | zeros) { iprint("The input vector has", negs, "negative values and", zeros, "zeros." )  }
   mean(log(x, base = k), na.rm = na.rm) }
 
 movingAve <- function(x, oneSide = 5) { # Calculates the moving / rolling average of a numeric vector.
@@ -810,7 +796,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 		llprint (length(Findings), "/", ln_needle, '(', percentage_formatter(length(Findings)/ln_needle)
 					 , ") of", substitute(needle), "were found among", length(haystack), substitute(haystack), "." )
 		if (length(Findings)) { llprint( substitute(needle), "findings: ", paste ( haystack[Findings], sep= " " ) ) }
-	} else { any_print(length(Findings), "Hits:", haystack[Findings]) } # if (report)
+	} else { iprint(length(Findings), "Hits:", haystack[Findings]) } # if (report)
 	return (ls_out)
 }
 
@@ -819,7 +805,7 @@ translate = replace_values <- function(vec, oldvalues, newvalues) { # Replaces a
   if (Nr > l(newvalues) ) {
     if (l(newvalues) == 1) {
       newvalues =  rep(newvalues, l(oldvalues))
-    } else if (l(newvalues) > 1) { any_print("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
+    } else if (l(newvalues) > 1) { iprint("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
   }
   tmp = vec
   for (i in 1:Nr) {
@@ -869,7 +855,7 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
   xx = hist(splitby, breaks = breaks_, plot = T)
   IDX = findInterval(x = splitby, vec = xx$breaks)
   ls = split(toSplit, IDX)
-  any_print("Range of data:", range(xx$breaks))
+  iprint("Range of data:", range(xx$breaks))
   names(ls)=xx$breaks[-1]
   return(ls)
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll, l))
@@ -901,15 +887,15 @@ list.fromNames <- function(name_vec) { # create list from a vector with the name
 
 matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
   mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
-  any_print("Dimensions:", dim(mx))
+  iprint("Dimensions:", dim(mx))
   return(mx)
 }
 
 what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements.
-  any_print (is (x), "; nr. of elements:", length (x))
-  if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
-  if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
-  if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
+  iprint (is (x), "; nr. of elements:", length (x))
+  if (is.numeric (x) ) 		{ iprint ("min&max:", range(x) ) } else {print ("Not numeric")}
+  if ( length(dim(x) ) > 0 ) 	{ iprint ("Dim:", dim (x) )	}
+  if ( printme>0) 			{ iprint ("Elements:", x[0:printme] )	}
   head (x)
 }
 
@@ -923,9 +909,9 @@ idim <- function(any_object) { # A dim() function that can handle if you pass on
 
 idimnames <- function(any_object) { # A dimnames() function that can handle if you pass on a vector: it gives back the names.
   if (!is.null(dimnames(any_object))) 	{ print(dimnames(any_object)) }
-  else if (!is.null(colnames(any_object))) { any_print("colnames:", colnames(any_object))	}
-  else if (!is.null(rownames(any_object))) { any_print("rownames:", rownames(any_object))	}
-  else if (!is.null(names(any_object))) { any_print("names:", names(any_object))	}
+  else if (!is.null(colnames(any_object))) { iprint("colnames:", colnames(any_object))	}
+  else if (!is.null(rownames(any_object))) { iprint("rownames:", rownames(any_object))	}
+  else if (!is.null(names(any_object))) { iprint("names:", names(any_object))	}
 }
 
 table_fixed_categories <- function(vector, categories_vec) { # generate a table() with a fixed set of categories. It fills up the table with missing categories, that are relevant when comparing to other vectors.
@@ -937,8 +923,8 @@ table_fixed_categories <- function(vector, categories_vec) { # generate a table(
 ## Generic -------------------------------------------------------------------------------------------------
 
 
-stopif <- function(condition, message ="") { if(condition) {any_print (message); stop()} } # Stop script if the condition is met
-stopif2 <- function(condition, ...) { if(condition) {any_print (...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
+stopif <- function(condition, message ="") { if(condition) {iprint (message); stop()} } # Stop script if the condition is met
+stopif2 <- function(condition, ...) { if(condition) {iprint (...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
 
 most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
 	tail(sort(table(thingy, useNA = "ifany")), topN)
@@ -1061,7 +1047,7 @@ numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(
 }
 # toClipboard(numerate(1, 122))
 
-printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report at every e.g. 1000
+printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
 
 zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
   mod = if (length(vec)%%2) 0 else 1
@@ -1069,6 +1055,12 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 }
 
 
+irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
+if(!require(package = package_,  character.only = T)) {
+  print("Not Installed yet.");install.packages(pkgs = package_);
+  require(package=package_, character.only = T)
+}
+}  # install package if cannot be loaded
 
 
 # TEMP ------------------------------------
@@ -1076,191 +1068,4 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
   x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec))
   if(total) p0(x, " of ", l(logical_vec))
 }
-
-
-# old / legacy ------------------------------------
-
-# color.vec.pal <- function(vector=Size, set = "Set1", ReturnCategoriesToo=F) {
-#   NrCol = l(unique(vector))
-#   COLZ = RColorBrewer::brewer.pal(NrCol, name = set)[as.factor.numeric(vector)]
-#   # if (l(names(vector))) names(COLZ) = names(vector)
-#   names(COLZ) =vector
-#   CATEG = unique.wNames(COLZ)
-#   if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
-#   COLZ
-# }
-#
-# color.vec.base <- function(vector=Plate, set = c(F, "heat.colors", "terrain.colors", "topo.colors", "rainbow")[1], ReturnCategoriesToo=F) {
-#   NrCol = l(unique(vector))
-#   COLZ = as.factor.numeric(vector) # if basic
-#   if(set == "rainbow") {rainbow(NrCol)[COLZ]} else if
-#   (set == "heat.colors") {heat.colors(NrCol)[COLZ]} else if
-#   (set == "terrain.colors") {terrain.colors(NrCol)[COLZ]} else if
-#   (set == "topo.colors") {topo.colors(NrCol)[COLZ]}
-#   names(COLZ) = vector
-#   CATEG = unique.wNames(COLZ)
-#   if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
-#   COLZ
-# }
-#
-
-
-# JUNK
-
-# pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
-#                           title = ttl_field(pname)) { # Print (multiple) plots to an (A4) pdf.
-#   try.dev.off()
-#   assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
-#   fname = FnP_parser(pname, "pdf")
-#   pdf(fname, width=w, height=h, title = title)
-#   par(mfrow = c(rows, cols))
-#   any_print(" ----  Don't forget to call the pair of this function to finish plotting in the A4 pdf.: pdfA4plot_off ()")
-#   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
-# }
-
-
-# wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[, 1]), ylim=range(df2col[, 2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
-#                            plotname = substitute(df2col), plot.title = plotname,
-#                            plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
-#                            axes = TRUE, frame.plot = axes, xlb, ylb,
-#                            savefile = T, w = 7, h = w, incrBottMarginBy = 0, mdlink = F ) {
-#   x = df2col[, 1]
-#   y = df2col[, 2]
-#   CNN = colnames(df2col)
-#   xlb = if(length(CNN) & missing(xlb)) CNN[1]
-#   ylb = if(length(CNN) & missing(ylb)) CNN[2]
-#
-#   fname = kollapse(plotname, ".barplot")
-#   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
-#
-#   mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
-#   on.exit(par(par.orig))
-#   WID <- (3 + mar.orig[2L]) * par("csi") * 2.54
-#   layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(WID)))
-#   par(las = las)
-#   mar <- mar.orig
-#   mar[4L] <- mar[2L]
-#   mar[2L] <- 1
-#   par(mar = mar)
-#
-#   # choose colors to interpolate
-#   levels <- seq(zlim[1], zlim[2], length.out = nlevels)
-#   col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)
-#   colz <- col[cut(color, nlevels)]
-#
-#   plot.new()
-#   plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
-#
-#   rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col)
-#   if (missing(key.axes)) { if (axes){axis(4)} }
-#   else key.axes
-#   box()
-#   if (!missing(key.title)) key.title
-#   mar <- mar.orig
-#   mar[4L] <- 1
-#   par(mar = mar)
-#
-#   # points
-#   plot(x, y, main =plot.title, type = "n", xaxt='n', yaxt='n', ..., xlim=xlim, ylim=ylim, bty="n", xlab=xlb, ylab=ylb)
-#   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch, ...)
-#
-#   ## options to make mapping more customizable
-#   if (missing(plot.axes)) {
-#     if (axes) {
-#       title(main = "", xlab = "", ylab = "")
-#       Axis(x, side = 1)
-#       Axis(y, side = 2)
-#     }
-#   }
-#   else plot.axes
-#   if (frame.plot) box()
-#   if (missing(plot.title)) title(...)
-#   else plot.title
-#   invisible()
-#
-#   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field(fname)) }
-#   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-#   assign("plotnameLastPlot", fname, envir = .GlobalEnv)
-#   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname)	}
-# }
-
-
-# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), subt, ..., w = 7, h = w, mdlink = F, plotname = substitute(yalist)) {
-#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
-#   fname = kollapse(plotname, ".", imagetype, print = F)
-#   LsLen = length(yalist)
-#   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
-#   print(names(yalist))
-#
-#   filename = kollapse(OutDir, "/", fname, print = F)
-#   if (missing(subt)) { subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)  } #if
-#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
-#                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
-#   if (mdlink) {
-#     llogit(MarkDown_ImgLink_formatter(fname))
-#     if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
-#   }
-# }
-
-
-# filter_LP <- function(numeric_vector, threshold, passequal = F, prepend ="", return_survival_ratio=F, na_rm = T) { # Filter values that fall below the low-pass threshold (X <).
-#   survivors <- if (passequal) { numeric_vector <= threshold } else { numeric_vector < threshold }
-#   pc = percentage_formatter(sum(survivors, na.rm = na_rm)/length(survivors))
-#   conclusion = kollapse(prepend, pc, " or ", sum(survivors, na.rm = na_rm), " of ", length(numeric_vector), " entries in ", substitute (numeric_vector), " fall below a threshold value of: ", iround(threshold))
-#   if (file.exists(path_of_report) ) {	llogit (conclusion)	} else { print  ("NOT LOGGED") }
-#   if (return_survival_ratio) {return (sum(survivors, na.rm = na_rm)/length(survivors))} else if (!return_survival_ratio) { return (survivors) }
-# }
-
-#
-# md.LogSettingsFromList <-function (parameterlist=p, maxlen =20) {
-#   LZ = unlapply(parameterlist, l) # collapse paramters with multiple entires
-#   LNG = names(which(LZ>1))
-#   for (i in LNG ) {
-#     if (l(parameterlist[[LNG]]) > maxlen) parameterlist[[LNG]] = parameterlist[[LNG]][1:maxlen]
-#     parameterlist[[LNG]] = paste(parameterlist[[LNG]], collapse = ", ")
-#   } #for
-#   DF = t(as.data.frame(parameterlist))
-#   colnames(DF) = "Value"
-#   MarkDown_Table_writer_DF_RowColNames(DF, title_of_table = "Script Parameters and Settings")
-# }
-
-# wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, cexx =1, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
-#   # print(coeff)
-#   regression <- lm(DF[, 2] ~ DF[, 1])
-#   abline(regression, ...)
-#   legendText = NULL
-#   if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "pearson"))
-#   legendText  =  c(legendText, paste0("Pears.: ", dispCoeff))  }
-#   if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "spearman"))
-#   legendText = c(legendText, paste0("Spear.: ", dispCoeff))  }
-#   if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
-#   legendText = c(legendText, paste0("R^2: ", r2))  }
-#   # print(legendText)
-#   if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2", suffix = paste0(": ", r2)) , bty="n", cex = cexx)
-#   } else {                                    legend(textlocation, legend = legendText , bty="n", cex = cexx) }
-#   if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
-# }
-
-
-# wlegend <- function(fill_ = "NULL", poz=4, legend, bty = "n", ..., w_=7, h_=w_, OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
-#   stopif(is.null(fill_))
-#   fNames = names(fill_)
-#   if( !is.null(fNames ) ) legend = fNames
-#   check_ =(  is.null(fNames) && missing(legend) )
-#   stopif( check_, message = "The color vector (fill_) has no name, and the variable 'legend' is not provided.")
-#   stopif( ( length(fill_)  != length(legend)), message = "fill and legend are not equally long.")
-#
-#   pozz = translate(poz, oldvalues = 1:4, newvalues = c("topleft", "topright", "bottomright", "bottomleft"))
-#   legend(x=pozz, legend=legend, fill=fill_, ..., bty=bty)
-#   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot, w= w_, h = h_)  }
-# }
-#
-#
-# llwrite_list <- function(yalist, printName="self") {
-#   if (printName == "self")  llprint("####", substitute(yalist))  else if (printName == F) { ""} else { llprint("####", printName) }  #  else do not print
-#   for (e in 1:l(yalist)) {
-#     if (is.null( names(yalist) )) { llprint("#####", names(yalist)[e]) } else { llprint("#####", e)}
-#     print(yalist[e]); llogit("`", yalist[e], "`")
-#   }
-# }
 
