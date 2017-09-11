@@ -7,6 +7,8 @@
 # source("~/MarkdownReports/MarkDownLogg.R")
 ## For RNA-seq specific functions, call:
 # source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
+## For Plotting From Clipboard or Files
+# source("~/Github_repos/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
 
 ### CHAPTERS:
 # -  File handling, export, import [read & write]
@@ -27,7 +29,7 @@
 # -  New additions
 
 ## Setup   -------------------------------------------------------------------------------------------------
-# pdf.options(title= paste0('Copyright Abel Vertesy ',Sys.Date())) # Setup to your own name
+# pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
@@ -66,13 +68,6 @@ if(!require(package = package_,  character.only = T)) {
 }
 }  # install package if cannot be loaded
 
-FnP_parser <- function(fname, ext_wo_dot) { # Parses the full path from the filename & location of the file.
-	if ( exists('OutDir') ) { path = OutDir } else { path = getwd() ; any_print ("OutDir not defined !!!") }
-	if (methods::hasArg(ext_wo_dot) ) { FnP = kollapse (path,"/", fname, ".", ext_wo_dot)
-	} else { 					FnP = kollapse (path,"/", fname) }
-}
-
-
 read.simple.vec <- function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
 	pfn = kollapse (...) # merge path and filename
 	read_in = as.vector(unlist(read.table( pfn , stringsAsFactors=F, sep = "\n" )) )
@@ -89,7 +84,7 @@ read.simple <- function(...) { # It is essentially read.table() with file/path p
 read.simple_char_list <- function(...) { # Read in a file.
 	pfn = kollapse (...) # merge path and filename
 	read_in = unlist(read.table( pfn , stringsAsFactors=F ) )
-	any_print ("New variable head: ",what(read_in))
+	any_print ("New variable head: ", what(read_in))
 	return(read_in)
 }
 
@@ -103,7 +98,7 @@ read.simple.table <- function(..., colnames=T ) { # Read in a file. default: hea
 read.simple.tsv <- function(..., sep_ = "\t") { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
 	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
-	any_print ("New variable dim: ",dim(read_in))
+	any_print ("New variable dim: ", dim(read_in))
 	return(read_in)
 }
 
@@ -113,7 +108,7 @@ read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file wi
 	rn = row.names(read_in)
 	read_in =  as.vector(unlist(read_in));
 	names(read_in) = rn
-	any_print ("New vectors length is: ",length(read_in))
+	any_print ("New vectors length is: ", length(read_in))
 	return(read_in)
 }
 
@@ -132,7 +127,7 @@ read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ 
   ExpData = list.fromNames(TheSheetNames)
   RangeOfSheets = if(missing(WhichSheets)) 1:NrSheets else WhichSheets
   for (i in RangeOfSheets ) {
-    any_print("sheet",i)
+    any_print("sheet", i)
     ExpData[[i]] = gdata::read.xls(pfn, sheet = i, row.names=row_namePos, header = header_)
   } #for
   lapply(ExpData, function(x) print(dimnames(x)) )
@@ -142,7 +137,7 @@ read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ 
 
 ### Writing files out -------------------------------------------------------------------------------------------------
 
-write.simple <- function(input_df, extension='tsv', ManualName ="", o = F,...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple <- function(input_df, extension='tsv', ManualName ="", o = F, ...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
@@ -171,7 +166,7 @@ write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, .
 write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
-	write.table (input_df, file = FnP, sep = "\t", row.names = F,col.names = F, quote=FALSE, append=T  )
+	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE, append=T  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 
@@ -184,13 +179,13 @@ as.factor.numeric <- function (vec, rename=F) {
 
 sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
 
-topN.dfCol <- function (df_Col =as.named.vector(df[ ,1,drop=F]), n=5) 	{ head(sort(df_Col, decreasing = T), n=n) } # Find the n highest values in a named vector
-bottomN.dfCol <- function (df_Col = as.named.vector(df[ ,1,drop=F]), n=5) { head(sort(df_Col, decreasing = F), n=n) } # Find the n lowest values in a named vector
+topN.dfCol <- function (df_Col =as.named.vector(df[ , 1, drop=F]), n=5) 	{ head(sort(df_Col, decreasing = T), n=n) } # Find the n highest values in a named vector
+bottomN.dfCol <- function (df_Col = as.named.vector(df[ , 1, drop=F]), n=5) { head(sort(df_Col, decreasing = F), n=n) } # Find the n lowest values in a named vector
 
 
 as.named.vector <- function(df_col, WhichDimNames = 1) { # Convert a dataframe column or row into a vector, keeping the corresponding dimension name.
 	# use RowNames: WhichDimNames = 1 , 2: use ColNames
-	# !!! might require drop=F in subsetting!!! eg: df_col[,3, drop=F]
+	# !!! might require drop=F in subsetting!!! eg: df_col[, 3, drop=F]
 	# df_col[which(unlist(lapply(df_col, is.null)))] = "NULL" # replace NULLs - they would fall out of vectors - DOES not work yet
 	namez = dimnames(df_col)[[WhichDimNames]]
 	if (is.list(df_col) & !is.data.frame(df_col)) {namez = names(df_col)}
@@ -252,8 +247,8 @@ flip_value2name <- function(named_vector, NumericNames =F) { # Flip the values a
     if (NumericNames) {  newvec = as.numeric(names(named_vector))     }
     names(newvec) = named_vector
   } else {llprint("Vector without names!", head(named_vector))}
-  if (any(duplicated(named_vector))) {llprint("New names contain duplicated elements",head(named_vector[which(duplicated(named_vector))]))  }
-  if (any(duplicated(newvec))) {llprint("Old names contained duplicated elements",head(newvec[which(duplicated(newvec))]))  }
+  if (any(duplicated(named_vector))) {llprint("New names contain duplicated elements", head(named_vector[which(duplicated(named_vector))]))  }
+  if (any(duplicated(newvec))) {llprint("Old names contained duplicated elements", head(newvec[which(duplicated(newvec))]))  }
   return(newvec)
 }
 
@@ -326,7 +321,7 @@ zero.omit <- function(vec) { # Omit zero values from a vector.
 pc_TRUE <- function(logical_vector, percentify =T, NumberAndPC=F) { # Percentage of true values in a logical vector, parsed as text (useful for reports.)
 	out = sum(logical_vector, na.rm=T) / length(logical_vector)
 	if (percentify) {out = percentage_formatter (out) }
-	if (NumberAndPC) { out = paste0(sum(logical_vector, na.rm=T)," or ", out)	}
+	if (NumberAndPC) { out = paste0(sum(logical_vector, na.rm=T), " or ", out)	}
 	return(out)
 	}
 
@@ -334,7 +329,7 @@ pc_in_total_of_match <- function(vec_or_table, category, NA_omit=T) { # Percenta
 	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
 	else { # if (is.vector(vec_or_table))
 		if (NA_omit){
-			if (sum(is.na(vec_or_table))) { vec_or_table = na.omit(vec_or_table); any_print (sum(is.na(vec_or_table)), 'NA are omitted from the vec_or_table of:',length(vec_or_table))}
+			if (sum(is.na(vec_or_table))) { vec_or_table = na.omit(vec_or_table); any_print (sum(is.na(vec_or_table)), 'NA are omitted from the vec_or_table of:', length(vec_or_table))}
 			"Not wokring complelety : if NaN is stored as string, it does not detect it"
 			}
 		sum (vec_or_table==category) /  length (vec_or_table)
@@ -343,7 +338,7 @@ pc_in_total_of_match <- function(vec_or_table, category, NA_omit=T) { # Percenta
 
 filter_survival_length <- function(length_new, length_old, prepend ="") { # Parse a sentence reporting the % of filter survival.
 	pc = percentage_formatter(length_new/length_old)
-	llprint (prepend, pc, " of ",length_old," entries make through the filter")
+	llprint (prepend, pc, " of ", length_old, " entries make through the filter")
 }
 
 remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remove values that fall outside the trailing N % of the distribution.
@@ -364,15 +359,15 @@ simplify_categories <-  function(category_vec, replaceit , to ) { # Replace ever
 ## Matrix operations -------------------------------------------------------------------------------------------------
 rotate  <- function(x, clockwise=T) { # rotate a matrix 90 degrees.
   if (clockwise) { t( apply(x, 2, rev))  #first reverse, then transpose, it's the same as rotate 90 degrees
-  } else {apply( t(x),2, rev)}  #first transpose, then reverse, it's the same as rotate -90 degrees:
+  } else {apply( t(x), 2, rev)}  #first transpose, then reverse, it's the same as rotate -90 degrees:
 }
 
 sortEachColumn <- function(data, ...) sapply(data, sort, ...) # Sort each column of a numeric matrix / data frame.
 
-rowMedians <- function(x, na.rm=T) apply(data.matrix(x), 1,median, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
+rowMedians <- function(x, na.rm=T) apply(data.matrix(x), 1, median, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
 colMedians <- function(x, na.rm=T) apply(data.matrix(x), 2, median, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
 
-rowGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 1,geomean, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
+rowGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 1, geomean, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
 colGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 2, geomean, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
 
 colCV <- function(x, na.rm=T) apply(data.matrix(x), 2, cv, na.rm=na.rm ) # Calculates the CV of each column of a numeric matrix / data frame.
@@ -400,11 +395,11 @@ rowDivide <- function(mat, vec) { # divide by row
 
 sort.mat <- function(df, colname_in_df = 1, decrease = F, na_last = T) { # Sort a matrix. ALTERNATIVE: dd[with(dd, order(-z, b)), ]. Source: https://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
 	if (length(colname_in_df)>1) { print ("cannot handle multi column sort") }
-	else {df[ order(df[,colname_in_df], decreasing = decrease, na.last = na_last), ]}
+	else {df[ order(df[, colname_in_df], decreasing = decrease, na.last = na_last), ]}
 }
 
 rowNameMatrix <- function(mat_w_dimnames) {  # Create a copy of your matrix, where every entry is replaced by the corresponding row name. Useful if you want to color by row name in a plot (where you have different number of NA-values in each row).
-	matrix(rep(rownames(mat_w_dimnames), ncol(mat_w_dimnames) ),nrow = nrow(mat_w_dimnames),ncol = ncol(mat_w_dimnames))
+	matrix(rep(rownames(mat_w_dimnames), ncol(mat_w_dimnames) ), nrow = nrow(mat_w_dimnames), ncol = ncol(mat_w_dimnames))
 }
 
 colNameMatrix <- function(mat_w_dimnames) { # Create a copy of your matrix, where every entry is replaced by the corresponding column name. Useful if you want to color by column name in a plot (where you have different number of NA-values in each column).
@@ -413,7 +408,7 @@ colNameMatrix <- function(mat_w_dimnames) { # Create a copy of your matrix, wher
 }
 
 matrix_from_vector <- function(vector, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
-	matt = matrix(vector,nrow = l(vector),ncol = HowManyTimes)
+	matt = matrix(vector, nrow = l(vector), ncol = HowManyTimes)
 	if ( !IsItARow ) {matt = t(matt)}
 	return(matt)
 }
@@ -469,10 +464,10 @@ select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subse
 
 getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) { # Get the subset of rows with existing rownames, report how much it could not find.
   idx = intersect(rownamez, row.names(mat))
-  if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx,]), na.rm = T)>0)  }
+  if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx, ]), na.rm = T)>0)  }
   if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = T)>0)  }
-  if (!silent) { any_print(l(idx),"/",l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
-  mat[ idx,]
+  if (!silent) { any_print(l(idx), "/", l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
+  mat[ idx, ]
 }
 
 get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
@@ -486,29 +481,29 @@ combine.matrices.intersect <- function(matrix1, matrix2, k=2) { # combine matric
   rn1 = rownames(matrix1); rn2 = rownames(matrix2);
   idx = intersect(rn1, rn2)
   llprint(length(idx), "out of", substitute(matrix1), length(rn1), "and", length(rn2), substitute(matrix2), "rownames are merged")
-  merged = cbind(matrix1[idx,], matrix2[idx,])
+  merged = cbind(matrix1[idx, ], matrix2[idx, ])
   diffz = symdiff(rn1, rn2)
   print("Missing Rows 1, 2")
-  x1 =rowSums( matrix1[diffz[[1]],] )
-  x2 =rowSums( matrix2[diffz[[2]],] ); print("")
+  x1 =rowSums( matrix1[diffz[[1]], ] )
+  x2 =rowSums( matrix2[diffz[[2]], ] ); print("")
   iprint("Values lost 1: ", round(sum(x1)), "or", percentage_formatter(sum(x1)/sum(merged)))
   print(tail(sort(x1), n = 10));print("")
   iprint("Values lost 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
   print(tail(sort(x2), n = 10))
-  iprint("dim:",dim(merged)); return(merged)
+  iprint("dim:", dim(merged)); return(merged)
 }
 
 merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rownames
   rn1 = rownames(x); rn2 = rownames(y);
   diffz = symdiff(rn1, rn2)
-  merged =  merge(x ,y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
+  merged =  merge(x , y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
   rownames(merged) = merged$Row.names
-  merged = merged[ ,-1] # remove row names
+  merged = merged[ , -1] # remove row names
   merged[is.na(merged)] <- 0
 
   print("Uniq Rows (top 10 by sum)")
-  x1 =rowSums( x[diffz[[1]],] )
-  x2 =rowSums( y[diffz[[2]],] ); print("")
+  x1 =rowSums( x[diffz[[1]], ] )
+  x2 =rowSums( y[diffz[[2]], ] ); print("")
   iprint("Values specific to 1: ", round(sum(x1)), "or", percentage_formatter(sum(x1)/sum(merged)))
   print(tail(sort(x1), n = 10));print("")
   iprint("Values specific to 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
@@ -526,9 +521,9 @@ attach_w_rownames <- function(df_w_dimnames, removePreviousVariables = F) { # Ta
     attach (df_w_dimnames)
     for (n in colnames(df_w_dimnames)) {
       # x=get(n); # it failed at some point in some columns for unknown reason??
-      x=df_w_dimnames[,n]
+      x=df_w_dimnames[, n]
       names(x) = namez
-      assign (n,x,envir =.GlobalEnv) } # for
+      assign (n, x, envir =.GlobalEnv) } # for
   } else { print ("ERROR: the DF does not have some of the dimnames!")}
 }
 
@@ -540,7 +535,7 @@ panel.cor.pearson <- function(x, y, digits=2, prefix="", cex.cor=2, method = "pe
   txt <- paste(prefix, txt, sep="")
   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
 
-  test <- cor.test(x,y)
+  test <- cor.test(x, y)
   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                    symbols = c("***", "**", "*", ".", " "))
@@ -557,7 +552,7 @@ panel.cor.spearman <- function(x, y, digits=2, prefix="", cex.cor=2, method = "s
   txt <- paste(prefix, txt, sep="")
   if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
 
-  test <- cor.test(x,y)
+  test <- cor.test(x, y)
   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                    symbols = c("***", "**", "*", ".", " "))
@@ -590,7 +585,7 @@ as.list.df.by.row <- function(dtf, na.omit =T, zero.omit =F, omit.empty = F) { #
 	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
 	if (zero.omit){ 	outList =  lapply(outList, zero.omit) }
 	if (omit.empty) { 	outList = outList[(lapply(outList, length))>0] }
-	print(str(outList,vec.len = 2))
+	print(str(outList, vec.len = 2))
 	return(outList)
 }
 
@@ -599,7 +594,7 @@ as.list.df.by.col <- function(dtf, na.omit =T, zero.omit =F, omit.empty = F) { #
 	if (na.omit){		outList =  lapply(outList, na.omit.strip)	}
 	if (zero.omit){		outList =  lapply(outList, zero.omit)	}
 	if (omit.empty) { 	outList = outList[(lapply(outList, length))>0] }
-	print(str(outList,vec.len = 2))
+	print(str(outList, vec.len = 2))
 	return(outList)
 }
 
@@ -651,7 +646,7 @@ list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Conv
 
     list_index = which( le  %in% rown)
     m_index = which( rown %in% le)
-    mm[ m_index,i] = names(le[list_index])
+    mm[ m_index, i] = names(le[list_index])
   }
   return(mm)
 }
@@ -664,7 +659,7 @@ list2fullDF <- function(ll, byRow=T){ # convert a list to a full numeric data ma
   colnames(mat) = if (l(names(ll))) names(ll) else 1:ls_len
   rownames(mat) = sort(entrytypes)
   for (i in 1:l(ll)) {
-    mat[names(ll[[i]]) ,i] = ll[[i]]
+    mat[names(ll[[i]]) , i] = ll[[i]]
     print(names(ll[[i]]))
   }
   if(!byRow) {mat = t(mat)}
@@ -685,7 +680,7 @@ splititsnames_byValues <- function(namedVec){ # split a list by its names
 intermingle2vec <- function(V1, V2, wNames=T) { # Combine 2 vectors (of the same length) so that form every odd and every even element of a unified vector.
   stopifnot(length(V1) == length(V2) )
   Vout  = c(rbind(V1, V2))
-  if(wNames) {names(Vout) = c(rbind(names(V1),names(V2)))}
+  if(wNames) {names(Vout) = c(rbind(names(V1), names(V2)))}
   return(Vout)
 }
 
@@ -694,22 +689,22 @@ intermingle2vec <- function(V1, V2, wNames=T) { # Combine 2 vectors (of the same
 intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same length) so that form every odd and every even element of a unified list. Useful for side-by-side comparisons, e.g. in wstripchart_list().
   stopifnot(ncol(df1) == ncol(df2) )
   if(nrow(df1) != nrow(df2) ){ # not equal rows: subset
-    print(symdiff(rownames(df2),rownames(df1)))
-    CommonGenes = intersect(rownames(df2),rownames(df1)); print(l(CommonGenes))
-    df1=df1[CommonGenes,]
-    df2=df2[CommonGenes,]
+    print(symdiff(rownames(df2), rownames(df1)))
+    CommonGenes = intersect(rownames(df2), rownames(df1)); print(l(CommonGenes))
+    df1=df1[CommonGenes, ]
+    df2=df2[CommonGenes, ]
   } else { CommonGenes = rownames(df1) }
 
   # Create New column names
   if (length(colnames(df1)) == ncol(df1) & length(colnames(df2)) == ncol(df2) ) {
-    NewColNames = intermingle2vec(p0("df1.",colnames(df1) ), p0("df2.",colnames(df2) ))
+    NewColNames = intermingle2vec(p0("df1.", colnames(df1) ), p0("df2.", colnames(df2) ))
   } else {
     NewColNames = intermingle2vec(p0("df1.", 1:ncol(df1) ), p0("df2.", 1:ncol(df2) ))
   }
   NewMatr = matrix.fromNames(rowname_vec = CommonGenes, colname_vec = NewColNames)
   for (x in 1:(2*length(df1)) ) {
-    if (x  %% 2) {	NewMatr[ ,x ] = df1[ ,(x+1)/2 ]
-    } else { 		    NewMatr[ ,x ] = df2[ ,(x)/2 ]      }
+    if (x  %% 2) {	NewMatr[ , x ] = df1[ , (x+1)/2 ]
+    } else { 		    NewMatr[ , x ] = df2[ , (x)/2 ]      }
   } # for
   print(idim(NewMatr))
   return(NewMatr)
@@ -717,11 +712,11 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
 
 
 list2df_NA_padded <- function(L) {
-  pad.na <- function(x,len) {
-    c(x,rep(NA,len-length(x)))
+  pad.na <- function(x, len) {
+    c(x, rep(NA, len-length(x)))
   }
-  maxlen <- max(sapply(L,length))
-  do.call(data.frame,lapply(L,pad.na,len=maxlen))
+  maxlen <- max(sapply(L, length))
+  do.call(data.frame, lapply(L, pad.na, len=maxlen))
 }
 
 clip.values <- function(valz, high=T, thr=3) {
@@ -784,7 +779,7 @@ movingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standa
 imovingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard error of the mean (SEM). It calculates it to the edge of the vector with incrementally smaller window-size.
 	y = NULL
 	for (i in 1:l(x)) {
-		oneSideDynamic = min(i-1,oneSide, l(x)-i); oneSideDynamic
+		oneSideDynamic = min(i-1, oneSide, l(x)-i); oneSideDynamic
 		indexx = (i-oneSideDynamic):(i+oneSideDynamic);indexx
 		y[i] = sem( x[ indexx ] )
 	}; 	return (y)
@@ -804,7 +799,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 	if (exact) {
 		for (i in 1:ln_needle) {			Findings= c(Findings, which(haystack == needle[i]) )		} # for
 	} else {
-		for (i in 1:ln_needle) {			Findings = c(Findings,grep(needle[i], haystack,  ignore.case = T, perl = FALSE))		} # for
+		for (i in 1:ln_needle) {			Findings = c(Findings, grep(needle[i], haystack,  ignore.case = T, perl = FALSE))		} # for
 	} # exact or partial match
 	ls_out$'hit_poz' = Findings
 	ls_out$'ln_hits' = length(Findings)
@@ -814,7 +809,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 	if (report){
 		llprint (length(Findings), "/", ln_needle, '(', percentage_formatter(length(Findings)/ln_needle)
 					 , ") of", substitute(needle), "were found among", length(haystack), substitute(haystack), "." )
-		if (length(Findings)) { llprint( substitute(needle),"findings: ",paste ( haystack[Findings], sep= " " ) ) }
+		if (length(Findings)) { llprint( substitute(needle), "findings: ", paste ( haystack[Findings], sep= " " ) ) }
 	} else { any_print(length(Findings), "Hits:", haystack[Findings]) } # if (report)
 	return (ls_out)
 }
@@ -845,36 +840,11 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
 ## Colors -----------------------------------------------------------------------------------------------------
 richColors <- function (n=3) {  gplots::rich.colors(n) }
 
-rich.colors.vec <- function(vec, pre=0, post=0, randomize=F, seed=11) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
-  colz = gplots::rich.colors(pre+l(unique(vec))+post)
-  colz = colz[(pre+1):( l(colz)-post  )] # subset
-  if (randomize) {
-    set.seed(seed)
-    colz = sample(colz)
-  }
-  names(colz) = unique(vec)
-  if (randomize) Color_Check(colz)# , ylab=p0("seed:",seed)
-  colz[as.character(vec)] # convert to character because they are referred by name
-}
-
-# icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
-icolor_categories <- function (vec, rndize=F, trail=0, seed=354, plotit=F) {
-  x= table(vec);
-  colvec = richColors(l(x)+trail );
-  colvec = colvec[ trail:l(x)+trail];
-  if(rndize) {set.seed(seed); colvec=sample(colvec)};
-  names(colvec) =names(x);
-  if(plotit) Color_Check(colvec);
-  return(colvec)
-} # create color categories # ; colvec = colvec[ (1+trail):(l(x)+trail)]
-
-
-
 Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
   Numbers  = c(...)
   if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
-  barplot (rep(10,length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
+  barplot (rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
 
   fname = substitute(...)
@@ -895,18 +865,18 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
 
 hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit.
   # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
-  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ ,1]; splitby=dfw2col[ ,2]; print(11) }
+  if(NCOL(dfw2col) ==2){ toSplit=dfw2col[ , 1]; splitby=dfw2col[ , 2]; print(11) }
   xx = hist(splitby, breaks = breaks_, plot = T)
   IDX = findInterval(x = splitby, vec = xx$breaks)
   ls = split(toSplit, IDX)
   any_print("Range of data:", range(xx$breaks))
   names(ls)=xx$breaks[-1]
   return(ls)
-}#  ll=hist.XbyY(); wbarplot(unlapply(ll,l))
+}#  ll=hist.XbyY(); wbarplot(unlapply(ll, l))
 
 
 nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
-flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) },toggle,sep = Separator) } # returns the name if its value is true
+flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
 
 quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
   breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
@@ -914,60 +884,17 @@ quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any
 }
 
 
-## Read and write plotting functions READ -------------------------------------
-# rw-funcitons cannot call the w-functions, there would be too much things lost: rw writes where the file comes from, w writes in Outdir & current dir
-
-
-rwplot <- function(FnP, ..., w=7, h=7) { # read in a table, plot it and save it.
-	print ('file without header, and file path between ""')
-	variable=read.simple  (FnP);
-	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
-	plot (variable, ..., main=trunk )
-	dev.copy2pdf (file=kollapse(FnP,".plot.pdf"), width=w, height=h )
-}
-
-rwscatterplot <- function(FnP, ..., w=7, h=7) { # read in a table, plot it as scatter plot and save it.
-	print ('file without header, and file path between ""')
-	variable=read.simple.table  (FnP);
-	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
-	line = lm(variable[,2]~variable[,1])
-	plot (variable, ..., main=trunk, sub = lm_equation_formatter (line) )
-	abline(line)
-	dev.copy2pdf (file=kollapse(FnP,".scatter.pdf"), width=w, height=h )
-}
-
-rwboxplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a table, plot it and save it.
-	print ('inputfile is a dataframe, with header')
-	variable=read.simple.table (FnP);
-	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
-	boxplot (variable, ..., main=trunk, col =col, las=2)
-	dev.copy2pdf (file=kollapse(FnP,".boxplot.pdf"), width=w, height=h )
-}
-
-rwhist <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a table, plot it and save it. File should be without header, and file path should be given between ""-s.
-	print ('file without header, and file path between ""')
-	variable=read.simple (FnP);
-	fname=gsub (".*/", "",FnP); trunk = gsub ("\\..*", "",fname)
-	if ( length (variable) > 0 ) {
-		if ( !is.numeric(variable)) { variable = table (variable) ; wbarplot (variable); print ("FILENAME IS: VARIABLE.BARPLOT.PDF") }
-		else { 	hist (variable, ..., plotname=trunk, col =col, las=2)
-				dev.copy2pdf (file=kollapse(FnP,".hist.pdf"), width=w, height=h )
-		} # if is.numeric
-	} # if non empty
-}
-
-rwbarplot <- function(FnP, col ="gold1", ..., w=7, h=7) { # read in a vector, plot it and save it. File should be without header, and file path should be given between ""-s.
-	print ('file without header, and file path between ""')
-	variable=read.simple (FnP);
-	fname=gsub (".*/", "",FnP);  trunk = gsub ("\\..*", "",fname)
-	barplot (variable, ..., main=trunk, col =col, las=2)
-	dev.copy2pdf (file=kollapse(FnP,".barplot.pdf"), width=w, height=h )
-}
-
 ## Create and check variables -------------------------------------------------------------------------------------------------
 
+vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
+  v=numeric(length(namesvec))
+  if(length(values==length(namesvec))) {v=values}
+  names(v)=namesvec
+  return(v)
+}
+
 list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
-  liszt = as.list(rep(NaN,l(name_vec)))
+  liszt = as.list(rep(NaN, l(name_vec)))
   names(liszt) = name_vec
   return(liszt)
 }
@@ -978,15 +905,8 @@ matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 
   return(mx)
 }
 
-vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
-  v=numeric(length(namesvec))
-  if(length(values==length(namesvec))) {v=values}
-  names(v)=namesvec
-  return(v)
-}
-
 what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements.
-  any_print (is (x),"; nr. of elements:", length (x))
+  any_print (is (x), "; nr. of elements:", length (x))
   if (is.numeric (x) ) 		{ any_print ("min&max:", range(x) ) } else {print ("Not numeric")}
   if ( length(dim(x) ) > 0 ) 	{ any_print ("Dim:", dim (x) )	}
   if ( printme>0) 			{ any_print ("Elements:", x[0:printme] )	}
@@ -1056,7 +976,7 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { #
   stopifnot( l(annot_vec) == dim(data)[2] )
   namez = as.character (if (is.null(annot_names)) substitute(annot_vec)[1] else annot_names)
 
-  df = data.frame(x = annot_vec); df[,1] = as.character(df[,1])
+  df = data.frame(x = annot_vec); df[, 1] = as.character(df[, 1])
   names(df) = namez # colnames but more flexible
   rownames(df) = colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
@@ -1089,7 +1009,7 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
 
   col_list = list.fromNames(namez)
   for (i in 1:NCOL(df) ) {
-    annot_column_i = df[,i]
+    annot_column_i = df[, i]
     tt = table(annot_column_i); nz = names(tt)
     coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
     } else {                         gplots::rich.colors(l(tt)) }
@@ -1112,7 +1032,7 @@ annot_col.fix.numeric <- function(ListOfColnames) { # fix class and colot
 
 Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate gap positions for pheatmap, based a sorted annotation vector of categories
   NAZ = sum(is.na(annot.vec.of.categories))
-  if(NAZ) iprint("There are",NAZ,"NA values in your vector. They should be last and they are omitted.")
+  if(NAZ) iprint("There are", NAZ, "NA values in your vector. They should be last and they are omitted.")
   consecutive.lengthes = rle( na.omit.strip(annot.vec.of.categories))$lengths
   cumsum(consecutive.lengthes) # return abs.positions
 
@@ -1123,48 +1043,23 @@ Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate ga
 wPairConnector <- function(DFwrownames=E, PairAnnot=Sisters, verbose=F, ...) { # Connect Pairs of datapoints with a line on a plot.
   Siz = Sisters[unique(rownames(E))]
   LS = splititsnames_byValues(Siz)
-  LengZ =unlapply(LS,length)
+  LengZ =unlapply(LS, length)
   Tx = table(LengZ)
-  if (verbose) iprint(paste(names(Tx),Tx, sep = ":", collapse = " and "))
+  if (verbose) iprint(paste(names(Tx), Tx, sep = ":", collapse = " and "))
   LScool = LS[LengZ==2]
   i =1
   for (i in 1:length(LScool) ) {
     P = LScool[[i]]
-    segments(E[ P[1],1], E[ P[1],2], E[ P[2],1], E[ P[2],2], ...)
+    segments(E[ P[1], 1], E[ P[1], 2], E[ P[2], 1], E[ P[2], 2], ...)
   } #for
 }
 
-color.vec.pal <- function(vector=Size, set = "Set1", ReturnCategoriesToo=F) {
-  NrCol = l(unique(vector))
-  COLZ = RColorBrewer::brewer.pal(NrCol,name = set)[as.factor.numeric(vector)]
-  # if (l(names(vector))) names(COLZ) = names(vector)
-  names(COLZ) =vector
-  CATEG = unique.wNames(COLZ)
-  if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
-  COLZ
-}
-
-color.vec.base <- function(vector=Plate, set = c(F, "heat.colors", "terrain.colors", "topo.colors", "rainbow")[1], ReturnCategoriesToo=F) {
-  NrCol = l(unique(vector))
-  COLZ = as.factor.numeric(vector) # if basic
-  if(set == "rainbow") {rainbow(NrCol)[COLZ]} else
-    if(set == "heat.colors") {heat.colors(NrCol)[COLZ]} else
-      if(set == "terrain.colors") {terrain.colors(NrCol)[COLZ]} else
-        if(set == "topo.colors") {topo.colors(NrCol)[COLZ]}
-  names(COLZ) = vector
-  CATEG = unique.wNames(COLZ)
-  if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
-  COLZ
-}
-
-
-numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x),abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
+numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x), abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
   z = x:y
   if(zeropadding){ z =stringr::str_pad(z, pad = 0, width = pad_length)   }
   return(z)
 }
 # toClipboard(numerate(1, 122))
-
 
 printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) any_print(i) } # Report at every e.g. 1000
 
@@ -1174,56 +1069,40 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 }
 
 
-# This is a legacy function
-#' wlegend.old
-#' Add a legend, and save the plot immediately
-#'
-#' @param x location of legend
-#' @param legend Labels displayed (Text)
-#' @param fill Color of the boxes next to the text
-#' @param bty Background of legend, transparent by default
-#' @param OverwritePrevPDF Save the plot immediately with the same name the last wplot* function made (It is stored in plotnameLastPlot variable).
-#' @param ... Pass any other parameter of the corresponding text function (most of them should work).
-#' @examples wlegend(...)
-#' @export
-
-
-wlegend.old <- function(x=c("topleft", "topright", "bottomright", "bottomleft")[4],
-                        legend, fill = NULL, ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
-  legend(x=x,legend=legend,fill=fill, ..., bty=bty)
-  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
-}
-
-### Plot from clipboard directly -------------------------------------------------------------------------------------------------
-# require(MarkdownReports) # See: https://vertesy.github.io/MarkdownReports/
-
-clplot.scatter <-function(..., header = F, col = 1) { # Draw a scatterplot from a 2-column data pasted from clipboard. Works on OS X only.
-  DF = fromClipboard(header = header)
-  stopifnot(NCOL(DF)==2)
-  wplot(DF, savefile = F, col=col)
-}
-
-clhist <-function(..., breakz = 20, col = "gold1", xlb = "-") { # Draw a histogram from data pasted from clipboard. Works on OS X only.
-  whist(fromClipboard.as_num_vec(),breaks = breakz, savefile = F)
-}
-
-clpie <-function(..., percentage_ = TRUE, both_pc_and_value = F, plotname = "Distribution" ) { #  Draw a pie chart from data pasted from clipboard.  Works on OS X only.
-  wpie(fromClipboard.as_num_vec(), percentage = percentage_, both_pc_and_value = both_pc_and_value, savefile = F)
-}
-
-clbarplot <-function( ..., col_ = "gold1", sub = F) { #  Draw a barplot from data pasted from clipboard.  Works on OS X only.
-  wbarplot(fromClipboard.as_num_vec(), col =col_, savefile = F)
-}
-
 
 
 # TEMP ------------------------------------
 NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text formatting for logical vectors (%, length)
   x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec))
-  if(total) p0(x," of ", l(logical_vec))
+  if(total) p0(x, " of ", l(logical_vec))
 }
 
 
+# old / legacy ------------------------------------
+
+# color.vec.pal <- function(vector=Size, set = "Set1", ReturnCategoriesToo=F) {
+#   NrCol = l(unique(vector))
+#   COLZ = RColorBrewer::brewer.pal(NrCol, name = set)[as.factor.numeric(vector)]
+#   # if (l(names(vector))) names(COLZ) = names(vector)
+#   names(COLZ) =vector
+#   CATEG = unique.wNames(COLZ)
+#   if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
+#   COLZ
+# }
+#
+# color.vec.base <- function(vector=Plate, set = c(F, "heat.colors", "terrain.colors", "topo.colors", "rainbow")[1], ReturnCategoriesToo=F) {
+#   NrCol = l(unique(vector))
+#   COLZ = as.factor.numeric(vector) # if basic
+#   if(set == "rainbow") {rainbow(NrCol)[COLZ]} else if
+#   (set == "heat.colors") {heat.colors(NrCol)[COLZ]} else if
+#   (set == "terrain.colors") {terrain.colors(NrCol)[COLZ]} else if
+#   (set == "topo.colors") {topo.colors(NrCol)[COLZ]}
+#   names(COLZ) = vector
+#   CATEG = unique.wNames(COLZ)
+#   if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
+#   COLZ
+# }
+#
 
 
 # JUNK
@@ -1233,20 +1112,20 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 #   try.dev.off()
 #   assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
 #   fname = FnP_parser(pname, "pdf")
-#   pdf(fname,width=w, height=h, title = title)
+#   pdf(fname, width=w, height=h, title = title)
 #   par(mfrow = c(rows, cols))
 #   any_print(" ----  Don't forget to call the pair of this function to finish plotting in the A4 pdf.: pdfA4plot_off ()")
 #   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
 # }
 
 
-# wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[,1]), ylim=range(df2col[,2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
+# wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[, 1]), ylim=range(df2col[, 2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
 #                            plotname = substitute(df2col), plot.title = plotname,
 #                            plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
 #                            axes = TRUE, frame.plot = axes, xlb, ylb,
 #                            savefile = T, w = 7, h = w, incrBottMarginBy = 0, mdlink = F ) {
-#   x = df2col[,1]
-#   y = df2col[,2]
+#   x = df2col[, 1]
+#   y = df2col[, 2]
 #   CNN = colnames(df2col)
 #   xlb = if(length(CNN) & missing(xlb)) CNN[1]
 #   ylb = if(length(CNN) & missing(ylb)) CNN[2]
@@ -1283,7 +1162,7 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 #
 #   # points
 #   plot(x, y, main =plot.title, type = "n", xaxt='n', yaxt='n', ..., xlim=xlim, ylim=ylim, bty="n", xlab=xlb, ylab=ylb)
-#   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
+#   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch, ...)
 #
 #   ## options to make mapping more customizable
 #   if (missing(plot.axes)) {
@@ -1313,7 +1192,7 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 #   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
 #   print(names(yalist))
 #
-#   filename = kollapse(OutDir,"/", fname, print = F)
+#   filename = kollapse(OutDir, "/", fname, print = F)
 #   if (missing(subt)) { subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)  } #if
 #   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
 #                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
@@ -1327,7 +1206,7 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 # filter_LP <- function(numeric_vector, threshold, passequal = F, prepend ="", return_survival_ratio=F, na_rm = T) { # Filter values that fall below the low-pass threshold (X <).
 #   survivors <- if (passequal) { numeric_vector <= threshold } else { numeric_vector < threshold }
 #   pc = percentage_formatter(sum(survivors, na.rm = na_rm)/length(survivors))
-#   conclusion = kollapse(prepend, pc, " or ", sum(survivors, na.rm = na_rm), " of ",length(numeric_vector)," entries in ", substitute (numeric_vector)," fall below a threshold value of: ", iround(threshold))
+#   conclusion = kollapse(prepend, pc, " or ", sum(survivors, na.rm = na_rm), " of ", length(numeric_vector), " entries in ", substitute (numeric_vector), " fall below a threshold value of: ", iround(threshold))
 #   if (file.exists(path_of_report) ) {	llogit (conclusion)	} else { print  ("NOT LOGGED") }
 #   if (return_survival_ratio) {return (sum(survivors, na.rm = na_rm)/length(survivors))} else if (!return_survival_ratio) { return (survivors) }
 # }
@@ -1378,7 +1257,7 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 #
 #
 # llwrite_list <- function(yalist, printName="self") {
-#   if (printName == "self")  llprint("####",substitute(yalist))  else if (printName == F) { ""} else { llprint("####",printName) }  #  else do not print
+#   if (printName == "self")  llprint("####", substitute(yalist))  else if (printName == F) { ""} else { llprint("####", printName) }  #  else do not print
 #   for (e in 1:l(yalist)) {
 #     if (is.null( names(yalist) )) { llprint("#####", names(yalist)[e]) } else { llprint("#####", e)}
 #     print(yalist[e]); llogit("`", yalist[e], "`")
