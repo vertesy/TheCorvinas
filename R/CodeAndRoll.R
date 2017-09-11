@@ -37,152 +37,6 @@ try(require("gtools"))
 
 # TMP Tue Jul 11 13:42:29 2017 ------------------------------
 
-
-wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, cexx =1, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
-  # print(coeff)
-  regression <- lm(DF[, 2] ~ DF[, 1])
-  abline(regression, ...)
-  legendText = NULL
-  if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "pearson"))
-  legendText  =  c(legendText, paste0("Pears.: ", dispCoeff))  }
-  if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "spearman"))
-  legendText = c(legendText, paste0("Spear.: ", dispCoeff))  }
-  if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
-  legendText = c(legendText, paste0("R^2: ", r2))  }
-  # print(legendText)
-  if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2", suffix = paste0(": ", r2)) , bty="n", cex = cexx)
-  } else {                                    legend(textlocation, legend = legendText , bty="n", cex = cexx) }
-  if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
-}
-
-
-wlegend <- function(fill_ = "NULL", poz=4, legend, bty = "n", ..., w_=7, h_=w_, OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
-  stopif(is.null(fill_))
-  fNames = names(fill_)
-  if( !is.null(fNames ) ) legend = fNames
-  check_ =(  is.null(fNames) && missing(legend) )
-  stopif( check_, message = "The color vector (fill_) has no name, and the variable 'legend' is not provided.")
-  stopif( ( length(fill_)  != length(legend)), message = "fill and legend are not equally long.")
-
-  pozz = translate(poz, oldvalues = 1:4, newvalues = c("topleft", "topright", "bottomright", "bottomleft"))
-  legend(x=pozz, legend=legend, fill=fill_, ..., bty=bty)
-  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot, w= w_, h = h_)  }
-}
-
-
-llwrite_list <- function(yalist, printName="self") {
-  if (printName == "self")  llprint("####",substitute(yalist))  else if (printName == F) { ""} else { llprint("####",printName) }  #  else do not print
-  for (e in 1:l(yalist)) {
-    if (is.null( names(yalist) )) { llprint("#####", names(yalist)[e]) } else { llprint("#####", e)}
-    print(yalist[e]); llogit("`", yalist[e], "`")
-  }
-}
-
-pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
-                          title = ttl_field(pname)) { # Print (multiple) plots to an (A4) pdf.
-  try.dev.off()
-  assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
-  fname = FnP_parser(pname, "pdf")
-  pdf(fname,width=w, height=h, title = title)
-  par(mfrow = c(rows, cols))
-  any_print(" ----  Don't forget to call the pair of this function to finish plotting in the A4 pdf.: pdfA4plot_off ()")
-  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
-}
-
-
-wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[,1]), ylim=range(df2col[,2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
-                           plotname = substitute(df2col), plot.title = plotname,
-                           plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
-                           axes = TRUE, frame.plot = axes, xlb, ylb,
-                           savefile = T, w = 7, h = w, incrBottMarginBy = 0, mdlink = F ) {
-  x = df2col[,1]
-  y = df2col[,2]
-  CNN = colnames(df2col)
-  xlb = if(length(CNN) & missing(xlb)) CNN[1]
-  ylb = if(length(CNN) & missing(ylb)) CNN[2]
-
-  fname = kollapse(plotname, ".barplot")
-  if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
-
-  mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
-  on.exit(par(par.orig))
-  WID <- (3 + mar.orig[2L]) * par("csi") * 2.54
-  layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(WID)))
-  par(las = las)
-  mar <- mar.orig
-  mar[4L] <- mar[2L]
-  mar[2L] <- 1
-  par(mar = mar)
-
-  # choose colors to interpolate
-  levels <- seq(zlim[1], zlim[2], length.out = nlevels)
-  col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)
-  colz <- col[cut(color, nlevels)]
-
-  plot.new()
-  plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
-
-  rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col)
-  if (missing(key.axes)) { if (axes){axis(4)} }
-  else key.axes
-  box()
-  if (!missing(key.title)) key.title
-  mar <- mar.orig
-  mar[4L] <- 1
-  par(mar = mar)
-
-  # points
-  plot(x, y, main =plot.title, type = "n", xaxt='n', yaxt='n', ..., xlim=xlim, ylim=ylim, bty="n", xlab=xlb, ylab=ylb)
-  points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
-
-  ## options to make mapping more customizable
-  if (missing(plot.axes)) {
-    if (axes) {
-      title(main = "", xlab = "", ylab = "")
-      Axis(x, side = 1)
-      Axis(y, side = 2)
-    }
-  }
-  else plot.axes
-  if (frame.plot) box()
-  if (missing(plot.title)) title(...)
-  else plot.title
-  invisible()
-
-  if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field(fname)) }
-  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-  assign("plotnameLastPlot", fname, envir = .GlobalEnv)
-  if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname)	}
-}
-
-
-wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), subt, ..., w = 7, h = w, mdlink = F, plotname = substitute(yalist)) {
-  if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
-  fname = kollapse(plotname, ".", imagetype, print = F)
-  LsLen = length(yalist)
-  if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
-  print(names(yalist))
-
-  filename = kollapse(OutDir,"/", fname, print = F)
-  if (missing(subt)) { subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)  } #if
-  venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
-               sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
-  if (mdlink) {
-    llogit(MarkDown_ImgLink_formatter(fname))
-    if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
-  }
-}
-
-
-filter_LP <- function(numeric_vector, threshold, passequal = F, prepend ="", return_survival_ratio=F, na_rm = T) { # Filter values that fall below the low-pass threshold (X <).
-  survivors <- if (passequal) { numeric_vector <= threshold } else { numeric_vector < threshold }
-  pc = percentage_formatter(sum(survivors, na.rm = na_rm)/length(survivors))
-  conclusion = kollapse(prepend, pc, " or ", sum(survivors, na.rm = na_rm), " of ",length(numeric_vector)," entries in ", substitute (numeric_vector)," fall below a threshold value of: ", iround(threshold))
-  if (file.exists(path_of_report) ) {	llogit (conclusion)	} else { print  ("NOT LOGGED") }
-  if (return_survival_ratio) {return (sum(survivors, na.rm = na_rm)/length(survivors))} else if (!return_survival_ratio) { return (survivors) }
-}
-
-
 # Alisases ----------------
 TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
@@ -578,7 +432,7 @@ colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corr
 splitByCol = colsplit
 
 
-median_normalize <- function(mat) { # normalize each column to the median of the columns
+median_normalize <- function(mat) { # normalize each column to the median of all the columns
   cs = colSums(mat, na.rm = T)
   norm_mat = (t(t(mat) / cs)) * median(cs)
   return(norm_mat)
@@ -1368,3 +1222,166 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
   x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec))
   if(total) p0(x," of ", l(logical_vec))
 }
+
+
+
+
+# JUNK
+
+# pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
+#                           title = ttl_field(pname)) { # Print (multiple) plots to an (A4) pdf.
+#   try.dev.off()
+#   assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
+#   fname = FnP_parser(pname, "pdf")
+#   pdf(fname,width=w, height=h, title = title)
+#   par(mfrow = c(rows, cols))
+#   any_print(" ----  Don't forget to call the pair of this function to finish plotting in the A4 pdf.: pdfA4plot_off ()")
+#   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = pname) }
+# }
+
+
+# wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[,1]), ylim=range(df2col[,2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
+#                            plotname = substitute(df2col), plot.title = plotname,
+#                            plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
+#                            axes = TRUE, frame.plot = axes, xlb, ylb,
+#                            savefile = T, w = 7, h = w, incrBottMarginBy = 0, mdlink = F ) {
+#   x = df2col[,1]
+#   y = df2col[,2]
+#   CNN = colnames(df2col)
+#   xlb = if(length(CNN) & missing(xlb)) CNN[1]
+#   ylb = if(length(CNN) & missing(ylb)) CNN[2]
+#
+#   fname = kollapse(plotname, ".barplot")
+#   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
+#
+#   mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
+#   on.exit(par(par.orig))
+#   WID <- (3 + mar.orig[2L]) * par("csi") * 2.54
+#   layout(matrix(c(2, 1), ncol = 2L), widths = c(1, lcm(WID)))
+#   par(las = las)
+#   mar <- mar.orig
+#   mar[4L] <- mar[2L]
+#   mar[2L] <- 1
+#   par(mar = mar)
+#
+#   # choose colors to interpolate
+#   levels <- seq(zlim[1], zlim[2], length.out = nlevels)
+#   col <- colorRampPalette(c("red", "yellow", "dark green"))(nlevels)
+#   colz <- col[cut(color, nlevels)]
+#
+#   plot.new()
+#   plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
+#
+#   rect(0, levels[-length(levels)], 1, levels[-1L], col=col, border=col)
+#   if (missing(key.axes)) { if (axes){axis(4)} }
+#   else key.axes
+#   box()
+#   if (!missing(key.title)) key.title
+#   mar <- mar.orig
+#   mar[4L] <- 1
+#   par(mar = mar)
+#
+#   # points
+#   plot(x, y, main =plot.title, type = "n", xaxt='n', yaxt='n', ..., xlim=xlim, ylim=ylim, bty="n", xlab=xlb, ylab=ylb)
+#   points(x, y, bg = colz, xaxt='n', yaxt='n', xlab="", ylab="", bty="n", pch=pch,...)
+#
+#   ## options to make mapping more customizable
+#   if (missing(plot.axes)) {
+#     if (axes) {
+#       title(main = "", xlab = "", ylab = "")
+#       Axis(x, side = 1)
+#       Axis(y, side = 2)
+#     }
+#   }
+#   else plot.axes
+#   if (frame.plot) box()
+#   if (missing(plot.title)) title(...)
+#   else plot.title
+#   invisible()
+#
+#   if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "pdf"), width = w, height = h, title = ttl_field(fname)) }
+#   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+#   assign("plotnameLastPlot", fname, envir = .GlobalEnv)
+#   if (mdlink) { MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname)	}
+# }
+
+
+# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), subt, ..., w = 7, h = w, mdlink = F, plotname = substitute(yalist)) {
+#   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
+#   fname = kollapse(plotname, ".", imagetype, print = F)
+#   LsLen = length(yalist)
+#   if(length(names(yalist)) < LsLen) { names(yalist) =1:LsLen; print("List elements had no names.") }
+#   print(names(yalist))
+#
+#   filename = kollapse(OutDir,"/", fname, print = F)
+#   if (missing(subt)) { subt = kollapse("Total = ", length(unique(unlist(yalist))), " elements in total.", print = F)  } #if
+#   venn.diagram(x = yalist, imagetype = imagetype, filename = filename, main = plotname, ... ,
+#                sub = subt, fill = fill, alpha = alpha, sub.cex = .75, main.cex = 2)
+#   if (mdlink) {
+#     llogit(MarkDown_ImgLink_formatter(fname))
+#     if (exists("png4Github") & png4Github == T) { llogit(MarkDown_ImgLink_formatter(paste0("Reports/", fname) ) )	}
+#   }
+# }
+
+
+# filter_LP <- function(numeric_vector, threshold, passequal = F, prepend ="", return_survival_ratio=F, na_rm = T) { # Filter values that fall below the low-pass threshold (X <).
+#   survivors <- if (passequal) { numeric_vector <= threshold } else { numeric_vector < threshold }
+#   pc = percentage_formatter(sum(survivors, na.rm = na_rm)/length(survivors))
+#   conclusion = kollapse(prepend, pc, " or ", sum(survivors, na.rm = na_rm), " of ",length(numeric_vector)," entries in ", substitute (numeric_vector)," fall below a threshold value of: ", iround(threshold))
+#   if (file.exists(path_of_report) ) {	llogit (conclusion)	} else { print  ("NOT LOGGED") }
+#   if (return_survival_ratio) {return (sum(survivors, na.rm = na_rm)/length(survivors))} else if (!return_survival_ratio) { return (survivors) }
+# }
+
+#
+# md.LogSettingsFromList <-function (parameterlist=p, maxlen =20) {
+#   LZ = unlapply(parameterlist, l) # collapse paramters with multiple entires
+#   LNG = names(which(LZ>1))
+#   for (i in LNG ) {
+#     if (l(parameterlist[[LNG]]) > maxlen) parameterlist[[LNG]] = parameterlist[[LNG]][1:maxlen]
+#     parameterlist[[LNG]] = paste(parameterlist[[LNG]], collapse = ", ")
+#   } #for
+#   DF = t(as.data.frame(parameterlist))
+#   colnames(DF) = "Value"
+#   MarkDown_Table_writer_DF_RowColNames(DF, title_of_table = "Script Parameters and Settings")
+# }
+
+# wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", savefile =T, cexx =1, ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
+#   # print(coeff)
+#   regression <- lm(DF[, 2] ~ DF[, 1])
+#   abline(regression, ...)
+#   legendText = NULL
+#   if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "pearson"))
+#   legendText  =  c(legendText, paste0("Pears.: ", dispCoeff))  }
+#   if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "spearman"))
+#   legendText = c(legendText, paste0("Spear.: ", dispCoeff))  }
+#   if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
+#   legendText = c(legendText, paste0("R^2: ", r2))  }
+#   # print(legendText)
+#   if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2", suffix = paste0(": ", r2)) , bty="n", cex = cexx)
+#   } else {                                    legend(textlocation, legend = legendText , bty="n", cex = cexx) }
+#   if(savefile){   wplot_save_this(plotname = plotnameLastPlot) }
+# }
+
+
+# wlegend <- function(fill_ = "NULL", poz=4, legend, bty = "n", ..., w_=7, h_=w_, OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+#   stopif(is.null(fill_))
+#   fNames = names(fill_)
+#   if( !is.null(fNames ) ) legend = fNames
+#   check_ =(  is.null(fNames) && missing(legend) )
+#   stopif( check_, message = "The color vector (fill_) has no name, and the variable 'legend' is not provided.")
+#   stopif( ( length(fill_)  != length(legend)), message = "fill and legend are not equally long.")
+#
+#   pozz = translate(poz, oldvalues = 1:4, newvalues = c("topleft", "topright", "bottomright", "bottomleft"))
+#   legend(x=pozz, legend=legend, fill=fill_, ..., bty=bty)
+#   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot, w= w_, h = h_)  }
+# }
+#
+#
+# llwrite_list <- function(yalist, printName="self") {
+#   if (printName == "self")  llprint("####",substitute(yalist))  else if (printName == F) { ""} else { llprint("####",printName) }  #  else do not print
+#   for (e in 1:l(yalist)) {
+#     if (is.null( names(yalist) )) { llprint("#####", names(yalist)[e]) } else { llprint("#####", e)}
+#     print(yalist[e]); llogit("`", yalist[e], "`")
+#   }
+# }
+
