@@ -2,6 +2,60 @@
 # source("~/Github_repos/TheCorvinas/R/Old_Functions.r")
 
 
+# ------------------------
+# ------------------------
+# ------------------------
+# ------------------------
+# ------------------------
+
+rich.colors.vec <- function(vec, pre=0, post=0, randomize=F, seed=11) { # Generates a vector of colors from a vector of categories with rich.colors() for a numeric vector
+  colz = gplots::rich.colors(pre+l(unique(vec))+post)
+  colz = colz[(pre+1):( l(colz)-post  )] # subset
+  if (randomize) {
+    set.seed(seed)
+    colz = sample(colz)
+  }
+  names(colz) = unique(vec)
+  if (randomize) Color_Check(colz)# , ylab=p0("seed:", seed)
+  colz[as.character(vec)] # convert to character because they are referred by name
+}
+
+# icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
+icolor_categories <- function (vec, rndize=F, trail=0, seed=354, plotit=F) {
+  x= table(vec);
+  colvec = richColors(l(x)+trail );
+  colvec = colvec[ trail:l(x)+trail];
+  if(rndize) {set.seed(seed); colvec=sample(colvec)};
+  names(colvec) =names(x);
+  if(plotit) Color_Check(colvec);
+  return(colvec)
+} # create color categories # ; colvec = colvec[ (1+trail):(l(x)+trail)]
+
+
+# ------------------------
+
+# This is a legacy function
+#' wlegend.old
+#' Add a legend, and save the plot immediately
+#'
+#' @param x location of legend
+#' @param legend Labels displayed (Text)
+#' @param fill Color of the boxes next to the text
+#' @param bty Background of legend, transparent by default
+#' @param OverwritePrevPDF Save the plot immediately with the same name the last wplot* function made (It is stored in plotnameLastPlot variable).
+#' @param ... Pass any other parameter of the corresponding text function (most of them should work).
+#' @examples wlegend(...)
+#' @export
+
+
+wlegend.old <- function(x=c("topleft", "topright", "bottomright", "bottomleft")[4],
+                        legend, fill = NULL, ..., bty = "n", OverwritePrevPDF =T) { # Add a legend, and save the plot immediately
+  legend(x=x, legend=legend, fill=fill, ..., bty=bty)
+  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
+}
+
+# ------------------------
+
 # old <- `[`
 'If the rownames are retained, the subselected column and row remains the original type of the object, eg df. hist () does not take df-s for instance'
 # `[` <- function(...) { old(..., drop=FALSE) }
