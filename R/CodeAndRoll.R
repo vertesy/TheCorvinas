@@ -44,7 +44,7 @@ sort.natural = gtools::mixedsort
 p0 = paste0
 l=length
 
-grepv <-function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...) grep(pattern, x, ignore.case = ignore.case, perl = perl, fixed = fixed, useBytes = useBytes, invert = invert, ..., value = T) # grep with value return
+grepv <- function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...) grep(pattern, x, ignore.case = ignore.case, perl = perl, fixed = fixed, useBytes = useBytes, invert = invert, ..., value = T) # grep returning the value
 
 
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
@@ -138,13 +138,14 @@ write.simple.vec <- function(input_vec, extension='vec', ManualName ="", o = F, 
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
 
-write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, gzip = F ,...  ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
 	printme = if(l(dim(input_df))) paste0("Dim: ", dim(input_df) ) else paste0("Length (of your vector): ", l(input_df) )
 	iprint (printme)
 	if (o) { system(paste0("open ", FnP), wait = F) }
+	if (gzip) { system(paste0("gzip ", FnP), wait = F) }
 } # fun
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
 
@@ -157,12 +158,12 @@ write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F
 
 
 ## Vector operations -------------------------------------------------------------------------------------------------
-as.factor.numeric <- function (vec, rename=F) {
+as.factor.numeric <- function (vec, rename=F) { # Turn any vector into numeric categories as.numeric(as.factor(vec))
   vec2 = as.numeric(as.factor(vec)) ;
   names (vec2) =  if ( !rename & !is.null(names(vec) ) ) names (vec) else vec; return(vec2)
   }
 
-sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) }
+sstrsplit <- function (string, pattern = "_", n = 2) {  stringr::str_split_fixed  (string, pattern = pattern, n = n) } # Alias for str_split_fixed in the stringr package
 
 topN.dfCol <- function (df_Col =as.named.vector(df[ , 1, drop=F]), n=5) 	{ head(sort(df_Col, decreasing = T), n=n) } # Find the n highest values in a named vector
 bottomN.dfCol <- function (df_Col = as.named.vector(df[ , 1, drop=F]), n=5) { head(sort(df_Col, decreasing = F), n=n) } # Find the n lowest values in a named vector
@@ -264,7 +265,7 @@ any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
-unique.wNames <- function(vec_w_names) {  vec_w_names[!duplicated(vec_w_names)] }
+unique.wNames <- function(vec_w_names) {  vec_w_names[!duplicated(vec_w_names)] } # Get the unique elements from a vector keeping names (of the first elements of each category).
 
 which_names <- function(named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
 	return(names(which(as.logical.wNames(named_Vec)))) }
@@ -478,7 +479,7 @@ combine.matrices.intersect <- function(matrix1, matrix2, k=2) { # combine matric
   iprint("dim:", dim(merged)); return(merged)
 }
 
-merge_numeric_df_by_rn <-function(x, y) { # Merge 2 numeric data frames by rownames
+merge_numeric_df_by_rn <- function(x, y) { # Merge 2 numeric data frames by rownames
   rn1 = rownames(x); rn2 = rownames(y);
   diffz = symdiff(rn1, rn2)
   merged =  merge(x , y, by="row.names", all=TRUE)  # merge by row names (by=0 or by="row.names")
@@ -555,7 +556,7 @@ remove.na.rows <- function(mat, cols=1:NCOL(mat)) { # cols have to be a vector o
 
 
 ## List operations -------------------------------------------------------------------------------------------------
-intersect.ls <- function (ls, ...){ Reduce(intersect, ls) }
+intersect.ls <- function (ls, ...){ Reduce(intersect, ls) } # Intersect any number of lists.
 
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
@@ -695,22 +696,20 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
   return(NewMatr)
 }
 
+pad.na <- function(x, len) { c(x, rep(NA, len-length(x))) } # Fill up with a vector to a given length with NA-values at the end.
 
-list2df_NA_padded <- function(L) {
-  pad.na <- function(x, len) {
-    c(x, rep(NA, len-length(x)))
-  }
+list2df_NA_padded <- function(L) { # When converting a list to a data frame, the list elements can have different lengths. This function fills up the data frame with NA values.
   maxlen <- max(sapply(L, length))
   do.call(data.frame, lapply(L, pad.na, len=maxlen))
 }
 
-clip.values <- function(valz, high=T, thr=3) {
+clip.values <- function(valz, high=T, thr=3) { # Signal clipping. Cut values above or below a threshold.
   if (high) { valz[valz>thr]=thr
   } else{     valz[valz<thr]=thr}
   valz
 }
 
-list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # list2df
+list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # Basic list-to-df functionality in R
 
 
 ## Set operations -------------------------------------------------------------------------------------------------
@@ -815,15 +814,8 @@ translate = replace_values <- function(vec, oldvalues, newvalues) { # Replaces a
 }
 'chartr("a-cX", "D-Fw", x) does the same as above in theory, but it did not seem very robust regarding your input...'
 
-capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first letter of a word
-  cap <- function(s) paste(toupper(substring(s, 1, 1)),
-                           {s <- substring(s, 2); if(strict) tolower(s) else s},
-                           sep = "", collapse = " " )
-  sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
-}
-
 ## Colors -----------------------------------------------------------------------------------------------------
-richColors <- function (n=3) {  gplots::rich.colors(n) }
+richColors <- function (n=3) {  gplots::rich.colors(n) } # Alias for rich.colors in gplots
 
 Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
@@ -841,7 +833,7 @@ HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red")
 HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green"), bias=1)
 
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
-colSums.barplot <- function (df, col="seagreen2", na_rm =T, ...) { barplot(colSums(df, na.rm = na_rm), col=col, ...) }
+colSums.barplot <- function (df, col="seagreen2", na_rm =T, ...) { barplot(colSums(df, na.rm = na_rm), col=col, ...) } # Draw a barplot from ColSums of a matrix.
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
 	eq = (lm$coefficients);
@@ -945,16 +937,23 @@ percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercen
 
 ## Clustering heatmap tools -----------------------------------------------------------------------------------------------------
 
-hclust.getOrder.row <-function(pheatmapObject) pheatmapObject$tree_row$labels[pheatmapObject$tree_row$order]
-hclust.getOrder.col <-function(pheatmapObject) pheatmapObject$tree_col$labels[pheatmapObject$tree_col$order]
+hclust.getOrder.row <- function(pheatmapObject) pheatmapObject$tree_row$labels[pheatmapObject$tree_row$order] # Extract ROW order from a pheatmap object.
+hclust.getOrder.col <- function(pheatmapObject) pheatmapObject$tree_col$labels[pheatmapObject$tree_col$order] # Extract COLUMN order from a pheatmap object.
 
-hclust.getClusterID.row <-function(pheatmapObject, k=3) cutree(pheatmapObject$tree_row, k = k)
-hclust.getClusterID.col <-function(pheatmapObject, k=3) cutree(pheatmapObject$tree_col, k = k)
+hclust.getClusterID.row <- function(pheatmapObject, k=3) cutree(pheatmapObject$tree_row, k = k) # Extract cluster ID's for ROWS of a pheatmap object.
+hclust.getClusterID.col <- function(pheatmapObject, k=3) cutree(pheatmapObject$tree_col, k = k) # Extract cluster ID's for COLUMNS of a pheatmap object.
 
-hclust.ClusterSeparatingLines.row <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_row, k = k)[pheatmapObject$tree_row$order])[-1])
-hclust.ClusterSeparatingLines.col <-function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_col, k = k)[pheatmapObject$tree_col$order])[-1])
+hclust.ClusterSeparatingLines.row <- function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_row, k = k)[pheatmapObject$tree_row$order])[-1]) # Calculate the position of ROW separating lines between clusters in a pheatmap object.
+hclust.ClusterSeparatingLines.col <- function(pheatmapObject, k=3) which(!duplicated(cutree(pheatmapObject$tree_col, k = k)[pheatmapObject$tree_col$order])[-1]) # Calculate the position of COLUMN separating lines between clusters in a pheatmap object.
 
-matlabColors.pheatmap <- function(matrixx, nr=50) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = nr)) - 1)}
+Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate gap positions for pheatmap, based a sorted annotation vector of categories
+  NAZ = sum(is.na(annot.vec.of.categories))
+  if(NAZ) iprint("There are", NAZ, "NA values in your vector. They should be last and they are omitted.")
+  consecutive.lengthes = rle( na.omit.strip(annot.vec.of.categories))$lengths
+  cumsum(consecutive.lengthes) # return abs.positions
+}
+
+matlabColors.pheatmap <- function(matrixx, nr=50) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = nr)) - 1)} # Create a Matlab-like color gradient using "colorRamps".
 
 "FOR VECTOR. it works"
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
@@ -980,7 +979,7 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { #
 }
 
 
-annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=NULL) { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=NULL) { # For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopif( dim(annot_df_per_column)[1] != dim(data)[2] , message = "The number of rows in the annotation data != to the # columns in your data frame")
 
   if(any(rownames(df) != colnames(data))) { print ("The rownames of annot_df_per_column are not the same as the colnames of data:")
@@ -1006,7 +1005,7 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
   print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
-annot_col.fix.numeric <- function(ListOfColnames) { # fix class and colot
+annot_col.fix.numeric <- function(ListOfColnames) { # fix class and color annotation in pheatmap annotation data frame's and lists.
   for (i in 1:length(ListOfColnames) ) {
     j = ListOfColnames[i]
     annot[[j]] = as.numeric(annot[[j]])
@@ -1015,13 +1014,6 @@ annot_col.fix.numeric <- function(ListOfColnames) { # fix class and colot
   iprint("Columns in annot are as.numeric(), list elements in annot_col are removed")
 }
 
-Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate gap positions for pheatmap, based a sorted annotation vector of categories
-  NAZ = sum(is.na(annot.vec.of.categories))
-  if(NAZ) iprint("There are", NAZ, "NA values in your vector. They should be last and they are omitted.")
-  consecutive.lengthes = rle( na.omit.strip(annot.vec.of.categories))$lengths
-  cumsum(consecutive.lengthes) # return abs.positions
-
-}
 
 ## New additions -----------------------------------------------------------------------------------------------------
 
@@ -1039,7 +1031,7 @@ wPairConnector <- function(DFwrownames=E, PairAnnot=Sisters, verbose=F, ...) { #
   } #for
 }
 
-numerate <-function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x), abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
+numerate <- function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x), abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
   z = x:y
   if(zeropadding){ z =stringr::str_pad(z, pad = 0, width = pad_length)   }
   return(z)
@@ -1054,7 +1046,7 @@ zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
 }
 
 
-irequire <- function (package) { package_ = as.character(substitute(package)); print(package_);
+irequire <- function (package) { package_ = as.character(substitute(package)); print(package_); # Load a package. If it does not exist, try to install it from CRAN.
 if(!require(package = package_,  character.only = T)) {
   print("Not Installed yet.");install.packages(pkgs = package_);
   require(package=package_, character.only = T)
@@ -1069,3 +1061,4 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 }
 
 # try.dev.off <- function () { try(dev.off(), silent = T) }
+

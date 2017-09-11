@@ -21,7 +21,7 @@ for (i in 1:NROW(PariwiseCombinations) ) {  CPL = PariwiseCombinations[i,] }
 
 
 
-# Hist w normal distribution ------------------------
+# Hist w normal distribution line drawn above ------------------------
 set.seed(21768134)
 ccc = sample(richColors(ncol(Protz.NullNorm)+n)[-(1:n)] )
 

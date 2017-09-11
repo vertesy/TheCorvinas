@@ -63,6 +63,13 @@ wlegend.old <- function(x=c("topleft", "topright", "bottomright", "bottomleft")[
 # `[` <- old
 
 
+capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first letter of a word
+  cap <- function(s) paste(toupper(substring(s, 1, 1)),
+                           {s <- substring(s, 2); if(strict) tolower(s) else s},
+                           sep = "", collapse = " " )
+  sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
+}
+
 
 normalize_per_column <- function (m, factor) { # Normalize each column by its by a corresponding value. It is solely t(t(matrix)/factor) with a couple of error checks.
 	any_print("Range of normalization factors:" , range(iround(factor)))
@@ -737,4 +744,5 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 #     print(yalist[e]); llogit("`", yalist[e], "`")
 #   }
 # }
+
 

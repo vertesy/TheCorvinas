@@ -2,6 +2,7 @@
 # Parse links to databases from your list of gene symbols
 ######################################################################
 # source ('~/Github_repos/TheCorvinas/R/DatabaseLinke.R')
+# source ('https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/DatabaseLinke.R')
 
 ######################################################################
 ## Full functionality is only expected on OS X
