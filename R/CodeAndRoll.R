@@ -1062,3 +1062,19 @@ NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text f
 
 # try.dev.off <- function () { try(dev.off(), silent = T) }
 
+
+#' IfExistsAndTrue
+#'
+#' Internal function. Checks if a variable is defined, and its value is TRUE
+#' @param name Name of the varaible
+#' @export
+#' @examples IfExistsAndTrue()
+
+IfExistsAndTrue <-function (name="pi" ) {
+  x=F
+  if (exists(name)) {
+    if (isTRUE(get(name)))  {x =TRUE} else {x =FALSE; iprint(name, " exists, but != TRUE; ", get(name))}
+  }
+  return(x)
+}
+
