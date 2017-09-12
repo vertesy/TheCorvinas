@@ -27,6 +27,30 @@
 # -  Plots
 # -  New additions
 
+wcolorize  <-function(vector=c(1,1,1:6), RColorBrewerSet=F, ReturnCategoriesToo=F, show=F, randomize=F, set = c(F, "rich", "heat.colors", "terrain.colors", "topo.colors", "rainbow")[1]) {
+  NrCol = l(unique(vector))
+  condition = F
+  COLZ = as.factor.numeric(vector) # if basic numbers
+  if(randomize) {COLZ = sample(COLZ)} # if randomise
+  if (RColorBrewerSet != F) {
+    COLZ = RColorBrewer::brewer.pal(NrCol, name = RColorBrewerSet)[as.factor.numeric(vector)]
+  } else {
+    COLZ = if
+    (set == "rainbow") {          rainbow(NrCol)[COLZ]} else if
+    (set == "heat.colors") {        heat.colors(NrCol)[COLZ]} else if
+    (set == "terrain.colors") {     terrain.colors(NrCol)[COLZ]} else if
+    (set == "topo.colors") {        topo.colors(NrCol)[COLZ]} else if
+    (set == "rich") {               gplots::rich.colors(NrCol)[COLZ]} else
+      as.factor.numeric(vector) # if basic numbers
+  }#if
+  COLZ=as.vector(COLZ)
+  names(COLZ) = vector
+  CATEG = unique.wNames(COLZ)
+  if(show) Color_Check(CATEG)
+  if (ReturnCategoriesToo) {COLZ = list("vec" = COLZ, "categ" = CATEG)}
+  return(COLZ)
+}
+
 ## Setup   -------------------------------------------------------------------------------------------------
 # pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
