@@ -328,12 +328,22 @@ zero.omit <- function(vec) { # Omit zero values from a vector.
 	return(v2)
 }
 
-pc_TRUE <- function(logical_vector, percentify =T, NumberAndPC=F) { # Percentage of true values in a logical vector, parsed as text (useful for reports.)
-	out = sum(logical_vector, na.rm=T) / length(logical_vector)
+pc_TRUE <- function(logical_vector, percentify =T, NumberAndPC=F, NArm=T) { # Percentage of true values in a logical vector, parsed as text (useful for reports.)
+	SUM = sum(logical_vector, na.rm = NArm)
+	LEN = length(logical_vector)
+  out = SUM / LEN
 	if (percentify) {out = percentage_formatter (out) }
-	if (NumberAndPC) { out = paste0(sum(logical_vector, na.rm=T), " or ", out)	}
+	if (NumberAndPC) { out = paste0(out, " or " , SUM, " of ", LEN)	}
 	return(out)
-	}
+}
+
+# deprecated :
+NrAndPc <- function(logical_vec=idx_localised, total=T, NArm=T) { # Summary stat. text formatting for logical vectors (%, length)
+  x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
+  if(total) p0(x, " of ", l(logical_vec))
+}
+
+
 
 pc_in_total_of_match <- function(vec_or_table, category, NA_omit=T) { # Percentage of a certain value within a vector or table.
 	if (is.table(vec_or_table)) { vec_or_table[category]/sum(vec_or_table, na.rm=NA_omit) }
@@ -735,6 +745,12 @@ clip.values <- function(valz, high=T, thr=3) { # Signal clipping. Cut values abo
 
 list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # Basic list-to-df functionality in R
 
+ls2categvec <- function(your_list ) {  # Convert a list to a vector repeating list-element names, while vector names are the list elements
+  VEC = rep(names(your_list),unlapply(your_list, l))
+  names(VEC) = unlist(your_list, use.names = T)
+  return(VEC)
+}
+
 
 ## Set operations -------------------------------------------------------------------------------------------------
 
@@ -1040,20 +1056,24 @@ annot_col.fix.numeric <- function(ListOfColnames) { # fix class and color annota
 
 
 ## New additions -----------------------------------------------------------------------------------------------------
-
-wPairConnector <- function(DFwrownames=E, PairAnnot=Sisters, verbose=F, ...) { # Connect Pairs of datapoints with a line on a plot.
-  Siz = Sisters[unique(rownames(E))]
+wPairConnector <- function(DFrn=A3, PairAnnot=Sisters, verbose=F, addlabels=F, ...) { # Connect Pairs of datapoints with a line on a plot.
+  RN = rownames(DFrn)
+  stopifnot(l(RN) == NROW(DFrn))
+  Siz = Sisters[unique(RN)]
   LS = splititsnames_byValues(Siz)
   LengZ =unlapply(LS, length)
-  Tx = table(LengZ)
+  Tx = table(LengZ); Tx
   if (verbose) iprint(paste(names(Tx), Tx, sep = ":", collapse = " and "))
   LScool = LS[LengZ==2]
   i =1
   for (i in 1:length(LScool) ) {
     P = LScool[[i]]
-    segments(E[ P[1], 1], E[ P[1], 2], E[ P[2], 1], E[ P[2], 2], ...)
+    segments( DFrn[ P[1], 1], DFrn[ P[1], 2],
+              DFrn[ P[2], 1], DFrn[ P[2], 2], ...)
   } #for
+  if(addlabels)  text( DFrn, labels = Sisters[RN], srt=65, cex=.75, pos=4)
 }
+
 
 numerate <- function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max(abs(x), abs(y)) ) )+1) { # numerate from x to y with additonal zeropadding
   z = x:y
@@ -1079,11 +1099,6 @@ if(!require(package = package_,  character.only = T)) {
 
 
 # TEMP ------------------------------------
-NrAndPc <- function(logical_vec=idx_localised, total=T) { # Summary stat. text formatting for logical vectors (%, length)
-  x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec))
-  if(total) p0(x, " of ", l(logical_vec))
-}
-
 # try.dev.off <- function () { try(dev.off(), silent = T) }
 
 
