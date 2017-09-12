@@ -903,9 +903,10 @@ quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any
 
 ## Create and check variables -------------------------------------------------------------------------------------------------
 
-vec.fromNames <- function(namesvec, values=NULL) { # create a vector from a vector of names
+vec.fromNames <- function(namesvec, values=NA) { # create a vector from a vector of names
   v=numeric(length(namesvec))
-  if(length(values==length(namesvec))) {v=values}
+  if(length(values)==1) {v=rep(values, length(namesvec))}
+  else if(length(values==length(namesvec))) {v=values}
   names(v)=namesvec
   return(v)
 }
