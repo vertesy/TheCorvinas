@@ -869,6 +869,7 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
 
 
 nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
+
 flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
 
 quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
@@ -1093,4 +1094,22 @@ IfExistsAndTrue <-function (name="pi" ) {
   }
   return(x)
 }
+
+filter_InCircle <- function(df2col = cbind(rnorm(100),rnorm(100)), inside=T, r=1, coloffset=0, drawCircle=F, ...,
+                            center = list(c(0,0), "mean", "median")[[2]]) { # Find points in/out-side of a circle
+  xi=df2col[ ,1]; yi=df2col[ ,2]
+  if (center =="mean") { x = mean(xi); y = mean(yi)
+  } else if (center =="median") { x = median(xi);  y = median(yi)
+  } else if  (length(center) ==2) { x = center[1]; y = center[1] }
+  side  = if(inside) "inside" else "outside"
+  PASS =  if (inside) ((xi-x)**2 + (yi-y)**2 < r**2) else ((xi-x)**2 + (yi-y)**2 > r**2)
+  PASSTXT = p0(pc_TRUE(PASS, NumberAndPC = T), " points are ", side," the circle.")
+  iprint(PASSTXT)
+
+  SMRY = p0("Radius: ",iround(r)," | Center X, Y=",iround(c(x , y )) ,"(",center,")")
+  iprint(SMRY)
+  if (drawCircle) plotrix::draw.circle(xi, yi, r, ...)
+  return(PASS+coloffset)
+}
+
 
