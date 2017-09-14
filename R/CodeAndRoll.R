@@ -246,10 +246,10 @@ value2name_flip = flip_value2name
 # 	}
 
 
-sortbyitsnames <- function(vec_or_list) { # Sort a vector by the alphanumeric order of its names (instead of its values).
+sortbyitsnames <- function(vec_or_list, decreasing=FALSE, ...) { # Sort a vector by the alphanumeric order of its names (instead of its values).
 	xx = names(vec_or_list)
 	names(xx) = 1:l(vec_or_list)
-	order = as.numeric(names(gtools::mixedsort(xx)))
+	order = as.numeric(names(gtools::mixedsort(xx, decreasing = decreasing, ...)))
 	vec_or_list[order]
 }
 
@@ -868,7 +868,7 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll, l))
 
 
-nameiftrue <- function(toggle) { if (toggle) { substitute(toggle) } } # returns the name if its value is true
+nameiftrue <- function(toggle, prefix=NULL, suffix=NULL) { if (toggle) { p0(prefix, substitute(toggle), suffix) } } # returns the name if its value is true
 
 flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
 
