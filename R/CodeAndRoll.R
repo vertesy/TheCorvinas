@@ -36,6 +36,12 @@ print("Depends on MarkdownReportsm, gtools. Some functions depend on other libra
 # source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 try(require("MarkdownReports"))
 try(require("gtools"))
+# try(ggplot2::theme_set( theme_bw()), silent = T)
+
+FnP_parser <-function(fname, ext_wo_dot) {
+  if ( exists('OutDir') ) {path = OutDir} else {path = paste0(getwd(), "/") ; iprint ("OutDir not defined !!!")}
+  FnP = if (methods::hasArg(ext_wo_dot) ) kollapse (path, fname, ".", ext_wo_dot) else FnP = kollapse (path, "/", fname)
+}
 
 
 # Alisases ----------------
