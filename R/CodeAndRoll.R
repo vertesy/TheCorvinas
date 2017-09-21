@@ -1114,3 +1114,8 @@ filter_InCircle <- function(df2col = cbind(rnorm(100),rnorm(100)), inside=T, r=1
 }
 
 
+cumsubtract <- function(numericV=blanks) {
+  DiffZ = numericV[-1] - numericV[-length(numericV)]
+  print(table(DiffZ))
+  DiffZ
+}
