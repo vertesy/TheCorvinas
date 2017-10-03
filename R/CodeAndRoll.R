@@ -125,7 +125,7 @@ read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ 
 
 write.simple <- function(input_df, extension='tsv', ManualName ="", o = F, ...  ) { # Write out a matrix-like R-object to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = T, quote=FALSE  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
 	iprint ("Length: ", length(input_df))
@@ -133,7 +133,7 @@ write.simple <- function(input_df, extension='tsv', ManualName ="", o = F, ...  
 
 write.simple.vec <- function(input_vec, extension='vec', ManualName ="", o = F, ... ) { # Write out a vector-like R-object to a file with as newline separated values (.vec). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_vec) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, extension) }
 	write.table (input_vec, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE  )
 	iprint ("Length: ", length(input_vec))
 	if (o) { system(paste0("open ", FnP), wait = F) }
@@ -141,7 +141,7 @@ write.simple.vec <- function(input_vec, extension='vec', ManualName ="", o = F, 
 
 write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, gzip = F ,...  ) { # Write out a matrix-like R-object WITH ROW- AND COLUMN- NAMES to a file with as tab separated values (.tsv). Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (..., print = F); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
-	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = T, col.names = NA, quote=FALSE  )
 	printme = if(l(dim(input_df))) paste0("Dim: ", dim(input_df) ) else paste0("Length (of your vector): ", l(input_df) )
 	iprint (printme)
@@ -152,7 +152,7 @@ write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, g
 
 write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
-	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = FnP_parser (fname, extension) }
+	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE, append=T  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
@@ -842,7 +842,7 @@ Color_Check <- function(..., incrBottMarginBy=0, savefile = F ) { # Display the 
   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
 
   fname = substitute(...)
-  if (savefile) { dev.copy2pdf(file = FnP_parser(fname, "ColorCheck.pdf")) }
+  if (savefile) { dev.copy2pdf(file = ww.FnP_parser(fname, "ColorCheck.pdf")) }
 }
 
 HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
