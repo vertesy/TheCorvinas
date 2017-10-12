@@ -30,7 +30,7 @@
 ## Setup   -------------------------------------------------------------------------------------------------
 # pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
-print("Depends on MarkdownReportsm, gtools. Some functions depend on other libraries.")
+print("Depends on MarkdownReports, gtools, readr. Some functions depend on other libraries.")
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
@@ -76,28 +76,37 @@ read.simple_char_list <- function(...) { # Read in a file.
 
 read.simple.table <- function(..., colnames=T ) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
-	read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
+	# read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
+	read_in = readr::read_tsv( pfn, col_names = colnames )
 	iprint ("New variable dim: ", dim(read_in))
 	return(read_in)
+}
+
+FirstCol2RowNames <- function(Tibble, rownamecol=1) { # Set First Col to Row Names
+  suppressWarnings(rownames(Tibble) <- Tibble[[rownamecol]] )
+  Tibble[,-rownamecol]
 }
 
 read.simple.tsv <- function(..., sep_ = "\t") { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
-	pfn = kollapse (...) # merge path and filename
-	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
-	iprint ("New variable dim: ", dim(read_in))
-	return(read_in)
+  pfn = kollapse (...) # merge path and filename
+  # read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
+  read_in = suppressWarnings(readr::read_tsv( pfn  ))
+  iprint ("New variable dim: ", dim(read_in)-0:1)
+  FirstCol2RowNames(read_in)
 }
 
-read.simple.tsv.named.vector <- function(..., sep_ = "\t") { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
-	pfn = kollapse (...) # merge path and filename
-	read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=sep_, row.names=1, header=T )
-	rn = row.names(read_in)
-	read_in =  as.vector(unlist(read_in));
-	names(read_in) = rn
-	iprint ("New vectors length is: ", length(read_in))
-	return(read_in)
+
+read.simple.tsv.named.vector <- function(...) { # Read in a file with excel style named vectors, names in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+  pfn = kollapse (...) # merge path and filename
+  # read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=sep_, row.names=1, header=T )
+  read_in = readr::read_tsv( pfn )
+  vect = read_in[[2]]
+  names(vect) = read_in[[1]]
+  iprint ("New vectors length is: ", length(vect))
+  return(vect)
 }
 
+'Look into: http://readxl.tidyverse.org/'
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE, WhichSheets) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   if(grepl("^~/", pfn)) {
