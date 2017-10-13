@@ -18,7 +18,7 @@ diffexpnb <- function(x, cells_of_interest, cells_background, DESeq = FALSE, met
       v[[i]]        <- if ( length(group) > 1 ) apply(x[, group], 1, var)  else apply(x, 1, var)
       if (!exists("geomean")) { print("geomean() function in missing!!!")      }
       GeoMeanz[[i]]	<- if ( length(group) > 1 ) apply(x[, group], 1, geomean) else x[, group]
-      
+
       if ( method == "pooled"){
         mg <- apply(x, 1, mean)
         vg <- apply(x, 1, var)
@@ -67,17 +67,17 @@ diffexpnb <- function(x, cells_of_interest, cells_background, DESeq = FALSE, met
     psp <- 1e-99
     pv <- apply(data.frame(Meanz[[1]], Meanz[[2]]), 1, function(x){ p12 <- (dnbinom(0:round(x[1]*length(cells_background) + x[2]*length(cells_of_interest), 0), mu = mean(x)*length(cells_background), size = length(cells_background)*sf(mean(x), 1)) + psp)*(dnbinom(round(x[1]*length(cells_background) + x[2]*length(cells_of_interest), 0):0, mu = mean(x)*length(cells_of_interest), size = length(cells_of_interest)*sf(mean(x), 2)) + psp); sum(p12[p12 <= p12[round(x[1]*length(cells_background), 0) + 1]])/sum(p12)} )
 
-    res <- data.frame("baseMean" = (Meanz[[1]] + Meanz[[2]])/2, 
-                      "baseMeanA" = Meanz[[1]], 
-                      "baseMeanB" = Meanz[[2]], 
-                      "foldChange" = Meanz[[2]]/Meanz[[1]], 
-                      "log2FoldChange" = log2(Meanz[[2]]/Meanz[[1]]), 
+    res <- data.frame("baseMean" = (Meanz[[1]] + Meanz[[2]])/2,
+                      "baseMeanA" = Meanz[[1]],
+                      "baseMeanB" = Meanz[[2]],
+                      "foldChange" = Meanz[[2]]/Meanz[[1]],
+                      "log2FoldChange" = log2(Meanz[[2]]/Meanz[[1]]),
                       "GeoMeanA" = 			  GeoMeanz[[1]],
                       "GeoMeanB" = 			  GeoMeanz[[2]],
                       "foldChange_GeoMean" = signif(GeoMeanz[[2]]/GeoMeanz[[1]], digits  =  1),
-                      "pval" = pv, 
+                      "pval" = pv,
                       "padj" = p.adjust(pv, method="BH"))
-    
+
     vf1 <- data.frame(Meanz = Meanz[[1]], v = v[[1]], vm = vf(Meanz[[1]], 1))
     vf2 <- data.frame(Meanz = Meanz[[2]], v = v[[2]], vm = vf(Meanz[[2]], 2))
     rownames(res) <- rownames(x)
@@ -87,9 +87,7 @@ diffexpnb <- function(x, cells_of_interest, cells_background, DESeq = FALSE, met
   }
 }
 
-
-
-plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, Aname = NULL, Bname = NULL, show_names = TRUE, lthr_line = TRUE, ...){
+plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, geothr=2, Aname = NULL, Bname = NULL, show_names = TRUE, lthr_line = TRUE, ...){
   y <- as.data.frame(x$res)
   if ( is.null(Aname) ) Aname <- "baseMeanA"
   if ( is.null(Bname) ) Bname <- "baseMeanB"
@@ -103,9 +101,31 @@ plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, Aname
     if ( padj ) f <- y$padj < pthr else f <- y$pval < pthr
     points(log2(y$baseMean)[f], y$log2FoldChange[f], col="red", pch = 20)
   }
-  if ( !is.null(lthr) ) f <- f & abs( y$log2FoldChange ) > lthr
-  if ( !is.null(mthr) ) f <- f & log2(y$baseMean) > mthr
+  if ( !is.null(lthr) ) f <- f & abs( y$'log2FoldChange' ) > lthr
+  if ( !is.null(geothr) ) f <- f & abs( log2(y$'foldChange_GeoMean' )) > log2(geothr)
+  if ( !is.null(mthr) ) f <- f & log2(y$'baseMean') > mthr
   if ( show_names ){
     if ( sum(f) > 0 ) text(log2(y$baseMean)[f], y$log2FoldChange[f], rownames(y)[f], cex=.5)
   }
 }
+
+# plotdiffgenesnb <- function(x, pthr=.05, padj=TRUE, lthr=0, mthr=-Inf, nameInterest=NULL, nameBG="OtherCells", show_names=TRUE, ...){
+#   y <- as.data.frame(x$res)
+#   if ( is.null(nameBG) ) nameBG <- "baseMeanA"
+#   if ( is.null(nameInterest) ) nameInterest <- "baseMeanB"
+#
+#   xlname =  paste0("log2 ((mRNA[",nameBG,"] + mRNA[",nameInterest,"])/2)")
+#   ylname =  paste0("log2 (mRNA[",nameInterest,"] / mRNA[",nameBG,"])")
+#   plot(log2(y$baseMean), y$log2FoldChange, ..., pch=20, xlab=xlname, ylab=ylname, col="grey")
+#   abline(0, 0)
+#   if ( ! is.null(pthr) ){
+#     if ( padj ) f <- y$padj < pthr else f <- y$pval < pthr
+#     points(log2(y$baseMean)[f], y$log2FoldChange[f], col="red", pch=20)
+#   }
+#   if ( !is.null(lthr) ) f <- f & abs( y$log2FoldChange ) > lthr
+#   if ( !is.null(mthr) ) f <- f & log2(y$baseMean) > mthr
+#   if ( show_names ){
+#     if ( sum(f) > 0 ) text(log2(y$baseMean)[f], y$log2FoldChange[f], rownames(y)[f], cex=.5)
+#   }
+# }
+
