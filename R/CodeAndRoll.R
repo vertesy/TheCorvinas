@@ -83,8 +83,9 @@ read.simple.table <- function(..., colnames=T ) { # Read in a file. default: hea
 }
 
 FirstCol2RowNames <- function(Tibble, rownamecol=1) { # Set First Col to Row Names
-  suppressWarnings(rownames(Tibble) <- Tibble[[rownamecol]] )
-  Tibble[,-rownamecol]
+  Tibble =  as.data.frame(Tibble)
+  rownames(Tibble) <- Tibble[[rownamecol]]
+  return(Tibble[,-rownamecol])
 }
 
 read.simple.tsv <- function(..., sep_ = "\t") { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
@@ -1072,9 +1073,13 @@ numerate <- function(x=1, y=100, zeropadding = T, pad_length = floor( log10( max
 
 printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
 
+# zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
+#   mod = if (length(vec)%%2) 0 else 1
+#   for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
+# }
+
 zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
-  mod = if (length(vec)%%2) 0 else 1
-  for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
+  intermingle2vec(vec, rev(vec))[1:length(vec)]
 }
 
 
