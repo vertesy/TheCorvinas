@@ -79,12 +79,13 @@ read.simple.table <- function(..., colnames=T ) { # Read in a file. default: hea
 	# read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
 	read_in = readr::read_tsv( pfn, col_names = colnames )
 	iprint ("New variable dim: ", dim(read_in))
-	return(read_in)
+	return(as.data.frame(read_in))
 }
 
-FirstCol2RowNames <- function(Tibble, rownamecol=1) { # Set First Col to Row Names
+FirstCol2RowNames <- function(Tibble, rownamecol=1, make_names=F) { # Set First Col to Row Names
   Tibble =  as.data.frame(Tibble)
-  rownames(Tibble) <- Tibble[[rownamecol]]
+  NN =Tibble[[rownamecol]]
+  rownames(Tibble) = if(make_names) make.names(NN, unique = T) else NN
   return(Tibble[,-rownamecol])
 }
 
@@ -863,9 +864,16 @@ HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green
 colSums.barplot <- function (df, col="seagreen2", na_rm =T, ...) { barplot(colSums(df, na.rm = na_rm), col=col, ...) } # Draw a barplot from ColSums of a matrix.
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-	eq = (lm$coefficients);
-	kollapse ("Intercept:", eq[1], " Slope:", eq[2]);
+  eq = iround(lm$coefficients);
+  kollapse ("Intercept: ", eq[1], " Slope: ", eq[2]);
 }
+
+
+lm_equation_formatter2 <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
+  eq = iround(lm$coefficients);
+  kollapse ("y= ", eq[2], "* x +", eq[1]);
+}
+
 
 hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit.
   # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
