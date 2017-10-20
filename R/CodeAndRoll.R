@@ -275,6 +275,11 @@ any.duplicated <- function (vec, summarize=T){ # How many entries are duplicated
   return(y)
 }
 
+which.duplicated <- function(vec, orig=rownames(sc@expdata)) {
+  DPL = vec[which(duplicated(vec))]; iprint("Duplicated entries: ", DPL)
+  for (i in DPL ) {    print(grepv(i,orig))  } #for
+}
+
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
 unique.wNames <- function(vec_w_names) {  vec_w_names[!duplicated(vec_w_names)] } # Get the unique elements from a vector keeping names (of the first elements of each category).
@@ -423,6 +428,8 @@ matrix_from_vector <- function(vector, HowManyTimes=3, IsItARow = T) { # Create 
 
 matrix_from_dimnames  <- function (rownames, colnames, fill = NA) { # Set up an empty matrix from two vectors that will define row- and column-names.
   mm = matrix(data = fill, nrow = length(rownames), ncol = length(colnames), dimnames = list(rownames, colnames))
+  idim(mm)
+  return(mm)
 }
 
 colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corresponding to columns.
@@ -499,6 +506,16 @@ combine.matrices.intersect <- function(matrix1, matrix2, k=2) { # combine matric
   iprint("Values lost 2: ", round(sum(x2)), "or", percentage_formatter(sum(x2)/sum(merged)))
   print(tail(sort(x2), n = 10))
   iprint("dim:", dim(merged)); return(merged)
+}
+
+# NEW
+merge_dfs_by_rn <- function(list_of_dfs) { # Merge any data frames by rownames. Required plyr package
+  for (i in names(list_of_dfs) ) {  colnames(list_of_dfs[[i]]) <- p0(i,'.',colnames(list_of_dfs[[i]]))  } # make unique column names
+  for (i in names(list_of_dfs) ) {  list_of_dfs[[i]]$rn <- rownames(list_of_dfs[[i]])  } #for
+  COMBINED <- plyr::join_all(list_of_dfs, by = 'rn', type = 'full');   idim(COMBINED)
+  rownames(COMBINED) = COMBINED$rn
+  COMBINED$rn = NULL
+  return(COMBINED)
 }
 
 merge_numeric_df_by_rn <- function(x, y) { # Merge 2 numeric data frames by rownames
