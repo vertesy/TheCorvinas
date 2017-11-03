@@ -1168,5 +1168,10 @@ md.LinkTable <- function(tableOfLinkswRownames=CohesinComplexGenes.table) {
     x = tableOfLinkswRownames[,i]
     TBL[,i] = p0("[", RN, "]", "(", x, ")")
   } #for
-  md.tableWriter.DF.w.dimnames(TBL, FullPath = p0(OutDir, substitute(tableOfLinkswRownames),".tsv.md") , )
+  md.tableWriter.DF.w.dimnames(TBL, FullPath = p0(OutDir, substitute(tableOfLinkswRownames),".tsv.md")  )
 }
+
+
+trail <- function(vec, N) c(head(vec, n = N), tail(vec, n = N) )
+
+sort.decreasing <- function(vec) sort(vec, decreasing = T)
