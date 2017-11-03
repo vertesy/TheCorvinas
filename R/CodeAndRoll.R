@@ -1160,18 +1160,6 @@ cumsubtract <- function(numericV=blanks) {
 }
 
 
-
-md.LinkTable <- function(tableOfLinkswRownames=CohesinComplexGenes.table) {
-  TBL = tableOfLinkswRownames
-  RN = rownames(tableOfLinkswRownames)
-  for (i in 1:ncol(tableOfLinkswRownames) ) {
-    x = tableOfLinkswRownames[,i]
-    TBL[,i] = p0("[", RN, "]", "(", x, ")")
-  } #for
-  md.tableWriter.DF.w.dimnames(TBL, FullPath = p0(OutDir, substitute(tableOfLinkswRownames),".tsv.md")  )
-}
-
-
 trail <- function(vec, N) c(head(vec, n = N), tail(vec, n = N) )
 
 sort.decreasing <- function(vec) sort(vec, decreasing = T)
