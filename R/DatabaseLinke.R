@@ -36,6 +36,8 @@ BashScriptLocation = "~/bin/run.sh"
 GeneCards = "http://www.genecards.org/Search/Keyword?queryString= "
 PUBMED_search_prefix = "https://www.ncbi.nlm.nih.gov/pubmed/?term= "
 wikipedia = "http://en.wikipedia.org/w/index.php?search= "
+google="http://www.google.com/search?as_q="
+# SEE: http://www.our-picks.com/archives/2007/01/30/google-search-urls-revealed-or-how-to-create-your-own-search-url/
 
 ensembl_multispecies = c("http://www.ensembl.org/Multi/Search/Results?q= ",";site= ensembl")
 grc37 = c("http://grch37.ensembl.org/Human/Search/Results?q= ", ";site= ensembl;facet_feature_type= Gene;facet_species= Human")
@@ -191,12 +193,23 @@ link_pubmed <- function (vector_of_gene_symbols, additional_terms = "", writeOut
 # Wikipedia links ------------------------------------------------------------------------
 
 link_wikipedia <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
- links = paste0( wikipedia, vector_of_gene_symbols)
- if (writeOut) {
- bash_commands = paste0("open '", links, "'")
- write.simple.append("", ManualName = BashScriptLocation)
- write.simple.append(bash_commands, ManualName = BashScriptLocation)
- } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  links = paste0( wikipedia, vector_of_gene_symbols)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+# Google search URL / search query links ------------------------------------------------------------------------
+
+link_google <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( google, vector_of_gene_symbols)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
 }
 
 
