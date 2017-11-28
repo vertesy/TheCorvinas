@@ -9,6 +9,9 @@
 # source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
 ## For Plotting From Clipboard or Files
 # source("~/Github_repos/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
+# # Load sequence length and base distribution check
+# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/Gene.Stats.mm10.R")
+
 
 ### CHAPTERS:
 # -  File handling, export, import [read & write]
@@ -792,11 +795,14 @@ mean_of_log <- function(x, k=2, na.rm=TRUE){ # Calculates the mean of the log_k 
   mean(log(x, base = k), na.rm = na.rm) }
 
 movingAve <- function(x, oneSide = 5) { # Calculates the moving / rolling average of a numeric vector.
-	y = NULL
-	for (i in oneSide:l(x)) {
-		y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
-	}; 	return (y)
+  y = NULL
+  for (i in oneSide:l(x)) {
+    y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
+  }; 	return (y)
 }
+
+
+movingAve2 <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
 
 movingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard error of the mean (SEM) on a numeric vector.
 	y = NULL
