@@ -1,4 +1,7 @@
 
+# Load sequence length and base distribution check
+source("/Users/abelvertesy/Github_repos/TheCorvinas/R/Gene.Stats.mm10.R")
+
 # RNA-seq specific R functions -----------------------------------------------------------------------------------------------------
 # source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
 
