@@ -54,11 +54,11 @@ You can use the functions in 3 ways:
    `link_String("Mecom")`
 
 2. Writes the link in a bash script, called run.sh:   `link_String("Mecom", writeOut = T)`
-	- use, if  you have too many links to open at once
-	- When you run the script, it opens all the links as tabs in your default browser (on OS X /  *nix).
-	- **Comment out some lines if its too much**
-	- More precisely, it will write the links to `BashScriptLocation` in an executable format.
-	
+  - use, if  you have too many links to open at once
+  - When you run the script, it opens all the links as tabs in your default browser (on OS X /  *nix).
+  - **Comment out some lines if its too much**
+  - More precisely, it will write the links to `BashScriptLocation` in an executable format.
+
 ### Writing to file
 
 Using `link_String("Mecom", writeOut = T)`, in your bash script, you will find:
@@ -82,6 +82,24 @@ as a character vector, so you can write out in a column of your gene-table.
 
 
 
+#### [Google search URL / search query](http://www.our-picks.com/archives/2007/01/30/google-search-urls-revealed-or-how-to-create-your-own-search-url/)
+
+| String        | Meaning                                  |
+| ------------- | ---------------------------------------- |
+| as_oq         | This tells Google to find pages in which at least instance of nintendo **OR**  wii is found |
+| as_q          | This means that you look for **both** nintendo and wii in the same page |
+| as_epq        | Google translates this as a Google search of “nintendo wii”, searches the  exact phrase ‘nintendo wii’ |
+| num           | The number of results you want displayed, it ranges from 0 to 100. If you  set num to 0 you will get the ‘No match found” message |
+| safe          | If you set this to active the Google Safe Search is on and the adult  material will be filtered |
+| as_eq         | Use this to exclude a term from your search |
+| as_qdr        | Shows only results that have been updated in the given time interval.  Possible values: y (year), m6 (6 months), m3 (3 months). |
+| as_sitesearch | Limits the search to a specific domain or TLD (.us; .gov; .co.uk; .ro;  etc) |
+| as_occt       | This is set by default to ‘any’ but if you change it you can search in:  title, url, links |
+
+
+
+
+
 ---------
 
 
@@ -94,9 +112,11 @@ as a character vector, so you can write out in a column of your gene-table.
       - Try to `source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")`
         [See details for CodeAndRoll](https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md)
       - If still some functons are missing, try to install MarkdownReports: 
-	`install.packages("devtools")`
-      `devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports")`
-      `require("MarkdownReports")`  
-	[See details for MarkdownReports](https://vertesy.github.io/MarkdownReports/)
-        
-        
+        `install.packages("devtools")`
+        `devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports")`
+        `require("MarkdownReports")`  
+        [See details for MarkdownReports](https://vertesy.github.io/MarkdownReports/)
+
+
+
+
