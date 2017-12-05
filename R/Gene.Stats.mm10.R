@@ -29,6 +29,19 @@ cdf.where <- function(value=3, distribution=1:100, verbose=F) {
 # cdf.where()
 
 
+check.GC.content <- function(ID="Gnas__chr2", GC_cont=rowSums(BaseFrequencies.mm10[,c("G","C")])) {
+  GC.Content.Genes = GC_cont[ID]
+  MN = p0("GC-content of ",ID[1], " within all transcripts")
+  # SB = kollapse(ID, ": ", LEN.id, " bp. at ", percentage_formatter(CDF), " of the distr." )
+  whist(GC_cont, vline = GC.Content.Genes, breaks = 75, main = MN, ylab="Transcripts", xlb="%GC")
+  return(GC.Content.Genes)
+}
+
+
+
+
+
+
 check.transcripts.length <- function(ID="Gnas__chr2", lengths=transcripts.length.CDS.mm10) {
   tr.names = names(lengths)
   if (! ID %in% tr.names) { iprint(ID, "not found.")  } else {
