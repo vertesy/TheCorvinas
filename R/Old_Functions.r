@@ -390,6 +390,10 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 #   return(df[ true_rownames, ])
 # }
 
+
+# require("corrr")
+# require("dplyr")
+# require(ggplot2)
 # corrr::correlate(mtcars[, 1:4], method = "pearson") %>%
 #   corrr::rearrange(absolute=F) %>% #  rearrange cols and rows
 #   corrr::shave()%>% # shave upper triangle
