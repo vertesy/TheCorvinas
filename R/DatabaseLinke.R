@@ -271,3 +271,25 @@ validateGene <- function (vector_of_gene_symbols, ExpressionMatrix, SubsetOfGene
 
 }
 # x= validateGene(MarkerGenes, HeartSlices, SubsetOfGeneIDs = HE_genes)
+
+
+# MGI JAX mouse genomics links ------------------------------------------------------------------------
+MGI_search_prefix = "http://www.informatics.jax.org/searchtool/Search.do?query="
+MGI_search_suffix = "&submit=Quick+Search"
+
+link_MGI.JAX <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( MGI_search_prefix, vector_of_gene_symbols, MGI_search_suffix)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+
+#  ------------------------------------------------------------------------
+#  ------------------------------------------------------------------------
+#  ------------------------------------------------------------------------
+#  ------------------------------------------------------------------------
+#  ------------------------------------------------------------------------
+
