@@ -46,6 +46,8 @@ try(require("gtools"))
 TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
+ppp <- function(...) { paste(..., sep = '.')  } # Paste by point
+
 l=length
 
 grepv <- function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE, ...) grep(pattern, x, ignore.case = ignore.case, perl = perl, fixed = fixed, useBytes = useBytes, invert = invert, ..., value = T) # grep returning the value
