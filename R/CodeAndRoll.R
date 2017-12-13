@@ -447,6 +447,12 @@ colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corr
 splitByCol = colsplit
 
 
+TPM_normalize <- function(mat, SUM=1e6) { # normalize each column to 1 million
+  cs = colSums(mat, na.rm = T)
+  norm_mat = (t(t(mat) / cs)) * SUM
+  return(norm_mat)
+}
+
 median_normalize <- function(mat) { # normalize each column to the median of all the columns
   cs = colSums(mat, na.rm = T)
   norm_mat = (t(t(mat) / cs)) * median(cs)
@@ -1073,6 +1079,7 @@ annot_col.fix.numeric <- function(ListOfColnames) { # fix class and color annota
     annot[[j]] = as.numeric(annot[[j]])
     annot_col[[j]] = NULL # remove fixed colors -> auto determine by pheatmap
   } #for
+  assign(x = "annot_col", value = annot_col, envir = .GlobalEnv)
   iprint("Columns in annot are as.numeric(), list elements in annot_col are removed")
 }
 
@@ -1125,6 +1132,8 @@ if(!require(package = package_,  character.only = T)) {
 
 
 # TEMP ------------------------------------
+
+
 # try.dev.off <- function () { try(dev.off(), silent = T) }
 
 
@@ -1171,3 +1180,47 @@ cumsubtract <- function(numericV=blanks) {
 trail <- function(vec, N) c(head(vec, n = N), tail(vec, n = N) )
 
 sort.decreasing <- function(vec) sort(vec, decreasing = T)
+
+
+list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
+  NZ =names(ListWithNames)
+  LZ= unlapply(ListWithNames, length)
+  return(rep(NZ, LZ))
+}
+
+
+
+
+### 2017.12.12 FIX:   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
+
+md.tableWriter.DF.w.dimnames <- function (df, FullPath = path_of_report, percentify = F, title_of_table = NA, print2screen=F, WriteOut =F) {
+  if (is.na(title_of_table)) {    t = paste0(substitute(df), collapse = " ")
+  } else {                        t = title_of_table  }
+
+  title_of_table = paste("\n#### ", t)
+  # if (file.exists(FullPath)) {
+  write(title_of_table, FullPath, append = T)
+  # } else { print("NOT LOGGED: Log path and filename is not defined in FullPath")  }
+  h = paste(colnames(df), collapse = " \t| ")
+  h = paste("\n| |", h, " |", collapse = "")
+  ncolz = dim(df)[2] + 1
+  nrows = dim(df)[1]
+  rn = rownames(df)
+  sep = kollapse(rep("| ---", ncolz), " |", print = F)
+
+  write(h, FullPath, append = T)
+  write(sep, FullPath, append = T)
+  for (r in 1:nrows) {
+    if (is.numeric(unlist(df[r, ]))) {
+      b = iround(df[r, ])
+      if (percentify) {  b = percentage_formatter(b)  }
+    } else {  b = df[r, ] }
+
+    b = paste(b, collapse = " \t| ")
+    b = paste("|", rn[r], "\t|", b, " |", collapse = "")
+    write(b, FullPath, append = T)
+  }
+
+  if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
+  if (print2screen) { print(b) }
+}
