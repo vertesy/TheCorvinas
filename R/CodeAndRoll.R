@@ -79,10 +79,10 @@ read.simple_char_list <- function(...) { # Read in a file.
 	return(read_in)
 }
 
-read.simple.table <- function(..., colnames=T ) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
+read.simple.table <- function(..., colnames=T, coltypes=NULL) { # Read in a file. default: header defines colnames, no rownames. For rownames give the col nr. with rownames, eg. 1 The header should start with a TAB / First column name should be empty.
 	pfn = kollapse (...) # merge path and filename
 	# read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
-	read_in = readr::read_tsv( pfn, col_names = colnames )
+	read_in = readr::read_tsv( pfn, col_names = colnames, col_types = coltypes )
 	iprint ("New variable dim: ", dim(read_in))
 	return(as.data.frame(read_in))
 }
@@ -94,10 +94,10 @@ FirstCol2RowNames <- function(Tibble, rownamecol=1, make_names=F) { # Set First 
   return(Tibble[,-rownamecol])
 }
 
-read.simple.tsv <- function(..., sep_ = "\t") { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.tsv <- function(..., sep_ = "\t", colnames=T, coltypes=NULL) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   # read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
-  read_in = suppressWarnings(readr::read_tsv( pfn  ))
+  read_in = suppressWarnings(readr::read_tsv( pfn, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
   FirstCol2RowNames(read_in)
 }
@@ -112,6 +112,14 @@ read.simple.tsv.named.vector <- function(...) { # Read in a file with excel styl
   iprint ("New vectors length is: ", length(vect))
   return(vect)
 }
+
+convert.tsv.data <- function(df_by_read.simple.tsv=x, digitz=2, na_rep=0 ) { # Fix NA issue in dataframes imported by the new read.simple.tsv. Set na_rep to NA if you want to keep NA-s
+  DAT = data.matrix(df_by_read.simple.tsv)
+  SNA = sum(is.na(DAT))
+  try(iprint("Replaced NA values:", SNA, "or", percentage_formatter(SNA/length(DAT))), silent = T)
+  na.replace(round(DAT, digits = digitz), replace = na_rep)
+}
+
 
 'Look into: http://readxl.tidyverse.org/'
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE, WhichSheets) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
@@ -1050,11 +1058,11 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names=NULL) { #
 annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=NULL) { # For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopif( dim(annot_df_per_column)[1] != dim(data)[2] , message = "The number of rows in the annotation data != to the # columns in your data frame")
 
+  df = as.data.frame(annot_df_per_column)
   if(any(rownames(df) != colnames(data))) { print ("The rownames of annot_df_per_column are not the same as the colnames of data:")
     print(cbind("rownames(df)" = rownames(df) , "colnames(data)" = colnames(data))) }
   namez = as.character (if (is.null(annot_names)) colnames(annot_df_per_column) else annot_names)
 
-  df = as.data.frame(annot_df_per_column)
   colnames(df) = namez
   rownames(df) = colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
@@ -1082,6 +1090,35 @@ annot_col.fix.numeric <- function(ListOfColnames) { # fix class and color annota
   assign(x = "annot_col", value = annot_col, envir = .GlobalEnv)
   iprint("Columns in annot are as.numeric(), list elements in annot_col are removed")
 }
+
+
+annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names=NULL) { # For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
+  stopif( dim(annot_df_per_row)[1] != dim(data)[1] , message = "The number of rows in the annotation data != to the # columns in your data frame")
+
+  df = as.data.frame(annot_df_per_row)
+  if(any(rownames(df) != rownames(data))) { print ("The rownames of annot_df_per_row are not the same as the rownames of data:")
+    print(cbind("rownames(df)" = rownames(df) , "rownames(data)" = rownames(data))) }
+  namez = as.character (if (is.null(annot_names)) colnames(annot_df_per_row) else annot_names)
+
+  colnames(df) = namez
+  rownames(df) = rownames(data)
+  assign(x = "annot_rows", value = df, envir = .GlobalEnv)
+
+  col_list = list.fromNames(namez)
+  for (i in 1:NCOL(df) ) {
+    annot_column_i = df[, i]
+    tt = table(annot_column_i); nz = names(tt)
+    coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
+    } else {                         gplots::rich.colors(l(tt)) }
+    names(coll) = sort(nz)
+    col_list[[i]] = coll
+  } #for each column
+  assign(x = "annot_rows.col", value = col_list, envir = .GlobalEnv)
+
+  print("annot_rows [data frame] and annot_rows.col [list] variables are created. Use: pheatmap(..., annotation_row = annot_rows, annotation_colors = annot_rows.col)")
+}
+
+
 
 
 ## New additions -----------------------------------------------------------------------------------------------------
@@ -1185,7 +1222,9 @@ sort.decreasing <- function(vec) sort(vec, decreasing = T)
 list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
   NZ =names(ListWithNames)
   LZ= unlapply(ListWithNames, length)
-  return(rep(NZ, LZ))
+  replicated.name.vec = rep(NZ, LZ)
+  names(replicated.name.vec) = unlist(ListWithNames)
+  return(replicated.name.vec)
 }
 
 
@@ -1224,3 +1263,6 @@ md.tableWriter.DF.w.dimnames <- function (df, FullPath = path_of_report, percent
   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
   if (print2screen) { print(b) }
 }
+
+
+id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
