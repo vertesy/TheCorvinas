@@ -368,11 +368,14 @@ filter_survival_length <- function(length_new, length_old, prepend ="") { # Pars
 }
 
 remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remove values that fall outside the trailing N % of the distribution.
-	qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
+  print("Deprecated. Use clip.outliers()")
+  qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
 	H <- 1.5 * IQR(x, na.rm = na.rm)
 	y <- x
-	y[x < (qnt[1] - H)] <- NA
-	y[x > (qnt[2] + H)] <- NA
+	# y[x < (qnt[1] - H)] <- NA ## Add IQR dependence
+	# y[x > (qnt[2] + H)] <- NA
+	y[x < qnt[1]] <- NA ## Add IQR dependence
+	y[x > qnt[2]] <- NA
 	y
 }
 
@@ -766,6 +769,19 @@ clip.values <- function(valz, high=T, thr=3) { # Signal clipping. Cut values abo
   } else{     valz[valz<thr]=thr}
   valz
 }
+
+clip.outliers <- function(valz, high=T, probs = c(.01, .99), ...) { # Signal clipping based on the input data's distribution. It clips values above or below the extreme N% of the distribution.
+  qnt <- quantile(valz, probs=probs, na.rm = na.rm)
+  y <- valz
+  y[valz < qnt[1]] <- qnt[1]
+  y[valz > qnt[2]] <- qnt[2]
+  y
+}
+
+
+
+
+
 
 list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # Basic list-to-df functionality in R
 
@@ -1266,3 +1282,8 @@ md.tableWriter.DF.w.dimnames <- function (df, FullPath = path_of_report, percent
 
 
 id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
+idate <- function(Format = c("%Y.%m.%d_%H.%M", "%Y.%m.%d_%Hh")[2]) { format(Sys.time(), format =Format ) }# dot separated
+idate()
+
+
+view.head <- function(matrix, enn=10) {  View(head(matrix, n=enn)) }
