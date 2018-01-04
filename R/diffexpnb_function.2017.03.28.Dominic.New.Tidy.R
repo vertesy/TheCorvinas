@@ -110,36 +110,46 @@ diffexpnb <- function(x, cells_of_interest, cells_background, DESeq = FALSE, met
 #' @examples
 #' @export
 
-plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, geothr=NULL, label.nr = 50, label.entriched.only=F,
-                            short.axisname=T, axnPozX =0, axnPozY =c(.25, -.25), axCex=1, genenameCex=.75,
-                            Aname = NULL, Bname = NULL, show_names = TRUE, lthr_line = TRUE, ...){
+
+
+plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, geothr=NULL, lthr_line = TRUE,
+                            show_names = TRUE, genenameCex=.75, label.nr = 50, label.entriched.only=F,
+                            Aname = NULL, Bname = NULL, short.axisname=T, axnPozX =0, axnPozY =c(.25, -.25), axCex=1, ...){
   y <- as.data.frame(x$res)
   if ( is.null(Aname) ) Aname <- "baseMeanA"
   if ( is.null(Bname) ) Bname <- "baseMeanB"
 
   YLB = if (short.axisname) "log2(Fold change)" else { p0("log2( (mRNA[", Aname, "] + mRNA[", Bname, "])/2 )") }
   XLB = if (short.axisname) "log2(Average transcript count)" else { p0("log2( mRNA[", Bname, "]) - log2(mRNA[", Aname, "])") }
+  XLM = range(log2(y$baseMean))
+  YLM = range(y$log2FoldChange)
 
-  plot(log2(y$baseMean), y$log2FoldChange, pch = 20, ..., col="grey", xlab = XLB, ylab = YLB)
-  abline(0, 0)
-  if(lthr_line){abline(h = c(-lthr,lthr), lty = 3, col="grey")}
-  if ( ! is.null(pthr) ){
+  if (is.null(pthr)) {
+    plot(log2(y$baseMean), y$log2FoldChange, pch = 20, ..., col="grey", xlab = XLB, ylab = YLB)
+  } else if ( !is.null(pthr) ){
     p.used <- if ( padj ) y$padj else y$pval
     names(p.used) = rownames(y)
     f <- (p.used < pthr )
+    plot(log2(y$baseMean)[!f], y$log2FoldChange[!f], pch = 20, ..., col="grey",xlim=XLM, ylim=YLM, xlab = XLB, ylab = YLB) # plot only the insignificant points > smaller file
     points(log2(y$baseMean)[f], y$log2FoldChange[f], col="red", pch = 20)
   }
+  abline(0, 0)
+  if(lthr_line){abline(h = c(-lthr,lthr), lty = 3, col="grey")}
+
   if (short.axisname) {text(axnPozX, axnPozY[2], labels = p0("Enriched in ", Aname), cex=axCex);  text(axnPozX, axnPozY[1], labels =  p0("Enriched in ", Bname), cex=axCex)}
   if ( !is.null(lthr) )   f <- f & abs( y$'log2FoldChange' ) > lthr
   if ( !is.null(geothr) ) f <- f & abs( log2(y$'foldChange_GeoMean' )) > log2(geothr)
   if ( !is.null(mthr) )   f <- f & log2(y$'baseMean') > mthr
   if ( show_names ){
-    p4filt = if (label.entriched.only) { p.used[(f & y$log2FoldChange>0)] } else {p.used[f]}
-    NZ =if (label.nr) { names(head(sort(p4filt), label.nr))} else {rownames(y)[f]}
+    sorter = as.named.vector(log2(y[f,"baseMean", drop=F]) * y[f,"log2FoldChange"])
+    NZ = if (label.nr) {
+      if (label.entriched.only) names(tail(sort(sorter), label.nr)) else names(trail(sort(sorter), label.nr))
+    } else rownames(y)[f]
     if ( sum(f) > 0 ) text(log2(y[NZ, "baseMean"]), y[NZ, "log2FoldChange"], labels = id2name(NZ), cex=genenameCex)
   }
-  legend("bottomright", legend = p0("p ≤ ", pthr ), bty="n", text.col = 2)
+  legend("bottomright", legend = p0("p < ", pthr ), bty="n", text.col = 2)
 }
+
 
 # plotdiffgenesnb <- function(x, pthr=.05, padj=TRUE, lthr=0, mthr=-Inf, nameInterest=NULL, nameBG="OtherCells", show_names=TRUE, ...){
 #   y <- as.data.frame(x$res)
