@@ -87,26 +87,58 @@ diffexpnb <- function(x, cells_of_interest, cells_background, DESeq = FALSE, met
   }
 }
 
-plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, geothr=2, Aname = NULL, Bname = NULL, show_names = TRUE, lthr_line = TRUE, ...){
+#' plotdiffgenesnb
+#'
+#' @param x
+#' @param pthr
+#' @param padj
+#' @param lthr
+#' @param mthr
+#' @param geothr Filter gene names on geometric mean threshold .
+#' @param label.nr  Show only the top-label.nr genes names.
+#' @param label.entriched.only Show the (top-label.nr) names for enriched genes only.
+#' @param Aname
+#' @param Bname
+#' @param show_names
+#' @param lthr_line
+#' @param ...
+#' @param short.axisname Write short axisnames, like: "log2(Fold change)" instead of specific
+#' @param axnPozX X-Position of "Enriched in..." text
+#' @param axnPozY Y-Positions of "Enriched in..." text
+#' @param axCex Font size of "Enriched in..." text
+#' @param genenameCex  Font size of gene names
+#' @examples
+#' @export
+
+plotdiffgenesnb <- function(x, pthr=.05, padj = TRUE, lthr = 1, mthr=-Inf, geothr=NULL, label.nr = 50, label.entriched.only=F,
+                            short.axisname=T, axnPozX =0, axnPozY =c(.25, -.25), axCex=1, genenameCex=.75,
+                            Aname = NULL, Bname = NULL, show_names = TRUE, lthr_line = TRUE, ...){
   y <- as.data.frame(x$res)
   if ( is.null(Aname) ) Aname <- "baseMeanA"
   if ( is.null(Bname) ) Bname <- "baseMeanB"
 
-  plot(log2(y$baseMean), y$log2FoldChange, pch = 20, ..., col="grey",
-       xlab = paste("log2 ( ( #mRNA[", Aname, "] + #mRNA[", Bname, "] )/2 )", sep=""),
-       ylab = paste("log2 #mRNA[", Bname, "] - log2 #mRNA[", Aname, "]", sep=""))
+  YLB = if (short.axisname) "log2(Fold change)" else { p0("log2( (mRNA[", Aname, "] + mRNA[", Bname, "])/2 )") }
+  XLB = if (short.axisname) "log2(Average transcript count)" else { p0("log2( mRNA[", Bname, "]) - log2(mRNA[", Aname, "])") }
+
+  plot(log2(y$baseMean), y$log2FoldChange, pch = 20, ..., col="grey", xlab = XLB, ylab = YLB)
   abline(0, 0)
   if(lthr_line){abline(h = c(-lthr,lthr), lty = 3, col="grey")}
   if ( ! is.null(pthr) ){
-    if ( padj ) f <- y$padj < pthr else f <- y$pval < pthr
+    p.used <- if ( padj ) y$padj else y$pval
+    names(p.used) = rownames(y)
+    f <- (p.used < pthr )
     points(log2(y$baseMean)[f], y$log2FoldChange[f], col="red", pch = 20)
   }
-  if ( !is.null(lthr) ) f <- f & abs( y$'log2FoldChange' ) > lthr
+  if (short.axisname) {text(axnPozX, axnPozY[2], labels = p0("Enriched in ", Aname), cex=axCex);  text(axnPozX, axnPozY[1], labels =  p0("Enriched in ", Bname), cex=axCex)}
+  if ( !is.null(lthr) )   f <- f & abs( y$'log2FoldChange' ) > lthr
   if ( !is.null(geothr) ) f <- f & abs( log2(y$'foldChange_GeoMean' )) > log2(geothr)
-  if ( !is.null(mthr) ) f <- f & log2(y$'baseMean') > mthr
+  if ( !is.null(mthr) )   f <- f & log2(y$'baseMean') > mthr
   if ( show_names ){
-    if ( sum(f) > 0 ) text(log2(y$baseMean)[f], y$log2FoldChange[f], rownames(y)[f], cex=.5)
+    p4filt = if (label.entriched.only) { p.used[(f & y$log2FoldChange>0)] } else {p.used[f]}
+    NZ =if (label.nr) { names(head(sort(p4filt), label.nr))} else {rownames(y)[f]}
+    if ( sum(f) > 0 ) text(log2(y[NZ, "baseMean"]), y[NZ, "log2FoldChange"], labels = id2name(NZ), cex=genenameCex)
   }
+  legend("bottomright", legend = p0("p ≤ ", pthr ), bty="n", text.col = 2)
 }
 
 # plotdiffgenesnb <- function(x, pthr=.05, padj=TRUE, lthr=0, mthr=-Inf, nameInterest=NULL, nameBG="OtherCells", show_names=TRUE, ...){
