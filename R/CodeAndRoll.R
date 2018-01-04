@@ -1253,44 +1253,90 @@ list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
 
 
 
-### 2017.12.12 FIX:   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
-
-md.tableWriter.DF.w.dimnames <- function (df, FullPath = path_of_report, percentify = F, title_of_table = NA, print2screen=F, WriteOut =F) {
-  if (is.na(title_of_table)) {    t = paste0(substitute(df), collapse = " ")
-  } else {                        t = title_of_table  }
-
-  title_of_table = paste("\n#### ", t)
-  # if (file.exists(FullPath)) {
-  write(title_of_table, FullPath, append = T)
-  # } else { print("NOT LOGGED: Log path and filename is not defined in FullPath")  }
-  h = paste(colnames(df), collapse = " \t| ")
-  h = paste("\n| |", h, " |", collapse = "")
-  ncolz = dim(df)[2] + 1
-  nrows = dim(df)[1]
-  rn = rownames(df)
-  sep = kollapse(rep("| ---", ncolz), " |", print = F)
-
-  write(h, FullPath, append = T)
-  write(sep, FullPath, append = T)
-  for (r in 1:nrows) {
-    if (is.numeric(unlist(df[r, ]))) {
-      b = iround(df[r, ])
-      if (percentify) {  b = percentage_formatter(b)  }
-    } else {  b = df[r, ] }
-
-    b = paste(b, collapse = " \t| ")
-    b = paste("|", rn[r], "\t|", b, " |", collapse = "")
-    write(b, FullPath, append = T)
-  }
-
-  if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
-  if (print2screen) { print(b) }
-}
-
+# ### 2017.12.12 FIX:   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
+#
+# md.tableWriter.DF.w.dimnames <- function (df, FullPath = path_of_report, percentify = F, title_of_table = NA, print2screen=F, WriteOut =F) {
+#   if (is.na(title_of_table)) {    t = paste0(substitute(df), collapse = " ")
+#   } else {                        t = title_of_table  }
+#
+#   title_of_table = paste("\n#### ", t)
+#   # if (file.exists(FullPath)) {
+#   write(title_of_table, FullPath, append = T)
+#   # } else { print("NOT LOGGED: Log path and filename is not defined in FullPath")  }
+#   h = paste(colnames(df), collapse = " \t| ")
+#   h = paste("\n| |", h, " |", collapse = "")
+#   ncolz = dim(df)[2] + 1
+#   nrows = dim(df)[1]
+#   rn = rownames(df)
+#   sep = kollapse(rep("| ---", ncolz), " |", print = F)
+#
+#   write(h, FullPath, append = T)
+#   write(sep, FullPath, append = T)
+#   for (r in 1:nrows) {
+#     if (is.numeric(unlist(df[r, ]))) {
+#       b = iround(df[r, ])
+#       if (percentify) {  b = percentage_formatter(b)  }
+#     } else {  b = df[r, ] }
+#
+#     b = paste(b, collapse = " \t| ")
+#     b = paste("|", rn[r], "\t|", b, " |", collapse = "")
+#     write(b, FullPath, append = T)
+#   }
+#
+#   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
+#   if (print2screen) { print(b) }
+# }
+#
 
 id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
 idate <- function(Format = c("%Y.%m.%d_%H.%M", "%Y.%m.%d_%Hh")[2]) { format(Sys.time(), format =Format ) }# dot separated
-idate()
-
 
 view.head <- function(matrix, enn=10) {  View(head(matrix, n=enn)) }
+
+
+iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
+  nv1 = names(v1)
+  nv2 = names(v2)
+  len.eq = (length(nv1) == length(nv2))
+  if (!len.eq) iprint("Lenghts differ by:", (length(nv1) - length(nv2)) )
+  Check = identical(nv1, nv2)
+  if (!Check) {
+    diff = setdiff(nv1, nv2)
+    ld = length(diff)
+    iprint(ld, "elements differ: ", head(diff))
+  }
+  Check
+}
+
+iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
+  len.eq = (length(v1) == length(v2))
+  if (!len.eq) iprint("Lenghts differ by:", (length(v1) - length(v2)) )
+  Check = identical(v1,v2)
+  if (!Check) {
+    diff = setdiff(v1, v2)
+    ld = length(diff)
+    iprint(ld, "elements differ: ", head(diff))
+  }
+  Check
+}
+
+iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal
+
+
+wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", cexx =1, OverwritePrevPDF =UnlessSpec("b.save.wplots"), ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
+  regression <- lm(DF[, 2] ~ DF[, 1])
+  abline(regression, ...)
+  legendText = NULL
+  if (coeff =="all") coeff = c("pearson", "spearman", "r2")
+  if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "pearson"))
+  legendText  =  c(legendText, paste0("Pears.: ", dispCoeff))  }
+  if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "spearman"))
+  legendText = c(legendText, paste0("Spear.: ", dispCoeff))  }
+  if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
+  legendText = c(legendText, paste0("R^2: ", r2))  }
+  # print(legendText)
+  if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2", suffix = paste0(": ", r2)) , bty="n", cex = cexx)
+  } else {                                    legend(textlocation, legend = legendText , bty="n", cex = cexx) }
+  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
+}
+
