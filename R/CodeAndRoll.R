@@ -622,6 +622,12 @@ remove.na.rows <- function(mat, cols=1:NCOL(mat)) { # cols have to be a vector o
   mat[idxOK, ]
 }
 
+remove.na.cols <- function(mat) { # cols have to be a vector of numbers corresponding to columns
+  idxOK =!is.na(colSums(mat))
+  mat[, idxOK]
+}
+
+
 
 ## List operations -------------------------------------------------------------------------------------------------
 intersect.ls <- function (ls, ...){ Reduce(intersect, ls) } # Intersect any number of lists.
