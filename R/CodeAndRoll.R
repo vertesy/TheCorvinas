@@ -464,6 +464,14 @@ colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corr
 }
 splitByCol = colsplit
 
+rowsplit <- function(df, f=rownames(df)) { # split a data frame by a factor corresponding to columns.
+  ListOfDFs = NULL
+  levelz = unique(f)
+  for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ which(f== levelz[i]), ]  }
+  names(ListOfDFs) = levelz
+  return(ListOfDFs)
+}
+
 
 TPM_normalize <- function(mat, SUM=1e6) { # normalize each column to 1 million
   cs = colSums(mat, na.rm = T)
@@ -624,7 +632,7 @@ remove.na.rows <- function(mat, cols=1:NCOL(mat)) { # cols have to be a vector o
 
 remove.na.cols <- function(mat) { # cols have to be a vector of numbers corresponding to columns
   idxOK =!is.na(colSums(mat))
-  mat[, idxOK]
+  return(mat[, idxOK])
 }
 
 
