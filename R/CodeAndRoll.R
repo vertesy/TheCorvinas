@@ -1354,3 +1354,5 @@ wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlo
   if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
 }
 
+
+parsepvalue <- function(pvalue=0.01) paste0("(p<",pvalue,")"); parsepvalue()
