@@ -102,6 +102,13 @@ read.simple.tsv <- function(..., sep_ = "\t", colnames=T, coltypes=NULL) { # Rea
   FirstCol2RowNames(read_in)
 }
 
+read.simple.csv <- function(...,  colnames=T, coltypes=NULL) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+  pfn = kollapse (...) # merge path and filename
+  read_in = suppressWarnings(readr::read_csv( pfn, col_names = colnames, col_types=coltypes ))
+  iprint ("New variable dim: ", dim(read_in)-0:1)
+  FirstCol2RowNames(read_in)
+}
+
 read.simple.ssv <- function(..., sep_ = " ", colnames=T, coltypes=NULL) { # Space separeted values. Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   read_in = suppressWarnings(readr::read_delim( pfn, delim = sep_, col_names = colnames, col_types=coltypes ))
