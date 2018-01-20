@@ -1363,3 +1363,22 @@ wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlo
 
 
 parsepvalue <- function(pvalue=0.01) paste0("(p<",pvalue,")"); parsepvalue()
+
+
+shannon.entropy <- function(p) {
+  if (min(p) < 0 || sum(p) <= 0) return(NA)
+  p.norm <- p[p>0]/sum(p)
+  -sum(log2(p.norm)*p.norm)
+}
+
+
+id2titlecaseitalic <- function(x, prefix=NULL, suffix=NULL, sep= " ") {
+  x2 = sub("\\_\\_chr\\w+", "", x)
+  bquote(.(prefix) *.(sep) * italic(.(x2)) *.(sep) * .(suffix))
+}
+
+id2titlecaseitalic.sp <- function(x, prefix=NULL, suffix=expression, sep= " ") {
+  x2 = sub("\\_\\_chr\\w+", "", x)
+  bquote(.(prefix) *.(sep) * italic(.(x2)) *.(sep) * .(suffix))
+}
+
