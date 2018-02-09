@@ -413,8 +413,11 @@ colMedians <- function(x, na.rm=T) apply(data.matrix(x), 2, median, na.rm=na.rm)
 rowGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 1, geomean, na.rm=na.rm) # Calculates the median of each row of a numeric matrix / data frame.
 colGeoMeans <- function(x, na.rm=T) apply(data.matrix(x), 2, geomean, na.rm=na.rm) # Calculates the median of each column of a numeric matrix / data frame.
 
+rowCV <- function(x, na.rm=T) apply(data.matrix(x), 1, cv, na.rm=na.rm ) # Calculates the CV of each ROW of a numeric matrix / data frame.
 colCV <- function(x, na.rm=T) apply(data.matrix(x), 2, cv, na.rm=na.rm ) # Calculates the CV of each column of a numeric matrix / data frame.
-rowCV <- function(x, na.rm=T) apply(data.matrix(x), 1, cv, na.rm=na.rm ) # Calculates the CV of each column of a numeric matrix / data frame.
+
+rowVariance <- function(x, na.rm=T) apply(data.matrix(x), 1, var, na.rm=na.rm ) # Calculates the CV of each ROW of a numeric matrix / data frame.
+colVariance <- function(x, na.rm=T) apply(data.matrix(x), 2, var, na.rm=na.rm ) # Calculates the CV of each column of a numeric matrix / data frame.
 
 rowMin <- function(x, na.rm=T) apply(data.matrix(x), 1, min, na.rm=na.rm) # Calculates the minimum of each row of a numeric matrix / data frame.
 colMin <- function(x, na.rm=T) apply(data.matrix(x), 2, min, na.rm=na.rm) # Calculates the minimum of each column of a numeric matrix / data frame.
@@ -673,7 +676,7 @@ as.list.df.by.col <- function(dtf, na.omit =T, zero.omit =F, omit.empty = F) { #
 	return(outList)
 }
 
-reorder.list <- function(L, namesOrdered) { # reorder elements of lists in your custom order of names / indices.
+reorder.list <- function(L, namesOrdered=mixedsort(names(L))) { # reorder elements of lists in your custom order of names / indices.
 	Lout = list(NA)
 	for (x in 1:length(namesOrdered)) { Lout[[x]] = L[[namesOrdered[x] ]]  }
 	if(length(names(L))) { names(Lout) = namesOrdered }
@@ -1381,4 +1384,50 @@ id2titlecaseitalic.sp <- function(x, prefix=NULL, suffix=expression, sep= " ") {
   x2 = sub("\\_\\_chr\\w+", "", x)
   bquote(.(prefix) *.(sep) * italic(.(x2)) *.(sep) * .(suffix))
 }
+
+
+
+id2name <- function(x) sub("\\_\\_chr\\w+", "", x) # From RaceID
+
+id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
+
+# name2id <- function(x, id=rownames(sc@expdata)) id[sub("\\_\\_chr\\w+", "", id) %in% x] # From RaceID
+name2id <- function(Names=c("Actn1","Actn","Actnsasasa2","Actn2"), id=rownames(sc@expdata), Exact=F,  unlist=TRUE, KeepNotFound=F, KeepFirstHitOnly=F, removeAmbigous=F) {
+  ls_IDs = if (Exact) {lapply(p0(Names,"__chr"), grep, x = id, value = T) } else {lapply(Names, grep, x = id, value = T)}
+  hitLength = unlist(lapply(ls_IDs, length))
+  Matches = table(hitLength)
+  notfound = Matches["0"]
+  multiplehits = sum(Matches[3:length(Matches)])
+  if (!is.na(notfound)) {
+    if (notfound>0) {
+      NF = head(Names[hitLength==0])
+      print(paste(notfound, "gene names could not be converted, eg: ", paste(NF, collapse = ", ")))
+    }
+  } #if
+  if (!is.na(multiplehits)) {
+    if ( multiplehits>0) {
+      MULTI = head(Names[hitLength>1])
+      print(paste(multiplehits, "gene names correspond to multiple gene_ID-s, eg:", paste(MULTI, collapse = ", ") ) )
+    } #if
+  } #if
+
+  if (KeepNotFound) {ls_IDs[unlapply(ls_IDs, length)==0] <- NA}
+  if (removeAmbigous) { ls_IDs = ls_IDs[(unlapply(ls_IDs,length)==1)]
+  } else if (KeepFirstHitOnly) { ls_IDs= lapply(ls_IDs, `[[`, 1)  } #if
+  if (unlist) { ls_IDs= unlist(ls_IDs)  } #if
+  return(ls_IDs)
+}
+
+
+name2id.toClipboard <- function(x, id=rownames(sc@expdata)) {
+  IDg = id[sub("\\_\\_chr\\w+", "", id) %in% x]
+  iprint(IDg, ", copied to clipboard")
+  toClipboard(IDg)
+} # From RaceID
+
+
+
+
+name2id.fast <- function(x, id=rownames(sc@expdata)) id[sub("\\_\\_chr\\w+", "", id) %in% x] # From RaceID
+
 
