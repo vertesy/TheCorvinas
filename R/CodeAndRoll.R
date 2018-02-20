@@ -532,6 +532,15 @@ getRows <- function(mat, rownamez, silent=F, removeNAonly = F, remove0only=F ) {
   mat[ idx, ]
 }
 
+getCols <- function(mat, colnamez, silent=F, removeNAonly = F, remove0only=F ) { # Get the subset of cols with existing colnames, report how much it could not find.
+  idx = intersect(colnamez, colnames(mat))
+  print(symdiff(colnamez, colnames(mat)))
+  if (removeNAonly) {    idx = which_names(colSums(!is.na(mat[ ,idx ]), na.rm = T)>0)  }
+  if (remove0only) {  idx = which_names(colSums(mx!=0, na.rm = T)>0)  }
+  if (!silent) { iprint(l(idx), "/", l(colnamez), "are found. Missing: ", l(setdiff(colnames(mat), colnamez))  )  }
+  mat[ ,idx ]
+}
+
 get.oddoreven <- function (df_ = NULL, rows=F, odd =T){ # Get odd or even columns or rows of a data frame
   counter = if(rows) NROW(df_) else NCOL(df_)
   IDX = if(odd) seq(1, to = counter, by = 2) else seq(2, to = counter, by = 2)

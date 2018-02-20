@@ -24,6 +24,7 @@ def_counts_out = 'count_files'
 def_map_out = 'map_files'
 def_logfiles_out = 'logs_and_errors'
 
+# /hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_eGFP_mito.mobile.DNA/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked_eGFP_Mito.LINE1.fa
 def_refseq_human = "/hpc/hub_oudenaarden/gene_models/human_gene_models/hg19_mito/hg19_RefSeq_genes_clean_ERCC92_polyA_10_masked_Mito.fa"
 def_refseq_mouse = "/hpc/hub_oudenaarden/gene_models/mouse_gene_models/mm10_eGFP_mito/mm10_RefSeq_genes_clean_ERCC92_polyA_10_masked_eGFP_Mito.fa"
 def_refseq_zebrafish = "/hpc/hub_oudenaarden/gene_models/zebrafish_gene_models/Danio_rerio_Zv9_ens74_extended3_genes_ERCC92.fa"
