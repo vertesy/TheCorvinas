@@ -84,7 +84,8 @@ read.simple.table <- function(..., colnames=T, coltypes=NULL) { # Read in a file
 	# read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
 	read_in = readr::read_tsv( pfn, col_names = colnames, col_types = coltypes )
 	iprint ("New variable dim: ", dim(read_in))
-	return(as.data.frame(read_in))
+	read_in = as.data.frame(na.replace(data.matrix(read_in), replace = 0))
+	return(read_in)
 }
 
 FirstCol2RowNames <- function(Tibble, rownamecol=1, make_names=F) { # Set First Col to Row Names
@@ -94,26 +95,32 @@ FirstCol2RowNames <- function(Tibble, rownamecol=1, make_names=F) { # Set First 
   return(Tibble[,-rownamecol])
 }
 
-read.simple.tsv <- function(..., sep_ = "\t", colnames=T, coltypes=NULL) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.tsv <- function(..., sep_ = "\t", colnames=T, coltypes=NULL, NaReplace=T) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   # read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=T )
   read_in = suppressWarnings(readr::read_tsv( pfn, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  FirstCol2RowNames(read_in)
+  read_in = FirstCol2RowNames(read_in)
+  if (NaReplace) { read_in = as.data.frame(na.replace(read_in, replace = 0)) }
+  return(read_in)
 }
 
-read.simple.csv <- function(...,  colnames=T, coltypes=NULL) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.csv <- function(...,  colnames=T, coltypes=NULL, NaReplace=T, nmax=Inf) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
-  read_in = suppressWarnings(readr::read_csv( pfn, col_names = colnames, col_types=coltypes ))
+  read_in = suppressWarnings(readr::read_csv( pfn, col_names = colnames, col_types=coltypes, n_max = nmax ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  FirstCol2RowNames(read_in)
+  read_in = FirstCol2RowNames(read_in)
+  if (NaReplace) { read_in = as.data.frame(na.replace(read_in, replace = 0)) }
+  return(read_in)
 }
 
-read.simple.ssv <- function(..., sep_ = " ", colnames=T, coltypes=NULL) { # Space separeted values. Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.ssv <- function(..., sep_ = " ", colnames=T, NaReplace=T, coltypes=NULL) { # Space separeted values. Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   read_in = suppressWarnings(readr::read_delim( pfn, delim = sep_, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  FirstCol2RowNames(read_in)
+  read_in = FirstCol2RowNames(read_in)
+  if (NaReplace) { read_in = as.data.frame(na.replace(read_in, replace = 0)) }
+  return(read_in)
 }
 
 
@@ -427,6 +434,9 @@ colMax <- function(x, na.rm=T) apply(data.matrix(x), 2, max, na.rm=na.rm) # Calc
 
 rowSEM <- function(x, na.rm=T) apply(data.matrix(x), 1, sem, na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
 colSEM <- function(x, na.rm=T) apply(data.matrix(x), 2, sem, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
+
+rowSD <- function(x, na.rm=T) apply(data.matrix(x), 1, sd, na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
+colSD <- function(x, na.rm=T) apply(data.matrix(x), 2, sd, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 
 # See more: https://stackoverflow.com/questions/20596433/how-to-divide-each-row-of-a-matrix-by-elements-of-a-vector-in-r
 colDivide <- function(mat, vec) { # divide by column
@@ -1440,3 +1450,31 @@ name2id.toClipboard <- function(x, id=rownames(sc@expdata)) {
 name2id.fast <- function(x, id=rownames(sc@expdata)) id[sub("\\_\\_chr\\w+", "", id) %in% x] # From RaceID
 
 
+legend.col <- function(col, lev){
+  # Source: https://aurelienmadouasse.wordpress.com/2012/01/13/legend-for-a-continuous-color-scale-in-r/
+  opar <- par
+  n <- length(col)
+  bx <- par("usr")
+  box.cx <- c(bx[2] + (bx[2] - bx[1]) / 1000,
+              bx[2] + (bx[2] - bx[1]) / 1000 + (bx[2] - bx[1]) / 50)
+  box.cy <- c(bx[3], bx[3])
+  box.sy <- (bx[4] - bx[3]) / n
+  xx <- rep(box.cx, each = 2)
+
+  par(xpd = TRUE)
+  for(i in 1:n){
+    yy <- c(box.cy[1] + (box.sy * (i - 1)),
+            box.cy[1] + (box.sy * (i)),
+            box.cy[1] + (box.sy * (i)),
+            box.cy[1] + (box.sy * (i - 1)))
+    polygon(xx, yy, col = col[i], border = col[i])
+  }
+  par(new = TRUE)
+  plot(0, 0, type = "n",
+       ylim = c(min(lev), max(lev)),
+       yaxt = "n", ylab = "",
+       xaxt = "n", xlab = "",
+       frame.plot = FALSE)
+  axis(side = 4, las = 2, tick = FALSE, line = .25)
+  par <- opar
+}
