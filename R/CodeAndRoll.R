@@ -820,17 +820,14 @@ clip.values <- function(valz, high=T, thr=3) { # Signal clipping. Cut values abo
   valz
 }
 
-clip.outliers <- function(valz, high=T, probs = c(.01, .99), ...) { # Signal clipping based on the input data's distribution. It clips values above or below the extreme N% of the distribution.
+clip.outliers <- function(valz, high=T, probs = c(.01, .99), na.rm = T, showhist=F,...) { # Signal clipping based on the input data's distribution. It clips values above or below the extreme N% of the distribution.
   qnt <- quantile(valz, probs=probs, na.rm = na.rm)
+  if (showhist) { whist(unlist(valz), breaks =50 ,vline = qnt, filtercol = -1)} #if
   y <- valz
   y[valz < qnt[1]] <- qnt[1]
   y[valz > qnt[2]] <- qnt[2]
   y
 }
-
-
-
-
 
 
 list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # Basic list-to-df functionality in R
