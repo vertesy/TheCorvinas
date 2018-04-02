@@ -499,18 +499,20 @@ TPM_normalize <- function(mat, SUM=1e6) { # normalize each column to 1 million
   return(norm_mat)
 }
 
-median_normalize <- function(mat) { # normalize each column to the median of all the columns
+
+median_normalize <- function(mat) { # normalize each column to the median of all the column-sums
   cs = colSums(mat, na.rm = T)
   norm_mat = (t(t(mat) / cs)) * median(cs)
+  iprint("colMedians: ", head(iround(colMedians(norm_mat))))
   return(norm_mat)
 }
 
 mean_normalize <- function(mat) { # normalize each column to the median of the columns
   cs = colSums(mat, na.rm = T)
   norm_mat = (t(t(mat) / cs)) * mean(cs)
+  iprint("colMeans: ", head(iround(colMeans(norm_mat))))
   return(norm_mat)
 }
-
 
 rownames.trimws <- function(matrix1) { # trim whitespaces from the rownames
   rownames(matrix1) = trimws(rownames(matrix1))
@@ -970,12 +972,16 @@ lm_equation_formatter <- function(lm) { # Renders the lm() function's output int
   kollapse ("Intercept: ", eq[1], " Slope: ", eq[2]);
 }
 
-
 lm_equation_formatter2 <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
   eq = iround(lm$coefficients);
   kollapse ("y= ", eq[2], "* x +", eq[1]);
 }
 
+lm_equation_formatter3 <- function(lm, y.var.name="y", x.var.name="x") { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
+  eq = iround(lm$coefficients);
+  plusSign = if(sign(eq[1]==1)) "" else "-"
+  kollapse (y.var.name, "= ", eq[2], "*",x.var.name," ",plusSign,"", eq[1]);
+}
 
 hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), breaks_=20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit.
   # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
