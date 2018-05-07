@@ -579,7 +579,7 @@ combine.matrices.intersect <- function(matrix1, matrix2, k=2) { # combine matric
 # NEW
 merge_dfs_by_rn <- function(list_of_dfs) { # Merge any data frames by rownames. Required plyr package
   for (i in names(list_of_dfs) ) {  colnames(list_of_dfs[[i]]) <- p0(i,'.',colnames(list_of_dfs[[i]]))  } # make unique column names
-  for (i in names(list_of_dfs) ) {  list_of_dfs[[i]]$rn <- rownames(list_of_dfs[[i]])  } #for
+  for (i in names(list_of_dfs) ) {  list_of_dfs[[i]]$rn <- rownames(list_of_dfs[[i]]) } #for
   COMBINED <- plyr::join_all(list_of_dfs, by = 'rn', type = 'full');   idim(COMBINED)
   rownames(COMBINED) = COMBINED$rn
   COMBINED$rn = NULL
@@ -1337,7 +1337,9 @@ list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
 id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
 idate <- function(Format = c("%Y.%m.%d_%H.%M", "%Y.%m.%d_%Hh")[2]) { format(Sys.time(), format =Format ) }# dot separated
 
-view.head <- function(matrix, enn=10) {  View(head(matrix, n=enn)) }
+
+view.head <- function(matrix, enn=10) {  x[1:enn,1:enn] }
+view.head2 <- function(matrix, enn=10) {  View(head(matrix, n=enn)) }
 
 
 iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
