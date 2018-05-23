@@ -1489,3 +1489,28 @@ legend.col <- function(col, lev){
   axis(side = 4, las = 2, tick = FALSE, line = .25)
   par <- opar
 }
+
+
+
+
+# multi dimensional list --------------------------------
+copy.dimension.and.dimnames <- function(list.1D, obj.2D) {  # copy dimension and dimnames
+  dim(list.1D) <- dim(obj.2D)
+  dimnames(list.1D) <- dimnames(obj.2D)
+  list.1D
+}
+
+
+mdlapply <- function(list_2D, ...) {  # multi dimensional lapply
+  x = lapply(list_2D, ...)
+  copy.dimension.and.dimnames(x,list_2D)
+}
+
+
+arr.of.lists.2.df  <- function(two.dim.arr.of.lists) {  # copy dimension and dimnames
+  list.1D = unlist(two.dim.arr.of.lists)
+  dim(list.1D) <- dim(two.dim.arr.of.lists)
+  dimnames(list.1D) <- dimnames(two.dim.arr.of.lists)
+  list.1D
+}
+
