@@ -441,7 +441,29 @@ colSD <- function(x, na.rm=T) apply(data.matrix(x), 2, sd, na.rm=na.rm) # Calcul
 rowIQR <- function(x, na.rm=T) apply(data.matrix(x), 1, IQR, na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
 colIQR <- function(x, na.rm=T) apply(data.matrix(x), 2, IQR, na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 
+rowquantile <- function(x, na.rm=T, ...) apply(data.matrix(x), 1, quantile, ..., na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
+colquantile <- function(x, na.rm=T, ...) apply(data.matrix(x), 2, quantile, ..., na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 
+rowACF <- function(x, na_pass=na.pass, ...) apply(data.matrix(x), 1, acf, ..., na.action = na_pass) # Calculates the SEM of each row of a numeric matrix / data frame.
+colACF <- function(x, na.rm=T, ...) apply(data.matrix(x), 2, acf, ..., na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
+
+# Auto correlation functions
+rowACF <- function(x, na_pass=na.pass, plot=F, ...) apply(x, 1, acf, na.action = na_pass,  plot=plot, ...) # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF <- function(x, na_pass=na.pass, plot=F, ...) apply(x, 2, acf, na.action = na_pass,  plot=plot, ...) # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+
+# Autocorrelation with exact lag
+acf.exactLag <- function(x, lag=1, na_pass=na.pass, plot=F, ... ) {
+  x=acf(x, na.action = na_pass,  plot=plot, ...)
+  x[['acf']][(lag+1)]
+}
+
+rowACF.exactLag <- function(x, na_pass=na.pass, lag=1, plot=F, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  iround(apply(x, 1, acf.exactLag, lag=lag, plot=plot, ...), digitz = 2)
+}
+
+colACF.exactLag <- function(x, na_pass=na.pass, lag=1, plot=F, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  iround(apply(x, 2, acf.exactLag, lag=lag, plot=plot, ...), digitz = 2)
+}
 
 
 # See more: https://stackoverflow.com/questions/20596433/how-to-divide-each-row-of-a-matrix-by-elements-of-a-vector-in-r
@@ -1501,16 +1523,23 @@ copy.dimension.and.dimnames <- function(list.1D, obj.2D) {  # copy dimension and
 }
 
 
-mdlapply <- function(list_2D, ...) {  # multi dimensional lapply
+mdlapply <- function(list_2D, ...) {  #  lapply for multidimensional arrays
   x = lapply(list_2D, ...)
   copy.dimension.and.dimnames(x,list_2D)
 }
 
 
-arr.of.lists.2.df  <- function(two.dim.arr.of.lists) {  # copy dimension and dimnames
+arr.of.lists.2.df  <- function(two.dim.arr.of.lists) {  # simplify 2D-list-array to a DF
   list.1D = unlist(two.dim.arr.of.lists)
   dim(list.1D) <- dim(two.dim.arr.of.lists)
   dimnames(list.1D) <- dimnames(two.dim.arr.of.lists)
   list.1D
+}
+
+
+mdlapply2df <- function(list_2D, ...) {  # multi dimensional lapply + arr.of.lists.2.df (simplify 2D-list-array to a DF)
+  x = lapply(list_2D, ...)
+  z = copy.dimension.and.dimnames(x,list_2D)
+  arr.of.lists.2.df(z)
 }
 
