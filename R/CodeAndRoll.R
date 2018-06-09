@@ -1055,6 +1055,15 @@ matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 
   return(mx)
 }
 
+array.fromNames <- function(rowname_vec=1:3, colname_vec=letters[1:3], z_name_vec=LETTERS[4:6], fill = NA) { # create an N-dimensional array from N vectors defining the row-, column, etc names of the array
+  DimNames = list(rowname_vec, colname_vec, z_name_vec)
+  Dimensions_ = lapply(DimNames, length)
+  mx = array(data = fill, dim = Dimensions_, dimnames = DimNames)
+  iprint("Dimensions:", dim(mx))
+  return(mx)
+}
+
+
 what <- function(x, printme=0) { # A better version of is(). It can print the first "printme" elements.
   iprint (is (x), "; nr. of elements:", length (x))
   if (is.numeric (x) ) 		{ iprint ("min&max:", range(x) ) } else {print ("Not numeric")}
