@@ -203,8 +203,8 @@ link_wikipedia <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, O
 
 # Google search URL / search query links ------------------------------------------------------------------------
 
-link_google <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=0) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
-  links = paste0( google, vector_of_gene_symbols)
+link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=0) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( google, prefix," ", vector_of_gene_symbols," ", suffix)
   if (writeOut) {
     bash_commands = paste0("open '", links, "'")
     if (sleep>0) {  bash_commands = paste0(bash_commands, ' ; sleep ', sleep)  } # if wait
