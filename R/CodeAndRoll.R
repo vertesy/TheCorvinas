@@ -758,41 +758,97 @@ as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with
 	return(list_return)
 }
 
-list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Convert a list to a full dataframe, summarizing the presence or absence of elements
-  if( is.null(names(yalist)) ) {names(yalist) = 1:length(yalist)}
 
-  rown = unique(unlist(yalist))
-  coln =  names(yalist)
-  mm = matrix_from_dimnames(rown, coln, fill = matrixfill)
-  entries_list = lapply(yalist, names)
+# # primitive, legacy function
+# list2df.unordered <- function(L) { # When converting a list to a data frame, the list elements can have different lengths. This function fills up the data frame with NA values.
+#   maxlen <- max(sapply(L, length))
+#   do.call(data.frame, lapply(L, pad.na, len=maxlen))
+# }
+# # list2df.unordered = list2df_NA_padded
+#
+# list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # Basic list-to-df functionality in R
+#
+# list2df_presence <- function(yalist, entries_list = F, matrixfill = "") { # Convert a list to a full dataframe, summarizing the presence or absence of elements
+#   if( is.null(names(yalist)) ) {names(yalist) = 1:length(yalist)}
+#
+#   rown = unique(unlist(yalist))
+#   coln =  names(yalist)
+#   mm = matrix_from_dimnames(rown, coln, fill = matrixfill)
+#   entries_list = lapply(yalist, names)
+#
+#   for (i in 1:length(yalist)) {
+#     print(i)
+#     le = unlist(yalist[i])
+#     names(le) = unlist(entries_list[i])
+#
+#     list_index = which( le  %in% rown)
+#     m_index = which( rown %in% le)
+#     mm[ m_index, i] = names(le[list_index])
+#   }
+#   return(mm)
+# }
+#
+#
+# list2fullDF <- function(ll, byRow=T){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
+#   entrytypes = unique(unlist(lapply(ll, names)))
+#   ls_len  = length(ll)
+#   mat =matrix(0, ncol = ls_len, nrow = length(entrytypes))
+#   colnames(mat) = if (length(names(ll))) names(ll) else 1:ls_len
+#   rownames(mat) = sort(entrytypes)
+#   for (i in 1:length(ll)) {
+#     mat[names(ll[[i]]) , i] = ll[[i]]
+#     print(names(ll[[i]]))
+#   }
+#   if(!byRow) {mat = t(mat)}
+#   return(mat)
+# }
+# list_to_fullDF = list2fullDF
 
-  for (i in 1:length(yalist)) {
-    print(i)
-    le = unlist(yalist[i])
-    names(le) = unlist(entries_list[i])
+#' list2fullDF.byNames
+#' # Convert a list to a full matrix.  Rows = names(union.ls(your_list)) or all names of within list elements, columns = names(your_list).
+#'
+#' @param your.list List of vectors with names elements (see example).
+#' @param byRow Transpose output matrix if TRUE.
+#' @param FILL Fill missing entries in the matrix with this value. Default: NA.
+#' @export
+#' @examples list2fullDF.byNames()
 
-    list_index = which( le  %in% rown)
-    m_index = which( rown %in% le)
-    mm[ m_index, i] = names(le[list_index])
-  }
-  return(mm)
-}
-
-
-list2fullDF <- function(ll, byRow=T){ # convert a list to a full numeric data matrix. Designed for occurence counting, think tof table()
-  entrytypes = unique(unlist(lapply(ll, names)))
-  ls_len  = l(ll)
-  mat =matrix(0, ncol = ls_len, nrow = l(entrytypes))
-  colnames(mat) = if (l(names(ll))) names(ll) else 1:ls_len
-  rownames(mat) = sort(entrytypes)
-  for (i in 1:l(ll)) {
-    mat[names(ll[[i]]) , i] = ll[[i]]
-    print(names(ll[[i]]))
+list2fullDF.byNames <- function(your.list=list( "set.1" = vec.fromNames(LETTERS[1:5], values = 1), "set.2" = vec.fromNames(LETTERS[3:9], values = 2)), byRow=T, FILL=NA){
+  length.list = length(your.list)
+  list.names = names(your.list)
+  list.element.names = sort(unique(unlist(lapply(your.list, names))))
+  print("Dimensions:")
+  mat = matrix_from_dimnames(rownames = list.element.names, colnames = list.names, fill = FILL)
+  for (i in 1:length.list) {
+    element = list.names[i]
+    mat[ names(your.list[[element]]), element] = your.list[[element]]
   }
   if(!byRow) {mat = t(mat)}
   return(mat)
 }
-list_to_fullDF = list2fullDF
+
+#' list2fullDF.presence
+#' # Convert a list to a full matrix.  Designed for occurence counting, think tof table(). Rows = all ENTRIES of within your list, columns = names(your_list).
+#'
+#' @param your.list  List of vector with categorical data (see example).
+#' @param byRow Transpose output matrix if TRUE.
+#' @param FILL Fill missing entries in the matrix with this value. Default: 0.
+#' @export
+#' @examples list2fullDF.presence()
+
+list2fullDF.presence <- function(your.list=list("set.1"=LETTERS[1:5], "set.2"=LETTERS[3:9]), byRow=T, FILL=0){
+  length.list = length(your.list)
+  list.names = names(your.list)
+  list.elements = sort(Reduce(union, your.list))
+  print("Dimensions:")
+  mat = matrix_from_dimnames(rownames = list.elements, colnames = list.names, fill = FILL)
+  for (i in 1:length.list) {
+    element = list.names[i]
+    mat[ your.list[[element]], element] = 1
+  }
+  if(!byRow) {mat = t(mat)}
+  return(mat)
+}
 
 splitbyitsnames <- function(namedVec){ # split a list by its names
 stopif(is.null(names(namedVec)), message = "NO NAMES")
@@ -839,10 +895,6 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
 
 pad.na <- function(x, len) { c(x, rep(NA, len-length(x))) } # Fill up with a vector to a given length with NA-values at the end.
 
-list2df_NA_padded <- function(L) { # When converting a list to a data frame, the list elements can have different lengths. This function fills up the data frame with NA values.
-  maxlen <- max(sapply(L, length))
-  do.call(data.frame, lapply(L, pad.na, len=maxlen))
-}
 
 clip.values <- function(valz, high=T, thr=3) { # Signal clipping. Cut values above or below a threshold.
   if (high) { valz[valz>thr]=thr
@@ -859,8 +911,6 @@ clip.outliers <- function(valz, high=T, probs = c(.01, .99), na.rm = T, showhist
   y
 }
 
-
-list2df <- function(your_list ) { do.call(cbind.data.frame, your_list)} # Basic list-to-df functionality in R
 
 ls2categvec <- function(your_list ) {  # Convert a list to a vector repeating list-element names, while vector names are the list elements
   VEC = rep(names(your_list),unlapply(your_list, l))
@@ -1523,14 +1573,13 @@ legend.col <- function(col, lev){
 
 
 
+# Work with multi dimensional lists --------------------------------
 
-# multi dimensional list --------------------------------
 copy.dimension.and.dimnames <- function(list.1D, obj.2D) {  # copy dimension and dimnames
   dim(list.1D) <- dim(obj.2D)
   dimnames(list.1D) <- dimnames(obj.2D)
   list.1D
 }
-
 
 mdlapply <- function(list_2D, ...) {  #  lapply for multidimensional arrays
   x = lapply(list_2D, ...)
@@ -1551,4 +1600,5 @@ mdlapply2df <- function(list_2D, ...) {  # multi dimensional lapply + arr.of.lis
   z = copy.dimension.and.dimnames(x,list_2D)
   arr.of.lists.2.df(z)
 }
+
 
