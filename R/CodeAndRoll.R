@@ -444,10 +444,11 @@ colIQR <- function(x, na.rm=T) apply(data.matrix(x), 2, IQR, na.rm=na.rm) # Calc
 rowquantile <- function(x, na.rm=T, ...) apply(data.matrix(x), 1, quantile, ..., na.rm=na.rm) # Calculates the SEM of each row of a numeric matrix / data frame.
 colquantile <- function(x, na.rm=T, ...) apply(data.matrix(x), 2, quantile, ..., na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 
-rowACF <- function(x, na_pass=na.pass, ...) apply(data.matrix(x), 1, acf, ..., na.action = na_pass) # Calculates the SEM of each row of a numeric matrix / data frame.
-colACF <- function(x, na.rm=T, ...) apply(data.matrix(x), 2, acf, ..., na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
+row.Zscore <- function(DF) t(scale(t(DF)))
 
 # Auto correlation functions
+# rowACF <- function(x, na_pass=na.pass, ...) apply(data.matrix(x), 1, acf, ..., na.action = na_pass) # Calculates the SEM of each row of a numeric matrix / data frame.
+# colACF <- function(x, na.rm=T, ...) apply(data.matrix(x), 2, acf, ..., na.rm=na.rm) # Calculates the SEM of each column of a numeric matrix / data frame.
 rowACF <- function(x, na_pass=na.pass, plot=F, ...) apply(x, 1, acf, na.action = na_pass,  plot=plot, ...) # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
 colACF <- function(x, na_pass=na.pass, plot=F, ...) apply(x, 2, acf, na.action = na_pass,  plot=plot, ...) # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
 
