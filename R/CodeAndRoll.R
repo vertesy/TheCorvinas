@@ -391,7 +391,7 @@ filter_survival_length <- function(length_new, length_old, prepend ="") { # Pars
 remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remove values that fall outside the trailing N % of the distribution.
   print("Deprecated. Use clip.outliers()")
   qnt <- quantile(x, probs=probs, na.rm = na.rm, ...)
-	H <- 1.5 * IQR(x, na.rm = na.rm)
+	# H <- 1.5 * IQR(x, na.rm = na.rm)
 	y <- x
 	# y[x < (qnt[1] - H)] <- NA ## Add IQR dependence
 	# y[x > (qnt[2] + H)] <- NA
@@ -489,18 +489,6 @@ rowNameMatrix <- function(mat_w_dimnames) {  # Create a copy of your matrix, whe
 colNameMatrix <- function(mat_w_dimnames) { # Create a copy of your matrix, where every entry is replaced by the corresponding column name. Useful if you want to color by column name in a plot (where you have different number of NA-values in each column).
 	x = rep(colnames(mat_w_dimnames), nrow(mat_w_dimnames) )
 	t(matrix(x, nrow = ncol(mat_w_dimnames), ncol = nrow(mat_w_dimnames)))
-}
-
-matrix_from_vector <- function(vector, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
-	matt = matrix(vector, nrow = l(vector), ncol = HowManyTimes)
-	if ( !IsItARow ) {matt = t(matt)}
-	return(matt)
-}
-
-matrix_from_dimnames  <- function (rownames, colnames, fill = NA) { # Set up an empty matrix from two vectors that will define row- and column-names.
-  mm = matrix(data = fill, nrow = length(rownames), ncol = length(colnames), dimnames = list(rownames, colnames))
-  idim(mm)
-  return(mm)
 }
 
 colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corresponding to columns.
@@ -699,6 +687,8 @@ remove.na.cols <- function(mat) { # cols have to be a vector of numbers correspo
 ## List operations -------------------------------------------------------------------------------------------------
 intersect.ls <- function (ls, ...){ Reduce(intersect, ls) } # Intersect any number of lists.
 
+union.ls <- function (ls, ...){ sort(unique(do.call(c,l))) } # Intersect any number of list elements. Faster than reduce.
+
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
 list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
@@ -773,7 +763,7 @@ as.listalike <-  function(vec, list_wannabe) { # convert a vector to a list with
 #
 #   rown = unique(unlist(yalist))
 #   coln =  names(yalist)
-#   mm = matrix_from_dimnames(rown, coln, fill = matrixfill)
+#   mm = matrix.fromNames(rown, coln, fill = matrixfill)
 #   entries_list = lapply(yalist, names)
 #
 #   for (i in 1:length(yalist)) {
@@ -817,8 +807,8 @@ list2fullDF.byNames <- function(your.list=list( "set.1" = vec.fromNames(LETTERS[
   length.list = length(your.list)
   list.names = names(your.list)
   list.element.names = sort(unique(unlist(lapply(your.list, names))))
-  print("Dimensions:")
-  mat = matrix_from_dimnames(rownames = list.element.names, colnames = list.names, fill = FILL)
+
+  mat = matrix.fromNames(rowname_vec = list.element.names, colname_vec =  list.names, fill =  FILL)
   for (i in 1:length.list) {
     element = list.names[i]
     mat[ names(your.list[[element]]), element] = your.list[[element]]
@@ -839,9 +829,9 @@ list2fullDF.byNames <- function(your.list=list( "set.1" = vec.fromNames(LETTERS[
 list2fullDF.presence <- function(your.list=list("set.1"=LETTERS[1:5], "set.2"=LETTERS[3:9]), byRow=T, FILL=0){
   length.list = length(your.list)
   list.names = names(your.list)
-  list.elements = sort(Reduce(union, your.list))
-  print("Dimensions:")
-  mat = matrix_from_dimnames(rownames = list.elements, colnames = list.names, fill = FILL)
+  list.elements = sort(Reduce(f = union, your.list))
+
+  mat = matrix.fromNames(rowname_vec = list.elements, colname_vec = list.names, fill = FILL)
   for (i in 1:length.list) {
     element = list.names[i]
     mat[ your.list[[element]], element] = 1
@@ -935,7 +925,7 @@ sem <- function(x, na.rm=T) sd(unlist(x), na.rm = na.rm)/sqrt(length(na.omit.str
 
 cv <- function(x, na.rm=T) sd( x, na.rm=na.rm)/mean(x, na.rm=na.rm) # Calculates the coefficient of variation (CV) for a numeric vector (it excludes NA-s by default)
 
-fano <- function(x, na.rm=T) var(x, na.rm=na.rm)/mean(x, na.rm=na.rm) # Calculates the fano factor on a numeric vector (it excludes NA-s by default)
+fano <- function(x, na.rm=T, USE = "na.or.complete") var(x, na.rm=na.rm, use = USE )/mean(x, na.rm=na.rm) # Calculates the fano factor on a numeric vector (it excludes NA-s by default)
 
 modus <- function(x) { # Calculates the modus of a numeric vector (it excludes NA-s by default)
 	x= unlist(na.exclude(x))
@@ -1085,27 +1075,35 @@ quantile_breaks <- function(xs, n = 10, na.Rm=F) { # Quantile breakpoints in any
 
 ## Create and check variables -------------------------------------------------------------------------------------------------
 
-vec.fromNames <- function(namesvec, values=NA) { # create a vector from a vector of names
-  v=numeric(length(namesvec))
-  if(length(values)==1) {v=rep(values, length(namesvec))}
-  else if(length(values==length(namesvec))) {v=values}
-  names(v)=namesvec
+vec.fromNames <- function(name_vec=LETTERS[1:5], fill=NA) { # create a vector from a vector of names
+  v=numeric(length(name_vec))
+  if(length(fill)==1) {v=rep(fill, length(name_vec))}
+  else if(length(fill==length(name_vec))) {v=fill}
+  names(v)=name_vec
   return(v)
 }
 
-list.fromNames <- function(name_vec) { # create list from a vector with the names of the elements
-  liszt = as.list(rep(NaN, l(name_vec)))
+list.fromNames <- function(name_vec=LETTERS[1:5], fill=NaN) { # create list from a vector with the names of the elements
+  liszt = as.list(rep(fill, l(name_vec)))
   names(liszt) = name_vec
   return(liszt)
 }
 
-matrix.fromNames <- function(rowname_vec, colname_vec) { # create a matrix from 2 vectors defining the row- and column names of the matrix
-  mx = matrix(data = NA, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
+matrix.fromNames <- function(rowname_vec=1:10, colname_vec=LETTERS[1:5], fill = NA) { # Create a matrix from 2 vectors defining the row- and column names of the matrix. Default fill value: NA.
+  mx = matrix(data = fill, nrow = length(rowname_vec), ncol = length(colname_vec), dimnames = list(rowname_vec, colname_vec))
   iprint("Dimensions:", dim(mx))
   return(mx)
 }
 
-array.fromNames <- function(rowname_vec=1:3, colname_vec=letters[1:3], z_name_vec=LETTERS[4:6], fill = NA) { # create an N-dimensional array from N vectors defining the row-, column, etc names of the array
+
+matrix.fromVector <- function(vector=1:5, HowManyTimes=3, IsItARow = T) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
+  matt = matrix(vector, nrow = l(vector), ncol = HowManyTimes)
+  if ( !IsItARow ) {matt = t(matt)}
+  return(matt)
+}
+
+
+array.fromNames <- function(rowname_vec=1:3, colname_vec=letters[1:2], z_name_vec=LETTERS[4:6], fill = NA) { # create an N-dimensional array from N vectors defining the row-, column, etc names of the array
   DimNames = list(rowname_vec, colname_vec, z_name_vec)
   Dimensions_ = lapply(DimNames, length)
   mx = array(data = fill, dim = Dimensions_, dimnames = DimNames)
@@ -1311,7 +1309,7 @@ printEveryN <- function( i, N=1000) { if((i %% N) == 0 ) iprint(i) } # Report at
 #   for (i in 1:length(vec)) {    new[i] = if (i%%2) vec[i] else rev(vec)[i-mod] } ; return(new)
 # }
 
-zigzagger <- function (vec=1:9) {  new=vec; # mix entries so that they differ
+zigzagger <- function (vec=1:9) {  # mix entries so that they differ
   intermingle2vec(vec, rev(vec))[1:length(vec)]
 }
 
