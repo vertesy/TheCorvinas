@@ -195,12 +195,28 @@ write.simple.tsv <- function(input_df, extension='tsv', ManualName ="", o = F, g
 } # fun
 # If col.names = NA and row.names = TRUE a blank column name is added, which is the convention used for CSV files to be read by spreadsheets.
 
+write.simple.xlsx <- function(named_list, ManualName ="", o = F,  ..., TabColor = "darkgoldenrod1", Creator="Vertesy",
+                              HeaderCex=12, HeaderLineColor = "darkolivegreen3", HeaderCharStyle = c("bold", "italic", "underline")[1]  ) { # Write out a list of matrices/ data frames WITH ROW- AND COLUMN- NAMES to a file with as an Excel (.xslx) file. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
+  irequire(openxlsx)
+  fname =  if (nchar (ManualName) < 2 ) { fname = substitute(named_list) }
+  if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, "xlsx") }
+
+  hs <- createStyle(textDecoration = HeaderCharStyle, fontSize=HeaderCex, fgFill = HeaderLineColor)
+  setwd(OutDir)
+  openxlsx::write.xlsx(named_list, file = ppp(fname,"xlsx"), rowNames=T, firstRow=T, firstCol=T, colWidths = "auto"
+                       , headerStyle = hs, tabColour =TabColor, creator=Creator) #
+
+  if (o) { system(paste0("open ", FnP), wait = F) }
+} # fun
+
+
 write.simple.append <- function(input_df, extension='tsv', ManualName ="", o = F, ... ) { # Append an R-object WITHOUT ROWNAMES, to an existing .tsv file of the same number of columns. Your output filename will be either the variable's name. The output file will be located in "OutDir" specified by you at the beginning of the script, or under your current working directory. You can pass the PATH and VARIABLE separately (in order), they will be concatenated to the filename.
 	fname = kollapse (...) ; if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 	if (nchar(ManualName)) { FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, extension) }
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE, append=T  )
 	if (o) { system(paste0("open ", FnP), wait = F) }
 } # fun
+
 
 
 ## Vector operations -------------------------------------------------------------------------------------------------
@@ -688,7 +704,7 @@ remove.na.cols <- function(mat) { # cols have to be a vector of numbers correspo
 ## List operations -------------------------------------------------------------------------------------------------
 intersect.ls <- function (ls, ...){ Reduce(intersect, ls) } # Intersect any number of lists.
 
-union.ls <- function (ls, ...){ sort(unique(do.call(c,l))) } # Intersect any number of list elements. Faster than reduce.
+union.ls <- function (ls, ...){ sort(unique(do.call(c,ls))) } # Intersect any number of list elements. Faster than reduce.
 
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
@@ -1064,7 +1080,7 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll, l))
 
 
-nameiftrue <- function(toggle, prefix=NULL, suffix=NULL) { if (toggle) { p0(prefix, substitute(toggle), suffix) } } # returns the name if its value is true
+nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (toggle) { p0(prefix, substitute(toggle), suffix) } else {p0(prefix, name.if.not, suffix)} } # returns the name if its value is true
 
 flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
 
@@ -1423,9 +1439,8 @@ list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
 id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
 idate <- function(Format = c("%Y.%m.%d_%H.%M", "%Y.%m.%d_%Hh")[2]) { format(Sys.time(), format =Format ) }# dot separated
 
-
-view.head <- function(matrix, enn=10) {  x[1:enn,1:enn] }
-view.head2 <- function(matrix, enn=10) {  View(head(matrix, n=enn)) }
+view.head <- function(matrix, enn=10) {  matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)] }
+view.head2 <- function(matrix, enn=10) {  View(head(matrix, n=min(NROW(matrix), NCOL(matrix), enn))) }
 
 
 iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
@@ -1568,6 +1583,8 @@ legend.col <- function(col, lev){
        frame.plot = FALSE)
   axis(side = 4, las = 2, tick = FALSE, line = .25)
   par <- opar
+  par(xpd=FALSE)
+  # print("You might need to set par('mar' = c( 5.1, 4.1, 4.1, 2.1)) to higher values.")
 }
 
 
@@ -1601,3 +1618,28 @@ mdlapply2df <- function(list_2D, ...) {  # multi dimensional lapply + arr.of.lis
 }
 
 
+# Memory management ----------------------------------------------------------------------------------
+# https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
+
+
+
+memory.biggest.objects <- function(n=10) { # Show distribution of the largest objects and return their names
+  Sizes.of.objects.in.mem <- sapply( ls( envir = .GlobalEnv), FUN = function(name) { object.size(get(name)) } );
+  topX= sort(Sizes.of.objects.in.mem,decreasing=T)[1:n]
+
+  Memorty.usage.stat =c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing=T)[-(1:n)]))
+  pie(Memorty.usage.stat, cex=.5, sub=make.names(date()))
+  # wpie(Memorty.usage.stat, cex=.5 )
+  # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
+  print(topX)
+  print("rm(list=c( 'objectA',  'objectB'))")
+  # inline_vec.char(names(topX))
+  # Use inline_vec.char if you have DataInCode, from https://github.com/vertesy/DataInCode
+}
+## Show the ten largest objects:
+
+
+memory.biggest.objects()
+
+
+ww.autoPlotName()
