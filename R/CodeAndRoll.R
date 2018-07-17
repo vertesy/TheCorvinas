@@ -1015,21 +1015,6 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 	return (ls_out)
 }
 
-translate = replace_values <- function(vec, oldvalues, newvalues) { # Replaces a set of values in a vector with another set of values, it translates your vector. Oldvalues and newvalues have to be 1-to-1 corespoding vectors.
-  Nr = l(oldvalues)
-  if (Nr > l(newvalues) ) {
-    if (l(newvalues) == 1) {
-      newvalues =  rep(newvalues, l(oldvalues))
-    } else if (l(newvalues) > 1) { iprint("PROVIDE ONE NEWVALUE, OR THE SAME NUMEBR OF NEWVALUES AS OLDVALUES.")}
-  }
-  tmp = vec
-  for (i in 1:Nr) {
-    oldval = oldvalues[i]
-    tmp[vec==oldval] = newvalues[i]
-  }
-  return(tmp)
-}
-'chartr("a-cX", "D-Fw", x) does the same as above in theory, but it did not seem very robust regarding your input...'
 
 ## Colors -----------------------------------------------------------------------------------------------------
 richColors <- function (n=3) {  gplots::rich.colors(n) } # Alias for rich.colors in gplots
@@ -1161,7 +1146,6 @@ table_fixed_categories <- function(vector, categories_vec) { # generate a table(
 ## Generic -------------------------------------------------------------------------------------------------
 
 
-stopif <- function(condition, message ="") { if(condition) {iprint (message); stop()} } # Stop script if the condition is met
 stopif2 <- function(condition, ...) { if(condition) {iprint (...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
 
 most_frequent_elements <- function(thingy, topN=10) { # Show the most frequent elements of a table
@@ -1639,7 +1623,6 @@ memory.biggest.objects <- function(n=10) { # Show distribution of the largest ob
 ## Show the ten largest objects:
 
 
-memory.biggest.objects()
 
 
-ww.autoPlotName()
+# ww.autoPlotName()
