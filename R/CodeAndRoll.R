@@ -337,16 +337,6 @@ unique.wNames <- function(vec_w_names) {  vec_w_names[!duplicated(vec_w_names)] 
 which_names <- function(named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
 	return(names(which(as.logical.wNames(named_Vec)))) }
 
-
-na.omit.strip <- function(vec, silent = F) {  # Omit NA values from a vector and return a clean vector without any spam.
-  if (is.data.frame(vec)) {
-    if ( min(dim(vec)) > 1 & silent == F) { iprint(dim(vec), "dimensional array is converted to a vector.") }
-    vec = unlist(vec) }
-  clean = na.omit(vec)
-  attributes(clean)$na.action <- NULL
-  return(clean)
-}
-
 na.omit.mat <- function(mat, any = T) {  # Omit rows with NA values from a matrix. Rows with any, or full of NA-s
   mat=as.matrix(mat)
   stopifnot(length(dim(mat))==2)
