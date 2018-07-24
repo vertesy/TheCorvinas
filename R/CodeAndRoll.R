@@ -33,7 +33,8 @@
 ## Setup   -------------------------------------------------------------------------------------------------
 # pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
-print("Depends on MarkdownReports, gtools, readr. Some functions depend on other libraries.")
+# "gtools", "readr", "gdata", "colorRamps", "grDevices", "plyr"
+print("Depends on MarkdownReports, gtools, readr, gdata. Some functions depend on other libraries.")
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
@@ -981,7 +982,8 @@ eval_parse_kollapse <- function( ... ){ # evaluate and parse (dyn_var_caller)
 	substitute(eval(parse(text=kollapse( ... , print=F))))
 }
 
-substrRight <- function(x, n) substr(x, nchar(x)-n+1, nchar(x)) # Take the right substring of a string
+# substrRight <- function(x, n) substr(x, nchar(x)-n+1, nchar(x)) # Take the right substring of a string
+# Moved to MarkdownReports
 
 lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pattern matching for a set of values in another set of values. Returns a list with all kinds of results.
 	ls_out = as.list( c(ln_needle = length(needle), ln_haystack = length(haystack), ln_hits = "",  hit_poz = "", hits = "") )
@@ -1446,24 +1448,6 @@ iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
 iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal
 
 
-wLinRegression <- function(DF, coeff = c("pearson", "spearman", "r2")[3], textlocation = "topleft", cexx =1, OverwritePrevPDF =UnlessSpec("b.save.wplots"), ...) { # Add linear regression, and descriptors to line to your scatter plot. Provide the same dataframe as you provided to wplot() before you called this function
-  regression <- lm(DF[, 2] ~ DF[, 1])
-  abline(regression, ...)
-  legendText = NULL
-  if (coeff =="all") coeff = c("pearson", "spearman", "r2")
-  if ( "pearson" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "pearson"))
-  legendText  =  c(legendText, paste0("Pears.: ", dispCoeff))  }
-  if ("spearman" %in% coeff) {    dispCoeff = iround(cor(DF[, 2], DF[, 1], method = "spearman"))
-  legendText = c(legendText, paste0("Spear.: ", dispCoeff))  }
-  if ("r2" %in% coeff) {          r2 = iround(summary(regression)$r.squared)
-  legendText = c(legendText, paste0("R^2: ", r2))  }
-  # print(legendText)
-  if (length(coeff)==1 & "r2" == coeff[1]) {  legend(textlocation, legend = superscript_in_plots(prefix = "R", sup = "2", suffix = paste0(": ", r2)) , bty="n", cex = cexx)
-  } else {                                    legend(textlocation, legend = legendText , bty="n", cex = cexx) }
-  if (OverwritePrevPDF) {   wplot_save_this(plotname = plotnameLastPlot)  }
-}
-
-
 parsepvalue <- function(pvalue=0.01) paste0("(p<",pvalue,")"); parsepvalue()
 
 
@@ -1616,3 +1600,13 @@ memory.biggest.objects <- function(n=10) { # Show distribution of the largest ob
 
 
 # ww.autoPlotName()
+
+
+na.omit.strip <- function(vec, silent = F) {
+  if (is.data.frame(vec)) {
+    if ( min(dim(vec)) > 1 & silent == F) { iprint(dim(vec), "dimensional array is converted to a vector.") }
+    vec = unlist(vec) }
+  clean = na.omit(vec)
+  attributes(clean)$na.action <- NULL
+  return(clean)
+}
