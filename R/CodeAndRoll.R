@@ -1704,3 +1704,185 @@ md.LinkTable <- function(tableOfLinkswRownames) {
 unique.wNames <- function(x, ...) {
   x[!duplicated(x)]
 }
+
+
+
+#' whist.back2back
+#'
+#' Two back-to-back histograms from a list. The X-axis is only correct if  breaks1 ==breaks2.
+#' Undeveloped function, contains graphical bugs, no support for this function.
+#' @param ListOf2 List of 2 numeric vectors
+#' @param breaks1 break parameter for histogram function for the 2st list element.
+#' @param breaks2 break parameter for histogram function for the 2st list element.
+#' @param ... Pass any other parameter of the corresponding
+#' plotting function (most of them should work).
+#' @param plotname The name of the file saved.
+#' @param main The title of the plot.
+#' @param ylab Y-axis label
+#' @param col  Color of the 2 histograms
+#' @param incrBottMarginBy Increase the blank space at the bottom of the plot. Use if labels do not
+#'   fit on the plot.
+#' @param savefile Save plot as pdf in OutDir, TRUE by default.
+#' @param w Width of the saved pdf image, in inches.
+#' @param h Height of the saved pdf image, in inches.
+#' @param mdlink Insert a .pdf and a .png image link in the markdown report,
+#' set by "path_of_report".
+#' @param PNG Set to true if you want to save the plot as PNG instead of the default PDF.
+#' @export
+#' @examples  try(dev.off(), silent = TRUE)
+#' ListOf2 = list("A"  = rnorm(100), "B"=rnorm(100))
+#' ls_of_hists = whist.back2back(ListOf2)
+
+
+whist.back2back <-
+  function(ListOf2 = list("A"  = rnorm(10000), "B" = rnorm(10000)),
+           breaks1 = 20,
+           breaks2 = breaks1,
+           col = c("green", "blue"),
+           plotname = substitute(variable),
+           main = plotname,
+           ylab = "Frequency",
+           savefile = UnlessSpec("b.save.wplots"),
+           incrBottMarginBy = 0,
+           w = UnlessSpec("b.defSize", 7),
+           h = w,
+           mdlink = ww.set.mdlink(),
+           PNG = UnlessSpec("b.usepng"),
+           ...) {
+    print("Does not always work - experimental. Problem is the separate binning.")
+    fname = kollapse(plotname, ".hist.btb")
+    if (incrBottMarginBy) {
+      .ParMarDefault <- par("mar")
+      par(mar = c(par("mar")[1] + incrBottMarginBy, par("mar")[2:4]))
+    } 	# Tune the margin
+    lsNm = if (!is.null(names(ListOf2)))
+      names(ListOf2)
+    else
+      1:2
+
+    lng = length(ListOf2)
+    if (lng != 2) {
+      iprint("length(List): ", lng, " First two elements used")
+    } #if
+    x = NULL
+    x[[1]] = h1 = hist(ListOf2[[1]], plot = FALSE, breaks = breaks1)
+    x[[2]] = h2 = hist(ListOf2[[2]], plot = FALSE, breaks = breaks2)
+    names(h2$counts) = h2$breaks[-1]
+    names(h1$counts) = h1$breaks[-1]
+    h2$counts =  -h2$counts
+
+    AllBreaks = sort(union(h1$breaks, h2$breaks))[-1]
+    ct1 = h1$counts[as.character(AllBreaks)]
+    ct2 = h2$counts[as.character(AllBreaks)]
+
+    hmax = max(h1$counts, na.rm = TRUE)
+    hmin = min(h2$counts, na.rm = TRUE)
+    xlimm = range(unlist(ListOf2), na.rm = TRUE)
+    xlimm = c(1, max(length(h2$counts), length(h1$counts)) + 3)
+
+    colorz = col # to avoid circular reference in the inside function argument
+    main_ = main
+    barplot(
+      ct1,
+      ylim = c(hmin, hmax),
+      xlim = xlimm,
+      col = colorz[1],
+      names.arg = AllBreaks,
+      las = 3,
+      main = main_,
+      ylab = ylab,
+      ...
+    )
+    barplot(ct2,
+            col = colorz[2],
+            add = TRUE,
+            names.arg = "")
+    legend("topright", lsNm[1], bty = "n")
+    legend("bottomright", lsNm[2], bty = "n")
+
+    if (savefile) {
+      ww.dev.copy(
+        PNG_ = PNG,
+        fname_ = fname,
+        w_ = w,
+        h_ = h
+      )
+    }
+    if (incrBottMarginBy) {
+      par("mar" = .ParMarDefault)
+    }
+    assign("plotnameLastPlot", fname, envir = .GlobalEnv)
+    if (mdlink & savefile) {
+      ww.MarkDown_Img_Logger_PDF_and_PNG(fname_wo_ext = fname)
+    }
+    x
+  }
+
+
+
+#' val2col
+#'
+#' This function converts a vector of values("yourdata") to a vector of color levels.
+#' One must define the number of colors. The limits of the color scale("zlim") or
+#' the break points for the color changes("breaks") can also be defined.
+#' When breaks and zlim are defined, breaks overrides zlim.
+#' Source: http://menugget.blogspot.nl/2011/09/converting-values-to-color-levels.html
+#' @param yourdata The data, to what the colors will be scaled to.
+#' @param zlim Limits.
+#' @param col Color of the plot.
+#' @param breaks Number of bins.
+#' @param rename The returned color vector will be named with its previous values
+#' @export
+#' @examples val2col (yourdata = rpois(200, 20), zlim = c(0,5),col = rev(heat.colors(100)), breaks = 101  )
+
+
+### CONTAINS A QUICK FIX FOR THE NUMBER OF COLOR LEVELS. See #59 on GitHub ###
+val2col <-
+  function (yourdata,
+            zlim,
+            col = rev(heat.colors(max(12, 3 * length(unique(yourdata))))),
+            breaks,
+            rename = FALSE) {
+    if (!missing(breaks)) {
+      if (length(breaks) != (length(col) + 1)) {
+        stop("must have one more break than color")
+      }
+    }
+    if (missing(breaks) & !missing(zlim)) {
+      breaks <- seq(zlim[1], zlim[2], length.out = (length(col) + 1))
+    }
+    if (missing(breaks) & missing(zlim)) {
+      zlim <- range(yourdata, na.rm = TRUE)
+      zlim[2] <- zlim[2] + c(zlim[2] - zlim[1]) * (0.001)
+      zlim[1] <- zlim[1] - c(zlim[2] - zlim[1]) * (0.001)
+      breaks <- seq(zlim[1], zlim[2], length.out = (length(col) + 1))
+    }
+    colorlevels <- col[((as.vector(yourdata) - breaks[1]) /
+                          (range(breaks)[2] - range(breaks)[1])) * (length(breaks) - 1) + 1]
+    if (length(names(yourdata))) {
+      names(colorlevels) = yourdata
+    }
+
+    if (rename) {
+      names(colorlevels) = yourdata
+    } # works on vectors only
+    colorlevels
+  }
+
+
+#' as.logical.wNames
+#'
+#' Converts your input vector into a logical vector, and puts the original character values
+#' into the names of the new vector, unless it already has names.
+#' @param x A vector with names that will be converted to a logical vector
+#' @param ... Pass any other argument.
+#' @export
+#' @examples x = -1:2; names(x) = LETTERS[1:4]; as.logical.wNames(x)
+
+as.logical.wNames <- function(x, ...) {
+  numerified_vec = as.logical(x, ...)
+  if (!is.null(names(x))) {names (numerified_vec) = names (x)}
+  return(numerified_vec)
+}
+
+
