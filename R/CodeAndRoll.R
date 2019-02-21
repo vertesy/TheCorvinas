@@ -1885,4 +1885,11 @@ as.logical.wNames <- function(x, ...) {
   return(numerified_vec)
 }
 
+isave <- function(...){
+  path_rdata = paste0("/Users/abel.vertesy/Documents/Rdata.files/", basename(OutDir))
+  dir.create(path_rdata)
+  fname = kollapse(path_rdata, "/",idate(),...,".Rdata")
+  save.image( file = fname)
+  print(fname)
+}
 
