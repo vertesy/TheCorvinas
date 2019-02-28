@@ -1,16 +1,14 @@
 ######################################################################
 # A collection of custom R functions
 ######################################################################
-# source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R')
+# source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R')
 ## If something is not found:
-# source("~/Dokumentumok/Tanulas/PhD/AvanO/Data_analysis/X_inact/Scripts_Xreact/zz_Old_versions/_Old_Functions.r")
-# source("~/MarkdownReports/MarkDownLogg.R")
-## For RNA-seq specific functions, call:
-# source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
+# source("~/Github/TheCorvinas/R/RNA_seq_specific_functions.r")
 ## For Plotting From Clipboard or Files
-# source("~/Github_repos/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
+# source("~/Github/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
 # # Load sequence length and base distribution check
-# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/Gene.Stats.mm10.R")
+# source("/Users/abelvertesy/Github/TheCorvinas/R/Gene.Stats.mm10.R")
+
 
 
 ### CHAPTERS:
@@ -30,6 +28,10 @@
 # -  Plots
 # -  New additions
 
+wA4 = 8.27 # A4 inches
+hA4 =11.69
+
+
 ## Setup   -------------------------------------------------------------------------------------------------
 # pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
@@ -37,13 +39,16 @@ debuggingState(on=FALSE)
 print("Depends on MarkdownReports, gtools, readr, gdata. Some functions depend on other libraries.")
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
-# source("~/Github_repos/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
+# source("~/Github/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
 # try(require("MarkdownReports"))
 # try(require("gtools"))
 # try(ggplot2::theme_set( theme_bw()), silent = TRUE)
 
 
 # Alisases ----------------
+say <- function(...) {system("say Ready")}
+sayy <- function(...) {system("say Call the police, pretty please.")}
+
 TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
@@ -57,7 +62,14 @@ grepv <- function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE,
 ## File handling, export, import [read & write] -------------------------------------------------------------------------------------------------
 
 ### Clipboard interaction -------------------------------------------------------------------------------------------------
-try(source("~/Github_repos/DataInCode/DataInCode.R"), silent = FALSE)
+# https://github.com/vertesy/DataInCode
+# try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
+
+read_clip.commaSepString <- function() {  
+  x = unlist(strsplit(read_clip(),split = ','))
+  dput(x)
+  x
+}
 
 ### Reading files in -------------------------------------------------------------------------------------------------
 read.simple.vec <- function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
@@ -330,9 +342,10 @@ any.duplicated <- function (vec, summarize=TRUE){ # How many entries are duplica
   return(y)
 }
 
-which.duplicated <- function(vec, orig=rownames(sc@expdata)) {
+which.duplicated <- function(vec, orig=F) { # orig =rownames(sc@expdata)
   DPL = vec[which(duplicated(vec))]; iprint("Duplicated entries: ", DPL)
-  for (i in DPL ) {    print(grepv(i,orig))  } #for
+  
+  # for (i in DPL ) {    print(grepv(i,orig))  } #for
 }
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
@@ -1865,7 +1878,7 @@ val2col <-
 
     if (rename) {
       names(colorlevels) = yourdata
-    } # works on vectors only
+    } # works on vectors only"
     colorlevels
   }
 
@@ -1893,3 +1906,22 @@ isave <- function(...){
   print(fname)
 }
 
+
+
+iterBy.over <- function(yourvec, by=9) {
+    steps = ceiling(length(yourvec)/by)
+    lsX = split(yourvec, sort(rank(yourvec) %% steps))
+    names(lsX) = 1:length(lsX)
+    lsX
+} # for (i in iterBy.over(yourvec = x)) { print(i) }
+
+
+
+sourcePartial <- function(fn,startTag='#1',endTag='#/1') { # https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
+  lines <- scan(fn, what=character(), sep="\n", quiet=TRUE)
+  st<-grep(startTag,lines)
+  en<-grep(endTag,lines)
+  tc <- textConnection(lines[(st+1):(en-1)])
+  source(tc)
+  close(tc)
+}
