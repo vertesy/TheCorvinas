@@ -36,7 +36,7 @@ hA4 =11.69
 # pdf.options(title= paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on=FALSE)
 # "gtools", "readr", "gdata", "colorRamps", "grDevices", "plyr"
-print("Depends on MarkdownReports, gtools, readr, gdata. Some functions depend on other libraries.")
+print("Depends on MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
 
 ### Load the MarkdownReports Library -------------------------------------------------------------------------------------------------
 # source("~/Github/MarkdownReports/MarkdownReports/R/MarkdownReports.R")
@@ -53,6 +53,7 @@ TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
 ppp <- function(...) { paste(..., sep = '.')  } # Paste by point
+kpp <- function(...) { paste(..., collapse = '.')  } # kollapse by point
 
 l=length
 
@@ -65,11 +66,23 @@ grepv <- function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE,
 # https://github.com/vertesy/DataInCode
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
 
-read_clip.commaSepString <- function() {  
-  x = unlist(strsplit(read_clip(),split = ','))
-  dput(x)
-  x
+clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
+  x = dput(clipr::read_clip() ) 
+  clipr::write_clip(
+    utils::capture.output(x)
+  )
+  print(x)
 }
+
+
+clip2clip.commaSepString <- function() {  # read a comma separated string (e.g. list of gene names) and properly format it for R.
+  x = unlist(strsplit(clipr::read_clip(), split = ','))
+  clipr::write_clip(
+    utils::capture.output(x)
+  )
+  print(x)
+}
+
 
 ### Reading files in -------------------------------------------------------------------------------------------------
 read.simple.vec <- function(...) {  # Read each line of a file to an element of a vector (read in new-line separated values, no header!).
@@ -97,7 +110,7 @@ read.simple.table <- function(..., colnames=TRUE, coltypes=NULL) { # Read in a f
 	# read_in = read.table( pfn , stringsAsFactors=FALSE, sep="\t", header=colnames )
 	read_in = readr::read_tsv( pfn, col_names = colnames, col_types = coltypes )
 	iprint ("New variable dim: ", dim(read_in))
-	read_in = as.data.frame(na.replace(data.matrix(read_in), replace = 0))
+	read_in = as.data.frame(gtools::na.replace(data.matrix(read_in), replace = 0))
 	return(read_in)
 }
 
@@ -114,7 +127,7 @@ read.simple.tsv <- function(..., sep_ = "\t", colnames=TRUE, coltypes=NULL, NaRe
   read_in = suppressWarnings(readr::read_tsv( pfn, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
   read_in = FirstCol2RowNames(read_in)
-  if (NaReplace) { read_in = as.data.frame(na.replace(read_in, replace = 0)) }
+  if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
 
@@ -123,7 +136,7 @@ read.simple.csv <- function(...,  colnames=TRUE, coltypes=NULL, NaReplace=TRUE, 
   read_in = suppressWarnings(readr::read_csv( pfn, col_names = colnames, col_types=coltypes, n_max = nmax ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
   read_in = FirstCol2RowNames(read_in)
-  if (NaReplace) { read_in = as.data.frame(na.replace(read_in, replace = 0)) }
+  if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
 
@@ -132,7 +145,7 @@ read.simple.ssv <- function(..., sep_ = " ", colnames=TRUE, NaReplace=TRUE, colt
   read_in = suppressWarnings(readr::read_delim( pfn, delim = sep_, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
   read_in = FirstCol2RowNames(read_in)
-  if (NaReplace) { read_in = as.data.frame(na.replace(read_in, replace = 0)) }
+  if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
 
@@ -151,7 +164,7 @@ convert.tsv.data <- function(df_by_read.simple.tsv=x, digitz=2, na_rep=0 ) { # F
   DAT = data.matrix(df_by_read.simple.tsv)
   SNA = sum(is.na(DAT))
   try(iprint("Replaced NA values:", SNA, "or", percentage_formatter(SNA/length(DAT))), silent = TRUE)
-  na.replace(round(DAT, digits = digitz), replace = na_rep)
+  gtools::na.replace(round(DAT, digits = digitz), replace = na_rep)
 }
 
 
@@ -1902,10 +1915,10 @@ isave <- function(...){
   path_rdata = paste0("/Users/abel.vertesy/Documents/Rdata.files/", basename(OutDir))
   dir.create(path_rdata)
   fname = kollapse(path_rdata, "/",idate(),...,".Rdata")
-  save.image( file = fname)
-  print(fname)
+  save.image( file = fname, compress=F)
+  system("gzip fname &")
+  iprint("Saved, being compressed", fname)
 }
-
 
 
 iterBy.over <- function(yourvec, by=9) {
@@ -1924,4 +1937,14 @@ sourcePartial <- function(fn,startTag='#1',endTag='#/1') { # https://stackoverfl
   tc <- textConnection(lines[(st+1):(en-1)])
   source(tc)
   close(tc)
+}
+
+
+oo <- function(variables) { # open current workind fir
+  system("open .")
+}
+
+
+jjpegA4 <- function(filename, r = 225, q = 90) {
+  jpeg(file=filename,width=wA4, height=hA4, units = 'in', quality = q,res = r)
 }
