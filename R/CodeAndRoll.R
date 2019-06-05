@@ -7,8 +7,10 @@
 ## For Plotting From Clipboard or Files
 # source("~/Github/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
 # # Load sequence length and base distribution check
-# source("/Users/abelvertesy/Github/TheCorvinas/R/Gene.Stats.mm10.R")
+# source("~/Github/TheCorvinas/R/Gene.Stats.mm10.R")
 
+try(source("~/GitHub/Seurat.multicore/Saving.and.loading.R"))
+try(require(clipr))
 
 
 ### CHAPTERS:
@@ -53,7 +55,7 @@ TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
 ppp <- function(...) { paste(..., sep = '.')  } # Paste by point
-kpp <- function(...) { paste(..., collapse = '.')  } # kollapse by point
+kpp <- function(...) { paste(..., sep = '.', collapse = '.')  } # kollapse by point
 
 l=length
 
@@ -118,33 +120,34 @@ FirstCol2RowNames <- function(Tibble, rownamecol=1, make_names=FALSE) { # Set Fi
   Tibble =  as.data.frame(Tibble)
   NN =Tibble[[rownamecol]]
   rownames(Tibble) = if(make_names) make.names(NN, unique = TRUE) else NN
-  return(Tibble[,-rownamecol])
+  return(Tibble[, -rownamecol, drop=F])
 }
 
-read.simple.tsv <- function(..., sep_ = "\t", colnames=TRUE, coltypes=NULL, NaReplace=TRUE) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.tsv <- function(..., sep_ = "\t", colnames=TRUE, wRownames = TRUE, coltypes=NULL, NaReplace=TRUE) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   # read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=TRUE )
   read_in = suppressWarnings(readr::read_tsv( pfn, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  read_in = FirstCol2RowNames(read_in)
+  if (wRownames) { read_in = FirstCol2RowNames(read_in) } 
   if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
 
-read.simple.csv <- function(...,  colnames=TRUE, coltypes=NULL, NaReplace=TRUE, nmax=Inf) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+
+read.simple.csv <- function(...,  colnames=TRUE, coltypes=NULL, wRownames = TRUE, NaReplace=TRUE, nmax=Inf) { # Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   read_in = suppressWarnings(readr::read_csv( pfn, col_names = colnames, col_types=coltypes, n_max = nmax ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  read_in = FirstCol2RowNames(read_in)
+  if (wRownames) { read_in = FirstCol2RowNames(read_in) } 
   if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
 
-read.simple.ssv <- function(..., sep_ = " ", colnames=TRUE, NaReplace=TRUE, coltypes=NULL) { # Space separeted values. Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
+read.simple.ssv <- function(..., sep_ = " ", colnames=TRUE, wRownames = TRUE, NaReplace=TRUE, coltypes=NULL) { # Space separeted values. Read in a file with excel style data: rownames in col1, headers SHIFTED. The header should start with a TAB / First column name should be empty.
   pfn = kollapse (...) # merge path and filename
   read_in = suppressWarnings(readr::read_delim( pfn, delim = sep_, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  read_in = FirstCol2RowNames(read_in)
+  if (wRownames) { read_in = FirstCol2RowNames(read_in) } 
   if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
@@ -1095,6 +1098,13 @@ nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (t
 
 flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
 
+param.list.flag <- function(par = p$'umap.min_dist') {
+  paste(substitute(par), par, sep= "_")[[3]]
+};  # param.list.flag(par = p$umap.n_neighbors)
+
+
+
+
 quantile_breaks <- function(xs, n = 10, na.Rm=FALSE) { # Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
   breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
   breaks[!duplicated(breaks)]
@@ -1344,6 +1354,8 @@ zigzagger <- function (vec=1:9) {  # mix entries so that they differ
 irequire <- function (package) { package_ = as.character(substitute(package)); print(package_); # Load a package. If it does not exist, try to install it from CRAN.
 if(!require(package = package_,  character.only = TRUE)) {
   print("Not Installed yet.");install.packages(pkgs = package_);
+  Sys.sleep(1)
+  print("Loading package:")
   require(package=package_, character.only = TRUE)
 }
 }  # install package if cannot be loaded
@@ -1482,7 +1494,7 @@ iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
 iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal
 
 
-parsepvalue <- function(pvalue=0.01) paste0("(p<",pvalue,")"); parsepvalue()
+parsepvalue <- function(pvalue=0.01) paste0("(p<",pvalue,")"); # parsepvalue()
 
 
 shannon.entropy <- function(p) {
@@ -1615,22 +1627,21 @@ mdlapply2df <- function(list_2D, ...) {  # multi dimensional lapply + arr.of.lis
 
 
 
+## Show the ten largest objects:
 memory.biggest.objects <- function(n=10) { # Show distribution of the largest objects and return their names
+  try.dev.off()
   Sizes.of.objects.in.mem <- sapply( ls( envir = .GlobalEnv), FUN = function(name) { object.size(get(name)) } );
   topX= sort(Sizes.of.objects.in.mem,decreasing=TRUE)[1:n]
 
   Memorty.usage.stat =c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing=TRUE)[-(1:n)]))
   pie(Memorty.usage.stat, cex=.5, sub=make.names(date()))
-  wpie(Memorty.usage.stat, cex=.5 )
+  try(wpie(Memorty.usage.stat, cex=.5 ), silent = T)
   # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
   print(topX)
   print("rm(list=c( 'objectA',  'objectB'))")
-  inline_vec.char(names(topX))
+  # inline_vec.char(names(topX))
   # Use inline_vec.char if you have DataInCode, from https://github.com/vertesy/DataInCode
 }
-## Show the ten largest objects:
-
-
 
 
 na.omit.strip <- function(vec, silent = FALSE) {
@@ -1911,14 +1922,6 @@ as.logical.wNames <- function(x, ...) {
   return(numerified_vec)
 }
 
-isave <- function(...){
-  path_rdata = paste0("/Users/abel.vertesy/Documents/Rdata.files/", basename(OutDir))
-  dir.create(path_rdata)
-  fname = kollapse(path_rdata, "/",idate(),...,".Rdata")
-  save.image( file = fname, compress=F)
-  system("gzip fname &")
-  iprint("Saved, being compressed", fname)
-}
 
 
 iterBy.over <- function(yourvec, by=9) {
@@ -1947,4 +1950,29 @@ oo <- function(variables) { # open current workind fir
 
 jjpegA4 <- function(filename, r = 225, q = 90) {
   jpeg(file=filename,width=wA4, height=hA4, units = 'in', quality = q,res = r)
+}
+
+
+
+# TMP
+
+create_set_OutDir <- function (..., setDir = TRUE) {
+  OutDir = kollapse(..., print = FALSE)
+  if (!substrRight(OutDir, 1) == "/")
+    OutDir = paste0(OutDir, "/") # add '/' if necessary
+  OutDir = gsub(x = OutDir,
+                pattern = '//',
+                replacement = '/')
+  iprint("All files will be saved under 'OutDir': ", OutDir)
+  if (!exists(OutDir)) {
+    dir.create(OutDir, showWarnings = FALSE)
+  }
+  if (setDir) {
+    setwd(OutDir)
+  }
+  ww.assign_to_global("OutDir", OutDir, 1)
+}
+
+param.list.2.fname <- function(ls.of.params=p) {
+  paste(names(ls.of.params), ls.of.params, sep = ".", collapse = "_")
 }
