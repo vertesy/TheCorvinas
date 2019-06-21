@@ -46,7 +46,6 @@ print("Depends on MarkdownReports, gtools, readr, gdata, clipr. Some functions d
 # try(require("gtools"))
 # try(ggplot2::theme_set( theme_bw()), silent = TRUE)
 
-
 # Alisases ----------------
 say <- function(...) {system("say Ready")}
 sayy <- function(...) {system("say Call the police, pretty please.")}
@@ -175,8 +174,8 @@ convert.tsv.data <- function(df_by_read.simple.tsv=x, digitz=2, na_rep=0 ) { # F
 read.simple.xls <- function(pfn = kollapse(...), row_namePos=NULL, ..., header_ = TRUE, WhichSheets) { # Read multi-sheet excel files. row_namePos = NULL for automatic names
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
   if(grepl("^~/", pfn)) {
-    iprint("You cannot use the ~/ in the file path! It is replaced by '/Users/abelvertesy'.")
-    pfn = gsub(pattern = "^~/", replacement = "/Users/abelvertesy/", x = pfn)
+    iprint("You cannot use the ~/ in the file path! It is replaced by '/Users/abel.vertesy/'.")
+    pfn = gsub(pattern = "^~/", replacement = "/Users/abel.vertesy/", x = pfn)
   } else {print(pfn)}
 
   if (!require("gdata")) { print("Please install gplots: install.packages('gdata')") }
@@ -1854,6 +1853,23 @@ whist.back2back <-
     }
     x
   }
+
+# Google search URL / search query links ------------------------------------------------------------------------
+google="http://www.google.com/search?as_q="
+b.dbl.writeOut =F
+b.dbl.Open =F
+
+link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=0) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( google, prefix," ", vector_of_gene_symbols," ", suffix)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    if (sleep>0) {  bash_commands = paste0(bash_commands, ' ; sleep ', sleep)  } # if wait
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+}
+
+# link.google.clipboard = c lipr::write_clip(link_google(clipr::read_clip()))
 
 
 
