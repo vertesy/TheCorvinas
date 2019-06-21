@@ -1,9 +1,9 @@
 
 # Load sequence length and base distribution check
-source("/Users/abelvertesy/Github_repos/TheCorvinas/R/Gene.Stats.mm10.R")
+source("~/GitHub/TheCorvinas/R/Gene.Stats.mm10.R")
 
 # RNA-seq specific R functions -----------------------------------------------------------------------------------------------------
-# source("~/Github_repos/TheCorvinas/R/RNA_seq_specific_functions.r")
+# source("~/GitHub/TheCorvinas/R/RNA_seq_specific_functions.r")
 
 
 convert.ndata2TPM <- function(sc=sc) {
@@ -219,7 +219,7 @@ ecdf_Abel <- function (distribution, test_values=F) {
 #' @examples BaseFrequencies()
 
 BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives you the base distribution of a gene of interest, and how extreme it is compared to all transcripts
-  MetaDdir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  MetaDdir = "~/GitHub/TheCorvinas/Mapping/Reference_Stats/"
 
   if ( !exists("BaseFrequencies_")) {
     if (genome=="mm10") {        BaseFrequencies_ = read.simple.tsv(MetaDdir, "mm10/BaseFrequencies.mm10.tsv")  }
@@ -247,7 +247,7 @@ BaseFrequencies <- function(mygene="Rn45s", genome="mm10", silent=F){ # Gives yo
 # Transcriptome / Genome Stats -----------------------------------------------------------------------------------------------------
 
 TrLength <- function(mygene="Rn45s", genome="mm10", silent=T){ # Gives you the transctipt length of a gene of interest, and how extreme it is compared to all transcripts
-  MetaDdir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/"
+  MetaDdir = "~/GitHub/TheCorvinas/Mapping/Reference_Stats/"
   if ( !exists("TrLength_")) {
     if (genome=="mm10") {        TrLength_ = read.simple.tsv.named.vector(MetaDdir, "mm10/TranscriptLength.mm10.tsv")  }
     else if (genome=="hg19") {   TrLength_ = read.simple.tsv(MetaDdir, "hg19/TranscriptLength.hg19.tsv")  }
@@ -294,7 +294,7 @@ index2wellname <- function(numeric_vec, wells =384, ZeroPaddedIndices = T, ZeroP
 
 find.Gene <- function(PartialSymbol, model=c("human", "mouse", "worm")[2], IgnoreCase =F, ...) {
   SubDir = if (model == "human") { "hg19" } else if (model == "mouse") { "mm10" } else if (model == "worm") { "C_elegans" } else {print ("model has to be either of: human, mouse, worm.")}
-  MetaDir = p0("~/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
+  MetaDir = p0("~/GitHub/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
   fnp = p0(MetaDir,"/TranscriptLength.",SubDir,".tsv"); stopifnot(file.exists(fnp))
   TL = read.simple.tsv.named.vector(fnp)
   Hits = grep(pattern = PartialSymbol, x=names(TL), ignore.case = IgnoreCase, value = T, ...)
@@ -308,7 +308,7 @@ find.Gene <- function(PartialSymbol, model=c("human", "mouse", "worm")[2], Ignor
 
 stat.Gene.sequence <- function(GeneSymbols=find.Gene("Ssx"), model=c("human", "mouse", "worm")[2], IgnoreCase =F, ...) {
   SubDir = if (model == "human") { "hg19" } else if (model == "mouse") { "mm10" } else if (model == "worm") { "C_elegans" } else {print ("model has to be either of: human, mouse, worm.")}
-  MetaDir = p0("~/Github_repos/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
+  MetaDir = p0("~/GitHub/TheCorvinas/Biology/Sequencing/", SubDir); stopifnot(dir.exists(MetaDir))
   fnpTL = p0(MetaDir,"/TranscriptLength.",SubDir,".tsv"); stopifnot(file.exists(fnpTL))
   TL = read.simple.tsv.named.vector(fnpTL)
   fnpBD = p0(MetaDir,"/BaseFrequencies.",SubDir,".tsv"); stopifnot(file.exists(fnpBD))

@@ -1,5 +1,5 @@
 ## _Old_Functions that are kept for reference!
-# source("~/Github_repos/TheCorvinas/R/Old_Functions.r")
+# source("~/GitHub/TheCorvinas/R/Old_Functions.r")
 
 
 # ------------------------

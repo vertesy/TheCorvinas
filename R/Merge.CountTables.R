@@ -1,7 +1,7 @@
 ######################################################################
 # Merge.CountTables.R
 ######################################################################
-# source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/Merge.CountTables.R')
+# source ('~/GitHub/TheCorvinas/R/Merge.CountTables.R')
 # rm(list=ls(all.names = TRUE)); try(dev.off(), silent = T)
 
 # Combinations.all.vs.all.R  ------------------------

@@ -2,7 +2,7 @@
 # Modified // From : https://www.r-bloggers.com/binomial-confidence-intervals/
 PlotIt = F
 
-try (source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R'),silent= F)
+try (source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R'),silent= F)
 
 irequire(binom)
 set.seed(0)

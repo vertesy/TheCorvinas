@@ -1,7 +1,7 @@
 ######################################################################
 # Parse links to databases from your list of gene symbols
 ######################################################################
-# source ('~/Github_repos/TheCorvinas/R/DatabaseLinke.R')
+# source ('~/GitHub/TheCorvinas/R/DatabaseLinke.R')
 # source ('https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/DatabaseLinke.R')
 
 ######################################################################
@@ -25,10 +25,10 @@
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "~/bin/run.sh"
 
-.gene_IDs_hg19	 =try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec"), silent =T)
-.gene_IDs_mm10	 =try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec"), silent =T)
-.gene_names_hg19	 =try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec"), silent =T)
-.gene_names_mm10	 =try(read.simple.vec("~/Github_repos/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec"), silent =T)
+.gene_IDs_hg19	 =try(read.simple.vec("~/GitHub/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.hg19.vec"), silent =T)
+.gene_IDs_mm10	 =try(read.simple.vec("~/GitHub/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_IDs.mm10.vec"), silent =T)
+.gene_names_hg19	 =try(read.simple.vec("~/GitHub/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.hg19.vec"), silent =T)
+.gene_names_mm10	 =try(read.simple.vec("~/GitHub/_Wikis/TheCorvinas.wiki/Sequencing.and.Mapping/GeneModels/gene_names.mm10.vec"), silent =T)
 
 # ALT USAGE link_fromToClilpboard =toClipboard(link_uniprot_mice(fromClipboard.as_vec(), writeOut =F))
 
@@ -36,7 +36,6 @@ BashScriptLocation = "~/bin/run.sh"
 GeneCards = "http://www.genecards.org/Search/Keyword?queryString="
 PUBMED_search_prefix = "https://www.ncbi.nlm.nih.gov/pubmed/?term="
 wikipedia = "http://en.wikipedia.org/w/index.php?search="
-google="http://www.google.com/search?as_q="
 # SEE: http://www.our-picks.com/archives/2007/01/30/google-search-urls-revealed-or-how-to-create-your-own-search-url/
 
 ensembl_multispecies =c("http://www.ensembl.org/Multi/Search/Results?q=",";site=ensembl")
@@ -202,6 +201,7 @@ link_wikipedia <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, O
 }
 
 # Google search URL / search query links ------------------------------------------------------------------------
+google="http://www.google.com/search?as_q="
 
 link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=0) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
   links = paste0( google, prefix," ", vector_of_gene_symbols," ", suffix)

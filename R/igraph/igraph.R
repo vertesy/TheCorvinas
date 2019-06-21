@@ -1,7 +1,7 @@
 ######################################################################
 # Visualize with igraph
 ######################################################################
-# source ('~/Github_repos/TheCorvinas/R/igraph/igraph.R')
+# source ('~/GitHub/TheCorvinas/R/igraph/igraph.R')
 
 
 

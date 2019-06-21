@@ -1,7 +1,7 @@
 
-# source("~/Github_repos/TheCorvinas/R/tSNE_seed_search.R")
+# source("~/GitHub/TheCorvinas/R/tSNE_seed_search.R")
 
-# try (source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R'),silent= F)
+# try (source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R'),silent= F)
 
 OutDir = kollapse("~/Google_Drive/Spermatogenesis_Data/sp1_analysis_new/tSNE_seed_Search_",signif(runif(1)))
 setup_MarkdownReports(OutDir = OutDir)

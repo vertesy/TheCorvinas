@@ -1,6 +1,6 @@
 
-BaseFrequencies.mm10 = read.simple.tsv("~/Github_repos/TheCorvinas/Mapping/Reference_Stats/mm10/BaseFrequencies.mm10.tsv")
-OutDir = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/mm10/"
+BaseFrequencies.mm10 = read.simple.tsv("~/GitHub/TheCorvinas/Mapping/Reference_Stats/mm10/BaseFrequencies.mm10.tsv")
+OutDir = "~/GitHub/TheCorvinas/Mapping/Reference_Stats/mm10/"
 
 pname=  "Basedistr"
 pdfA4plot_on(pname = pname, rows = 3, cols = 2)
@@ -22,7 +22,7 @@ pdfA4plot_off()
 
 # -----
 
-path_of_report = "~/Github_repos/TheCorvinas/Mapping/Reference_Stats/mm10/readme.mm10.md"
+path_of_report = "~/GitHub/TheCorvinas/Mapping/Reference_Stats/mm10/readme.mm10.md"
 
 Stats = rbind(
   "quantile_5%" = percentage_formatter(apply(BaseFrequencies.mm10[,1:4], 2,quantile, probs = .05)),

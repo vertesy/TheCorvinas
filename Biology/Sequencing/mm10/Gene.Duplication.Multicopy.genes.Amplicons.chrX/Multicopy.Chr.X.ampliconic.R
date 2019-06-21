@@ -1,5 +1,5 @@
 
-setup_MarkdownReports(OutDir = '/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/mm10/Gene.Duplication.Multicopy.genes.Amplicons.chrX/')
+setup_MarkdownReports(OutDir = '~/GitHub/TheCorvinas/Biology/Sequencing/mm10/Gene.Duplication.Multicopy.genes.Amplicons.chrX/')
 
 
 Multicopy.GeneFamilies.chrX.mm10 = c( 'EG668965', 'Gmcl1', 'Ssxb', 'Fthl17', 'Zfp161', 'Slx', 'E330016L19Rik', 'Rhox', 'Cxx1', '4930527E24Rik', 'Magea', '4930567H17Rik', 'Xlr', 'Sstx', 'EG434797', 'Obp1', 'Mageb', 'Zxd', 'Dmrtc1b', 'Pabpc1l2', 'Tgif2lx', 'Srsx', 'LOC665542', 'Pramel3', 'Ott', 'LOC207318', '4921511M17Rik', 'Magea')

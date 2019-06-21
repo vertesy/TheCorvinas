@@ -1,11 +1,11 @@
 ######################################################################
 # Fit.Exponential.Decay
 ######################################################################
-# source ('/Users/abelvertesy/Github_repos/TheCorvinas/R/Fit.Exponential.Decay.R')
+# source ('~/GitHub/TheCorvinas/R/Fit.Exponential.Decay.R')
 # rm(list=ls(all.names = TRUE)); try(dev.off(), silent = T)
 
 # Functions ------------------------
-try (source ('~/Github_repos/TheCorvinas/R/CodeAndRoll.R'),silent= F)
+try (source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R'),silent= F)
 
 # Setup ------------------------
 # OutDir = ""

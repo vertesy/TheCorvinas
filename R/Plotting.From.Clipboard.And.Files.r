@@ -1,7 +1,7 @@
 ############################################################
 ## Plotting.From.Clipboard.And.Files.r
 ############################################################
-# source("~/Github_repos/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
+# source("~/GitHub/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
 
 
 ### Plot from clipboard directly -------------------------------------------------------------------------------------------------

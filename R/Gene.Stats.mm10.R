@@ -1,10 +1,10 @@
 
-# source("/Users/abelvertesy/Github_repos/TheCorvinas/R/Gene.Stats.mm10.R")
+# source("~/GitHub/TheCorvinas/R/Gene.Stats.mm10.R")
 
 "mm10"
-BaseFrequencies.mm10 = read.simple.tsv("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/mm10/BaseFrequencies.mm10.tsv.gz")
-transcripts.length.CDS.mm10 = read.simple.tsv.named.vector("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/mm10/TranscriptLength.mm10.tsv.gz")
-# Essentiality.OGEE.mm10 = read.simple.tsv("/Users/abelvertesy/Github_repos/TheCorvinas/Biology/Sequencing/mm10/Essentiality.OGEE/Mus_musculus_consolidated.tsv.gz")
+BaseFrequencies.mm10 = read.simple.tsv("~/GitHub/TheCorvinas/Biology/Sequencing/mm10/BaseFrequencies.mm10.tsv.gz")
+transcripts.length.CDS.mm10 = read.simple.tsv.named.vector("~/GitHub/TheCorvinas/Biology/Sequencing/mm10/TranscriptLength.mm10.tsv.gz")
+# Essentiality.OGEE.mm10 = read.simple.tsv("~/GitHub/TheCorvinas/Biology/Sequencing/mm10/Essentiality.OGEE/Mus_musculus_consolidated.tsv.gz")
 
 
 #  USAGE
