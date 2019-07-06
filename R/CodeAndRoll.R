@@ -1046,17 +1046,17 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 ## Colors -----------------------------------------------------------------------------------------------------
 richColors <- function (n=3) {  gplots::rich.colors(n) } # Alias for rich.colors in gplots
 
-# Moved to MarkdownReports
-# Color_Check <- function(..., incrBottMarginBy=0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
-#   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
-#   Numbers  = c(...)
-#   if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
-#   barplot (rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
-#   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-#
-#   fname = substitute(...)
-#   if (savefile) { dev.copy2pdf(file = ww.FnP_parser(fname, "ColorCheck.pdf")) }
-# }
+
+Color_Check <- function(..., incrBottMarginBy=0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+  if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
+  Numbers  = c(...)
+  if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
+  barplot (rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
+  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+
+  fname = substitute(...)
+  if (savefile) { dev.copy2pdf(file = ww.FnP_parser(fname, "ColorCheck.pdf")) }
+}
 
 HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias=1)
 # HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias=1)
@@ -1093,9 +1093,10 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll, l))
 
 
-nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (toggle) { p0(prefix, substitute(toggle), suffix) } else {p0(prefix, name.if.not, suffix)} } # returns the name if its value is true
-
 flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
+
+flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (toggle) { p0(prefix, substitute(toggle), suffix) } else {p0(prefix, name.if.not, suffix)} } # returns the name if its value is true
+nameiftrue = flag.nameiftrue # backward compatible 
 
 param.list.flag <- function(par = p$'umap.min_dist') {
   paste(substitute(par), par, sep= "_")[[3]]
