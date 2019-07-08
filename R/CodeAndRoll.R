@@ -68,7 +68,7 @@ grepv <- function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE,
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
 
 clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
-  x = dput(clipr::read_clip() ) 
+  x = dput(clipr::read_clip() )
   clipr::write_clip(
     utils::capture.output(x)
   )
@@ -127,7 +127,7 @@ read.simple.tsv <- function(..., sep_ = "\t", colnames=TRUE, wRownames = TRUE, c
   # read_in = read.delim( pfn , stringsAsFactors=FALSE, sep=, sep_, row.names=1, header=TRUE )
   read_in = suppressWarnings(readr::read_tsv( pfn, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  if (wRownames) { read_in = FirstCol2RowNames(read_in) } 
+  if (wRownames) { read_in = FirstCol2RowNames(read_in) }
   if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
@@ -137,7 +137,7 @@ read.simple.csv <- function(...,  colnames=TRUE, coltypes=NULL, wRownames = TRUE
   pfn = kollapse (...) # merge path and filename
   read_in = suppressWarnings(readr::read_csv( pfn, col_names = colnames, col_types=coltypes, n_max = nmax ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  if (wRownames) { read_in = FirstCol2RowNames(read_in) } 
+  if (wRownames) { read_in = FirstCol2RowNames(read_in) }
   if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
@@ -146,7 +146,7 @@ read.simple.ssv <- function(..., sep_ = " ", colnames=TRUE, wRownames = TRUE, Na
   pfn = kollapse (...) # merge path and filename
   read_in = suppressWarnings(readr::read_delim( pfn, delim = sep_, col_names = colnames, col_types=coltypes ))
   iprint ("New variable dim: ", dim(read_in)-0:1)
-  if (wRownames) { read_in = FirstCol2RowNames(read_in) } 
+  if (wRownames) { read_in = FirstCol2RowNames(read_in) }
   if (NaReplace) { read_in = as.data.frame(gtools::na.replace(read_in, replace = 0)) }
   return(read_in)
 }
@@ -217,7 +217,7 @@ write.simple.vec <- function(input_vec, extension='vec', ManualName ="", o = FAL
 # 	fname = kollapse (..., print = FALSE); if (nchar (fname) < 2 ) { fname = substitute(input_df) }
 # 	if (nchar(ManualName)) {FnP = kollapse(ManualName)} else  { FnP = ww.FnP_parser (fname, extension) }
 # 	write.table (input_df, file = FnP, sep = "\t", row.names = TRUE, col.names = NA, quote=FALSE  )
-# 	printme = if(l(dim(input_df))) paste0("Dim: ", dim(input_df) ) else paste0("Length (of your vector): ", l(input_df) )
+# 	printme = if(length(dim(input_df))) paste0("Dim: ", dim(input_df) ) else paste0("Length (of your vector): ", length(input_df) )
 # 	iprint (printme)
 # 	if (o) { system(paste0("open ", FnP), wait = FALSE) }
 # 	if (gzip) { system(paste0("gzip ", FnP), wait = FALSE) }
@@ -342,7 +342,7 @@ value2name_flip = flip_value2name
 
 sortbyitsnames <- function(vec_or_list, decreasing=FALSE, ...) { # Sort a vector by the alphanumeric order of its names (instead of its values).
 	xx = names(vec_or_list)
-	names(xx) = 1:l(vec_or_list)
+	names(xx) = 1:length(vec_or_list)
 	order = as.numeric(names(gtools::mixedsort(xx, decreasing = decreasing, ...)))
 	vec_or_list[order]
 }
@@ -359,7 +359,7 @@ any.duplicated <- function (vec, summarize=TRUE){ # How many entries are duplica
 
 which.duplicated <- function(vec, orig=F) { # orig =rownames(sc@expdata)
   DPL = vec[which(duplicated(vec))]; iprint("Duplicated entries: ", DPL)
-  
+
   # for (i in DPL ) {    print(grepv(i,orig))  } #for
 }
 
@@ -406,8 +406,8 @@ pc_TRUE <- function(logical_vector, percentify =TRUE, NumberAndPC=FALSE, NArm=TR
 
 # deprecated :
 NrAndPc <- function(logical_vec=idx_localised, total=TRUE, NArm=TRUE) { # Summary stat. text formatting for logical vectors (%, length)
-  x=p0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
-  if(total) p0(x, " of ", l(logical_vec))
+  x=paste0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
+  if(total) paste0(x, " of ", length(logical_vec))
 }
 
 
@@ -441,7 +441,7 @@ remove_outliers <- function(x, na.rm = TRUE, ..., probs = c(.05, .95)) { # Remov
 }
 
 simplify_categories <-  function(category_vec, replaceit , to ) { # Replace every entry that is found in "replaceit", by a single value provided by "to"
-	matches  = which(category_vec %in% replaceit); iprint(l(matches), "instances of", replaceit, "are replaced by", to)
+	matches  = which(category_vec %in% replaceit); iprint(length(matches), "instances of", replaceit, "are replaced by", to)
 	category_vec[matches] =  to
 	return(category_vec)
 }
@@ -535,7 +535,7 @@ colNameMatrix <- function(mat_w_dimnames) { # Create a copy of your matrix, wher
 colsplit <- function(df, f=colnames(df)) { # split a data frame by a factor corresponding to columns.
   ListOfDFs = NULL
   levelz = unique(f)
-  for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
+  for (i in 1:length(levelz)) {    ListOfDFs[[i]] = df[ , which(f== levelz[i]) ]  }
   names(ListOfDFs) = levelz
   return(ListOfDFs)
 }
@@ -544,7 +544,7 @@ splitByCol = colsplit
 rowsplit <- function(df, f=rownames(df)) { # split a data frame by a factor corresponding to columns.
   ListOfDFs = NULL
   levelz = unique(f)
-  for (i in 1:l(levelz)) {    ListOfDFs[[i]] = df[ which(f== levelz[i]), ]  }
+  for (i in 1:length(levelz)) {    ListOfDFs[[i]] = df[ which(f== levelz[i]), ]  }
   names(ListOfDFs) = levelz
   return(ListOfDFs)
 }
@@ -580,13 +580,13 @@ select.rows.and.columns <- function(df, RowIDs = NULL, ColIDs = NULL ) { # Subse
   if (length(RowIDs)) {
     true_rownames = intersect(rownames(df), RowIDs)
     NotFound = setdiff(RowIDs, rownames(df))
-    if (l(NotFound)) { iprint(l(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", l(true_rownames)) } else {iprint("All row IDs found")} #if
+    if (length(NotFound)) { iprint(length(NotFound), "Row IDs Not Found:", head(NotFound), "...     Rows found:", length(true_rownames)) } else {iprint("All row IDs found")} #if
     df = df[ true_rownames, ]
   } #if
   if (length(ColIDs)) {
     true_colnames = intersect(colnames(df), ColIDs)
     NotFound = setdiff(ColIDs, colnames(df))
-    if (l(NotFound)) { iprint(l(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", l(true_colnames)) } else {iprint("All column IDs found")}
+    if (length(NotFound)) { iprint(length(NotFound), "Column IDs Not Found:", head(NotFound), "...     Rows found:", length(true_colnames)) } else {iprint("All column IDs found")}
     df = df[ , true_colnames ]
   } #if
   iprint(dim(df))
@@ -597,7 +597,7 @@ getRows <- function(mat, rownamez, silent=FALSE, removeNAonly = FALSE, remove0on
   idx = intersect(rownamez, row.names(mat))
   if (removeNAonly) {    idx = which_names(rowSums(!is.na(mat[ idx, ]), na.rm = TRUE)>0)  }
   if (remove0only) {  idx = which_names(rowSums(mx!=0, na.rm = TRUE)>0)  }
-  if (!silent) { iprint(l(idx), "/", l(rownamez), "are found. Missing: ", l(setdiff(row.names(mat), rownamez))  )  }
+  if (!silent) { iprint(length(idx), "/", length(rownamez), "are found. Missing: ", length(setdiff(row.names(mat), rownamez))  )  }
   mat[ idx, ]
 }
 
@@ -606,7 +606,7 @@ getCols <- function(mat, colnamez, silent=FALSE, removeNAonly = FALSE, remove0on
   print(symdiff(colnamez, colnames(mat)))
   if (removeNAonly) {    idx = which_names(colSums(!is.na(mat[ ,idx ]), na.rm = TRUE)>0)  }
   if (remove0only) {  idx = which_names(colSums(mx!=0, na.rm = TRUE)>0)  }
-  if (!silent) { iprint(l(idx), "/", l(colnamez), "are found. Missing: ", l(setdiff(colnames(mat), colnamez))  )  }
+  if (!silent) { iprint(length(idx), "/", length(colnamez), "are found. Missing: ", length(setdiff(colnames(mat), colnamez))  )  }
   mat[ ,idx ]
 }
 
@@ -635,7 +635,7 @@ combine.matrices.intersect <- function(matrix1, matrix2, k=2) { # combine matric
 
 # NEW
 merge_dfs_by_rn <- function(list_of_dfs) { # Merge any data frames by rownames. Required plyr package
-  for (i in names(list_of_dfs) ) {  colnames(list_of_dfs[[i]]) <- p0(i,'.',colnames(list_of_dfs[[i]]))  } # make unique column names
+  for (i in names(list_of_dfs) ) {  colnames(list_of_dfs[[i]]) <- paste0(i,'.',colnames(list_of_dfs[[i]]))  } # make unique column names
   for (i in names(list_of_dfs) ) {  list_of_dfs[[i]]$rn <- rownames(list_of_dfs[[i]]) } #for
   COMBINED <- plyr::join_all(list_of_dfs, by = 'rn', type = 'full');   idim(COMBINED)
   rownames(COMBINED) = COMBINED$rn
@@ -733,9 +733,9 @@ union.ls <- function (ls, ...){ sort(unique(do.call(c,ls))) } # Intersect any nu
 unlapply <- function (...) { unlist(lapply(...)) } # lapply, then unlist
 
 list.wNames <- function(...){ # create a list with names from ALL variables you pass on to the function
-	l = list(...)
-	names(l) = as.character(match.call()[-1])
-	return(l)
+	lst = list(...)
+	names(lst) = as.character(match.call()[-1])
+	return(lst)
 }
 
 as.list.df.by.row <- function(dtf, na.omit =TRUE, zero.omit =FALSE, omit.empty = FALSE) { # Split a dataframe into a list by its columns. omit.empty for the listelments; na.omit and zero.omit are applied on entries inside each list element.
@@ -904,16 +904,16 @@ intermingle.cbind <- function(df1, df2) { # Combine 2 data frames (of the same l
   stopifnot(ncol(df1) == ncol(df2) )
   if(nrow(df1) != nrow(df2) ){ # not equal rows: subset
     print(symdiff(rownames(df2), rownames(df1)))
-    CommonGenes = intersect(rownames(df2), rownames(df1)); print(l(CommonGenes))
+    CommonGenes = intersect(rownames(df2), rownames(df1)); print(length(CommonGenes))
     df1=df1[CommonGenes, ]
     df2=df2[CommonGenes, ]
   } else { CommonGenes = rownames(df1) }
 
   # Create New column names
   if (length(colnames(df1)) == ncol(df1) & length(colnames(df2)) == ncol(df2) ) {
-    NewColNames = intermingle2vec(p0("df1.", colnames(df1) ), p0("df2.", colnames(df2) ))
+    NewColNames = intermingle2vec(paste0("df1.", colnames(df1) ), paste0("df2.", colnames(df2) ))
   } else {
-    NewColNames = intermingle2vec(p0("df1.", 1:ncol(df1) ), p0("df2.", 1:ncol(df2) ))
+    NewColNames = intermingle2vec(paste0("df1.", 1:ncol(df1) ), paste0("df2.", 1:ncol(df2) ))
   }
   NewMatr = matrix.fromNames(rowname_vec = CommonGenes, colname_vec = NewColNames)
   for (x in 1:(2*length(df1)) ) {
@@ -944,7 +944,7 @@ clip.outliers <- function(valz, high=TRUE, probs = c(.01, .99), na.rm = TRUE, sh
 
 
 ls2categvec <- function(your_list ) {  # Convert a list to a vector repeating list-element names, while vector names are the list elements
-  VEC = rep(names(your_list),unlapply(your_list, l))
+  VEC = rep(names(your_list),unlapply(your_list, length))
   names(VEC) = unlist(your_list, use.names = TRUE)
   return(VEC)
 }
@@ -954,7 +954,7 @@ ls2categvec <- function(your_list ) {  # Convert a list to a vector repeating li
 
 symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
 	big.vec <- c(x, y, ...)
-	ls = list(x, y, ...); if ( l(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
+	ls = list(x, y, ...); if ( length(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
 	names(ls) = paste ("Only in", as.character(match.call()[-1]))
 	duplicates <- big.vec[duplicated(big.vec)]
 	lapply(ls, function(x) setdiff (x, duplicates))
@@ -988,7 +988,7 @@ mean_of_log <- function(x, k=2, na.rm=TRUE){ # Calculates the mean of the log_k 
 
 movingAve <- function(x, oneSide = 5) { # Calculates the moving / rolling average of a numeric vector.
   y = NULL
-  for (i in oneSide:l(x)) {
+  for (i in oneSide:length(x)) {
     y[i] = mean( x[ (i-oneSide):(i+oneSide) ] )
   }; 	return (y)
 }
@@ -998,15 +998,15 @@ movingAve2 <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
 
 movingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard error of the mean (SEM) on a numeric vector.
 	y = NULL
-	for (i in oneSide:l(x)) {
+	for (i in oneSide:length(x)) {
 		y[i] = sem( x[ (i-oneSide):(i+oneSide) ] )
 	}; 	return (y)
 }
 
 imovingSEM <- function(x, oneSide = 5) { # Calculates the moving / rolling standard error of the mean (SEM). It calculates it to the edge of the vector with incrementally smaller window-size.
 	y = NULL
-	for (i in 1:l(x)) {
-		oneSideDynamic = min(i-1, oneSide, l(x)-i); oneSideDynamic
+	for (i in 1:length(x)) {
+		oneSideDynamic = min(i-1, oneSide, length(x)-i); oneSideDynamic
 		indexx = (i-oneSideDynamic):(i+oneSideDynamic);indexx
 		y[i] = sem( x[ indexx ] )
 	}; 	return (y)
@@ -1032,7 +1032,7 @@ lookup <- function(needle, haystack, exact =TRUE, report = FALSE) { # Awesome pa
 	ls_out$'hit_poz' = Findings
 	ls_out$'ln_hits' = length(Findings)
 	ls_out$'hits' = haystack[Findings]
-	if (l(Findings)) {	ls_out$'nonhits' = haystack[-Findings]
+	if (length(Findings)) {	ls_out$'nonhits' = haystack[-Findings]
 	} else { 			ls_out$'nonhits' = haystack	}
 	if (report){
 		llprint (length(Findings), "/", ln_needle, '(', percentage_formatter(length(Findings)/ln_needle)
@@ -1050,7 +1050,7 @@ richColors <- function (n=3) {  gplots::rich.colors(n) } # Alias for rich.colors
 Color_Check <- function(..., incrBottMarginBy=0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
   if (incrBottMarginBy) { .ParMarDefault <- par("mar"); 	par(mar=c(par("mar")[1]+incrBottMarginBy, par("mar")[2:4]) ) } 	# Tune the margin
   Numbers  = c(...)
-  if (l(names(Numbers)) == l(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
+  if (length(names(Numbers)) == length(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
   barplot (rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las=2 )
   if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
 
@@ -1090,13 +1090,13 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
   iprint("Range of data:", range(xx$breaks))
   names(ls)=xx$breaks[-1]
   return(ls)
-}#  ll=hist.XbyY(); wbarplot(unlapply(ll, l))
+}#  ll=hist.XbyY(); wbarplot(unlapply(ll, length))
 
 
 flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
 
-flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (toggle) { p0(prefix, substitute(toggle), suffix) } else {p0(prefix, name.if.not, suffix)} } # returns the name if its value is true
-nameiftrue = flag.nameiftrue # backward compatible 
+flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (toggle) { paste0(prefix, substitute(toggle), suffix) } else {paste0(prefix, name.if.not, suffix)} } # returns the name if its value is true
+nameiftrue = flag.nameiftrue # backward compatible
 
 param.list.flag <- function(par = p$'umap.min_dist') {
   paste(substitute(par), par, sep= "_")[[3]]
@@ -1122,7 +1122,7 @@ vec.fromNames <- function(name_vec=LETTERS[1:5], fill=NA) { # create a vector fr
 }
 
 list.fromNames <- function(name_vec=LETTERS[1:5], fill=NaN) { # create list from a vector with the names of the elements
-  liszt = as.list(rep(fill, l(name_vec)))
+  liszt = as.list(rep(fill, length(name_vec)))
   names(liszt) = name_vec
   return(liszt)
 }
@@ -1135,7 +1135,7 @@ matrix.fromNames <- function(rowname_vec=1:10, colname_vec=LETTERS[1:5], fill = 
 
 
 matrix.fromVector <- function(vector=1:5, HowManyTimes=3, IsItARow = TRUE) { # Create a matrix from values in a vector repeated for each column / each row. Similar to rowNameMatrix and colNameMatrix.
-  matt = matrix(vector, nrow = l(vector), ncol = HowManyTimes)
+  matt = matrix(vector, nrow = length(vector), ncol = HowManyTimes)
   if ( !IsItARow ) {matt = t(matt)}
   return(matt)
 }
@@ -1193,7 +1193,7 @@ top_indices <- function(x, n = 3, top = TRUE){ # Returns the position / index of
 }
 
 percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercentile =TRUE) { # Calculate what is the actual value of the N-th percentile in a distribution or set of numbers. Useful for calculating cutoffs, and displaying them by whist()'s "vline" paramter.
-	index = percentile * l(distribution)
+	index = percentile * length(distribution)
 	if (FirstValOverPercentile){ index = ceiling(index)
 	} else {index = floor(index) }
 	value = sort(distribution)[index]
@@ -1224,7 +1224,7 @@ matlabColors.pheatmap <- function(matrixx, nr=50) {colorRamps::matlab.like(lengt
 
 "FOR VECTOR. it works"
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names="Annot") { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-  stopifnot( l(annot_vec) == dim(data)[2] )
+  stopifnot( length(annot_vec) == dim(data)[2] )
   namez = as.character (if (is.null(annot_names)) substitute(annot_vec) else annot_names)
 
   df = data.frame(x = annot_vec); df[, 1] = as.character(df[, 1])
@@ -1236,7 +1236,7 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names="Annot") 
   if (is.numeric(annot_vec)) {
     coll = val2col(annot_vec[!duplicated(annot_vec)]); names(coll) = nz
   } else {
-    coll = gplots::rich.colors(l(tt)); names(coll) = nz
+    coll = gplots::rich.colors(length(tt)); names(coll) = nz
   }
   col_list = list(annot_vec = coll)
   names(col_list) = namez
@@ -1263,7 +1263,7 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names=
     annot_column_i = df[, i]
     tt = table(annot_column_i); nz = names(tt)
     coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
-    } else {                         gplots::rich.colors(l(tt)) }
+    } else {                         gplots::rich.colors(length(tt)) }
     names(coll) = sort(nz)
     col_list[[i]] = coll
   } #for each column
@@ -1300,7 +1300,7 @@ annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names=NUL
     annot_column_i = df[, i]
     tt = table(annot_column_i); nz = names(tt)
     coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
-    } else {                         gplots::rich.colors(l(tt)) }
+    } else {                         gplots::rich.colors(length(tt)) }
     names(coll) = sort(nz)
     col_list[[i]] = coll
   } #for each column
@@ -1315,7 +1315,7 @@ annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names=NUL
 ## New additions -----------------------------------------------------------------------------------------------------
 wPairConnector <- function(DFrn=A3, PairAnnot=Sisters, verbose=FALSE, addlabels=FALSE, ...) { # Connect Pairs of datapoints with a line on a plot.
   RN = rownames(DFrn)
-  stopifnot(l(RN) == NROW(DFrn))
+  stopifnot(length(RN) == NROW(DFrn))
   Siz = Sisters[unique(RN)]
   LS = splititsnames_byValues(Siz)
   LengZ =unlapply(LS, length)
@@ -1390,10 +1390,10 @@ filter_InCircle <- function(df2col = cbind(rnorm(100),rnorm(100)), inside=TRUE, 
   } else if  (length(center) ==2) { x = center[1]; y = center[1] }
   side  = if(inside) "inside" else "outside"
   PASS =  if (inside) ((xi-x)**2 + (yi-y)**2 < r**2) else ((xi-x)**2 + (yi-y)**2 > r**2)
-  PASSTXT = p0(pc_TRUE(PASS, NumberAndPC = TRUE), " points are ", side," the circle.")
+  PASSTXT = paste0(pc_TRUE(PASS, NumberAndPC = TRUE), " points are ", side," the circle.")
   iprint(PASSTXT)
 
-  SMRY = p0("Radius: ",iround(r)," | Center X, Y=",iround(c(x , y )) ,"(",center,")")
+  SMRY = paste0("Radius: ",iround(r)," | Center X, Y=",iround(c(x , y )) ,"(",center,")")
   iprint(SMRY)
   if (drawCircle) plotrix::draw.circle(xi, yi, r, ...)
   return(PASS+coloffset)
@@ -1423,7 +1423,7 @@ list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
 
 
 
-# ### 2017.12.12 FIX:   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
+# ### 2017.12.12 FIX:   if (WriteOut) { write.simple.tsv(df, ManualName = paste0(substitute(df),".tsv")) }
 #
 # md.tableWriter.DF.w.dimnames <- function (df, FullPath = path_of_report, percentify = FALSE, title_of_table = NA, print2screen=FALSE, WriteOut =FALSE) {
 #   if (is.na(title_of_table)) {    t = paste0(substitute(df), collapse = " ")
@@ -1453,7 +1453,7 @@ list.2.replicated.name.vec <- function(ListWithNames =Sections.ls.Final) {
 #     write(b, FullPath, append = TRUE)
 #   }
 #
-#   if (WriteOut) { write.simple.tsv(df, ManualName = p0(substitute(df),".tsv")) }
+#   if (WriteOut) { write.simple.tsv(df, ManualName = paste0(substitute(df),".tsv")) }
 #   if (print2screen) { print(b) }
 # }
 #
@@ -1522,7 +1522,7 @@ id2chr <- function(x) sub(".+\\_\\_", "", x) # From RaceID
 
 # name2id <- function(x, id=rownames(sc@expdata)) id[sub("\\_\\_chr\\w+", "", id) %in% x] # From RaceID
 name2id <- function(Names=c("Actn1","Actn","Actnsasasa2","Actn2"), id=rownames(sc@expdata), Exact=FALSE,  unlist=TRUE, KeepNotFound=FALSE, KeepFirstHitOnly=FALSE, removeAmbigous=FALSE) {
-  ls_IDs = if (Exact) {lapply(p0(Names,"__chr"), grep, x = id, value = TRUE) } else {lapply(Names, grep, x = id, value = TRUE)}
+  ls_IDs = if (Exact) {lapply(paste0(Names,"__chr"), grep, x = id, value = TRUE) } else {lapply(Names, grep, x = id, value = TRUE)}
   hitLength = unlist(lapply(ls_IDs, length))
   Matches = table(hitLength)
   notfound = Matches["0"]
@@ -1867,7 +1867,7 @@ link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOu
     if (sleep>0) {  bash_commands = paste0(bash_commands, ' ; sleep ', sleep)  } # if wait
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { for (linkX in links) browseURL(linkX) }	else { return(links) }
 }
 
 # link.google.clipboard = c lipr::write_clip(link_google(clipr::read_clip()))
