@@ -9,8 +9,8 @@
 # # Load sequence length and base distribution check
 # source("~/Github/TheCorvinas/R/Gene.Stats.mm10.R")
 
-try(source("~/GitHub/Seurat.multicore/Saving.and.loading.R"))
-try(require(clipr))
+try(source("~/GitHub/Seurat.multicore/Saving.and.loading.R"), silent = T)
+try(require(clipr),silent = T)
 
 
 ### CHAPTERS:
