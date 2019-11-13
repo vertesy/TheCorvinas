@@ -10,6 +10,8 @@
 # source("~/Github/TheCorvinas/R/Gene.Stats.mm10.R")
 
 try(source("~/GitHub/Seurat.multicore/Saving.and.loading.R"), silent = T)
+try(source("~/GitHub/TheCorvinas/R/ggMarkdownreports.R"), silent = T)
+
 try(require(clipr),silent = T)
 
 
@@ -54,6 +56,7 @@ TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
 ppp <- function(...) { paste(..., sep = '.')  } # Paste by point
+ppu <- function(...) { paste(..., sep = '_')  } # Paste by point
 kpp <- function(...) { paste(..., sep = '.', collapse = '.')  } # kollapse by point
 
 l=length
@@ -369,7 +372,13 @@ which.duplicated <- function(vec, orig=F) { # orig =rownames(sc@expdata)
 # unique.wNames <- function(vec_w_names) {  vec_w_names[!duplicated(vec_w_names)] } # Get the unique elements from a vector keeping names (of the first elements of each category).
 
 which_names <- function(named_Vec) { # Return the names where the input vector is TRUE. The input vector is converted to logical.
-	return(names(which(as.logical.wNames(named_Vec)))) }
+  return(names(which(as.logical.wNames(named_Vec)))) }
+
+which_names_grep <- function(named_Vec, pattern) { # Return the vector elements whose names are partially matched
+  idx = grepv(x=names(named_Vec),pattern = pattern)
+  return(named_Vec[idx])
+}
+
 
 na.omit.mat <- function(mat, any = TRUE) {  # Omit rows with NA values from a matrix. Rows with any, or full of NA-s
   mat=as.matrix(mat)
@@ -1093,9 +1102,15 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll, length))
 
 
-flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, toggle, sep = Separator) } # returns the name if its value is true
+flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, paste(toggle, collapse = '.' ), sep = Separator) } # returns the name if its value is true
 
-flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") { if (toggle) { paste0(prefix, substitute(toggle), suffix) } else {paste0(prefix, name.if.not, suffix)} } # returns the name if its value is true
+
+flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") {
+  output = if (toggle) { paste0(prefix, (substitute(toggle)), suffix)
+  } else {paste0(prefix, name.if.not, suffix)}
+  if (length(output)>1) output = output[length(output)]  # fix for when input is a list element like p$'myparam'
+  return(output)
+} # returns the name if its value is true
 nameiftrue = flag.nameiftrue # backward compatible
 
 param.list.flag <- function(par = p$'umap.min_dist') {
@@ -1199,6 +1214,13 @@ percentile2value <- function(distribution, percentile = 0.95, FirstValOverPercen
 	value = sort(distribution)[index]
 	return (value)
 }
+
+MaxN <- function(vec=rpois(4, lambda = 3), topN=2) { # find second (third…) highest/lowest value in vector
+  topN = topN-1
+  n <- length(vec)
+  sort(vec, partial=n-topN)[n-topN]
+}
+# https://stackoverflow.com/questions/2453326/fastest-way-to-find-second-third-highest-lowest-value-in-vector-or-column
 
 
 
@@ -1867,11 +1889,27 @@ link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOu
     if (sleep>0) {  bash_commands = paste0(bash_commands, ' ; sleep ', sleep)  } # if wait
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (linkX in links) browseURL(linkX) }	else { return(links) }
+  } else if (Open) { for (linkX in links) Sys.sleep(0.3+runif(1)); browseURL(linkX, encodeIfNeeded = T) }	else { return(links) }
 }
 
 # link.google.clipboard = c lipr::write_clip(link_google(clipr::read_clip()))
 
+
+
+# Bing search URL / search query links ------------------------------------------------------------------------
+bing="https://www.bing.com/search?q="
+b.dbl.writeOut =F
+b.dbl.Open =F
+
+link_bing <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=0) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+  links = paste0( bing, prefix," ", vector_of_gene_symbols," ", suffix)
+  if (writeOut) {
+    bash_commands = paste0("open '", links, "'")
+    if (sleep>0) {  bash_commands = paste0(bash_commands, ' ; sleep ', sleep)  } # if wait
+    write.simple.append("", ManualName = BashScriptLocation)
+    write.simple.append(bash_commands, ManualName = BashScriptLocation)
+  } else if (Open) { for (linkX in links) Sys.sleep(0.3+runif(1)); browseURL(linkX, encodeIfNeeded = T) }	else { return(links) }
+}
 
 
 #' val2col
@@ -1993,3 +2031,27 @@ create_set_OutDir <- function (..., setDir = TRUE) {
 param.list.2.fname <- function(ls.of.params=p) {
   paste(names(ls.of.params), ls.of.params, sep = ".", collapse = "_")
 }
+
+
+
+GC_content <- function(string, len=8) {
+  tbl = table_fixed_categories(string, c("A", "T", "G", "C") )
+  sum(tbl[  c("G","C") ]) / sum(tbl)
+}
+
+
+eucl.dist.pairwise <- function(df2col) {
+  dist_ = abs(df2col[,1]-df2col[,2]) / sqrt(2)
+  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_ 
+}
+
+
+
+sign.dist.pairwise <- function(df2col) {
+  dist_ = (df2col[,1]-df2col[,2]) / sqrt(2)
+  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_ 
+}
+
+
