@@ -56,8 +56,13 @@ TitleCase=tools::toTitleCase
 sort.natural = gtools::mixedsort
 p0 = paste0
 ppp <- function(...) { paste(..., sep = '.')  } # Paste by point
-ppu <- function(...) { paste(..., sep = '_')  } # Paste by point
+pps <- function(...) { paste(..., sep = '/')  } # Paste by (forward) slash
+ppu <- function(...) { paste(..., sep = '_')  } # Paste by underscore
+ppd <- function(...) { paste(..., sep = '-')  } # Paste by dash
+
 kpp <- function(...) { paste(..., sep = '.', collapse = '.')  } # kollapse by point
+kppu <- function(...) { paste(...,  collapse = '_')  } # kollapse by underscore
+kppd <- function(...) { paste(...,  collapse = '-')  } # kollapse by dash
 
 l=length
 
@@ -324,14 +329,16 @@ rescale <- function(vec, from=0, upto=100) { # linear transformation to a given 
 	return (vec)
 } # fun
 
-flip_value2name <- function(named_vector, NumericNames =FALSE) { # Flip the values and the names of a vector with names
+flip_value2name <- function(named_vector, NumericNames =FALSE, silent = F) { # Flip the values and the names of a vector with names
   if (! is.null(names(named_vector))) {
     newvec = names(named_vector)
     if (NumericNames) {  newvec = as.numeric(names(named_vector))     }
     names(newvec) = named_vector
   } else {llprint("Vector without names!", head(named_vector))}
-  if (any(duplicated(named_vector))) {iprint("New names contain duplicated elements", head(named_vector[which(duplicated(named_vector))]))  }
-  if (any(duplicated(newvec))) {iprint("Old names contained duplicated elements", head(newvec[which(duplicated(newvec))]))  }
+  if (!silent) {
+    if (any(duplicated(named_vector))) {iprint("New names contain duplicated elements", head(named_vector[which(duplicated(named_vector))]))  }
+    if (any(duplicated(newvec))) {iprint("Old names contained duplicated elements", head(newvec[which(duplicated(newvec))]))  }
+  }
   return(newvec)
 }
 
@@ -361,10 +368,19 @@ any.duplicated <- function (vec, summarize=TRUE){ # How many entries are duplica
 }
 
 which.duplicated <- function(vec, orig=F) { # orig =rownames(sc@expdata)
-  DPL = vec[which(duplicated(vec))]; iprint("Duplicated entries: ", DPL)
-
+  DPL = vec[which(duplicated(vec))]; iprint(length(DPL), "Duplicated entries: ", DPL)
   # for (i in DPL ) {    print(grepv(i,orig))  } #for
+  return(DPL)
 }
+
+which.NA <- function(vec, orig=F) { # orig =rownames(sc@expdata)
+  NANs = vec[which(is.na(vec))]; iprint(length(NANs), "NaN entries: ", NANs)
+  NAs = vec[which(is.na(vec))]; iprint(length(NAs), "NA entries: ", NAs, "(only NA-s are returned)")
+  # for (i in DPL ) {    print(grepv(i,orig))  } #for
+  return(NAs)
+}
+
+
 
 ### Vector filtering  -------------------------------------------------------------------------------------------------
 
@@ -962,12 +978,17 @@ ls2categvec <- function(your_list ) {  # Convert a list to a vector repeating li
 ## Set operations -------------------------------------------------------------------------------------------------
 
 symdiff <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
-	big.vec <- c(x, y, ...)
-	ls = list(x, y, ...); if ( length(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
-	names(ls) = paste ("Only in", as.character(match.call()[-1]))
-	duplicates <- big.vec[duplicated(big.vec)]
-	lapply(ls, function(x) setdiff (x, duplicates))
+  big.vec <- c(x, y, ...)
+  ls = list(x, y, ...); if ( length(ls) >2) {print("# Not Mathematically correct, but logical for n>2 vectors: https://en.wikipedia.org/wiki/Symmetric_difference#Properties")}
+  names(ls) = paste ("Only in", as.character(match.call()[-1]))
+  duplicates <- big.vec[duplicated(big.vec)]
+  lapply(ls, function(x) setdiff (x, duplicates))
 }
+
+
+# union.wNames <- function(x, y, ...) { # Quasy symmetric difference of any number of vectors
+#   "not so easy, because X=1 anf Y=1 can have different names"
+# }
 
 ## Math $ stats -------------------------------------------------------------------------------------------------
 
@@ -2043,7 +2064,7 @@ GC_content <- function(string, len=8) {
 eucl.dist.pairwise <- function(df2col) {
   dist_ = abs(df2col[,1]-df2col[,2]) / sqrt(2)
   if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
-  dist_ 
+  dist_
 }
 
 
@@ -2051,7 +2072,26 @@ eucl.dist.pairwise <- function(df2col) {
 sign.dist.pairwise <- function(df2col) {
   dist_ = (df2col[,1]-df2col[,2]) / sqrt(2)
   if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
-  dist_ 
+  dist_
 }
 
 
+reverse.list.hierarchy <-  function(ll) { # reverse list hierarchy
+  ## https://stackoverflow.com/a/15263737
+  nms <- unique(unlist(lapply(ll, function(X) names(X))))
+  ll <- lapply(ll, function(X) setNames(X[nms], nms))
+  ll <- apply(do.call(rbind, ll), 2, as.list)
+  lapply(ll, function(X) X[!sapply(X, is.null)])
+}
+
+
+extPDF <- function(vec) ppp(vec, "pdf")
+
+extPNG <- function(variables) ppp(vec, "png")
+
+
+# unrequire <- function(string='MarkdownReportsDev') detach(name = paste0("package:",string, collapse = ""), unload=TRUE)  
+# unrequire()
+# detach("package:MarkdownReportsDev", unload=TRUE)  
+# require('MarkdownReportsDev' )
+# unrequire('MarkdownReportsDev' )
