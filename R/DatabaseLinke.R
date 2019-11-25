@@ -21,6 +21,10 @@
 ######################################################################
 
 # vector_of_gene_symbols =c("Oct4", "Dazl")
+"As of 2019 Firefox Qunatum is not working with BrowseURL"
+Sys.setenv("R_BROWSER" = "/usr/bin/open -a '/Applications/Safari.app'")
+# Sys.setenv("R_BROWSER" = "/usr/bin/open -a '/Applications/Google Chrome.app'")
+options(browser = as.vector(Sys.getenv("R_BROWSER")))
 
 # User Setup ----------------------------------------------------------------------
 BashScriptLocation = "~/bin/run.sh"
@@ -72,6 +76,15 @@ worm_CGC_prefix =c("http://www.cgc.cbs.umn.edu/search.php?st=","&field=all&exst=
 b.dbl.writeOut =F
 b.dbl.Open =F
 
+# openURLs.1by1(links) ------------------------------------------------------------------------------------------------
+openURLs.1by1 <- function(links, wait=T) {
+  for (link in links) {
+    if (wait) Sys.sleep(runif(1)+.5)
+    browseURL(link)
+  }	
+}
+
+
 # GeneCards links ------------------------------------------------------------------------------------------------
 link_GeneCards <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse GeneCards links to your list of gene symbols
   links = paste0(GeneCards, vector_of_gene_symbols)
@@ -79,7 +92,7 @@ link_GeneCards <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, O
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 # ENSEMBL Links --------------------------------------------------------------------------------------------------------------------------------
@@ -90,7 +103,7 @@ link_ensembl_zebra <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOu
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 link_ensembl_mice <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse the latest ensembl (GRC38) links to your list of gene symbols
@@ -99,7 +112,7 @@ link_ensembl_mice <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 link_ensembl_mice <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse the latest ensembl (GRC38) links to your list of gene symbols
@@ -108,7 +121,7 @@ link_ensembl_mice <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 link_ensembl <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse the latest ensembl (GRC38) links to your list of gene symbols
@@ -117,7 +130,7 @@ link_ensembl <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Ope
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation )
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 link_ensembl.grc37 <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = b.dbl.Open) { # Parse ensembl GRC37 links to your list of gene symbols
@@ -126,7 +139,7 @@ link_ensembl.grc37 <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOu
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 ## UNIPROT Links --------------------------------------------------------------------------------------------------------------------------------
@@ -137,7 +150,7 @@ link_uniprot_mice <- function (vector_of_gene_symbols, writeOut = F, Open = b.db
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 lll='http://www.uniprot.org/uniprot/?query=Eef1d+Mouse+reviewed%3Ayes+&sort=score'
 
@@ -148,7 +161,7 @@ link_uniprot_human <- function (vector_of_gene_symbols, writeOut = F, Open = b.d
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 link_uniprot_zebrafish <- function (vector_of_gene_symbols, writeOut = F, Open = b.dbl.Open) { # Parse the latest UNIPROT links to your list of gene symbols
@@ -157,7 +170,7 @@ link_uniprot_zebrafish <- function (vector_of_gene_symbols, writeOut = F, Open =
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 
@@ -172,7 +185,7 @@ link_String <- function (vector_of_gene_symbols, organism="mouse", writeOut = b.
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 
@@ -185,7 +198,7 @@ link_pubmed <- function (vector_of_gene_symbols, additional_terms = "", writeOut
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 
@@ -197,22 +210,21 @@ link_wikipedia <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, O
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 # Google search URL / search query links ------------------------------------------------------------------------
 google="http://www.google.com/search?as_q="
 
-link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=0) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
+link_google <- function (vector_of_gene_symbols, prefix ="", suffix ="", writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep=1) { # Parse wormbase database links to your list of gene symbols. "additional_terms" can be any vector of strings that will be searched for together with each gene.
   links = paste0( google, prefix," ", vector_of_gene_symbols," ", suffix)
   if (writeOut) {
     bash_commands = paste0("open '", links, "'")
     if (sleep>0) {  bash_commands = paste0(bash_commands, ' ; sleep ', sleep)  } # if wait
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
-
 
 
 # HGNC links ------------------------------------------------------------------------------------------------
@@ -222,7 +234,7 @@ link_HGNC <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open =
     bash_commands = paste0("open ", links)
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 # wormbase links ------------------------------------------------------------------------
@@ -233,7 +245,7 @@ link_wormbase <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Op
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 # CGC links (worms mutant database) ------------------------------------------------------------------------
@@ -244,7 +256,8 @@ link_CGC <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = 
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) } else { return(links)}
+  
 }
 
 
@@ -284,7 +297,7 @@ link_MGI.JAX <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Ope
     bash_commands = paste0("open '", links, "'")
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (l in links) browseURL(l) }	else { return(links) }
+  } else if (Open) { openURLs.1by1(links) }	else { return(links) }
 }
 
 
