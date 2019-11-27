@@ -53,7 +53,17 @@ qgpie <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE,
 
 ## -------------------------------------------------------------------------------------------------
 
+# qsave_plot.A4v2(filename = "UMAPs.batches.and.samples.png", plot = p1, base_height=12, ncol=1, nrow=1) #Figure 2
+qsave_plot.A4h4
+qsave_plot.A4v2
 ## -------------------------------------------------------------------------------------------------
+
+qqsave <- function(ggplot.obj, h=12, PNG =F, title=NULL) {
+  pname = substitute(ggplot.obj)
+  fname = ww.FnP_parser(pname, if (PNG) "png" else "pdf")
+  save_plot(filename =fname, plot = ggplot.obj, base_height=h) #, ncol=1, nrow=1
+}
+
 
 ## -------------------------------------------------------------------------------------------------
 
@@ -71,13 +81,13 @@ qgpie <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE,
 
 ## Functions for tidyverse interaction -------------------------------------------------------------------------------------------------
 
-col2named.vec.tbl <- function(tbl.2col) {
-  nvec = tbl.2col[[2]]
-  names(nvec) = tbl.2col[[1]]
-  nvec
-}
-
-
-
-
-
+# col2named.vec.tbl <- function(tbl.2col) {
+#   nvec = tbl.2col[[2]]
+#   names(nvec) = tbl.2col[[1]]
+#   nvec
+# }
+# 
+# 
+# 
+# 
+# 
