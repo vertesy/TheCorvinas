@@ -49,6 +49,8 @@ print("Depends on MarkdownReports, gtools, readr, gdata, clipr. Some functions d
 # try(ggplot2::theme_set( theme_bw()), silent = TRUE)
 
 # Alisases ----------------
+stry <- function(...) {try(..., silent = T)}
+
 say <- function(...) {system("say Ready")}
 sayy <- function(...) {system("say Call the police, pretty please.")}
 
@@ -2087,7 +2089,7 @@ reverse.list.hierarchy <-  function(ll) { # reverse list hierarchy
 
 extPDF <- function(vec) ppp(vec, "pdf")
 
-extPNG <- function(variables) ppp(vec, "png")
+extPNG <- function(vec) ppp(vec, "png")
 
 
 # unrequire <- function(string='MarkdownReportsDev') detach(name = paste0("package:",string, collapse = ""), unload=TRUE)  
@@ -2095,3 +2097,14 @@ extPNG <- function(variables) ppp(vec, "png")
 # detach("package:MarkdownReportsDev", unload=TRUE)  
 # require('MarkdownReportsDev' )
 # unrequire('MarkdownReportsDev' )
+
+col2named.vec.tbl <- function(tbl.2col) {
+  nvec = tbl.2col[[2]]
+  names(nvec) = tbl.2col[[1]]
+  nvec
+}
+
+
+
+
+
