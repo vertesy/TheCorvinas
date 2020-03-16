@@ -8,11 +8,11 @@
 # source("~/Github/TheCorvinas/R/Plotting.From.Clipboard.And.Files.r")
 # # Load sequence length and base distribution check
 # source("~/Github/TheCorvinas/R/Gene.Stats.mm10.R")
+suppressMessages(try(require(clipr), silent = T))
+try(require(ggplot2),silent = T)
 
 try(source("~/GitHub/Seurat.multicore/Saving.and.loading.R"), silent = T)
 try(source("~/GitHub/TheCorvinas/R/ggMarkdownreports.R"), silent = T)
-
-try(require(clipr),silent = T)
 
 
 ### CHAPTERS:
@@ -48,6 +48,19 @@ print("Depends on MarkdownReports, gtools, readr, gdata, clipr. Some functions d
 # try(require("gtools"))
 # try(ggplot2::theme_set( theme_bw()), silent = TRUE)
 
+# detach_package <-
+unload <- function(pkg, character.only = FALSE) { # https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
+  if(!character.only)
+  {
+    pkg <- deparse(substitute(pkg))
+  }
+  search_item <- paste("package", pkg, sep = ":")
+  while(search_item %in% search())
+  {
+    detach(search_item, unload = TRUE, character.only = TRUE)
+  }
+}
+
 # Alisases ----------------
 stry <- function(...) {try(..., silent = T)}
 
@@ -63,8 +76,8 @@ ppu <- function(...) { paste(..., sep = '_')  } # Paste by underscore
 ppd <- function(...) { paste(..., sep = '-')  } # Paste by dash
 
 kpp <- function(...) { paste(..., sep = '.', collapse = '.')  } # kollapse by point
-kppu <- function(...) { paste(...,  collapse = '_')  } # kollapse by underscore
-kppd <- function(...) { paste(...,  collapse = '-')  } # kollapse by dash
+kppu <- function(...) { paste(..., sep = '_',  collapse = '_')  } # kollapse by underscore
+kppd <- function(...) { paste(..., sep = '-', collapse = '-')  } # kollapse by dash
 
 l=length
 
@@ -1125,8 +1138,14 @@ hist.XbyY <- function (dfw2col = NULL, toSplit=1:100, splitby= rnorm(100), break
 }#  ll=hist.XbyY(); wbarplot(unlapply(ll, length))
 
 
-flag.name_value <- function(toggle, Separator="_") { paste(if (toggle) { substitute(toggle) }, paste(toggle, collapse = '.' ), sep = Separator) } # returns the name if its value is true
-
+flag.name_value <- function(toggle, Separator="_") { # returns the name and its value, if its not FALSE.
+  if (!isFALSE(toggle)) {
+    output = paste(substitute(toggle), toggle, sep = Separator)
+    if (length(output)>1) output = output[length(output)]  # fix for when input is a list element like p$'myparam'
+    return(output)
+  }
+}
+# Xseed = p$'seed' = F; flag.name_value(Xseed); flag.name_value(p$'seed')
 
 flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") {
   output = if (toggle) { paste0(prefix, (substitute(toggle)), suffix)
@@ -1136,10 +1155,13 @@ flag.nameiftrue <- function(toggle, prefix=NULL, suffix=NULL, name.if.not="") {
 } # returns the name if its value is true
 nameiftrue = flag.nameiftrue # backward compatible
 
+flag.names_list <- function(par = p$'umap.min_dist') {
+  if (length(par)) paste(substitute(par), kppu(par) , sep= "_")[[3]]
+};  # param.list.flag(par = p$umap.n_neighbors)
+
 param.list.flag <- function(par = p$'umap.min_dist') {
   paste(substitute(par), par, sep= "_")[[3]]
 };  # param.list.flag(par = p$umap.n_neighbors)
-
 
 
 
@@ -1452,7 +1474,7 @@ cumsubtract <- function(numericV=blanks) {
 }
 
 
-trail <- function(vec, N) c(head(vec, n = N), tail(vec, n = N) )
+trail <- function(vec, N=10) c(head(vec, n = N), tail(vec, n = N) )
 
 sort.decreasing <- function(vec) sort(vec, decreasing = TRUE)
 
@@ -1675,12 +1697,13 @@ mdlapply2df <- function(list_2D, ...) {  # multi dimensional lapply + arr.of.lis
 ## Show the ten largest objects:
 memory.biggest.objects <- function(n=10) { # Show distribution of the largest objects and return their names
   try.dev.off()
+  gc()
   Sizes.of.objects.in.mem <- sapply( ls( envir = .GlobalEnv), FUN = function(name) { object.size(get(name)) } );
   topX= sort(Sizes.of.objects.in.mem,decreasing=TRUE)[1:n]
 
   Memorty.usage.stat =c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing=TRUE)[-(1:n)]))
   pie(Memorty.usage.stat, cex=.5, sub=make.names(date()))
-  try(wpie(Memorty.usage.stat, cex=.5 ), silent = T)
+  try(wpie(Memorty.usage.stat, cex=.5, savefile = FALSE ), silent = T)
   # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
   print(topX)
   print("rm(list=c( 'objectA',  'objectB'))")
@@ -2092,9 +2115,9 @@ extPDF <- function(vec) ppp(vec, "pdf")
 extPNG <- function(vec) ppp(vec, "png")
 
 
-# unrequire <- function(string='MarkdownReportsDev') detach(name = paste0("package:",string, collapse = ""), unload=TRUE)  
+# unrequire <- function(string='MarkdownReportsDev') detach(name = paste0("package:",string, collapse = ""), unload=TRUE)
 # unrequire()
-# detach("package:MarkdownReportsDev", unload=TRUE)  
+# detach("package:MarkdownReportsDev", unload=TRUE)
 # require('MarkdownReportsDev' )
 # unrequire('MarkdownReportsDev' )
 
