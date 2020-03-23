@@ -7,7 +7,7 @@
 
 # Functions ------------------------
 require(MarkdownReports)
-source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R')
+source ('~/GitHub/CodeAndRoll/CodeAndRoll.R')
 
 cormethod = "spearman"
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {

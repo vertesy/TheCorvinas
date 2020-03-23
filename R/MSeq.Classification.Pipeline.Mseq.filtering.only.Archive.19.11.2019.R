@@ -6,8 +6,8 @@
 rm(list=ls(all.names = TRUE)); try(dev.off(), silent = T)
 
 # Functions ------------------------
-try (source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R'),silent= F)
-# https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R
+try (source ('~/GitHub/CodeAndRoll/CodeAndRoll.R'),silent= F)
+# https://raw.githubusercontent.com/vertesy/CodeAndRoll/master/CodeAndRoll.R
 
 require('MarkdownReportsDev') # https://github.com/vertesy/MarkdownReportsDev
 

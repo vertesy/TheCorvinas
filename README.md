@@ -15,6 +15,8 @@ Feel free to copy any of these into your .bash_profile that is under `/home/hub_
 
 - An extensive list of R functions that I created & collected
 
+**NOTE CodeAndRoll has been moved to its [own repository](https://github.com/vertesy/CodeAndRoll)!**
+
 ### [The Wiki](https://github.com/vertesy/TheCorvinas/wiki)
 
 - Mostly not bioinformatics related info & analyses

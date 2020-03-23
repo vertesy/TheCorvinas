@@ -2,7 +2,7 @@
 # Modified // From : https://www.r-bloggers.com/binomial-confidence-intervals/
 PlotIt = F
 
-try (source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R'),silent= F)
+try (source ('~/GitHub/CodeAndRoll/CodeAndRoll.R'),silent= F)
 
 irequire(binom)
 set.seed(0)
@@ -16,7 +16,7 @@ my.method <- my.method[sort.list(my.method)]
 coverage <- matrix.fromNames(rowname_vec = n, colname_vec = my.method)
 # ci.lower <- ci.upper <- matrix(NA, ncol=length(my.method), nrow=length(n))
 ci.lower <- ci.upper <- matrix.fromNames(colname_vec = my.method, rowname_vec = n)
-  
+
 try.dev.off()
 
 if (PlotIt) { pdfA4plot_on("Binomial.Confidence.Intervals", rows = 2, cols=1) } #if
@@ -35,14 +35,14 @@ for(i in 1:length(n)){
   }
 }
 
-if (PlotIt) { 
+if (PlotIt) {
   plot(n,NULL, xlim=c(1,nrow(coverage)+1), ylim=c(.83,1),
        col=1, pch=16, ylab="Percent", xlab="N",
        main="95% Confidence Intervals for p=.5")
-  
+
   points(replicate(ncol(coverage),n),coverage, col=c(1:9),
          pch=16, cex=.5)
-  
+
   abline(h=seq(.93,.97, by=.01), col="grey")
   abline(h=.95, col="#000000", lwd=2)
   abline(v=seq(2,maxn, by=20), col="grey")
@@ -57,7 +57,7 @@ if (PlotIt) {
   }
   legend("bottomright", my.method, col=c(1:9), ncol=2, lwd=1, title="Interval Types", bg="#FFFFFF")
   pdfA4plot_off()
-  
+
   } #if PlotIt
 
 

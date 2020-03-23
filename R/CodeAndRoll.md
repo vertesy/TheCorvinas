@@ -1,56 +1,46 @@
 
 # CodeAndRoll - A collection of custom R functions
+[Get CodeAndRoll](https://github.com/vertesy/CodeAndRoll/blob/master/CodeAndRoll.R)
 
-[Get CodeAndRoll](https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.R)
+> **NOTE CodeAndRoll has been moved to its [own repository](https://github.com/vertesy/CodeAndRoll)!**
 
+## Install
 
-### Install
-
-1.) Download and source: https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.R
-
+1.) [Download `CodeAndRoll.R`](https://github.com/vertesy/CodeAndRoll/blob/master/CodeAndRoll.R), save as local `.R` file, and `source()`: 
 
 2.) Source from the web:
 
-`source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")`
+`source("https://raw.githubusercontent.com/vertesy/CodeAndRoll/master/CodeAndRoll.R")`
 
-Read: https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md
+### Troubleshooting
 
-
-
-## Usage
+*If you encounter a **bug**, or something doesn't work, please let me know by raising an issue on [CodeAndRoll](https://github.com/vertesy/CodeAndRoll/issues)*
 
 
 
+## Chapters 
 
+The script is roughly organised in the following sections / categories.
 
-### If you encounter a bug, or something doesn't work, please let me know by raising an issue on [The Corvinas](https://github.com/vertesy/TheCorvinas/issues/new?milestone=CodeAndRoll)
-
-
-
-
-## CHAPTERS
-
-- ### File handling, export, import [read & write]
-  - ### Clipboard interaction (OS X)
-  - ### Reading files in
-  - ### Writing files out
-- ### Vector operations
-  - ### Vector filtering
-- ### Matrix operations
-- ### List operations
-- ### Set operations
-- ### Math $ stats
-- ### String operations
-- ### Plotting and Graphics
-- ### Read and write plotting functions READ
-- ### Generic
-- ### Plots
-- ### New additions
-
+1. ##### File handling, export, import [read & write]
+  1. ##### Clipboard interaction (OS X)
+  1. ##### Reading files in
+  1. ##### Writing files out
+1. ##### Vector operations
+  1. ##### Vector filtering
+1. ##### Matrix operations
+1. ##### List operations
+1. ##### Set operations
+1. ##### Math and stats
+1. ##### String operations
+1. ##### Plotting and Graphics
+1. ##### Read and write plotting functions READ
+1. ##### Generic
+1. ##### Plots
+1. ##### New additions
 
 
 ## Index
-
 
 | Function  	| Description |
 |---|---|

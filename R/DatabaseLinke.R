@@ -13,7 +13,7 @@
 ## 1.) please let me know by raising an issue on Github/vertesy/TheCorvinas
 ## https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R
 ## 2.) It might be a missing function.
-## - Try to source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")
+## - Try to source("https://raw.githubusercontent.com/vertesy/CodeAndRoll/master/CodeAndRoll.R")
 ## See details: https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md
 ## - If still some functons are missing, try to install MarkdownReports: install.packages("devtools"); devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports"); require("MarkdownReports")
 ## See details: https://vertesy.github.io/MarkdownReports/
@@ -81,7 +81,7 @@ openURLs.1by1 <- function(links, wait=T) {
   for (link in links) {
     if (wait) Sys.sleep(runif(1)+.5)
     browseURL(link)
-  }	
+  }
 }
 
 
@@ -257,7 +257,7 @@ link_CGC <- function (vector_of_gene_symbols, writeOut = b.dbl.writeOut, Open = 
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
   } else if (Open) { openURLs.1by1(links) } else { return(links)}
-  
+
 }
 
 

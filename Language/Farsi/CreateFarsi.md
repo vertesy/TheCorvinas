@@ -15,26 +15,26 @@
 
 - #### Now go to [cleanup](http://mylanguages.org/romanization_cleanup.php) on mylanguages.org
 	Manual checking of the results would be great. Without this, its very approximate.
-	
+
 - #### Paste back to the .tsv file and edit it
 
 	- #### Use `md.csv_to_md_parser.py` shell function to  create a markdown reference table`most.freq.words.in.persian-wikipedia.UTF8.tsv.md`
 
 		See: [md.csv_to_md_parser.py](/Users/abelvertesy/Github_repos/TheCorvinas/Python/MarkdownParsers/md.tsv_to_md_parser.py)
 
-		Optionally, in bash:   
-		`alias tsv2markdown='/Users/XXXX/Github_repos/TheCorvinas/Python/MarkdownParsers/md.tsv_to_md_parser.py' `  
-		
-		- Add [wiktionary](https://www.wiktionary.org/) links. These are parsed for each word, like:  
+		Optionally, in bash:
+		`alias tsv2markdown='/Users/XXXX/Github_repos/TheCorvinas/Python/MarkdownParsers/md.tsv_to_md_parser.py' `
+
+		- Add [wiktionary](https://www.wiktionary.org/) links. These are parsed for each word, like:
 		`https://en.wiktionary.org/wiki/`ﻮ`#Persian`
-		
+
 
 - #### [View](most.freq.words.in.persian-wikipedia.UTF8.tsv.md)
 
-- #### Formatting before importing into Anki 
+- #### Formatting before importing into Anki
 	See code at the end.
 
-- #### Import into 4 decks of ~240 words to [Anki](https://apps.ankiweb.net/) and export. 
+- #### Import into 4 decks of ~240 words to [Anki](https://apps.ankiweb.net/) and export.
 
 
 
@@ -44,7 +44,7 @@
 ### R Code for reversing letters in each word
 
 ```
-source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R") # get fromClipboard.as_vec() for OS X
+source("https://raw.githubusercontent.com/vertesy/CodeAndRoll/master/CodeAndRoll.R") # get fromClipboard.as_vec() for OS X
 library(IRanges) # for reverse()
 
 fs =fromClipboard.as_vec() # for non-OS X use read() from a file with your words

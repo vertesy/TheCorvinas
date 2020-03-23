@@ -5,7 +5,7 @@
 # rm(list=ls(all.names = TRUE)); try(dev.off(), silent = T)
 
 # Functions ------------------------
-try (source ('~/GitHub/TheCorvinas/R/CodeAndRoll.R'),silent= F)
+try (source ('~/GitHub/CodeAndRoll/CodeAndRoll.R'),silent= F)
 
 # Setup ------------------------
 # OutDir = ""

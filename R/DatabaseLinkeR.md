@@ -23,7 +23,7 @@ It can do 3 things:
 - Pubmed
 - Wikipedia
 
-#### Species specific 
+#### Species specific
 - Wormbase
 - HGNC (Human Gene Nomenclature)
 
@@ -32,7 +32,7 @@ It can do 3 things:
 1.) Download and source: https://github.com/vertesy/TheCorvinas/blob/master/R/DatabaseLinke.R
 
 
-2.) Source from the web:  
+2.) Source from the web:
 
 `source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/DatabaseLinke.R")`
 
@@ -105,16 +105,16 @@ as a character vector, so you can write out in a column of your gene-table.
 
 
 
-### If you encounter a bug, or something doesn't work, 
+### If you encounter a bug, or something doesn't work,
 
 1. please let me know by raising an issue on [TheCorvinas](https://github.com/vertesy/TheCorvinas/issues/new?milestone=DatabaseLinke.R)
-2. Fix by providing the missing function. 
-      - Try to `source("https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/CodeAndRoll.R")`
+2. Fix by providing the missing function.
+      - Try to `source("https://raw.githubusercontent.com/vertesy/CodeAndRoll/master/CodeAndRoll.R")`
         [See details for CodeAndRoll](https://github.com/vertesy/TheCorvinas/blob/master/R/CodeAndRoll.md)
-      - If still some functons are missing, try to install MarkdownReports: 
+      - If still some functons are missing, try to install MarkdownReports:
         `install.packages("devtools")`
         `devtools::install_github(repo = "vertesy/MarkdownReports/MarkdownReports")`
-        `require("MarkdownReports")`  
+        `require("MarkdownReports")`
         [See details for MarkdownReports](https://vertesy.github.io/MarkdownReports/)
 
 
