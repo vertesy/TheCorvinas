@@ -78,7 +78,6 @@ qgbar <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE
 
 ## -------------------------------------------------------------------------------------------------
 
-dfx
 ggbar <- function (dat, by, totals) {
   # https://mathematicalcoffee.blogspot.com/2014/06/ggpie-pie-graphs-in-ggplot2.html
   ggplot(data = dat, aes_string(x=factor(1), y=totals, fill=by)) +
@@ -92,8 +91,8 @@ ggbar <- function (dat, by, totals) {
 
 
 # qsave_plot.A4v2(filename = "UMAPs.batches.and.samples.png", plot = p1, base_height=12, ncol=1, nrow=1) #Figure 2
-qsave_plot.A4h4
-qsave_plot.A4v2
+# qsave_plot.A4h4
+# qsave_plot.A4v2
 ## -------------------------------------------------------------------------------------------------
 
 qqsave <- function(ggplot.obj, h=7, PNG =F, title=NULL) {
