@@ -1,6 +1,12 @@
 /*  Made by: yyer2014@gmail.com (Alexander Y.)
-  Main conversion function. Corrected to include top level list items as new slide titles.
-  Source document has SOURCE_ID and target presentation has TARGET_ID Google identifiers.
+
+  Main conversion function.
+  Top level list items work as new slide titles. Slide layout is TITLE_AND_BODY
+  Top level headings make slides with TITLE layout.
+  Subheadings (levels 1 and 2) produce SECTION_HEADER slide layouts.
+  Inline images are placed on the corresponding slide and centered.
+
+  The source document has SOURCE_ID and the target presentation has TARGET_ID Google identifiers.
 */
 function docs2slides() {
   const SOURCE_ID = '1OaLg5bpQr6qZEKpaBef7H8vnqSn8WwGPsGn1ewRmkSo',
@@ -12,16 +18,10 @@ function docs2slides() {
 
   var body = DocumentApp.openById(SOURCE_ID).getBody(),
       data = {slides: slides};
-  var headings = [
-    DocumentApp.ParagraphHeading.HEADING1,
-    DocumentApp.ParagraphHeading.HEADING2,
-    DocumentApp.ParagraphHeading.HEADING3,
-    DocumentApp.ParagraphHeading.HEADING4,
-    DocumentApp.ParagraphHeading.HEADING5,
-    DocumentApp.ParagraphHeading.HEADING6,
-    DocumentApp.ParagraphHeading.TITLE,
-    DocumentApp.ParagraphHeading.SUBTITLE
-  ];
+  var headings = {};
+  headings[DocumentApp.ParagraphHeading.HEADING1] = SlidesApp.PredefinedLayout.TITLE;
+  headings[DocumentApp.ParagraphHeading.HEADING2] = SlidesApp.PredefinedLayout.SECTION_HEADER;
+  headings[DocumentApp.ParagraphHeading.HEADING3] = SlidesApp.PredefinedLayout.SECTION_HEADER;
 
   // Loop through all source body child elements to find text paragraphs or list items
   // As a result data object will include h1 member - for a slide title, and body member - for a slide rich text content.
@@ -32,35 +32,33 @@ function docs2slides() {
       case DocumentApp.ElementType.PARAGRAPH:
         var p = child.asParagraph();
         // Paragraph may have a heading type
-        if (headings.indexOf(p.getHeading()) > -1) {
+        if (headings[p.getHeading()] != undefined) {
           addSlide(data);
+          data.layout = headings[p.getHeading()];
           data.h1 = p.getText();  // This is string type
           data.body = [];
+          data.images = [];
         } else {  // or normal type (no heading)
           data.body.push(p.editAsText());  // This is rich Text type (NOT string!)
         }
+        appendImagesFrom(p, data);
         break;
       case DocumentApp.ElementType.LIST_ITEM:
         var li = child.asListItem();
         // List item of the top level is considered as a slide title
         if (li.getNestingLevel() == 0) {
           addSlide(data);
+          data.layout = SlidesApp.PredefinedLayout.TITLE_AND_BODY;
           data.h1 = li.getText();  // string type
           data.body = [];
+          data.images = [];
         } else {
           data.body.push(li.editAsText());
         }
+        appendImagesFrom(li, data);
     }
   }
   addSlide(data);
-
-  // Import images from the source document into additional blank slides
-  body.getImages().forEach(function(image) {
-    var blob = image.getBlob();
-    var slide = slides.appendSlide(SlidesApp.PredefinedLayout.BLANK);
-    slide.insertImage(blob);
-  });
-
 
   // Remove old slides (if new slides exist)
   while (slides.getSlides().length > slidesCount && slidesCount > 0) {
@@ -71,20 +69,37 @@ function docs2slides() {
 }
 
 
+function appendImagesFrom(parentElement, toData) {
+  for (var i = 0; i < parentElement.getNumChildren(); i++) {
+    var c = parentElement.getChild(i);
+    if (c.getType() == DocumentApp.ElementType.INLINE_IMAGE) {
+      toData.images.push(c);
+    }
+  }
+}
+
+
 /* This function takes data object which has members:
-h1 - slide title, body - slide rich text content and slides - presentation itself
+h1 - slide title,
+body - slide rich text content
+layout - desired slide layout
+images - inline images found for the slide
+slides - presentation itself
+
 It appends a slide with the predefined layout, fills title and content, applies styles to content.
 The styles are discovered from data.body array elements, because they have rich Text type
 */
 function addSlide(data) {
   if (data.h1 == undefined) return;
-  var slide = data.slides.appendSlide(SlidesApp.PredefinedLayout.TITLE_AND_BODY);
+  var slide = data.slides.appendSlide(data.layout);
   slide.getShapes().forEach(function(shape) {
     switch(shape.getPlaceholderType()) {
       case SlidesApp.PlaceholderType.TITLE:
+      case SlidesApp.PlaceholderType.CENTERED_TITLE:
         shape.getText().setText(data.h1);  // fill in a slide title
         break;
       case SlidesApp.PlaceholderType.BODY:
+      case SlidesApp.PlaceholderType.SUBTITLE:
         var textRng = shape.getText();
         data.body.forEach(
           function(text) {
@@ -119,7 +134,14 @@ function addSlide(data) {
             });
           }
         );
+        break;
+      default:
+        Logger.log(shape.getPlaceholderType());
     }
+  });
+  data.images.forEach(function(image) {
+    var blob = image.getBlob();
+    slide.insertImage(blob).alignOnPage(SlidesApp.AlignmentPosition.CENTER);
   });
   data.h1 = undefined;
 }
@@ -159,3 +181,4 @@ function discoverStyles(text) {
   }
   return styles;
 }
+
