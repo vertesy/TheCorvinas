@@ -1,13 +1,13 @@
 ######################################################################
 # Plot_Estimated_Parameters.r
 ######################################################################
-# source ("~/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/Plot_Estimated_Parameters.r")
+# source("~/Dokumentumok/Tanulas/HD/HD_04/Thesis/Presentations_Thesis/After_Thesis_submission/2016_Modeling/Q6/Plot_Estimated_Parameters.r")
 
 # This scripts read in a Fits*Parameters dataframe and plots histograms and pairwise correlations among them. The file should have row and column names.
 
 # Functions ------------------------
 require(MarkdownReports)
-source ('~/GitHub/CodeAndRoll/CodeAndRoll.R')
+source('~/GitHub/CodeAndRoll/CodeAndRoll.R')
 
 cormethod = "spearman"
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {

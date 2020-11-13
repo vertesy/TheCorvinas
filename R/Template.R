@@ -1,13 +1,13 @@
 ######################################################################
 # Description
 ######################################################################
-# source ('')
-# rm(list=ls(all.names = TRUE)); try(dev.off(), silent = T)
+# source('')
+# rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
 
 # Functions ------------------------
-try (source ('~/GitHub/CodeAndRoll/CodeAndRoll.R'),silent= F)
+try(source('~/GitHub/CodeAndRoll/CodeAndRoll.R'),silent= F)
 require('MarkdownReportsDev')
-# source ('~/Github/TheCorvinas/R/DatabaseLinke.r')
+# source('~/Github/TheCorvinas/R/DatabaseLinke.r')
 
 # Setup ------------------------
 OutDir = ""
