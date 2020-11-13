@@ -18,7 +18,7 @@ convert.ndata2TPM <- function(sc=sc) {
 # Differential Gene Expression ------------------------------------------------------------------------------------------------------------------------------
 
 # source: http://www.gettinggeneticsdone.com/2014/05/r-volcano-plots-to-visualize-rnaseq-microarray.html
-wplot_Volcano <- function (DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, highlight =T, ...) {
+wplot_Volcano <- function(DEseqResults, thr_log2fc_ = thr_log2fc, thr_padj_ =thr_padj, showNames = F, saveit =T, pname_ =F, highlight =T, ...) {
   if (pname_ == FALSE) { pname_ = substitute(DEseqResults) }
   Columns =c("Gene", "log2FoldChange", "padj")
   DE = as.data.frame(DEseqResults)
@@ -155,7 +155,7 @@ write.simple.append.vcf  <- function(input_df, extension='vcf', ManualName ="", 
 	write.table (input_df, file = FnP, sep = "\t", row.names = F, col.names = F, quote=FALSE, append = T )
 } # fun
 
-fix_missing_entries <- function (complete_vec, partial_vec) { # if there are some categories missing, by creating a table from a vector, you can add the missing categories
+fix_missing_entries <- function(complete_vec, partial_vec) { # if there are some categories missing, by creating a table from a vector, you can add the missing categories
 	nr_cat = length (complete_vec)
 	fixed_vec=rep(NA, nr_cat); names (fixed_vec) = names (complete_vec)
 	for (n in names(complete_vec)) {
@@ -191,17 +191,17 @@ name2id <- function(x,id=rownames(sc@expdata)) {
 # X-react project -----------------------------------------------------------------------------------------------------
 
 # For PNR plots
-calculate_MRR <- function (vector) {
+calculate_MRR <- function(vector) {
 	# assume 0 = REF
 	return(percentage_formatter(sum(vector == 0)/sum(vector == 1)))
 }
 
-calculate_totBR <- function (vector) {
+calculate_totBR <- function(vector) {
 	# assume 0 = REF
 	return(percentage_formatter(sum(vector > 0.02 & vector <0.98)/length(vector)))
 }
 
-ecdf_Abel <- function (distribution, test_values=F) {
+ecdf_Abel <- function(distribution, test_values=F) {
 	DisLen = length(distribution)
 	PCtiles = numeric(DisLen)
 	for (i in 1:DisLen) { PCtiles[i] = sum(distribution < distribution[i]) / DisLen	}

@@ -20,8 +20,8 @@ rich.colors.vec <- function(vec, pre=0, post=0, randomize=F, seed=11) { # Genera
   colz[as.character(vec)] # convert to character because they are referred by name
 }
 
-# icolor_categories <- function (vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
-icolor_categories <- function (vec, rndize=F, trail=0, seed=354, plotit=F) {
+# icolor_categories <- function(vec, rndize=F) {  x= table(vec);colvec = richColors(l(x)); if(rndize) colvec=sample(colvec); names(colvec) =names(x); return(colvec) } # create color categories
+icolor_categories <- function(vec, rndize=F, trail=0, seed=354, plotit=F) {
   x= table(vec);
   colvec = richColors(l(x)+trail );
   colvec = colvec[ trail:l(x)+trail];
@@ -43,7 +43,7 @@ icolor_categories <- function (vec, rndize=F, trail=0, seed=354, plotit=F) {
 #' @param fill Color of the boxes next to the text
 #' @param bty Background of legend, transparent by default
 #' @param OverwritePrevPDF Save the plot immediately with the same name the last wplot* function made (It is stored in plotnameLastPlot variable).
-#' @param ... Pass any other parameter of the corresponding text function (most of them should work).
+#' @param ... Pass any other parameter of the corresponding text function(most of them should work).
 #' @examples wlegend(...)
 #' @export
 
@@ -71,7 +71,7 @@ capitalize_Firstletter <- function(s, strict = FALSE) { # Capitalize every first
 }
 
 
-normalize_per_column <- function (m, factor) { # Normalize each column by its by a corresponding value. It is solely t(t(matrix)/factor) with a couple of error checks.
+normalize_per_column <- function(m, factor) { # Normalize each column by its by a corresponding value. It is solely t(t(matrix)/factor) with a couple of error checks.
 	any_print("Range of normalization factors:" , range(iround(factor)))
 	stopifnot(dim(m)[2] == l(factor))
 	stopifnot(any(is.finite(factor)))
@@ -80,7 +80,7 @@ normalize_per_column <- function (m, factor) { # Normalize each column by its by
 }
 
 
-secondDerivative_discrete <- function (x) { # Approximate the "discrete 2nd derivative" or "Finite difference" by central differences. Source: https://stackoverflow.com/questions/4471993/compute-the-elbow-for-a-curve-automatically-and-mathematically?lq=1
+secondDerivative_discrete <- function(x) { # Approximate the "discrete 2nd derivative" or "Finite difference" by central differences. Source: https://stackoverflow.com/questions/4471993/compute-the-elbow-for-a-curve-automatically-and-mathematically?lq=1
 	secondDerivative = rep(NA,l(x))
 	for(i in 2:l(x-1)){
 		secondDerivative[i] = x[i+1] + x[i-1] - 2 * x[i]
@@ -217,14 +217,14 @@ simplify_categories <-   function(category_vec, replaceit , to ) { # Replace eve
 }
 
 
-as.numeric.convertString <- function (vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
+as.numeric.convertString <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
 	numerified_vec = as.numeric(as.factor(vec))
 	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
 	return(numerified_vec)
 }
 
 # WO as.factor!
-as.numeric.wNames <- function (vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
+as.numeric.wNames <- function(vec) { # Converts any vector into a numeric vector, and puts the original character values into the names of the new vector, unless it already has names. Useful for coloring a plot by categories, name-tags, etc.
 	numerified_vec = as.numeric((vec))
 	if (!is.null(names(vec))) {names (numerified_vec) = names (vec)}
 	return(numerified_vec)
@@ -232,7 +232,7 @@ as.numeric.wNames <- function (vec) { # Converts any vector into a numeric vecto
 
 
 
-# df_col_to_vector_w_names <- function (OneColDF, WhichDimension ="col") {
+# df_col_to_vector_w_names <- function(OneColDF, WhichDimension ="col") {
 # 	if (WhichDimension == "col") {	n = rownames(OneColDF)} # get the rownames for that column of the DF
 # 	if (WhichDimension == "row") {	n = colnames(OneColDF)} # get colnames...
 # 	OneColDF = as.vector(unlist(OneColDF));	names(OneColDF) = n 				# add names
@@ -306,7 +306,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 
 
 # http://stackoverflow.com/questions/20127282/r-color-scatterplot-points-by-col-value-with-legend
-# scatter_fill <- function (x, y, color, xlim=range(x), ylim=range(y), zlim=range(color),
+# scatter_fill <- function(x, y, color, xlim=range(x), ylim=range(y), zlim=range(color),
 #                           nlevels = 20, plot.title, plot.axes, pch=21, cex=1,
 #                           key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
 #                           axes = TRUE, frame.plot = axes, ...) {
@@ -427,7 +427,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # smoothScatter(x, nrpoints = 0, postPlotHook = fudgeit)
 
 
-# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
+# wvenn <- function(yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F, plotname = substitute(yalist)) {
 #   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
 #   fname = kollapse(plotname, ".", imagetype, print = F)
 #   LsLen = length(yalist)
@@ -468,7 +468,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 #' #'
 #' #' Create and save pie charts as .pdf, in "OutDir". If mdlink =T, it inserts a .pdf and a .png link in the markdown report, set by "path_of_report". The .png version is not created, only the link is put in place, not to overwrite previous versions.
 #' #' @param variable The variable to plot.
-#' #' @param ... Pass any other parameter of the corresponding plotting function (most of them should work).
+#' #' @param ... Pass any other parameter of the corresponding plotting function(most of them should work).
 #' #' @param percentage Display percentage instead of counts. TRUE by default.
 #' #' @param both_pc_and_value Report both percentage AND number.
 #' #' @param plotname Title of the plot (main parameter) and also the name of the file.
@@ -480,7 +480,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 #' #' @examples wpie (variable =  , ... =  , percentage = TRUE, plotname = substitute(variable), w = 7, h = 7, mdlink = F)
 #' #' @export
 #'
-#' wpie <-function (variable, ..., percentage = TRUE, both_pc_and_value=F, plotname = substitute(variable), col = gplots::rich.colors(length(variable)), savefile = T, w = 7, h = 7, mdlink = F) {
+#' wpie <-function(variable, ..., percentage = TRUE, both_pc_and_value=F, plotname = substitute(variable), col = gplots::rich.colors(length(variable)), savefile = T, w = 7, h = 7, mdlink = F) {
 #'   if (!require("gplots")) { print("Please install gplots: install.packages('gplots')") }
 #'   fname = kollapse(plotname, ".pie")
 #'   subt = kollapse("Total = ", sum(variable), print = F)
@@ -494,7 +494,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 #'
 
 
-# wvioplot_list <-function (yalist, ..., coll = c(2:(length(yalist)+1)),
+# wvioplot_list <-function(yalist, ..., coll = c(2:(length(yalist)+1)),
 #                           plotname = as.character(substitute(yalist)), sub = NULL, xlb = names(yalist), ylb = "", ylimm=F,
 #                           incrBottMarginBy = 0, tilted_text = F, yoffset=0, savefile = T, w = 7, h = 7, mdlink = F) {
 #   if (!require("vioplot")) { print("Please install vioplot: install.packages('vioplot')") }
@@ -522,7 +522,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # }
 
 
-# create_set_SubDir <-function (..., makeOutDirOrig=T, setDir=T) {
+# create_set_SubDir <-function(..., makeOutDirOrig=T, setDir=T) {
 #   NewOutDir = kollapse(OutDir,"/", ..., print = F)
 #   any_print("All files will be saved under 'NewOutDir': ", NewOutDir)
 #   if (!exists(NewOutDir)) {	dir.create(NewOutDir)	}
@@ -537,7 +537,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # }
 
 
-# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
+# wvenn <- function(yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), ..., w = 7, h = 7, mdlink = F) {
 #   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
 #   fname = kollapse(substitute(yalist), ".", imagetype, print = F)
 #   filename = kollapse(OutDir,"/", fname, print = F)
@@ -551,7 +551,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # }
 
 
-# ttl_field <- function (flname = basename(fname) ) { paste0(flname, " by ", if (exists("scriptname")) scriptname else "Rscript") }
+# ttl_field <- function(flname = basename(fname) ) { paste0(flname, " by ", if (exists("scriptname")) scriptname else "Rscript") }
 
 ### THIS IS DUPLICATE OF THE ONE IN MD REPORTS
 # llwrite_list <- function(yalist) {
@@ -592,7 +592,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 
 # JUNK
 
-# pdfA4plot_on <- function (pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
+# pdfA4plot_on <- function(pname = date(), ..., w = 8.27, h = 11.69, rows = 4, cols = rows-1, mdlink = FALSE,
 #                           title = ttl_field(pname)) { # Print (multiple) plots to an (A4) pdf.
 #   try.dev.off()
 #   assign("mfrow_default", par("mfrow"), fname, envir = .GlobalEnv)
@@ -604,7 +604,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # }
 
 
-# wscatter.fill <- function (df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[, 1]), ylim=range(df2col[, 2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
+# wscatter.fill <- function(df2col = cbind("A"=rnorm(100), "B"=rnorm(100)), ..., color, xlim=range(df2col[, 1]), ylim=range(df2col[, 2]), zlim=range(color), nlevels = 20, pch=21, cex=1,
 #                            plotname = substitute(df2col), plot.title = plotname,
 #                            plot.axes, key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
 #                            axes = TRUE, frame.plot = axes, xlb, ylb,
@@ -670,7 +670,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # }
 
 
-# wvenn <- function (yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), subt, ..., w = 7, h = w, mdlink = F, plotname = substitute(yalist)) {
+# wvenn <- function(yalist, imagetype = "png", alpha = .5, fill = 1:length(yalist), subt, ..., w = 7, h = w, mdlink = F, plotname = substitute(yalist)) {
 #   if (!require("VennDiagram")) { print("Please install VennDiagram: install.packages('VennDiagram')") }
 #   fname = kollapse(plotname, ".", imagetype, print = F)
 #   LsLen = length(yalist)
@@ -697,7 +697,7 @@ whist.nonCol <-  function(variable, plotname = substitute(variable), ..., w=7, h
 # }
 
 #
-# md.LogSettingsFromList <-function (parameterlist=p, maxlen =20) {
+# md.LogSettingsFromList <-function(parameterlist=p, maxlen =20) {
 #   LZ = unlapply(parameterlist, l) # collapse paramters with multiple entires
 #   LNG = names(which(LZ>1))
 #   for (i in LNG ) {
