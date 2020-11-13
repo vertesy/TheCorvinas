@@ -1,28 +1,28 @@
 /*  Made by: yyer2014@gmail.com (Alexander Y.)
 
-  Main conversion function. 
+  Main conversion function.
   Top level list items work as new slide titles. Slide layout is TITLE_AND_BODY
   Top level headings make slides with TITLE layout.
   Subheadings (levels 1 and 2) produce SECTION_HEADER slide layouts.
   Inline images are placed on the corresponding slide and centered.
-  
+
   The source document has SOURCE_ID and the target presentation has TARGET_ID Google identifiers.
 */
 function docs2slides() {
-  const SOURCE_ID = '1OaLg5bpQr6qZEKpaBef7H8vnqSn8WwGPsGn1ewRmkSo', 
-      TARGET_ID = '11ckVl8YCwEMahX5LJZZW7Q9OW9cja5Mh-a_LIHuhDKA';
-  
+  const SOURCE_ID = '  DOCUMENT ID  ',
+      TARGET_ID = '  DOCUMENT ID  ';
+
   // Open target presentation and remember old slides count (they should be removed)
   var slides = SlidesApp.openById(TARGET_ID),
       slidesCount = slides.getSlides().length;
-  
-  var body = DocumentApp.openById(SOURCE_ID).getBody(), 
+
+  var body = DocumentApp.openById(SOURCE_ID).getBody(),
       data = {slides: slides};
   var headings = {};
   headings[DocumentApp.ParagraphHeading.HEADING1] = SlidesApp.PredefinedLayout.TITLE;
   headings[DocumentApp.ParagraphHeading.HEADING2] = SlidesApp.PredefinedLayout.SECTION_HEADER;
   headings[DocumentApp.ParagraphHeading.HEADING3] = SlidesApp.PredefinedLayout.SECTION_HEADER;
-  
+
   // Loop through all source body child elements to find text paragraphs or list items
   // As a result data object will include h1 member - for a slide title, and body member - for a slide rich text content.
   // Ready data object is the only argument to call addSlide function for a new slide creation
@@ -59,7 +59,7 @@ function docs2slides() {
     }
   }
   addSlide(data);
-  
+
   // Remove old slides (if new slides exist)
   while (slides.getSlides().length > slidesCount && slidesCount > 0) {
     slides.getSlides()[0].remove();
@@ -75,12 +75,12 @@ function appendImagesFrom(parentElement, toData) {
     if (c.getType() == DocumentApp.ElementType.INLINE_IMAGE) {
       toData.images.push(c);
     }
-  }  
+  }
 }
 
 
-/* This function takes data object which has members: 
-h1 - slide title, 
+/* This function takes data object which has members:
+h1 - slide title,
 body - slide rich text content
 layout - desired slide layout
 images - inline images found for the slide
@@ -90,7 +90,7 @@ It appends a slide with the predefined layout, fills title and content, applies 
 The styles are discovered from data.body array elements, because they have rich Text type
 */
 function addSlide(data) {
-  if (data.h1 == undefined) return;  
+  if (data.h1 == undefined) return;
   var slide = data.slides.appendSlide(data.layout);
   slide.getShapes().forEach(function(shape) {
     switch(shape.getPlaceholderType()) {
@@ -153,18 +153,18 @@ All of them are considered as an ordered array with 6 elements. Such an array ap
   v - the style vector for a particular position in text
   currentStyle - the previous style vector (before discovering v)
 Thus the main loop below is for testing all offset positions in text sequencially.
-The differences between currentStyle and v components (if found) are stored in style structure 
-as well as their positions, start and end. 
-So styles variable remembers all fragments positions with special formatting. 
+The differences between currentStyle and v components (if found) are stored in style structure
+as well as their positions, start and end.
+So styles variable remembers all fragments positions with special formatting.
 */
 function discoverStyles(text) {
   var styles = [[], [], [], [], [], []],
-      currentStyle = [null, null, null, null, null, null], 
+      currentStyle = [null, null, null, null, null, null],
       plainText = text.getText();
-  
+
   for (var offset = 0; offset < plainText.length; offset++) {
     var v = [
-      text.isBold(offset), text.isItalic(offset), text.isUnderline(offset), 
+      text.isBold(offset), text.isItalic(offset), text.isUnderline(offset),
       text.getForegroundColor(offset), text.getBackgroundColor(offset), text.getLinkUrl(offset)
     ];
     v.forEach(function(value, index) {

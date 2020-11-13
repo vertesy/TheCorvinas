@@ -3,8 +3,8 @@
   Source document has SOURCE_ID and target presentation has TARGET_ID Google identifiers.
 */
 function docs2slides() {
-  const SOURCE_ID = '1w8lTFR1DpeSkaySLNyTINEhm_n8RZHGJ_nGaXcQwV7k',
-      TARGET_ID = '1B7tNUh1-4ocbnu06VFIoC4jRIb28P8leLX5kGw-YwN8';
+  const SOURCE_ID = '  DOCUMENT ID  ',
+      TARGET_ID = '1B7tNUh1-  DOCUMENT ID  ';
 
   // Open target presentation and remember old slides count (they should be removed)
   var slides = SlidesApp.openById(TARGET_ID),
