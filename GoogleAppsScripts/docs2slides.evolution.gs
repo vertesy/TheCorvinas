@@ -1,19 +1,19 @@
 /*  Made by: yyer2014@gmail.com (Alexander Y.)
-  Main conversion function.
+  Main conversion function. Corrected to include top level list items as new slide titles.
   Source document has SOURCE_ID and target presentation has TARGET_ID Google identifiers.
 */
 function docs2slides() {
   const SOURCE_ID = '1OaLg5bpQr6qZEKpaBef7H8vnqSn8WwGPsGn1ewRmkSo',
       TARGET_ID = '11ckVl8YCwEMahX5LJZZW7Q9OW9cja5Mh-a_LIHuhDKA';
-  
+
   // Open target presentation and remember old slides count (they should be removed)
   var slides = SlidesApp.openById(TARGET_ID),
       slidesCount = slides.getSlides().length;
-  
-  var body = DocumentApp.openById(SOURCE_ID).getBody(), 
+
+  var body = DocumentApp.openById(SOURCE_ID).getBody(),
       data = {slides: slides};
   var headings = [
-    DocumentApp.ParagraphHeading.HEADING1, 
+    DocumentApp.ParagraphHeading.HEADING1,
     DocumentApp.ParagraphHeading.HEADING2,
     DocumentApp.ParagraphHeading.HEADING3,
     DocumentApp.ParagraphHeading.HEADING4,
@@ -22,7 +22,7 @@ function docs2slides() {
     DocumentApp.ParagraphHeading.TITLE,
     DocumentApp.ParagraphHeading.SUBTITLE
   ];
-  
+
   // Loop through all source body child elements to find text paragraphs or list items
   // As a result data object will include h1 member - for a slide title, and body member - for a slide rich text content.
   // Ready data object is the only argument to call addSlide function for a new slide creation
@@ -41,19 +41,27 @@ function docs2slides() {
         }
         break;
       case DocumentApp.ElementType.LIST_ITEM:
-        data.body.push(child.asListItem().editAsText());
+        var li = child.asListItem();
+        // List item of the top level is considered as a slide title
+        if (li.getNestingLevel() == 0) {
+          addSlide(data);
+          data.h1 = li.getText();  // string type
+          data.body = [];
+        } else {
+          data.body.push(li.editAsText());
+        }
     }
   }
   addSlide(data);
-  
+
   // Import images from the source document into additional blank slides
   body.getImages().forEach(function(image) {
     var blob = image.getBlob();
     var slide = slides.appendSlide(SlidesApp.PredefinedLayout.BLANK);
     slide.insertImage(blob);
   });
-  
-  
+
+
   // Remove old slides (if new slides exist)
   while (slides.getSlides().length > slidesCount && slidesCount > 0) {
     slides.getSlides()[0].remove();
@@ -63,13 +71,13 @@ function docs2slides() {
 }
 
 
-/* This function takes data object which has members: 
+/* This function takes data object which has members:
 h1 - slide title, body - slide rich text content and slides - presentation itself
 It appends a slide with the predefined layout, fills title and content, applies styles to content.
 The styles are discovered from data.body array elements, because they have rich Text type
 */
 function addSlide(data) {
-  if (data.h1 == undefined) return;  
+  if (data.h1 == undefined) return;
   var slide = data.slides.appendSlide(SlidesApp.PredefinedLayout.TITLE_AND_BODY);
   slide.getShapes().forEach(function(shape) {
     switch(shape.getPlaceholderType()) {
@@ -112,7 +120,7 @@ function addSlide(data) {
           }
         );
     }
-  });  
+  });
   data.h1 = undefined;
 }
 
@@ -123,18 +131,18 @@ All of them are considered as an ordered array with 6 elements. Such an array ap
   v - the style vector for a particular position in text
   currentStyle - the previous style vector (before discovering v)
 Thus the main loop below is for testing all offset positions in text sequencially.
-The differences between currentStyle and v components (if found) are stored in style structure 
-as well as their positions, start and end. 
-So styles variable remembers all fragments positions with special formatting. 
+The differences between currentStyle and v components (if found) are stored in style structure
+as well as their positions, start and end.
+So styles variable remembers all fragments positions with special formatting.
 */
 function discoverStyles(text) {
   var styles = [[], [], [], [], [], []],
-      currentStyle = [null, null, null, null, null, null], 
+      currentStyle = [null, null, null, null, null, null],
       plainText = text.getText();
-  
+
   for (var offset = 0; offset < plainText.length; offset++) {
     var v = [
-      text.isBold(offset), text.isItalic(offset), text.isUnderline(offset), 
+      text.isBold(offset), text.isItalic(offset), text.isUnderline(offset),
       text.getForegroundColor(offset), text.getBackgroundColor(offset), text.getLinkUrl(offset)
     ];
     v.forEach(function(value, index) {
@@ -151,4 +159,3 @@ function discoverStyles(text) {
   }
   return styles;
 }
-
