@@ -9,15 +9,19 @@
   The source document has SOURCE_ID and the target presentation has TARGET_ID Google identifiers.
 */
 function docs2slides() {
-  const SOURCE_ID = '1OaLg5bpQr6qZEKpaBef7H8vnqSn8WwGPsGn1ewRmkSo',
-      TARGET_ID = '11ckVl8YCwEMahX5LJZZW7Q9OW9cja5Mh-a_LIHuhDKA';
+  const SOURCE_ID = '16dHEsUu5JvDCrbldpkrby8yKdZu6w_Ge--jBT-Lb7cY', // '1CpRjx8hPH_dnge7JipJVBZsbUKLe_QtkpxmmbiASe8I', //
+      TARGET_ID = '1fnq1wzBBk6z8_7tvHhl3F74vc7FYaWDXe8Jq6Vh2iy8'
 
   // Open target presentation and remember old slides count (they should be removed)
   var slides = SlidesApp.openById(TARGET_ID),
       slidesCount = slides.getSlides().length;
 
   var body = DocumentApp.openById(SOURCE_ID).getBody(),
-      data = {slides: slides};
+      data = {
+        slides: slides,
+        body: [],
+        images: []
+      };
   var headings = {};
   headings[DocumentApp.ParagraphHeading.HEADING1] = SlidesApp.PredefinedLayout.TITLE;
   headings[DocumentApp.ParagraphHeading.HEADING2] = SlidesApp.PredefinedLayout.SECTION_HEADER;
@@ -181,4 +185,3 @@ function discoverStyles(text) {
   }
   return styles;
 }
-
