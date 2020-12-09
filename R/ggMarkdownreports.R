@@ -30,23 +30,23 @@ pie_theme <- theme_minimal() +
 
 
 ## qgpie -------------------------------------------------------------------------------------------------
-
-ggpie <- function(dat, by, totals) {
- # https://mathematicalcoffee.blogspot.com/2014/06/ggpie-pie-graphs-in-ggplot2.html
- ggplot(dat, aes_string(x = factor(1), y = totals, fill = by)) +
-  geom_bar(stat = 'identity', color = 'black') +
-  guides(fill = guide_legend(override.aes = list(colour = NA))) + # removes black borders from legend
-  coord_polar(theta = 'y') +
-  pie_theme +
-  scale_y_continuous(breaks = cumsum(dat[[totals]]) - dat[[totals]] / 2, labels = dat[[by]])
-}
-# ggpie(dat = x, by = 'name', totals = 'value')
-
-qgpie <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE,
-         plotname = substitute(NamedVector)) {
- df = tibble::enframe(as.named.vector(NamedVector) )
- ggpie(dat = df, by = 'name', totals = 'value') + ggtitle(plotname)
-}
+"Now use ggpubr / ggExpress"
+# ggpie <- function(dat, by, totals) {
+#  # https://mathematicalcoffee.blogspot.com/2014/06/ggpie-pie-graphs-in-ggplot2.html
+#  ggplot(dat, aes_string(x = factor(1), y = totals, fill = by)) +
+#   geom_bar(stat = 'identity', color = 'black') +
+#   guides(fill = guide_legend(override.aes = list(colour = NA))) + # removes black borders from legend
+#   coord_polar(theta = 'y') +
+#   pie_theme +
+#   scale_y_continuous(breaks = cumsum(dat[[totals]]) - dat[[totals]] / 2, labels = dat[[by]])
+# }
+# # ggpie(dat = x, by = 'name', totals = 'value')
+# 
+# qgpie <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE,
+#          plotname = substitute(NamedVector)) {
+#  df = tibble::enframe(as.named.vector(NamedVector) )
+#  ggpie(dat = df, by = 'name', totals = 'value') + ggtitle(plotname)
+# }
 
 # perGenotype = table(rep(LETTERS[1:3], 3)); qgpie(perGenotype)
 
@@ -156,17 +156,28 @@ qghist <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE
  p
 }
 # qghist(NamedVector)
-## -------------------------------------------------------------------------------------------------
-qqSaveA4p <- function(ggobj, ext =c("png", "pdf")[1]) {
-  title = substitute(ggobj)
-  save_plot(plot = ggobj, filename = kpp(title, ext), base_height = hA4, base_width = wA4)
-}
+# ## -------------------------------------------------------------------------------------------------
+# qqSaveA4p <- function(ggobj, ext =c("png", "pdf")[1]) {
+#   title = substitute(ggobj)
+#   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = hA4, base_width = wA4)
+# }
+# 
+# 
+# qqSaveA4l <- function(ggobj, ext =c("png", "pdf")[1]) {
+#   title = substitute(ggobj)
+#   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = wA4, base_width =hA4 )
+# }
+# 
+# 
+# qqSaveA5l <- function(ggobj, ext =c("png", "pdf")[1]) {
+#   title = substitute(ggobj)
+#   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = hA4/2, base_width = 8.27 )
+# }
 
-
-qqSaveA4l <- function(ggobj, ext =c("png", "pdf")[1]) {
-  title = substitute(ggobj)
-  save_plot(plot = ggobj, filename = kpp(title, ext), base_height = wA4, base_width =hA4 )
-}
+# qqSave <- function(ggobj, ext =c("png", "pdf")[1], w =5, h = w) {
+#   title = substitute(ggobj)
+#   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = w, base_width = h)
+# }
 
 
 ## -------------------------------------------------------------------------------------------------
