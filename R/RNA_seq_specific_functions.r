@@ -104,28 +104,28 @@ prepare4plotMA <- function(DESeq_results, thr_padj_=thr_padj, thr_log2fc_ =F) { 
 
 
 # Correlation plots ------------------------------------------------------------------------------------------------------------------------------
-
-panel.cor.pearson <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ...) {  # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  excludeNAs = which(is.na(x) | is.na(y))
-  r <- abs(cor(x[-excludeNAs], y[-excludeNAs], method = method))
-  txt <- format(c(r, 0.123456789), digits=digits)[1]
-  txt <- paste(prefix, txt, sep="")
-  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-  text(0.5, 0.5, txt, cex = cex.cor * r)
-}
-
-panel.cor.spearman <- function(x, y, digits=2, prefix="", method = "spearman", cex.cor, ...) {  # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  excludeNAs = which(is.na(x) | is.na(y))
-  r <- abs(cor(x[-excludeNAs], y[-excludeNAs], method = method))
-  txt <- format(c(r, 0.123456789), digits=digits)[1]
-  txt <- paste(prefix, txt, sep="")
-  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-  text(0.5, 0.5, txt, cex = cex.cor * r)
-}
+#
+# panel.cor.pearson <- function(x, y, digits=2, prefix="", method = "pearson", cex.cor, ...) {  # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+#   usr <- par("usr"); on.exit(par(usr))
+#   par(usr = c(0, 1, 0, 1))
+#   excludeNAs = which(is.na(x) | is.na(y))
+#   r <- abs(cor(x[-excludeNAs], y[-excludeNAs], method = method))
+#   txt <- format(c(r, 0.123456789), digits=digits)[1]
+#   txt <- paste(prefix, txt, sep="")
+#   if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+#   text(0.5, 0.5, txt, cex = cex.cor * r)
+# }
+#
+# panel.cor.spearman <- function(x, y, digits=2, prefix="", method = "spearman", cex.cor, ...) {  # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
+#   usr <- par("usr"); on.exit(par(usr))
+#   par(usr = c(0, 1, 0, 1))
+#   excludeNAs = which(is.na(x) | is.na(y))
+#   r <- abs(cor(x[-excludeNAs], y[-excludeNAs], method = method))
+#   txt <- format(c(r, 0.123456789), digits=digits)[1]
+#   txt <- paste(prefix, txt, sep="")
+#   if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+#   text(0.5, 0.5, txt, cex = cex.cor * r)
+# }
 
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, method = cormethod) {
   usr <- par("usr"); on.exit(par(usr))
