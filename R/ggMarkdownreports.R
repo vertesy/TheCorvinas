@@ -5,28 +5,28 @@
 
 
 
+stop("Do not use this script")
 wA4 = 8.27 # A4 inches
 hA4 = 11.69
-
 
 ## setup -------------------------------------------------------------------------------------------------
 require(ggplot2)
 # require(tibble)
 
 ## Themes -------------------------------------------------------------------------------------------------
-
-pie_theme <- theme_minimal() +
- theme(
-  axis.title.x = element_blank(),
-  axis.title.y = element_blank(),
-  panel.border = element_blank(),
-  panel.grid = element_blank(),
-  axis.text.y = element_blank(),
-  axis.text.x = element_text(colour = 'black'),
-  axis.ticks = element_blank(),
-  plot.title = element_text(size = 14, face = "bold"),
-  axis.title = element_blank()
- )
+#
+# pie_theme <- theme_minimal() +
+#  theme(
+#   axis.title.x = element_blank(),
+#   axis.title.y = element_blank(),
+#   panel.border = element_blank(),
+#   panel.grid = element_blank(),
+#   axis.text.y = element_blank(),
+#   axis.text.x = element_text(colour = 'black'),
+#   axis.ticks = element_blank(),
+#   plot.title = element_text(size = 14, face = "bold"),
+#   axis.title = element_blank()
+#  )
 
 
 ## qgpie -------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ pie_theme <- theme_minimal() +
 #   scale_y_continuous(breaks = cumsum(dat[[totals]]) - dat[[totals]] / 2, labels = dat[[by]])
 # }
 # # ggpie(dat = x, by = 'name', totals = 'value')
-# 
+#
 # qgpie <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE,
 #          plotname = substitute(NamedVector)) {
 #  df = tibble::enframe(as.named.vector(NamedVector) )
@@ -161,14 +161,14 @@ qghist <- function(NamedVector, percentage = TRUE, both_pc_and_value = FALSE
 #   title = substitute(ggobj)
 #   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = hA4, base_width = wA4)
 # }
-# 
-# 
+#
+#
 # qqSaveA4l <- function(ggobj, ext =c("png", "pdf")[1]) {
 #   title = substitute(ggobj)
 #   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = wA4, base_width =hA4 )
 # }
-# 
-# 
+#
+#
 # qqSaveA5l <- function(ggobj, ext =c("png", "pdf")[1]) {
 #   title = substitute(ggobj)
 #   save_plot(plot = ggobj, filename = kpp(title, ext), base_height = hA4/2, base_width = 8.27 )
