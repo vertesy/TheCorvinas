@@ -22,7 +22,7 @@ inputfile = ""
 
 ### Process
 
-```
+```R
 path_of_report = "/Users/abelvertesy/Github_repos/TheCorvinas.wiki/Biology/Sequencing/C_elegans_reference_transcriptome_statistics/C_elegans_reference_transcriptome_statistics.md"
 
 TranscriptLength.hg19 = read.simple.tsv.named.vector("/Users/abelvertesy/Github_repos/TheCorvinas/Mapping/Reference_Stats/hg19/TranscriptLength.hg19.tsv")
@@ -37,12 +37,12 @@ round(10^(summary(log10_TranscriptLength.hg19)))
 
      Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       3     655    1099     948    1750   56624 
-      
+
 
 
 ![log10_TranscriptLength.hist.pdf](Biology/Sequencing/C_elegans_reference_transcriptome_statistics/log10_TranscriptLength.hist.png)
 
-
+![log10_TranscriptLength.hist.pdf](log10_TranscriptLength.hist.png)
 
 ####  Small gene name categories (length < 10)
 
@@ -67,7 +67,7 @@ round(10^(summary(log10_TranscriptLength.hg19)))
 
 #### Code 
 
-```
+```R
 TranscriptLength = read.simple.tsv.named.vector("/Users/abelvertesy/Github_repos/TheCorvinas.wiki/Biology/Sequencing/C_elegans_reference_transcriptome_statistics/Length.C_elegans.transcripts.vec")   
 whist(TranscriptLength, breaks = 50)
 
@@ -98,10 +98,13 @@ MarkDown_Table_writer_DF_RowColNames(zz)
 
 ![](Biology/Sequencing/C_elegans_reference_transcriptome_statistics/Basedistr.png)
 
+![](Basedistr.png)
+
+
 
 ### Code to calculate Base Frequencies
 
-```
+```R
 llprint("### Base Frequencies in the transcripts")
 
 names_ = read.simple.vec("/Users/abelvertesy/Github_repos/TheCorvinas.wiki/Biology/Sequencing/C_elegans_reference_transcriptome_statistics/ListOfTranscripts.C.elegans.vec")
