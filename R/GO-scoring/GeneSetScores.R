@@ -1,7 +1,7 @@
 ######################################################################
 # GeneSetScores.R
 ######################################################################
-source("~/GitHub/Projects/SEO/GO-scoring/GeneSetScores.R")
+# source("~/GitHub/Projects/SEO/GO-scoring/GeneSetScores.R")
 # source('https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/GO-scoring/GeneSetScores.R')
 
 # try(dev.off(), silent = T)
