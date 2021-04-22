@@ -66,34 +66,6 @@ if (F) {
   create_set_OutDir(ParentDir)
 }
 
-# Non-neural lineages  -----------------------------------------------------------------------------------------------
-if (plot.GO.NonNeural) {
-  create_set_SubDir("GO-Non.neural.lineages")
-  # GO:0051216 cartilage development
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0051216", desc = "cartilage development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0048565 digestive tract development
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0048565", desc = "digestive tract development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0060348 bone development
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0060348", desc = "bone development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0031012 extracellular matrix
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0031012", desc = "extracellular matrix", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0062023 collagen-containing extracellular matrix
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0062023", desc = "collagen-containing extracellular matrix", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0005615 extracellular space
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0005615", desc = "extracellular space", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0043062 extracellular structure organization
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0043062", desc = "extracellular structure organization", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0050840 extracellular matrix binding
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0050840", desc = "extracellular matrix binding", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-  create_set_OutDir(ParentDir)
-}
 
 # Neural lineage  -----------------------------------------------------------------------------------------------
 
@@ -134,7 +106,6 @@ if (plot.GO.NonNeural) {
 
 
 
-
 # Glia  -----------------------------------------------------------------------------------------------
 
   create_set_SubDir("GO-Glia")
@@ -149,6 +120,40 @@ if (plot.GO.NonNeural) {
   create_set_OutDir(ParentDir)
 
 
+
+
+# HGA | ER stress - Glycolysis - Hypoxia - Starvation -----------------------------------------------------------------------------------------------
+
+create_set_SubDir("GO-HGA")
+{
+  # GO:0034976 response to endoplasmic reticulum stress
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0034976", desc = "response to endoplasmic reticulum stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:1905897 regulation of response to endoplasmic reticulum stress
+  try(combined.obj <- PlotGoTermScores(GO = "GO:1905897", desc = "regulation of response to endoplasmic reticulum stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # "GO:0061621"  "canonical.glycolysis"
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0061621", desc = "canonical.glycolysis", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0006096 glycolytic.process
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0006096", desc = "glycolytic.process", obj = combined.obj, plot.each.gene = plotGenes, openBrowser = T), silent = T)
+
+  # "GO:0071456"  "cellular.response.to.hypoxia"
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0071456", desc = "cellular.response.to.hypoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0034059 response to anoxia
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0034059", desc = "response to anoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # "GO:0043065"  "positive.regulation.of.apoptotic.process"
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0043065", desc = "positive.regulation.of.apoptotic.process", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # "GO:0010942"  "positive.regulation.of.cell.death"
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0042594", desc = "positive.regulation.of.cell.death", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # "GO:0010942"  "response to starvation"
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0042594", desc = "response to starvation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+}
+create_set_OutDir(NewOutDir = ParentDir)
 
 
 # Stress (non HGA) -----------------------------------------------------------------------------------------------
@@ -181,17 +186,11 @@ if (plot.GO.NonNeural) {
   # GO:0009651 response to salt stress
   try(combined.obj <- PlotGoTermScores(GO = "GO:0009651", desc = "response to salt stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  # GO:0034059 response to anoxia
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0034059", desc = "response to anoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
   # GO:0034616 response to laminar fluid shear stress
   try(combined.obj <- PlotGoTermScores(GO = "GO:0034616", desc = "response to laminar fluid shear stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
   # GO:0034405 response to fluid shear stress
   try(combined.obj <- PlotGoTermScores(GO = "GO:0034405", desc = "response to fluid shear stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0034976 response to endoplasmic reticulum stress
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0034976", desc = "response to endoplasmic reticulum stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
   # GO:0071470 cellular response to osmotic stress
   try(combined.obj <- PlotGoTermScores(GO = "GO:0071470", desc = "cellular response to osmotic stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
@@ -201,9 +200,6 @@ if (plot.GO.NonNeural) {
 
   # GO:1902882 regulation of response to oxidative stress
   try(combined.obj <- PlotGoTermScores(GO = "GO:1902882", desc = "regulation of response to oxidative stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:1905897 regulation of response to endoplasmic reticulum stress
-  try(combined.obj <- PlotGoTermScores(GO = "GO:1905897", desc = "regulation of response to endoplasmic reticulum stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
   # # GO:0000423 mitophagy # Too FEW genes
   # try(combined.obj <- PlotoTermScores(GO = "GO:0000423", desc = "mitophagy", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
@@ -216,28 +212,34 @@ if (plot.GO.NonNeural) {
 
 
 
-# HGA | Hypoxia - Glycolysis - Apoptosis -----------------------------------------------------------------------------------------------
+# Non-neural lineages  -----------------------------------------------------------------------------------------------
+if (plot.GO.NonNeural) {
+  create_set_SubDir("GO-Non.neural.lineages")
+  # GO:0051216 cartilage development
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0051216", desc = "cartilage development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  create_set_SubDir("GO-HGA")
-  # "GO:0061621"  "canonical.glycolysis"
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0061621", desc = "canonical.glycolysis", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+  # GO:0048565 digestive tract development
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0048565", desc = "digestive tract development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  # GO:0006096 glycolytic.process
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0006096", desc = "glycolytic.process", obj = combined.obj, plot.each.gene = plotGenes, openBrowser = T), silent = T)
+  # GO:0060348 bone development
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0060348", desc = "bone development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  # "GO:0043065"  "positive.regulation.of.apoptotic.process"
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0043065", desc = "positive.regulation.of.apoptotic.process", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+  # GO:0031012 extracellular matrix
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0031012", desc = "extracellular matrix", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  # "GO:0071456"  "cellular.response.to.hypoxia"
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0071456", desc = "cellular.response.to.hypoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+  # GO:0062023 collagen-containing extracellular matrix
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0062023", desc = "collagen-containing extracellular matrix", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  # "GO:0010942"  "positive.regulation.of.cell.death"
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0010942", desc = "positive.regulation.of.cell.death", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+  # GO:0005615 extracellular space
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0005615", desc = "extracellular space", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
-  # # GO:0034976 response to endoplasmic reticulum stress
-  # try(combined.obj <- PlotGoTermScores(GO = "GO:0034976", desc = "response to endoplasmic reticulum stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-  create_set_OutDir(NewOutDir = ParentDir)
+  # GO:0043062 extracellular structure organization
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0043062", desc = "extracellular structure organization", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
+  # GO:0050840 extracellular matrix binding
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0050840", desc = "extracellular matrix binding", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+  create_set_OutDir(ParentDir)
+}
 
 # cell death-----------------------------------------------------------------------------------------------
 
@@ -293,8 +295,6 @@ if (plot.GO.NonNeural) {
 
   # GO:1901031 regulation of response to reactive oxygen species
   try(combined.obj <- PlotGoTermScores(GO = "GO:1901031", desc = "regulation of response to reactive oxygen species", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-
   create_set_OutDir(ParentDir)
 
 
@@ -463,7 +463,7 @@ if (F) {
   # GO:1990144 intrinsic apoptotic signaling pathway in response to hypoxia
   # GO:0061418 regulation of transcription from RNA polymerase II promoter in response to hypoxia
 
-  plotGenes =F
+  plotGenes = F
   try(combined.obj <- PlotGoTermScores(GO = "GO:0070483", desc = "detection of hypoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
   try(combined.obj <- PlotGoTermScores(GO = "GO:0001666", desc = "response to hypoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
   try(combined.obj <- PlotGoTermScores(GO = "GO:1900037", desc = "regulation of cellular response to hypoxia", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
