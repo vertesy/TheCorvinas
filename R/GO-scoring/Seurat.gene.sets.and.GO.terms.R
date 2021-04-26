@@ -14,6 +14,23 @@ ensembl = useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl"
                        ) #uses human ensembl annotations
 
 
+# - PlotGoTermScores
+# - IntersectWithExpressed
+# - GetGOTerms
+# - AddGOGeneList.manual
+# - fix.metad.Colname.rm.trailing.1
+# - AddGOScore
+# - FeaturePlotSaveGO
+# - AddCustomScore
+# - FeaturePlotSaveCustomScore
+# - PasteUniqueGeneList
+# - CalcTranscriptomePercentage
+# - CalcTranscriptomePercentageGO
+# - ww.convert.GO_term.2.score
+# - ww.convert.score.2.GO_term
+# - GetAllGOTerms
+
+
 # ------------------------------------------------------------------------
 PlotGoTermScores <- function(obj = combined.obj, only.draw.plot = F # Automate retrieving, processing and plotting GO term based gene scores.
                              , openBrowser = F, plot.each.gene = F, verbose = T
@@ -79,6 +96,29 @@ AddGOGeneList.manual <- function(obj = combined.obj, GO = 'GO:0034976', web.open
 }
 # combined.obj <- AddGOGeneList.manual(obj = combined.obj, GO = 'GO:1904936'
 #       , genes =  c("A0A140VKG3", "ARX", "CNTN2", "DRD1", "DRD2", "FEZF2", "LHX6")); combined.obj@misc$GO$GO.0034976
+
+
+# clean.duplicate.scorenames ------------------------------------------------------------------------------------
+clean.duplicate.scorenames <- function(obj = obj) { # Helper. When AddGOScore(), a '1' is added to the end of the column name. It is hereby removed.
+  obj <- combined.obj
+  cn <- colnames(obj@meta.data)
+
+  nonGO <- sort(grepv(x = cn, pattern = paste0('^Score.GO.[0-9]{7}.*'), invert = TRUE))
+  clean <- grepv(x = cn, pattern = paste0('^Score.GO.[0-9]{7}$'))
+
+  appended <- grepv(x = cn, pattern = paste0('^Score.GO.[0-9]{7}\\.[0-9]$'))
+  fixed <- gsub(x = appended, pattern = paste0('\\.[0-9]$'), replacement = "")
+  fixed.keep <- which( !(fixed %in% clean))
+  uniqueGO <- c(clean, fixed.keep)
+  obj@meta.data <- obj@meta.data[ , c(nonGO, uniqueGO)]
+
+  iprint(l(clean), "GO's are clean, ", l(appended), "GO's are suffixed by .1 etc, of which"
+         , l(fixed.keep), "GO's had no clean counterpart. All",l(uniqueGO), "scores, are cleaned, fixed and unique now.")
+  iprint("Metadata column order re-organized alphabetically, and GO-scores at the end.")
+  return(obj)
+}
+# combined.obj <- clean.duplicate.scorenames(obj = combined.obj)
+
 
 # fix.metad.Colname.rm.trailing.1 ------------------------------------------------------------------------------------
 fix.metad.Colname.rm.trailing.1 <- function(obj = obj, colname=ScoreName) { # Helper. When AddGOScore(), a '1' is added to the end of the column name. It is hereby removed.
