@@ -33,39 +33,6 @@ ensembl = useEnsembl("ensembl", dataset="hsapiens_gene_ensembl"
 ) #uses human ensembl annotations
 
 
-# Basic linages  -----------------------------------------------------------------------------------------------
-if (F) {
-
-  create_set_SubDir("GO-Basic.linages")
-  # GO:0007492 endoderm development
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0007492", desc = "endoderm development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0001706 endoderm formation
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0001706", desc = "endoderm formation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0001707 mesoderm formation
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0001707", desc = "mesoderm formation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0007498 mesoderm development
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0007498", desc = "mesoderm development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0001705 ectoderm formation
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0001705", desc = "ectoderm formation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0007398 ectoderm development
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0007398", desc = "ectoderm development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0001712 ectodermal cell fate commitment
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0001712", desc = "ectodermal cell fate commitment", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0001710 mesodermal cell fate commitment
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0001710", desc = "mesodermal cell fate commitment", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-
-  # GO:0001711 endodermal cell fate commitment
-  try(combined.obj <- PlotGoTermScores(GO = "GO:0001711", desc = "endodermal cell fate commitment", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
-  create_set_OutDir(ParentDir)
-}
-
 
 # Neural lineage  -----------------------------------------------------------------------------------------------
 
@@ -124,7 +91,7 @@ if (F) {
 
 # HGA | ER stress - Glycolysis - Hypoxia - Starvation -----------------------------------------------------------------------------------------------
 
-create_set_SubDir("GO-HGA")
+create_set_SubDir("Cellular.Stress.SEO")
 {
   # GO:0034976 response to endoplasmic reticulum stress
   try(combined.obj <- PlotGoTermScores(GO = "GO:0034976", desc = "response to endoplasmic reticulum stress", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
@@ -298,8 +265,43 @@ if (plot.GO.NonNeural) {
   create_set_OutDir(ParentDir)
 
 
-# dopamine -----------------------------------------------------------------------------------------------
 
+# Basic linages  -----------------------------------------------------------------------------------------------
+if (F) {
+
+  create_set_SubDir("GO-Basic.linages")
+  # GO:0007492 endoderm development
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0007492", desc = "endoderm development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0001706 endoderm formation
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0001706", desc = "endoderm formation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0001707 mesoderm formation
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0001707", desc = "mesoderm formation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0007498 mesoderm development
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0007498", desc = "mesoderm development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0001705 ectoderm formation
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0001705", desc = "ectoderm formation", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0007398 ectoderm development
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0007398", desc = "ectoderm development", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0001712 ectodermal cell fate commitment
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0001712", desc = "ectodermal cell fate commitment", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0001710 mesodermal cell fate commitment
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0001710", desc = "mesodermal cell fate commitment", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+
+  # GO:0001711 endodermal cell fate commitment
+  try(combined.obj <- PlotGoTermScores(GO = "GO:0001711", desc = "endodermal cell fate commitment", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
+  create_set_OutDir(ParentDir)
+}
+
+
+# dopamine -----------------------------------------------------------------------------------------------
+if (F) {
   create_set_SubDir("GO-dopamine")
   # GO:0042417 dopamine metabolic process
   try(combined.obj <- PlotGoTermScores(GO = "GO:0042417", desc = "dopamine metabolic process", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
@@ -326,7 +328,7 @@ if (plot.GO.NonNeural) {
   try(combined.obj <- PlotGoTermScores(GO = "GO:0001963", desc = "synaptic transmission, dopaminergic", obj = combined.obj, plot.each.gene = plotGenes), silent = T)
 
   create_set_OutDir(ParentDir)
-
+}
 
 
 # Retina.and.eye  -----------------------------------------------------------------------------------------------
