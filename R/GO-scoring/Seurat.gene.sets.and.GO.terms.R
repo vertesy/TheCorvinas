@@ -261,3 +261,36 @@ GetAllGOTerms <- function(obj=combined.obj, return.obj = T) {
 }
 
 # ------------------------------------------------------------------------
+clUMAP.thresholding <- function(q.meta.col = 'Score.GO.0034976', c.meta.col =  "integrated_snn_res.30"
+                                , quantile = .95, absolute.cutoff = NULL
+                                , obj = combined.obj, plot.barplot = F
+                                , subt ="response to ER stress", plotUMAP =T, ... ) {
+  clusters.keep <- calc.cluster.averages(col_name = q.meta.col, split_by = c.meta.col, absolute.thr = absolute.cutoff,
+                                         , quantile.thr = quantile, plotit = plot.barplot)
+  cells.2.granules <- as.character(obj[[c.meta.col]][ ,1])
+
+
+  cluster.nrs.discard <- clusters.keep[which(!clusters.keep)]
+  filtered.out <- gsub(pattern = "^cl\\.", replacement = "", x = names(cluster.nrs.discard))
+  is.2.highlight <- cells.2.granules %in% filtered.out
+  idx.highlight.these <- which(is.2.highlight)
+  cells.highlight <- colnames(obj)[idx.highlight.these]
+
+  ttl <- paste('Cells above', 'quantile', quantile, 'in', q.meta.col)
+  if (plotUMAP) {
+    clUMAP(obj = obj, cells.highlight = cells.highlight
+           , plotname = ppp("UMAP.thresholding_q", q.meta.col, quantile, c.meta.col)
+           , title = ttl, sub = c.meta.col, raster = F, label.cex = 5, ...) # , shape.by = c.meta.col
+  } else {
+    # "Not sure about this"
+    # x <- calc.cluster.averages(col_name = q.meta.col, split_by = c.meta.col, quantile.thr = quantile, plotit = plot.barplot, simplify = F)
+    is.2.highlight
+  }
+}
+
+
+# ------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------
+
