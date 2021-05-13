@@ -302,6 +302,7 @@ FilterStressedCells <- function(obj = combined.obj
                                 , direction = "above"
                                 , saveRDS = T, saveRDS.Removed = F
                                 , PlotExclusionByEachScore = T
+                                , PlotSingleCellExclusion = T
                                 , GranuleExclusionScatterPlot = T
 ) {
 
@@ -318,10 +319,8 @@ FilterStressedCells <- function(obj = combined.obj
   # Exclude granules ------------------------------------------------------------
   mScoresFiltPass <- mScores <-  matrix.fromNames(fill = NaN, rowname_vec = sort(unique(Meta[,res])), colname_vec = make.names(GOterms))
   for (i in 1:length(GOterms) ) {
-    scoreX <- as.character(ScoreNames[i])
-    print(scoreX)
-    (scoreNameX <- names(ScoreNames)[i])
-
+    scoreX <- as.character(ScoreNames[i]); print(scoreX)
+    scoreNameX <- names(ScoreNames)[i]
     mScoresFiltPass[,i] <- calc.cluster.averages(col_name = scoreX, split_by = res, quantile.thr = quantile.thr
                                                  , histogram = T, subtitle = names(ScoreNames)[i]
                                                  , filter =  direction, obj = obj)
@@ -342,6 +341,43 @@ FilterStressedCells <- function(obj = combined.obj
 
   }
 
+  # PlotSingleCellExclusion ------------------------------------------------------------
+  if (PlotSingleCellExclusion) {
+    mSC_ScoresFiltPass <- matrix.fromNames(fill = NaN, rowname_vec = rownames(Meta), colname_vec = make.names(GOterms))
+    for (i in 1:length(GOterms) ) {
+      scoreX <- as.character(ScoreNames[i]); print(scoreX)
+      scoreNameX <- names(ScoreNames)[i]
+      ScoreValuesSC <- Meta[,scoreX]
+      mSC_ScoresFiltPass[,i] <- filter_HP(numeric_vector = ScoreValuesSC, threshold = quantile(x = ScoreValuesSC, quantile.thr), breaks = 100)
+    }
+    cells.remove.SC <- rowSums(mSC_ScoresFiltPass)>0
+    table(cells.remove.SC)
+    sc.filtered <- which_names(cells.remove.SC)
+    sc.kept <- which_names(!cells.remove.SC)
+
+    clUMAP(cells.highlight = sc.filtered, label = F
+           , title = "Single-cell filtering is not robust to remove stressed cells"
+           , plotname = "Single-cell filtering is not robust to remove stressed cells"
+           , suffix = "Stress.Filtering", sizes.highlight = .5, raster = F)
+
+    {
+      #"TEST"
+      MeanZ.ER.stress <- c(
+        'mean.stressed' = mean(Meta[sc.filtered, scoreX]),
+        'mean.kept' = mean(Meta[sc.kept, scoreX])
+      )
+      qbarplot(MeanZ.ER.stress, ylab= scoreNameX, xlab.angle = 45, xlab = '', col = as.logical(0:1))
+    }
+
+    # saveRDS.Removed
+    if (T) {
+      obj.Removed.by.SingleCells <- subset(x = obj, cells = sc.filtered) # remove stressed
+      isave.RDS(obj.Removed.by.SingleCells, inOutDir = T, suffix = "Removed")
+    }
+
+
+
+  }
 
   # Plot excluded cells ------------------------------------------------------------
   PASS <- (rowSums(mScoresFiltPass) == 0)
@@ -389,6 +425,7 @@ FilterStressedCells <- function(obj = combined.obj
 
   return(obj.noStress)
 }
+
 
 
 
