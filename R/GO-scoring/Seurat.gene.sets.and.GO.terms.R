@@ -294,15 +294,15 @@ clUMAP.thresholding <- function(q.meta.col = 'Score.GO.0034976', c.meta.col =  "
 }
 
 
-# ------------------------------------------------------------------------
+# FilterStressedCells ------------------------------------------------------------------------
 FilterStressedCells <- function(obj = combined.obj
                                 , res = "integrated_snn_res.30"
                                 , quantile.thr = 0.9
                                 , GOterms = c('glycolytic process' = 'GO:0006096', 'response to endoplasmic reticulum stress' = 'GO:0034976')
                                 , direction = "above"
-                                , saveRemoved = F
+                                , saveRDS = T, saveRDS.Removed = F
+                                , PlotExclusionByEachScore =T
 ) {
-
 
   # Check arguments ------------------------------------------------------------
   Meta <- obj@meta.data
@@ -317,13 +317,24 @@ FilterStressedCells <- function(obj = combined.obj
   # Exclude granules ------------------------------------------------------------
   mScoresFiltPass <- mScores <-  matrix.fromNames(fill = NaN, rowname_vec = sort(unique(Meta[,res])), colname_vec = make.names(GOterms))
   for (i in 1:length(GOterms) ) {
-    mScoresFiltPass[,i] <- calc.cluster.averages(col_name = as.character(ScoreNames[i]), split_by = res, quantile.thr = quantile.thr
+    scoreX <- as.character(ScoreNames[i])
+    print(scoreX)
+    (scoreNameX <- names(ScoreNames)[i])
+
+    mScoresFiltPass[,i] <- calc.cluster.averages(col_name = scoreX, split_by = res, quantile.thr = quantile.thr
                                                  , histogram = T, subtitle = names(ScoreNames)[i]
                                                  , filter =  direction, obj = obj)
-
-    # mScores[,i] <- calc.cluster.averages(col_name = as.character(ScoreNames[i]), split_by = res, quantile.thr = quantile.thr
+    #
+    # mScores[,i] <- calc.cluster.averages(col_name = scoreX, split_by = res, quantile.thr = quantile.thr
     #                                      , plot.UMAP.too = F, plotit = F
     #                                      , filter = F)
+    if (PlotExclusionByEachScore) {
+      # CellsExcludedByScoreX <- which(cells.2.granules %in% which_names(mScoresFiltPass[,i]))
+      clUMAP(ident = res, highlight.clusters = which_names(mScoresFiltPass[,i])
+             , label = F, title = p0("Stressed cells removed by ", scoreX), plotname =  p0("Stressed cells removed by ", scoreX), sub = scoreNameX
+             , sizes.highlight = .5, raster = F)
+
+    }
 
   }
 
@@ -331,6 +342,10 @@ FilterStressedCells <- function(obj = combined.obj
   # Plot excluded cells ------------------------------------------------------------
   granules.excluded <- which_names(rowSums(mScoresFiltPass) > 0)
   clUMAP(ident = res, highlight.clusters = granules.excluded, label = F, title = "Stressed cells removed", suffix = "Stress.Filtering", sizes.highlight = .5, raster = F)
+
+
+
+
 
   # Exclude cells & subset ------------------------------------------------------------
 
@@ -340,13 +355,14 @@ FilterStressedCells <- function(obj = combined.obj
   # clUMAP(highlight.clusters = filtered.out, ident = rgx, title = "Stressed cells removed", suffix = "Stress.Filtering.cl", sizes.highlight = .5, raster = F
   #        , MaxCategThrHP = 500, label = F, legend = F)
 
-  if (saveRemoved) {
+  obj.noStress <- subset(x = obj, cells = cells.keep) # remove stressed
+  if (saveRDS) isave.RDS(obj.noStress, inOutDir = T, suffix = "Cleaned")
+  if (saveRDS.Removed) {
     obj.RemovedCells <- subset(x = obj, cells = cells.discard) # remove stressed
     isave.RDS(obj.RemovedCells, inOutDir = T, suffix = "Removed")
   }
 
-  obj.noStress <- subset(x = obj, cells = cells.keep) # remove stressed
-  isave.RDS(obj.noStress, inOutDir = T, suffix = "Cleaned")
+
 
   return(obj.noStress)
 }
