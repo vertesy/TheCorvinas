@@ -301,7 +301,8 @@ FilterStressedCells <- function(obj = combined.obj
                                 , GOterms = c('glycolytic process' = 'GO:0006096', 'response to endoplasmic reticulum stress' = 'GO:0034976')
                                 , direction = "above"
                                 , saveRDS = T, saveRDS.Removed = F
-                                , PlotExclusionByEachScore =T
+                                , PlotExclusionByEachScore = T
+                                , GranuleExclusionScatterPlot = T
 ) {
 
   # Check arguments ------------------------------------------------------------
@@ -324,10 +325,13 @@ FilterStressedCells <- function(obj = combined.obj
     mScoresFiltPass[,i] <- calc.cluster.averages(col_name = scoreX, split_by = res, quantile.thr = quantile.thr
                                                  , histogram = T, subtitle = names(ScoreNames)[i]
                                                  , filter =  direction, obj = obj)
-    #
-    # mScores[,i] <- calc.cluster.averages(col_name = scoreX, split_by = res, quantile.thr = quantile.thr
-    #                                      , plot.UMAP.too = F, plotit = F
-    #                                      , filter = F)
+
+    if (GranuleExclusionScatterPlot) {
+      mScores[,i] <- calc.cluster.averages(col_name = scoreX, split_by = res, quantile.thr = quantile.thr
+                                           , plot.UMAP.too = F, plotit = F
+                                           , filter = F)
+    }
+
     if (PlotExclusionByEachScore) {
       # CellsExcludedByScoreX <- which(cells.2.granules %in% which_names(mScoresFiltPass[,i]))
       clUMAP(ident = res, highlight.clusters = which_names(mScoresFiltPass[,i])
@@ -340,11 +344,30 @@ FilterStressedCells <- function(obj = combined.obj
 
 
   # Plot excluded cells ------------------------------------------------------------
-  granules.excluded <- which_names(rowSums(mScoresFiltPass) > 0)
+  PASS <- (rowSums(mScoresFiltPass) == 0)
+  granules.excluded <- which_names(!PASS)
   clUMAP(ident = res, highlight.clusters = granules.excluded, label = F, title = "Stressed cells removed", suffix = "Stress.Filtering", sizes.highlight = .5, raster = F)
 
+  if (GranuleExclusionScatterPlot) {
+    Av.GO.Scores <- tibble("Average ER-stress score" = mScores[,2]
+                           ,"Average Glycolysis score" = mScores[,1]
+                           , 'Stressed' = !PASS
+                           , 'name' = names(av.glycolytic)
+    )
 
+    if (F) colnames(Av.GO.Scores)[1:2] <- names(GOterms)
 
+    qscatter(Av.GO.Scores, cols = 'Stressed', w = 6, h = 6
+             , vline = quantile(mScores[,2], quantile.thr)
+             , hline = quantile(mScores[,1], quantile.thr)
+             , title = "Groups of Stressed cells have high scores."
+             , subtitle = "Thresholded at 90th percentile"
+             , label = 'name'
+             , repel = T
+             , label.rectangle = T
+    )
+
+  }
 
 
   # Exclude cells & subset ------------------------------------------------------------
