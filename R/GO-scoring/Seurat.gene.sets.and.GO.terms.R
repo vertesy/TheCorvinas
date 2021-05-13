@@ -1,7 +1,7 @@
 ######################################################################
 # Seurat.gene.sets.and.GO.terms.R
 ######################################################################
-# source('~/GitHub/Projects/SEO/GO-scoring/Seurat.gene.sets.and.GO.terms.R')
+# source('~/GitHub/TheCorvinas/R/GO-scoring/Seurat.gene.sets.and.GO.terms.R')
 
 # require(MarkdownReports)
 # source('/GitHub/Packages/CodeAndRoll/CodeAndRoll.R')
@@ -38,6 +38,7 @@ PlotGoTermScores <- function(obj = combined.obj, only.draw.plot = F # Automate r
   GO.wDot <- make.names(GO)
   ScoreName <- paste0("Score.", GO.wDot)
   print(ScoreName)
+  if (DefaultAssay(obj) != 'RNA') { print("DefaultAssay set to RNA"); DefaultAssay(obj) <-  'RNA'}
   if (only.draw.plot) {
     stopifnot(ScoreName %in% colnames(obj@meta.data))
   } else {
@@ -57,6 +58,7 @@ PlotGoTermScores <- function(obj = combined.obj, only.draw.plot = F # Automate r
 
 # ------------------------------------------------------------------------
 IntersectWithExpressed <- function(genes, obj=combined.obj, genes.shown = 10) { # Intersect a set of genes with genes in the Seurat object.
+  print('IntersectWithExpressed()')
   # print(head(genes, n=15))
   diff = setdiff(genes, rownames(obj))
   iprint(length(diff),"genes (of",length(genes), ") are MISSING from the Seurat object:",head(diff, genes.shown))
@@ -66,6 +68,7 @@ IntersectWithExpressed <- function(genes, obj=combined.obj, genes.shown = 10) { 
 
 # ------------------------------------------------------------------------
 GetGOTerms <- function(obj = combined.obj, GO = 'GO:0034976', web.open = T, genes.shown = 10) { # Get GO terms via Biomart package
+  print('GetGOTerms()')
   genes <- getBM(attributes = c('hgnc_symbol'), #  'ensembl_transcript_id', 'go_id'
                  filters = "go_parent_term",  uniqueRows = TRUE,
                  values = GO, mart = ensembl)[,1]
@@ -135,14 +138,15 @@ fix.metad.Colname.rm.trailing.1 <- function(obj = obj, colname=ScoreName) { # He
 
 # ------------------------------------------------------------------------
 AddGOScore <- function(obj = combined.obj, GO = "GO:0034976", FixName = TRUE ) { # Call after GetGOTerms. Calculates Score for gene set. Fixes name.
-  GO.wDot<- make.names(GO)
+  print("AddGOScore()")
+  GO.wDot <- make.names(GO)
   (genes.GO = list(obj@misc$GO[[GO.wDot]]))
   # print(genes.GO)
   (ScoreName = paste0("Score.", make.names(GO)))
-  if (!is.list(genes.GO)) genes.GO<- list(genes.GO) # idk why this structure is not consistent...
+  if (!is.list(genes.GO)) genes.GO <-  list(genes.GO) # idk why this structure is not consistent...
   obj <- AddModuleScore(object = obj, features = genes.GO, name = ScoreName)
 
-  if (FixName) obj <- fix.metad.Colname.rm.trailing.1(obj = obj, colname=ScoreName)
+  if (FixName) obj <- fix.metad.Colname.rm.trailing.1(obj = obj, colname = ScoreName)
   return(obj)
 }
 # combined.obj <- AddGOScore(obj = combined.obj, GO = "GO:0034976", FixName = TRUE)
@@ -154,6 +158,7 @@ AddGOScore <- function(obj = combined.obj, GO = "GO:0034976", FixName = TRUE ) {
 FeaturePlotSaveGO <- function(obj = combined.obj, GO.score = "Score.GO.0034976", name_desc=NULL
                               , title_ = paste(GO.score, name_desc)
                               , h=7, PNG = T, ...) { # Plot and save a FeaturePlot, e.g. showing gene set scores.
+  print("FeaturePlotSaveGO")
   proper.GO <- paste(sstrsplit(GO.score, pattern = "\\.", n = 3)[2:3], collapse = ":")
   (genes.GO = obj@misc$GO[[make.names(proper.GO)]])
 
@@ -162,7 +167,7 @@ FeaturePlotSaveGO <- function(obj = combined.obj, GO.score = "Score.GO.0034976",
     labs(title = title_, caption = paste("Score calc. from",length(genes.GO), "expr. genes from BioMart.", paste0("https://www.ebi.ac.uk/QuickGO/search/", proper.GO)))
   pname = paste0("FeaturePlot.",(GO.score))
   fname = ww.FnP_parser(kpp(pname,name_desc), if (PNG) "png" else "pdf")
-  save_plot(filename =fname, plot = ggplot.obj, base_height=h)
+  save_plot(filename = fname, plot = ggplot.obj, base_height = h)
   ggplot.obj
 }
 # FeaturePlotSaveGO()
@@ -172,11 +177,11 @@ FeaturePlotSaveGO <- function(obj = combined.obj, GO.score = "Score.GO.0034976",
 # AddCustomScore ------------------------------------------------------------------------
 AddCustomScore <- function(obj = combined.obj, genes=ALLEN.FRONTAL.found, FixName = TRUE ) { # Call after GetGOTerms. Calculates Score for gene set. Fixes name.
   ls.genes = list(genes)
-  if (!is.list(ls.genes)) ls.genes<- list(ls.genes) # idk why this structure is not consistent...
+  if (!is.list(ls.genes)) ls.genes <- list(ls.genes) # idk why this structure is not consistent...
   (ScoreName = ppp("Score", substitute(genes)) )
   obj <- AddModuleScore(object = obj, features = ls.genes, name = ScoreName)
 
-  if (FixName) obj <- fix.metad.Colname.rm.trailing.1(obj = obj, colname=ScoreName)
+  if (FixName) obj <- fix.metad.Colname.rm.trailing.1(obj = obj, colname = ScoreName)
   return(obj)
 }
 # combined.obj <- AddCustomScore(obj = combined.obj, genes=ALLEN.FRONTAL.found, FixName = F); colnames(combined.obj@meta.data)
@@ -192,7 +197,7 @@ FeaturePlotSaveCustomScore <- function(obj = combined.obj, genes =ALLEN.FRONTAL.
     labs(title = paste(ScoreName, name_desc), caption = paste("Score calc. from",length(genes), "expr. genes ."))
   pname = paste0("FeaturePlot.",ScoreName)
   fname = ww.FnP_parser(kpp(pname,name_desc), if (PNG) "png" else "pdf")
-  save_plot(filename =fname, plot = ggplot.obj, base_height=h)
+  save_plot(filename = fname,  plot = ggplot.obj, base_height = h)
   ggplot.obj
 }
 # FeaturePlotSaveCustomScore()
@@ -265,7 +270,7 @@ clUMAP.thresholding <- function(q.meta.col = 'Score.GO.0034976', c.meta.col =  "
                                 , quantile = .95, absolute.cutoff = NULL
                                 , obj = combined.obj, plot.barplot = F
                                 , subt ="response to ER stress", plotUMAP =T, ... ) {
-  clusters.keep <- calc.cluster.averages(col_name = q.meta.col, split_by = c.meta.col, absolute.thr = absolute.cutoff,
+  clusters.keep <- calc.cluster.averages(col_name = q.meta.col, split_by = c.meta.col, absolute.thr = absolute.cutoff
                                          , quantile.thr = quantile, plotit = plot.barplot)
   cells.2.granules <- as.character(obj[[c.meta.col]][ ,1])
 
@@ -290,6 +295,62 @@ clUMAP.thresholding <- function(q.meta.col = 'Score.GO.0034976', c.meta.col =  "
 
 
 # ------------------------------------------------------------------------
+FilterStressedCells <- function(obj = combined.obj
+                                , res = "integrated_snn_res.30"
+                                , quantile.thr = 0.9
+                                , GOterms = c('glycolytic process' = 'GO:0006096', 'response to endoplasmic reticulum stress' = 'GO:0034976')
+                                , direction = "above"
+                                , saveRemoved = F
+) {
+
+
+  # Check arguments ------------------------------------------------------------
+  Meta <- obj@meta.data
+  MetaVars <- colnames(Meta)
+  if( ! res %in% MetaVars ) { iprint('res',res,'is not found in the object.')}
+
+  ScoreNames <- ww.convert.GO_term.2.score(GOterms)
+  if( ! all(ScoreNames %in% MetaVars) ) { iprint('Some of the GO-term scores were not found in the object:', ScoreNames, 'Please call first: PlotGoTermScores(), or the actual GetGOTerms()')}
+
+  cells.2.granules <- combined.obj[[res]][ ,1]
+
+  # Exclude granules ------------------------------------------------------------
+  mScoresFiltPass <- mScores <-  matrix.fromNames(fill = NaN, rowname_vec = sort(unique(Meta[,res])), colname_vec = make.names(GOterms))
+  for (i in 1:length(GOterms) ) {
+    mScoresFiltPass[,i] <- calc.cluster.averages(col_name = as.character(ScoreNames[i]), split_by = res, quantile.thr = quantile.thr
+                                                 , histogram = T, subtitle = names(ScoreNames)[i]
+                                                 , filter =  direction, obj = obj)
+
+    # mScores[,i] <- calc.cluster.averages(col_name = as.character(ScoreNames[i]), split_by = res, quantile.thr = quantile.thr
+    #                                      , plot.UMAP.too = F, plotit = F
+    #                                      , filter = F)
+
+  }
+
+
+  # Plot excluded cells ------------------------------------------------------------
+  granules.excluded <- which_names(rowSums(mScoresFiltPass) > 0)
+  clUMAP(ident = res, highlight.clusters = granules.excluded, label = F, title = "Stressed cells removed", suffix = "Stress.Filtering", sizes.highlight = .5, raster = F)
+
+  # Exclude cells & subset ------------------------------------------------------------
+
+  cells.discard <- which(cells.2.granules %in% granules.excluded)
+  cells.keep <- which(cells.2.granules %!in% granules.excluded)
+  llprint(percentage_formatter(l(cells.keep) / l(cells.2.granules)), "cells kept.")
+  # clUMAP(highlight.clusters = filtered.out, ident = rgx, title = "Stressed cells removed", suffix = "Stress.Filtering.cl", sizes.highlight = .5, raster = F
+  #        , MaxCategThrHP = 500, label = F, legend = F)
+
+  if (saveRemoved) {
+    obj.RemovedCells <- subset(x = obj, cells = cells.discard) # remove stressed
+    isave.RDS(obj.RemovedCells, inOutDir = T, suffix = "Removed")
+  }
+
+  obj.noStress <- subset(x = obj, cells = cells.keep) # remove stressed
+  isave.RDS(obj.noStress, inOutDir = T, suffix = "Cleaned")
+
+  return(obj.noStress)
+}
+
 
 
 # ------------------------------------------------------------------------
