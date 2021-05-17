@@ -388,7 +388,7 @@ FilterStressedCells <- function(obj = combined.obj
     Av.GO.Scores <- tibble("Average ER-stress score" = mScores[,2]
                            ,"Average Glycolysis score" = mScores[,1]
                            , 'Stressed' = !PASS
-                           , 'name' = names(av.glycolytic)
+                           , 'name' = rownames(mScores)
     )
 
     if (F) colnames(Av.GO.Scores)[1:2] <- names(GOterms)
