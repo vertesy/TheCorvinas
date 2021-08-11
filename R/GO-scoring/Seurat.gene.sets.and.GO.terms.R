@@ -9,8 +9,7 @@
 # BiocManager::install('grimbough/biomaRt')
 library(biomaRt); # package.version('biomaRt')
 ensembl = useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl"
-                     , host = "https://grch37.ensembl.org"
-                     # , ensemblRedirect = FALSE
+                     # , host = "https://grch37.ensembl.org"
                        ) #uses human ensembl annotations
 
 
@@ -34,14 +33,16 @@ ensembl = useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl"
 # ------------------------------------------------------------------------
 PlotGoTermScores <- function(obj = combined.obj, only.draw.plot = F # Automate retrieving, processing and plotting GO term based gene scores.
                              , openBrowser = F, plot.each.gene = F, verbose = T
-                             , GO = "GO:0061621", desc = "canonical.glycolysis", ...) {
+                             , GO = "GO:0009651", desc = "canonical.glycolysis", ...) {
   GO.wDot <- make.names(GO)
   ScoreName <- paste0("Score.", GO.wDot)
   print(ScoreName)
   if (DefaultAssay(obj) != 'RNA') { print("DefaultAssay set to RNA"); DefaultAssay(obj) <-  'RNA'}
-  if (only.draw.plot) {
-    stopifnot(ScoreName %in% colnames(obj@meta.data))
+
+  if (ScoreName %in% colnames(obj@meta.data)) {
+    print("GENE SCORE FOUND IN @meta.data.")
   } else {
+    if (only.draw.plot) iprint(ScoreName, "not found. Need to call GetGOTerms(). set only.draw.plot = FALSE.")
     obj <- GetGOTerms(obj = obj, GO = GO, web.open = openBrowser);
     GO.genes <- obj@misc$GO[[ GO.wDot ]]
     if (verbose) iprint(desc, head(GO.genes))
@@ -52,6 +53,7 @@ PlotGoTermScores <- function(obj = combined.obj, only.draw.plot = F # Automate r
   if (plot.each.gene) multiFeaturePlot.A4(obj = obj, list.of.genes = GO.genes, foldername = ppp(GO.wDot, desc, 'UMAPs'), ...)
   if (only.draw.plot) return(plot) else return(obj)
 }
+
 # "GO:0061621"  "canonical.glycolysis"
 # PlotGoTermScores(GO = "GO:0061621", desc = "canonical.glycolysis")
 
