@@ -27,13 +27,6 @@ DefaultAssay(combined.obj) <- "RNA"
 iprint("DefaultAssay:", DefaultAssay(combined.obj))
 
 
-ensembl = useEnsembl("ensembl", dataset="hsapiens_gene_ensembl"
-                     , host ="https://grch37.ensembl.org"
-                     # , ensemblRedirect = FALSE
-) #uses human ensembl annotations
-
-
-
 # Neural lineage  -----------------------------------------------------------------------------------------------
 
   create_set_SubDir("GO-Neural lineage")
