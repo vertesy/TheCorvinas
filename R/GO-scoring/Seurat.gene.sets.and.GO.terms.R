@@ -117,8 +117,8 @@ clean.duplicate.scorenames <- function(obj = obj) { # Helper. When AddGOScore(),
   uniqueGO <- c(clean, fixed.keep)
   obj@meta.data <- obj@meta.data[ , c(nonGO, uniqueGO)]
 
-  iprint(l(clean), "GO's are clean, ", l(appended), "GO's are suffixed by .1 etc, of which"
-         , l(fixed.keep), "GO's had no clean counterpart. All",l(uniqueGO), "scores, are cleaned, fixed and unique now.")
+  iprint(length(clean), "GO's are clean, ", length(appended), "GO's are suffixed by .1 etc, of which"
+         , length(fixed.keep), "GO's had no clean counterpart. All",length(uniqueGO), "scores, are cleaned, fixed and unique now.")
   iprint("Metadata column order re-organized alphabetically, and GO-scores at the end.")
   return(obj)
 }
@@ -412,7 +412,7 @@ FilterStressedCells <- function(obj = combined.obj
 
   cells.discard <- which(cells.2.granules %in% granules.excluded)
   cells.keep <- which(cells.2.granules %!in% granules.excluded)
-  llprint(percentage_formatter(l(cells.keep) / l(cells.2.granules)), "cells kept.")
+  llprint(percentage_formatter(length(cells.keep) / length(cells.2.granules)), "cells kept.")
   # clUMAP(highlight.clusters = filtered.out, ident = rgx, title = "Stressed cells removed", suffix = "Stress.Filtering.cl", sizes.highlight = .5, raster = F
   #        , MaxCategThrHP = 500, label = F, legend = F)
 

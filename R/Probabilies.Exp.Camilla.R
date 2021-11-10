@@ -14,20 +14,20 @@ for (i in 1:X) {
 percentage_formatter(sum(res)/X)
 
 
-# N of trials 
+# N of trials
 N=3
 
 # At elast this much uscess
 K=1
 
-# 
+#
 Tests = vec.fromNames(N:K)
-for (i in 1:l(Tests)) {
+for (i in 1:length(Tests)) {
   k = (N:K)[i]
   print(k)
   Tests[i] = (factorial(N) * p^k * q^(N-k)) / (factorial(k) * factorial(N - k))
-  
-  # Simpler form 
+
+  # Simpler form
   choose(n = N,k = k) * p^k * q^(N-k)
 }
 Tests

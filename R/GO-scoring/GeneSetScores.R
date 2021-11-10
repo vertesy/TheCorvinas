@@ -1,7 +1,7 @@
 ######################################################################
 # GeneSetScores.R
 ######################################################################
-# source("~/GitHub/Projects/SEO/GO-scoring/GeneSetScores.R")
+# source("~/GitHub/TheCorvinas/R/GO-scoring/GeneSetScores.R")
 # source('https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/GO-scoring/GeneSetScores.R')
 
 # try(dev.off(), silent = T)
@@ -18,8 +18,14 @@ plotGenes <- FALSE
 Go.Term.Correlation  <- FALSE
 
 # Setup ------------------------
+library(biomaRt); # package.version('biomaRt')
+ensembl = useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl"
+                     # , host = "https://grch37.ensembl.org"
+) #uses human ensembl annotations
+
+
 # source('~/GitHub/Projects/SEO/GO-scoring/Seurat.gene.sets.and.GO.terms.R')
-try(source('https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/GO-scoring/Seurat.gene.sets.and.GO.terms.R'), silent =   T)
+# try(source('https://raw.githubusercontent.com/vertesy/TheCorvinas/master/R/GO-scoring/Seurat.gene.sets.and.GO.terms.R'), silent =   T)
 
 create_set_OutDir(OutDirOrig, "GeneSetScores")
 
