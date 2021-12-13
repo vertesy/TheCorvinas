@@ -39,6 +39,9 @@ BiocManager::install("STRINGdb")
 BiocManager::install("sparseMatrixStats")
 BiocManager::install("limma")
 
+BiocManager::install("GO.db")
+BiocManager::install("WGCNA")
+
 update.packages(ask = F)
 
 # Github---------------------------------------------------------------------------------
