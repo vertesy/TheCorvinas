@@ -39,8 +39,8 @@ BiocManager::install("STRINGdb")
 BiocManager::install("sparseMatrixStats")
 BiocManager::install("limma")
 
-BiocManager::install("GO.db")
-BiocManager::install("WGCNA")
+# BiocManager::install("GO.db")
+# BiocManager::install("WGCNA")
 
 update.packages(ask = F)
 
@@ -52,17 +52,22 @@ devtools::install_github(repo = "jalvesaq/colorout", upgrade = F)
 "maybe requires X11"
 
 
-devtools::install_github(repo = "vertesy/Stringendo", upgrade = F)
-devtools::install_github(repo = "vertesy/CodeAndRoll2", upgrade = F)
-devtools::install_github(repo = "vertesy/ReadWriter", upgrade = F)
-devtools::install_github(repo = "vertesy/MarkdownHelpers", upgrade = F)
-devtools::install_github(repo = "vertesy/ggExpress", upgrade = F)
-devtools::install_github(repo = "vertesy/Markdownreports", upgrade = F)
-devtools::install_github(repo = "vertesy/Seurat.utils", upgrade = F)
+
+
+remotes::install_github(repo = "vertesy/Stringendo", upgrade = F)
+remotes::install_github(repo = "vertesy/CodeAndRoll2", upgrade = F)
+remotes::install_github(repo = "vertesy/ReadWriter", upgrade = F)
+remotes::install_github(repo = "vertesy/MarkdownHelpers", upgrade = F)
+remotes::install_github(repo = "vertesy/Markdownreports", upgrade = F)
+remotes::install_github(repo = "vertesy/ggExpress", upgrade = F)
+remotes::install_github(repo = "vertesy/Seurat.utils", upgrade = F)
+
+remotes::install_github(repo = "vertesy/UVI.tools", upgrade = F)
+remotes::install_github(repo = "vertesy/Connectome.tools", upgrade = F)
 
 # Less important ones
-devtools::install_github(repo = "vertesy/DataInCode", upgrade = F)
-devtools::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
+remotes::install_github(repo = "vertesy/DataInCode", upgrade = F)
+remotes::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
 
 
 
