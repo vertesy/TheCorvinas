@@ -2,42 +2,65 @@
 # Install R packages
 ######################################################################
 
-install.packages("tidyverse")
-install.packages("Seurat")
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("Seurat")) install.packages("Seurat")
 
-install.packages("clipr")
-install.packages("tictoc")
-install.packages("doMC")
-install.packages("tictoc")
-install.packages("pheatmap")
-install.packages("biomaRt")
+if(!require("clipr")) install.packages("clipr")
+if(!require("tictoc")) install.packages("tictoc")
+if(!require("doMC")) install.packages("doMC")
+if(!require("tictoc")) install.packages("tictoc")
+if(!require("pheatmap")) install.packages("pheatmap")
+if(!require("biomaRt")) install.packages("biomaRt")
 # If you don't have it
-install.packages("openxlsx")
-install.packages("plotrix")
-install.packages("princurve")
-install.packages("HGNChelper")
-install.packages("R.utils")
-# install.packages("limma")
-install.packages("SoupX")
+if(!require("openxlsx")) install.packages("openxlsx")
+if(!require("plotrix")) install.packages("plotrix")
+if(!require("princurve")) install.packages("princurve")
+if(!require("HGNChelper")) install.packages("HGNChelper")
+if(!require("R.utils")) install.packages("R.utils")
+if(!require("SoupX")) install.packages("SoupX")
 
-install.packages("colorRamps")
-install.packages("data.table")
-install.packages("readr")
-install.packages("sm")
-install.packages("gplots")
-install.packages("gtools")
-install.packages("RColorBrewer")
-install.packages("vioplot")
-install.packages("VennDiagram")
+if(!require("colorRamps")) install.packages("colorRamps")
+if(!require("data.table")) install.packages("data.table")
+if(!require("readr")) install.packages("readr")
+if(!require("sm")) install.packages("sm")
+if(!require("gplots")) install.packages("gplots")
+if(!require("gtools")) install.packages("gtools")
+if(!require("RColorBrewer")) install.packages("RColorBrewer")
+if(!require("vioplot")) install.packages("vioplot")
+if(!require("VennDiagram")) install.packages("VennDiagram")
 
 
 # BioConductor---------------------------------------------------------------------------------
-install.packages("BiocManager")
-BiocManager::install("schex")
-BiocManager::install("biomaRt")
-BiocManager::install("STRINGdb")
-BiocManager::install("sparseMatrixStats")
-BiocManager::install("limma")
+
+'Error: Bioconductor version '3.16' requires R version '4.2'; use'
+'`BiocManager::install(version = '3.17')` with R version 4.3; see'
+
+# install.packages("BiocManager")
+if( !require("biomaRt") ) BiocManager::install("biomaRt")
+if( !require("sparseMatrixStats") ) BiocManager::install("sparseMatrixStats")
+if( !require("limma") ) BiocManager::install("limma")
+if( !require("scales") ) BiocManager::install("scales")
+if( !require("vroom") ) BiocManager::install("vroom")
+
+# if( !require("ggcorrplot") ) BiocManager::install("ggcorrplot")
+if( !require("schex") ) BiocManager::install("schex")
+if( !require("STRINGdb") ) BiocManager::install("STRINGdb")
+if( !require("EnhancedVolcano") ) BiocManager::install("EnhancedVolcano")
+
+require(scales)
+require(vroom)
+
+
+
+"PROBLEMS"
+
+{
+  
+  if( !require("ggcorrplot") ) BiocManager::install("ggcorrplot")
+
+}
+
+"/PROBLEMS"
 
 # BiocManager::install("GO.db")
 # BiocManager::install("WGCNA")
@@ -52,15 +75,15 @@ devtools::install_github(repo = "jalvesaq/colorout", upgrade = F)
 "maybe requires X11"
 
 
-
-
 remotes::install_github(repo = "vertesy/Stringendo", upgrade = F)
 remotes::install_github(repo = "vertesy/CodeAndRoll2", upgrade = F)
 remotes::install_github(repo = "vertesy/ReadWriter", upgrade = F)
 remotes::install_github(repo = "vertesy/MarkdownHelpers", upgrade = F)
 remotes::install_github(repo = "vertesy/Markdownreports", upgrade = F)
 remotes::install_github(repo = "vertesy/ggExpress", upgrade = F)
+require(ggExpress)
 remotes::install_github(repo = "vertesy/Seurat.utils", upgrade = F)
+require(Seurat.utils)
 
 remotes::install_github(repo = "vertesy/UVI.tools", upgrade = F)
 remotes::install_github(repo = "vertesy/Connectome.tools", upgrade = F)
@@ -72,9 +95,9 @@ remotes::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
 
 
 
+
 ## Else   -------------------------------------------------------------------------------------------------
 
-#
 # # MULTI-seq
 # devtools::install_github('chris-mcginnis-ucsf/MULTI-seq', force = TRUE)
 # require("deMULTIplex") # This is MULTI-seq
