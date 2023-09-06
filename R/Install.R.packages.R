@@ -85,8 +85,8 @@ require(ggExpress)
 remotes::install_github(repo = "vertesy/Seurat.utils", upgrade = F)
 require(Seurat.utils)
 
-remotes::install_github(repo = "vertesy/UVI.tools", upgrade = F)
-remotes::install_github(repo = "vertesy/Connectome.tools", upgrade = F)
+remotes::install_github(repo = "vertesy/UVI.tools", upgrade = F, auth_token = "")
+remotes::install_github(repo = "vertesy/Connectome.tools", upgrade = F, auth_token = "")
 
 # Less important ones
 remotes::install_github(repo = "vertesy/DataInCode", upgrade = F)
