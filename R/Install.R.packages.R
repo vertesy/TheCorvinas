@@ -28,6 +28,8 @@ if(!require("gtools")) install.packages("gtools")
 if(!require("RColorBrewer")) install.packages("RColorBrewer")
 if(!require("vioplot")) install.packages("vioplot")
 if(!require("VennDiagram")) install.packages("VennDiagram")
+if(!require("devtools")) install.packages("devtools")
+
 
 
 # BioConductor---------------------------------------------------------------------------------
@@ -46,26 +48,12 @@ if( !require("vroom") ) BiocManager::install("vroom")
 if( !require("schex") ) BiocManager::install("schex")
 if( !require("STRINGdb") ) BiocManager::install("STRINGdb")
 if( !require("EnhancedVolcano") ) BiocManager::install("EnhancedVolcano")
+if( !require("ggcorrplot") ) BiocManager::install("ggcorrplot")
 
-require(scales)
-require(vroom)
-
-
-
-"PROBLEMS"
-
-{
-  
-  if( !require("ggcorrplot") ) BiocManager::install("ggcorrplot")
-
-}
-
-"/PROBLEMS"
 
 # BiocManager::install("GO.db")
 # BiocManager::install("WGCNA")
 
-update.packages(ask = F)
 
 # Github---------------------------------------------------------------------------------
 install.packages("devtools")
@@ -94,9 +82,11 @@ remotes::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
 
 
 
-
-
 ## Else   -------------------------------------------------------------------------------------------------
+update.packages(ask = F)
+
+
+
 
 # # MULTI-seq
 # devtools::install_github('chris-mcginnis-ucsf/MULTI-seq', force = TRUE)
