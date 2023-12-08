@@ -65,6 +65,9 @@ devtools::install_github(repo = "jalvesaq/colorout", upgrade = F)
 
 remotes::install_github(repo = "vertesy/Stringendo", upgrade = F)
 remotes::install_github(repo = "vertesy/CodeAndRoll2", upgrade = F)
+remotes::install_github(repo = "vertesy/PackageTools", upgrade = F)
+remotes::install_github(repo = "vertesy/isoENV", upgrade = F)
+
 remotes::install_github(repo = "vertesy/ReadWriter", upgrade = F)
 remotes::install_github(repo = "vertesy/MarkdownHelpers", upgrade = F)
 remotes::install_github(repo = "vertesy/Markdownreports", upgrade = F)
@@ -75,6 +78,7 @@ require(Seurat.utils)
 
 remotes::install_github(repo = "vertesy/UVI.tools", upgrade = F, auth_token = "")
 remotes::install_github(repo = "vertesy/Connectome.tools", upgrade = F, auth_token = "")
+remotes::install_github(repo = "vertesy/NestedMultiplexerer", upgrade = F, auth_token = "")
 
 # Less important ones
 remotes::install_github(repo = "vertesy/DataInCode", upgrade = F)
