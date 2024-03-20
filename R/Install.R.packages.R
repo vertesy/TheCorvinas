@@ -6,7 +6,6 @@ if(!require("tidyverse")) install.packages("tidyverse")
 if(!require("Seurat")) install.packages("Seurat")
 
 if(!require("clipr")) install.packages("clipr")
-if(!require("tictoc")) install.packages("tictoc")
 if(!require("doMC")) install.packages("doMC")
 if(!require("tictoc")) install.packages("tictoc")
 if(!require("pheatmap")) install.packages("pheatmap")
@@ -14,7 +13,7 @@ if(!require("biomaRt")) install.packages("biomaRt")
 # If you don't have it
 if(!require("openxlsx")) install.packages("openxlsx")
 if(!require("plotrix")) install.packages("plotrix")
-if(!require("princurve")) install.packages("princurve")
+# if(!require("princurve")) install.packages("princurve")
 if(!require("HGNChelper")) install.packages("HGNChelper")
 if(!require("R.utils")) install.packages("R.utils")
 if(!require("SoupX")) install.packages("SoupX")
@@ -88,6 +87,10 @@ remotes::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
 
 ## Else   -------------------------------------------------------------------------------------------------
 update.packages(ask = F)
+
+
+install.packages("qs")
+
 
 
 
