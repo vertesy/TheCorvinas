@@ -4,15 +4,19 @@
 
 if(!require("tidyverse")) install.packages("tidyverse")
 if(!require("Seurat")) install.packages("Seurat")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.19")
 
 if(!require("clipr")) install.packages("clipr")
 if(!require("doMC")) install.packages("doMC")
 if(!require("tictoc")) install.packages("tictoc")
 if(!require("pheatmap")) install.packages("pheatmap")
-if(!require("biomaRt")) install.packages("biomaRt")
+# if(!require("biomaRt")) install.packages("biomaRt")
+BiocManager::install("biomaRt")
 # If you don't have it
 if(!require("openxlsx")) install.packages("openxlsx")
-if(!require("plotrix")) install.packages("plotrix")
+# if(!require("plotrix")) install.packages("plotrix")
 # if(!require("princurve")) install.packages("princurve")
 if(!require("HGNChelper")) install.packages("HGNChelper")
 if(!require("R.utils")) install.packages("R.utils")
@@ -64,7 +68,6 @@ devtools::install_github(repo = "jalvesaq/colorout", upgrade = F)
 
 remotes::install_github(repo = "vertesy/Stringendo", upgrade = F)
 remotes::install_github(repo = "vertesy/CodeAndRoll2", upgrade = F)
-remotes::install_github(repo = "vertesy/PackageTools", upgrade = F)
 remotes::install_github(repo = "vertesy/isoENV", upgrade = F)
 
 remotes::install_github(repo = "vertesy/ReadWriter", upgrade = F)
@@ -72,17 +75,24 @@ remotes::install_github(repo = "vertesy/MarkdownHelpers", upgrade = F)
 remotes::install_github(repo = "vertesy/Markdownreports", upgrade = F)
 remotes::install_github(repo = "vertesy/ggExpress", upgrade = F)
 require(ggExpress)
+remotes::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
 remotes::install_github(repo = "vertesy/Seurat.utils", upgrade = F)
+remotes::install_github(repo = "vertesy/PackageTools", upgrade = F)
 require(Seurat.utils)
 
+
+# NEED auth_token !!!!
 remotes::install_github(repo = "vertesy/UVI.tools", upgrade = F, auth_token = "")
+# NEED auth_token !!!!
 remotes::install_github(repo = "vertesy/Connectome.tools", upgrade = F, auth_token = "")
+# NEED auth_token !!!!
 remotes::install_github(repo = "vertesy/NestedMultiplexerer", upgrade = F, auth_token = "")
 
 # Less important ones
 remotes::install_github(repo = "vertesy/DataInCode", upgrade = F)
 remotes::install_github(repo = "vertesy/DatabaseLinke.R", upgrade = F)
 
+remotes::install_github("immunogenomics/presto")
 
 
 ## Else   -------------------------------------------------------------------------------------------------
