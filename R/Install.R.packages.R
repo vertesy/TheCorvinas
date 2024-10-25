@@ -4,16 +4,15 @@
 
 if(!require("tidyverse")) install.packages("tidyverse")
 if(!require("Seurat")) install.packages("Seurat")
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 BiocManager::install(version = "3.19")
 
 if(!require("clipr")) install.packages("clipr")
 if(!require("doMC")) install.packages("doMC")
 if(!require("tictoc")) install.packages("tictoc")
 if(!require("pheatmap")) install.packages("pheatmap")
-# if(!require("biomaRt")) install.packages("biomaRt")
-BiocManager::install("biomaRt")
+if(!require("biomaRt")) BiocManager::install("biomaRt")
+
 # If you don't have it
 if(!require("openxlsx")) install.packages("openxlsx")
 # if(!require("plotrix")) install.packages("plotrix")
